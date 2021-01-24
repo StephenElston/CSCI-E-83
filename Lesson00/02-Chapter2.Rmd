@@ -626,4 +626,7 @@ A noticeable difference for this series is that there is no column name attribut
 > c. Assign the resulting Numpy array values back to the columns in the Data Frame.
 > d. Print the data frame and verify that the result is correct. 
 
-##### Copyright 2020, Stephen F Elston. All rights reserved.
+##### Copyright 2020, 2021, Stephen F Elston. All rights reserved.    
+
+## Bibliography     
+

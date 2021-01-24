@@ -605,7 +605,7 @@ In this chapter we have discussed some basic ideas of exploratory data analysis 
 
 It is clear there is more one can learn about the data sets discussed here. As is usually the case, the initial EDA has only scratched the surface of the important relationships. 
 
-##### Copyright 2020, Stephen F Elston. All rights reserved.   
+##### Copyright 2020, 2021, Stephen F Elston. All rights reserved.   
 
 ## Bibliography     
 

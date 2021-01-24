@@ -2,8 +2,10 @@
 title: "Chapter 6 Untangling large and complex data"
 author: "Steve Elston"
 date: "4/28/2020"
-bibliography: bibliography.bib
-output: html_document
+output:
+  pdf_document: default
+#  html_document: default
+bibliography: ../bibliography.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -27,11 +29,11 @@ It is often the case that the complexity of these relationships in a data set pr
 
 # Scalable Chart Types
 
-Some chart types are inherently scalable. These methods produce displays which produce useful results regardless of the size of the data set. These methods include:  
-- **Bar plots:** Counts and resulting plots, such as bar plots, can be computed and displayed at very large scale.
-- **Histograms:** Data can be binned and the bins plotted at a very large scale to create histograms.
-- **Box plots:** Creating box plots requires finding the quartiles of a variable , which is a scalable process. This is particularly the case for subsets of a large data set. 
-- **KDE and violin plots:** Similarly to the box plot, plots involving kernel density estimation are quite scalable.  
+Some chart types are inherently scalable. These methods produce displays which produce useful results regardless of the size of the data set. These methods include:      
+- **Bar plots:** Counts and resulting plots, such as bar plots, can be computed and displayed at very large scale.      
+- **Histograms:** Data can be binned and the bins plotted at a very large scale to create histograms.      
+- **Box plots:** Creating box plots requires finding the quartiles of a variable , which is a scalable process. This is particularly the case for subsets of a large data set.      
+- **KDE and violin plots:** Similarly to the box plot, plots involving kernel density estimation are quite scalable.      
 
 # Data for Examples   
 
@@ -54,7 +56,7 @@ import matplotlib.pyplot as plt
 from statsmodels.graphics import mosaicplot
 import calendar
 
-housing = pd.read_csv('data//housing.csv')
+housing = pd.read_csv('../data//housing.csv')
 print(housing.dtypes)
 ```
 
@@ -110,8 +112,11 @@ housing.shape
 
 Now that the missing values have been dealt with, Let's have a first look at these data. The code below creates two basic exploratory plots, a scatter plot and a distribution plot.       
 
+> **Computational note:** The housing data set contains a great many cases. This makes rendering scatter plots diffult in some environments. One solution to this problem is to descimate the data by sampling. In this case, we will use a simple random sampling scheme to reduce the number of samples to 20% of the original.          
+
 ```{python}
-ax = sns.scatterplot('time_decimal', 'medSoldPriceSqft', data=housing) 
+housing_reduced = housing.sample(frac=0.2, axis=0)
+ax = sns.scatterplot('time_decimal', 'medSoldPriceSqft', data=housing_reduced) 
 _=ax.set_xlabel('Time', fontsize=14)
 _=ax.set_ylabel('Median Sale Price', fontsize=14)
 _=ax.set_title('Median sale price vs time', fontsize=14)
@@ -171,7 +176,8 @@ In this section we will explore several methods commonly used to deal with over-
 As a baseline case to refer to, we will create a scatter plot applying no particular method to deal with over-plotting. The code below plots median home price vs. time for all locations in the US.  
 
 ```{python}
-ax = sns.scatterplot('time_decimal', 'log_medSoldPriceSqft', data=housing)
+housing_reduced = housing.sample(frac=0.2, axis=0)
+ax = sns.scatterplot('time_decimal', 'log_medSoldPriceSqft', data=housing_reduced)
 _=ax.set_xlabel('Time', fontsize=14)
 _=ax.set_ylabel('Log Median Sale Price', fontsize=14)
 _=ax.set_title('Log median sale prices vs. time', fontsize=14)
@@ -187,7 +193,7 @@ Marker transparency allows the viewer to see though some markers to see other ma
 The code in the cell below creates a scatter plot of the housing data using a transparency of $0.9$, or $1 - 0.1$. 
 
 ```{python}
-ax = sns.scatterplot('time_decimal', 'log_medSoldPriceSqft', data=housing, alpha=0.1)
+ax = sns.scatterplot('time_decimal', 'log_medSoldPriceSqft', data=housing_reduced, alpha=0.1)
 _=ax.set_xlabel('Time', fontsize=14)
 _=ax.set_ylabel('Log Median Sale Price', fontsize=14)
 _=ax.set_title('Log median sale prices vs. time', fontsize=14)
@@ -205,7 +211,7 @@ Along with transparency, **reducing marker size** is an effective approach to re
 The code below uses both high marker transparency and small marker size to improve the viewer's ability to perceive the relationships in the plot. The `s` or `size` argument is used to set the marker size. Finding a satisfactory marker size can take some experimentation for each particular situation.  
 
 ```{python}
-ax = sns.scatterplot('time_decimal', 'log_medSoldPriceSqft', data=housing, alpha=0.1,  s=2)
+ax = sns.scatterplot('time_decimal', 'log_medSoldPriceSqft', data=housing_reduced, alpha=0.1,  s=2)
 _=ax.set_xlabel('Time', fontsize=14)
 _=ax.set_ylabel('Log Median Sale Price', fontsize=14)
 _=ax.set_title('Log median sale prices vs. time', fontsize=14)
@@ -218,7 +224,7 @@ There is still significant over-plotting, but some structure of the data is star
 
 > Transparency and marker size changes are effective only within limits for alleviating over-plotting. Areas with denser markers become easier to see, as fewer marker are obscured. However, as markers become more transparent and smaller, they become harder to see. This trade-off is why these methods are not considered useful for large data sets. 
 
-> **Exercise:** The scatter plots of the auto price data used for examples in Chapter 5 show some over-plotting. For example, over plotting can be seen for gas cars in the 18 to 32 MPG range on the plots of vehicle weight vs. city MPG. Use a combination of marker transparency and size to limit the effect of over plotting. What details can you see, that were obscured before? Try several values for `alpha` and `size`. At extreme values of these arguments, which aspects of the plot become difficult to see?  
+> **Exercise 6-1:** The scatter plots of the auto price data used for examples in Chapter 5 show some over-plotting. For example, over plotting can be seen for gas cars in the 18 to 32 MPG range on the plots of vehicle weight vs. city MPG. Use a combination of marker transparency and size to limit the effect of over plotting. What details can you see, that were obscured before? Try several values for `alpha` and `size`. At extreme values of these arguments, which aspects of the plot become difficult to see?  
 
 ## Hex bin plot
 
@@ -244,7 +250,7 @@ However, the hexbin plot losses some details. You cannot see the highest and low
 
 > **Computational efficiency of hexbin plotting:** Binning data values is a highly scalable process. Binning algorithms can be massively parallelized. As a result, hexbin plots can be created and displayed for massive data sets.     
 
-> **Exercise:** In the previous exercise you created a scatter plot of vehicle weight vs. city MPG using various choices for marker size and transparency. Now, create a hexbin plot for the same variables. Use grid size of 15, 30 and 60. What aspects of the relationship are more apparent on these plots? Which aspects are harder to see? How do the different grid sizes change your perception of the relationship?   
+> **Exercise 6-2:** In the previous exercise you created a scatter plot of vehicle weight vs. city MPG using various choices for marker size and transparency. Now, create a hexbin plot for the same variables. Use grid size of 15, 30 and 60. What aspects of the relationship are more apparent on these plots? Which aspects are harder to see? How do the different grid sizes change your perception of the relationship?   
 
 ## 2-D KDE plot
 
@@ -266,7 +272,7 @@ This display is quite similar to the one created with the hexbin plot, as are th
 
 > **Computational efficiency of 2-d KDE plot:** The KDE plot algorithm is a two-step process. The first step is to compute the density using a 2-dimensional kernel. This step is computationally intensive, but can be parallelized. However, the second step, computing the contours of the density is hard to parallelize, but need only be run over the density estimates, not the raw data values. As a result, the 2-dimensional KDE plot can be scaled, but requires some effort to do so. 
 
-> **Exercise:** In the previous exercise you created a hexbin plot of vehicle weight vs. city MPG using various grid sizes. Now, create a 2-d KDE plot for the same variables. What aspects of the relationship are more apparent on these plots? Which aspects of this relationship are harder to see? 
+> **Exercise 6-3:** In the previous exercise you created a hexbin plot of vehicle weight vs. city MPG using various grid sizes. Now, create a 2-d KDE plot for the same variables. What aspects of the relationship are more apparent on these plots? Which aspects of this relationship are harder to see? 
 
 
 ## Another alternative
@@ -297,7 +303,7 @@ The foregoing demonstrates how a plot constructed for a specific situation can r
 > **Computational efficiency of ordered box plots:** The algorithm used in the example has 2 steps, both of which are fairly efficient. First, the data are binned by values of one or the other variables. As has already been discussed binning is a highly scalable process. Next, to create the box plots, the values in each bin must be sorted. Sorting tends to be less scalable. But the sorting of each bin is independent of the others, allowing parallel processing. The net result is quite a scalable method.  
 
 
-> **Exercise:** To continue to explore the auto data, create the following plot. Create ordered box plots of vehicle weight by city MPG and make. Use 2 and 4 MPG bins. Your code must handle bins with no values in them. How is your perception of the relationship between these variables different from the scatter plot? How does using different bin widths change your perception of the relationship?  
+> **Exercise 6-4:** To continue to explore the auto data, create the following plot. Create ordered box plots of vehicle weight by city MPG and make. Use 2 and 4 MPG bins. Your code must handle bins with no values in them. How is your perception of the relationship between these variables different from the scatter plot? How does using different bin widths change your perception of the relationship?  
 
 ## Data Set For Examples
 
@@ -334,7 +340,7 @@ The code below performes the following operations:
 4. Display a list of the column names and types.   
 
 ```{python}
-bike_share_df = pd.read_csv('data/BikeSharing.csv')
+bike_share_df = pd.read_csv('../data/BikeSharing.csv')
 
 ## Add month column with names
 bike_share_df.loc[:,'month'] = [calendar.month_abbr[i] for i in bike_share_df.loc[:,'mnth']]
@@ -472,7 +478,7 @@ Specifically for the plot displayed, one can make several observations, includin
 3. Serum measurements S1 and S2 are nearly colinear.  
 3. The S4 serum measurement has discrete values. This leads to over-plotting. We will address this problem in the next subsection.  
 
-> **Exercise:** To improve the understandability of the plot a subset of the variables can be used. The variables 'Age', 'S1' and 'S2' appear to have the smallest slopes with respect to the disease progression score. Create a new scatter plot matrix without these variables. Use the Seaborn `regplot` function for both the upper and lower parts of the matrix. This approach displays each relationship in both possible orientation. What additional detail can you see in this plot?   
+> **Exercise 6-5:** To improve the understandability of the plot a subset of the variables can be used. The variables 'Age', 'S1' and 'S2' appear to have the smallest slopes with respect to the disease progression score. Create a new scatter plot matrix without these variables. Use the Seaborn `regplot` function for both the upper and lower parts of the matrix. This approach displays each relationship in both possible orientation. What additional detail can you see in this plot?   
 
 ### Jitter
 
@@ -488,7 +494,7 @@ diabetes.loc[:,'S4_tittered'] = diabetes.loc[:,'S4'].add(nr.uniform(high=0.005, 
 
 A word of caution is required. Too much jitter can distort perception of the relationship shown in the plot. Whereas, too little jitter will not be effective. Some experimentation is typically required to find the amount of jitter that produces a satisfactory display. 
 
-> **Exercise:** Recreate the scatter plot matrix from the previous exercise, but use the tittered `S4` variable. How does using a bit of jitter change your perception of the relationships between `S4` and the other variables? In particular can you tell differences between the two sexes of the patients? 
+> **Exercise 6-6:** Recreate the scatter plot matrix from the previous exercise, but use the tittered `S4` variable. How does using a bit of jitter change your perception of the relationships between `S4` and the other variables? In particular can you tell differences between the two sexes of the patients? 
 
 
 ## Facet plots
@@ -533,11 +539,11 @@ There are a number of points one can notice in this display:
 
 There are still a great many relationships one can explore in this moderately complex data set. The exercises suggest some directions you can take to continue this investigation.    
 
-**Exercise:** There are two classes of users, casual and registered. Presumably, registered users are more regular in their activity, representing people such as commuters. A reasonable question to ask is how the use pattern of these classes of users differ by month and weather condition. To explore this question you can make facet plots using color to display the class of user. To do so, you can use the map method twice on the same grid object. In this case, two sets of scatter plots with different colors for the two classes of users. One pitfall is creating this plot with the correct vertical axis labels. You do not want the name of either class of users to be displayed. To display a meaningful label you must assign a label specifically to each plot on the left side grid using the axis method. You will not want the vertical axis labels on other plots on the grid as this will just add clutter. This code can follow this pattern, `gridObject.axis[i,j].set_ylabel`. What differences can you see between the use patterns of the two classes of users.         
+**Exercise 6-6:** There are two classes of users, casual and registered. Presumably, registered users are more regular in their activity, representing people such as commuters. A reasonable question to ask is how the use pattern of these classes of users differ by month and weather condition. To explore this question you can make facet plots using color to display the class of user. To do so, you can use the map method twice on the same grid object. In this case, two sets of scatter plots with different colors for the two classes of users. One pitfall is creating this plot with the correct vertical axis labels. You do not want the name of either class of users to be displayed. To display a meaningful label you must assign a label specifically to each plot on the left side grid using the axis method. You will not want the vertical axis labels on other plots on the grid as this will just add clutter. This code can follow this pattern, `gridObject.axis[i,j].set_ylabel`. What differences can you see between the use patterns of the two classes of users.         
 
-**Exercise:** As was discussed, most any plot type, including user defined plot functions. Previously, a scatter plot of bike users vs. hour of the day by weather condition was created. As an alternative a time ordered set of box plots can be used on the same facet grid. Create this plot. Does this plot show you anything different when compared to the scatter plot?  
+**Exercise 6-7:** As was discussed, most any plot type, including user defined plot functions. Previously, a scatter plot of bike users vs. hour of the day by weather condition was created. As an alternative a time ordered set of box plots can be used on the same facet grid. Create this plot. Does this plot show you anything different when compared to the scatter plot?  
 
-**Exercise:** Temperature and wind speed are both numeric variables. You might be interested in how bike rentals change with these variables. One possible approach is to put these values into 3 equal width bins to create categorical variables. Then create the possible products of the three levels of each categorical variable. The result is a new variable in the data frame with 9 new categories. Be sure to give each category a meaningful name. Create a facet grid with season on the horizontal axis and the 9 levels of the new categorical variable on the vertical axis. Map scatter plots of the number of registered and casual vs. the hour of the day on this facet grid. Use different colors for each class of user. What does this tell you about how usage pasterns change with these conditions and the season?          
+**Exercise 6-8:** Temperature and wind speed are both numeric variables. You might be interested in how bike rentals change with these variables. One possible approach is to put these values into 3 equal width bins to create categorical variables. Then create the possible products of the three levels of each categorical variable. The result is a new variable in the data frame with 9 new categories. Be sure to give each category a meaningful name. Create a facet grid with season on the horizontal axis and the 9 levels of the new categorical variable on the vertical axis. Map scatter plots of the number of registered and casual vs. the hour of the day on this facet grid. Use different colors for each class of user. What does this tell you about how usage pasterns change with these conditions and the season?          
 
 
 
@@ -651,12 +657,12 @@ plot_price_by_entity(big_decrease_states, decrease_states)
 ```
 
 
-> **Exercise:** New Jersey is one of the states with the largest rate of decrease in price (most negative slope). You can use cognostics to find more details of relationships in a data set. In this case, you can find the 8 New Jersey counties with the fastest rates of decline on price. Find these counties and create the plots. What can you see in these charts? Are the price changes constant or periodic?      
+> **Exercise 6-9:** New Jersey is one of the states with the largest rate of decrease in price (most negative slope). You can use cognostics to find more details of relationships in a data set. In this case, you can find the 8 New Jersey counties with the fastest rates of decline on price. Find these counties and create the plots. What can you see in these charts? Are the price changes constant or periodic?      
 
-> **Exercise:** Another interesting query is to find the counties with the greatest decrease in median prices, irrespective of state. There are over 2000 counties in the United States. Finding the answer to this question manually is a prohibitive amount of work. To answer this question, compute a cognostic of the average relative change of the median price by county. Then display the scatter plot of the 8 US counties with the greatest decrease. What does this result tell you about these locations? Can you see potential data problems in these results? 
+> **Exercise 6-10:** Another interesting query is to find the counties with the greatest decrease in median prices, irrespective of state. There are over 2000 counties in the United States. Finding the answer to this question manually is a prohibitive amount of work. To answer this question, compute a cognostic of the average relative change of the median price by county. Then display the scatter plot of the 8 US counties with the greatest decrease. What does this result tell you about these locations? Can you see potential data problems in these results? 
 
 
-#### Copyright 2020, Stephen F. Elston. All rights reserved.       
+#### Copyright 2020, 2021, Stephen F. Elston. All rights reserved.       
 
-.
+## Bibliography
 

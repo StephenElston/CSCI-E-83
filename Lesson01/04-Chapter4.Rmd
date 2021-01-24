@@ -248,4 +248,9 @@ In this chapter we have discussed the use and misuse of correlation. Specificall
 
 ##### Copyright 2020, Stephen F Elston. All rights reserved.   
 
+
+## Bibliography        
+
+
+
 .

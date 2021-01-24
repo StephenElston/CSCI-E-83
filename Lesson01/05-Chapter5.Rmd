@@ -2,7 +2,7 @@
 title: "Chapter 5 Improving perception; Best practices for visualization"
 author: "Steve Elston"
 date: "April 14, 2020"   
-bibliography: bibliography.bib   
+bibliography: ../bibliography.bib   
 output: pdf_document  
 ---
 
@@ -57,9 +57,6 @@ For the running example in this chapter we will work with a data set containing 
 
 
 ```{python}
-#import sys
-#sys.path.append('./source/computationalStatisticsBook')
-import computationalStatisticsBook as csb
 import pandas as pd
 import numpy as np
 import statsmodels.api as sm
@@ -69,7 +66,7 @@ from math import log, sqrt, sin
 import matplotlib.pyplot as plt
 #%matplotlib inline
 
-auto_price = pd.read_csv('data//AutoPricesClean.csv')
+auto_price = pd.read_csv('../data//AutoPricesClean.csv')
 ```
 
 ## Aspect Ratio and Banking
@@ -125,7 +122,7 @@ plt.show()
 You can see that the banking angle in the plot is now considerably lower than before. The banking angle for most of each cycle is much closer to $45^{\circ}$. The lower banking angle brings a new, and important, property of the time series to light. The rise of the cycle is generally much faster than the drop in activity. You can see this in the asymmetry of most of the cycles.
 
 
-> **Exercise:** To better understand the effects of changing aspect ratio and therefore banking angle, try the following. Create 3 scatter plots using the Seaborn `lmplot` function with the following properties: 
+> **Exercise 5-1:** To better understand the effects of changing aspect ratio and therefore banking angle, try the following. Create 3 scatter plots using the Seaborn `lmplot` function with the following properties: 
 > 1. Place price on the vertical axis and city MPG on the horizontal axis.    
 > 2. Use fuel type for the `hue` argument. Include a second order polynomial curve.   
 > 3. The aspect ratio of these three plots should be a) 1:1, b) 1:4, c) 4:1.   
@@ -133,7 +130,7 @@ You can see that the banking angle in the plot is now considerably lower than be
 > 5. Set the `truncate` argument to true.   
 > Reference to the Seaborn documentation will be helpful. Notice that the relationship between the price and city MPG does not follow a straight line for either fuel type for the 1:1 aspect ratio. How does increasing or decreasing the aspect ratio change your perception of these relationships?    
 
-> **Exercise:** Poor human perception of angle was mentioned in the introduction to this chapter. To demonstrate this create three line plots with the following end points using the same set of axes: a) (0,0) and (10,8), b) (0,5) and (10,14), and c) (0,10) and (10,20). Make sure the aspect ratio of the plots are approximately 1:1. Notice these plots all have the same slopes. But, how well can you perceive these different slopes?   
+> **Exercise 5-2:** Poor human perception of angle was mentioned in the introduction to this chapter. To demonstrate this create three line plots with the following end points using the same set of axes: a) (0,0) and (10,8), b) (0,5) and (10,14), and c) (0,10) and (10,20). Make sure the aspect ratio of the plots are approximately 1:1. Notice these plots all have the same slopes. But, how well can you perceive these different slopes?   
 
 
 ## Marker Position and Scatter Plots
@@ -155,7 +152,7 @@ plt.show()
 
 In this plot you can see very small differences in the vehicle weight for each value of city MPG. These values are quite small in some cases, yet you can easily see the differences. Notice that city MPG is quantized in 1 MPG units. 
 
-> **Exercise:** You can demonstrate the perceptual power of position by creating the following plot. Create a data frame with a series of x,y pairs of points, running from (0.0,0.0) to (4.0,4.0) by increments of 1.0. In the same data frame create a set of x,y pairs with the same values plus a small offset in the x and y. The offsets start at 0.00001 and end at 0.1. As an example, the first set of two x,y pairs will have values, (0.0,0.0) and (0.00001,0.00001), and the last set of x,y pairs have values, (4.0,4.0) and (4.1,4.1). Make a scatter plot of these x,y values in the data frame. Make sure the size of the plot is large enough to clearly see as many differences as possible. Use the `figsize` argument to set the plot area. Which of these differences can you see? What does this tell you about perception of small differences in position on a plot?    
+> **Exercise: 5-3** You can demonstrate the perceptual power of position by creating the following plot. Create a data frame with a series of x,y pairs of points, running from (0.0,0.0) to (4.0,4.0) by increments of 1.0. In the same data frame create a set of x,y pairs with the same values plus a small offset in the x and y. The offsets start at 0.00001 and end at 0.1. As an example, the first set of two x,y pairs will have values, (0.0,0.0) and (0.00001,0.00001), and the last set of x,y pairs have values, (4.0,4.0) and (4.1,4.1). Make a scatter plot of these x,y values in the data frame. Make sure the size of the plot is large enough to clearly see as many differences as possible. Use the `figsize` argument to set the plot area. Which of these differences can you see? What does this tell you about perception of small differences in position on a plot?    
 
 ## Bar Length and Ordered Bar plots
 
@@ -209,7 +206,7 @@ It is worth considering commonly used alternatives to a simple bar plot a stacke
 
 Is there a good alternative to stacked bar charts and pie charts? Yes. In the previous chapter we created a bar plot of one variable grouped by the `hue` argument variable. Such a plot is much easier to interpret that a stacked bar chart in general.   
 
-> **Exercise:** To demonstrate the interpretation problems with pie charts, create a pie chart. As of this writing, there is no pie chart in Seaborn. Therefore you can use the pie chart method in Pandas, [`dataframe.plot.pie`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.pie.html). Is it possible to interpret the differences in the numbers of models for each manufacturer? Why is this?    
+> **Exercise 5-4:** To demonstrate the interpretation problems with pie charts, create a pie chart. As of this writing, there is no pie chart in Seaborn. Therefore you can use the pie chart method in Pandas, [`dataframe.plot.pie`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.plot.pie.html). Is it possible to interpret the differences in the numbers of models for each manufacturer? Why is this?    
 
 #  Aesthetics with Moderate Perceptive Power
 
@@ -296,7 +293,7 @@ plt.show()
 
 Notice that the engine size generally increases with vehicle weight. As with price, the trend is clear from the changing marker sizes. However, perception of specific numeric values of engine size is not possible. 
 
-> **Exercise:** Consider how many dimensions of the auto data are projected onto the 2-dimensional surface of this plot. How can you best describe the relationship between all of these variables?   
+> **Exercise 5-5:** Consider how many dimensions of the auto data are projected onto the 2-dimensional surface of this plot. How can you best describe the relationship between all of these variables?   
 
 # Aesthetics with Limited Perceptive Power
 
@@ -365,9 +362,9 @@ plt.show()
 
 We can easily see the distinctive relationships for both gas and diesel fueled cars. Using a few categorical colors from a well chosen palette can be quite effective. 
 
-> **Exercise:** What happens if a qualitative color palette is used with a large number of categories. To find out, create a scatter plot with city MPG on the horizontal axis and price on the vertical axis. Set the `hue` parameter to the make variable. Is it possible to interpret the colors by make? What does this tell you about the limitations of using a larger number of colors from a qualitative palette? 
+> **Exercise 5-6:** What happens if a qualitative color palette is used with a large number of categories. To find out, create a scatter plot with city MPG on the horizontal axis and price on the vertical axis. Set the `hue` parameter to the make variable. Is it possible to interpret the colors by make? What does this tell you about the limitations of using a larger number of colors from a qualitative palette? 
 
-> **Exercise:** What are a number of alternatives to the hard to understand plot you created in the previous exercise>? The idea of ordered box plots can be applied to many data sets, including the automotive data. Create an ordered set of box plots of city MPG on the vertical axis and make on the horrizontal axis. Order the makes by the median MPG for each make. Additionally, create an ordered set of box plots of price on the vertical asis and make on the horrizontal axis. Order the makes by the median price for each make. What do these two box plots show you that was difficult to perceive in the scatter plot? What information is lost when using ordered box plots?   
+> **Exercise 5-7:** What are a number of alternatives to the hard to understand plot you created in the previous exercise>? The idea of ordered box plots can be applied to many data sets, including the automotive data. Create an ordered set of box plots of city MPG on the vertical axis and make on the horrizontal axis. Order the makes by the median MPG for each make. Additionally, create an ordered set of box plots of price on the vertical asis and make on the horrizontal axis. Order the makes by the median price for each make. What do these two box plots show you that was difficult to perceive in the scatter plot? What information is lost when using ordered box plots?   
 
 ## Marker Shape
 
@@ -395,9 +392,9 @@ The resulting plot above takes a bit of study to see any useful relationship. Se
 
 It is clear that without the color coding of the fuel type these interpretations could not be found. This illustrates a key aspect of visualization for complex data. Very often **multiple plot attributes are needed to understand relationships**. 
 
-> **Exercise:** Is it possible to project 5-dimensions of the auto data set onto the 2-dimensional plot surface? Create a scatter plot with price on the vertical axis and vehicle weight on the horizontal axis. Use these aesthetics, a) vehicle curb weight as marker size, b) aspiration as marker color (hue), and c) fuel type as marker shape. You will likely need to try different marker size ranges. What can you tell about the relationships between these variables from this visualization.       
+> **Exercise 5-8:** Is it possible to project 5-dimensions of the auto data set onto the 2-dimensional plot surface? Create a scatter plot with price on the vertical axis and vehicle weight on the horizontal axis. Use these aesthetics, a) vehicle curb weight as marker size, b) aspiration as marker color (hue), and c) fuel type as marker shape. You will likely need to try different marker size ranges. What can you tell about the relationships between these variables from this visualization.       
 
-> **Exercise:** What happens when there are a large number of symbol shapes? To find out, create a scatter plot with city MPG on the horizontal axis, price on the vertical axis, the `hue` argument set to fuel type. Set the `style` argument to the engine type. Can you find any useful pattern in the resulting plot? What does this tell you about using a large number of marker shapes? 
+> **Exercise 5-9:** What happens when there are a large number of symbol shapes? To find out, create a scatter plot with city MPG on the horizontal axis, price on the vertical axis, the `hue` argument set to fuel type. Set the `style` argument to the engine type. Can you find any useful pattern in the resulting plot? What does this tell you about using a large number of marker shapes? 
 
 
 # Summary
@@ -407,7 +404,11 @@ In this chapter we explored the following key points:
 - All plot aesthetics have limitations which must be understood to use them effectively.     
 - The effectiveness of a plot aesthetic varies with the type and the application.    
 
-#### Copyright 2020, Stephen F Elston. All rights reserved.
+#### Copyright 2020, 2021, Stephen F Elston. All rights reserved.       
+
+## Bibliography     
+
+
 
 
 .
