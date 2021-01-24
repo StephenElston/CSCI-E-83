@@ -2,7 +2,7 @@
 title: "Chapter 2 Numeric and Data Tools"
 author: "Steve Elston"
 date: "March 27, 2020"
-bibliography: bibliography.bib
+bibliography: ../bibliography.bib
 output: pdf_document
 ---
 
@@ -143,7 +143,7 @@ print('A + B = \n{}'.format(A + B))
 ```
 
 
-> **Exercise:** In the foregoing code example two conformal matrices are summed element-wise. Now, you will create conformable matrix with all the elements with a value of 2.0. Then, multiply this matrix by the matrix B. Ensure the result is correct? 
+> **Exercise 2-1:** In the foregoing code example two conformal matrices are summed element-wise. Now, you will create conformable matrix with all the elements with a value of 2.0. Then, multiply this matrix by the matrix B. Ensure the result is correct? 
 
 ## The dot product, a fundamental array operation
 
@@ -176,7 +176,7 @@ Notice that the dot product of orthogonal (perpendicular) vectors is $0$. In thi
 These concepts are illustrated in the figure below. The dot product is the projection of one vector on another. The angle between the two vectors, $\theta$, determines the projection. You can see that if $\theta = \frac{\pi}{2}$ the projection will be 0. If $\theta = 0$ the projection is maximized.  
 
 ```{r DotProduct, out.width = '50%', fig.cap='Slicing an 8 x 6 NumPy array', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/DotProduct.png"))
+knitr::include_graphics(rep("../images/DotProduct.png"))
 ```
 
 
@@ -317,7 +317,7 @@ Now, the product is a $4 x 4$ matrix.
 > **Programming Note:** In the foregoing you have seen how matrix products are built from dot products. If the dot product can be computed efficiently, then so to can matrix products be computed efficiently. Not only that, but each of the dot products required for these operations can be computed in parallel, as there is no dependency of one on another. These properties are at the basis of many of today's high performance computing environments used for machine learning and AI.   
 
 
-> **Exercise:** Perhaps, you are curious about what happens if you try to multiply non-conformable arrays. To find out, multiply the matrix A by the matrix B, but without the transpose. 
+> **Exercise 2-2:** Perhaps, you are curious about what happens if you try to multiply non-conformable arrays. To find out, multiply the matrix A by the matrix B, but without the transpose. 
 
 ## The identity matrix and the inverse
 
@@ -401,7 +401,7 @@ np.dot(inv_C,C)
 
 The result is an identity matrix, as it should be. 
 
-> **Exercise:** The identity matrix has a special property, that it is its own inverse. To demonstate this property, create a $4x4$ identity matrix and take its inverse. Is the result the same? 
+> **Exercise 2-3:** The identity matrix has a special property, that it is its own inverse. To demonstate this property, create a $4x4$ identity matrix and take its inverse. Is the result the same? 
 
 
 ## Slicing NumPy arrays
@@ -421,7 +421,7 @@ $row\_start =$ the index of the first column not in the slice.
 The figure below shows an example of slicing a 2-dimensional array, or matrix. The matrix has dimension $8 x 6$, and a slice of dimension $4 x 3$ is created. Notice the syntax of the row and column slices. 
 
 ```{r NumpySlice, out.width = '70%', fig.cap='Slicing an 8 x 6 NumPy array', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/NumpySlice.png"))
+knitr::include_graphics(rep("../images/NumpySlice.png"))
 ```
 
 
@@ -469,7 +469,7 @@ B[[True,False,True,False], :]
 
 The results are the same for both of the above cases.   
 
-> **Exercise:** In the foregoing discussion of the matrix inverse, we did not address an important and common problem. Simply put, matricies with colinear or parallel columns are said to be **singular**. The inverse of a singular matrix does not exist. For now, you will determine if the columns of a matrix are nearly colinear. In compuational linear algebra, nearly colinear columns will cause matrix inverse algorithms to fail. Dealing with this problem is a focus of Part 4 of this book. You will now complete the code below to do the following: 
+> **Exercise 2-4:** In the foregoing discussion of the matrix inverse, we did not address an important and common problem. Simply put, matricies with colinear or parallel columns are said to be **singular**. The inverse of a singular matrix does not exist. For now, you will determine if the columns of a matrix are nearly colinear. In compuational linear algebra, nearly colinear columns will cause matrix inverse algorithms to fail. Dealing with this problem is a focus of Part 4 of this book. You will now complete the code below to do the following: 
 > a. First you will construct a nearly sigular $4 x 4$ matrix with sequential values 1 to 16 running row-wise. 
 > b. Next, using the indices createded by the Itertools [`combinations`](https://docs.python.org/2/library/itertools.html#itertools.combinations) function you will slice the array column-wise, for every possible pair of columns.
 > c. Compute the cosign of the angle between each of the column-wise slices. 
@@ -502,7 +502,7 @@ Pandas is an extension of NumPy's arrays. Pandas provides significant capabiliti
 The basic Pandas data structure is the data frame. A data frame is a tabular data structure with a number of special attributes. The most important of these attributes are the row indices, column indices and data types of the columns. A schematic view of a Pandas data frame with these important attributes is illustrated in the figure below.   
 
 ```{r PandasDataFrame, out.width = '70%', fig.cap='Sematic view of a Pandas data frame', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/PandasDataFrame.png"))
+knitr::include_graphics(rep("../images/PandasDataFrame.png"))
 ```
 
 As you can see from the above figure, the basic Pandas data frame is an $n x m$ table. The data are arranged in $m$ columns. Each column has an index, which can be a column name as a string, and a data type. Each column can have a different data type, but each column can only have one type. There is also a set of row $n$ indices. Row indices are typically numeric, in the range $\{0,n-1\}$, but can be names in the form of strings.   
@@ -620,7 +620,7 @@ a_series
 
 A noticeable difference for this series is that there is no column name attribute. Since a Pandas series has only one column, there is no need for this attribute.  
 
-> **Exercise:** A limited number of mathematical operatons can be performed directly on numeric columns in a Pandas data frame. To use the richer capabilities of NumPy the columns of a of a Pandas data frame can be coerced to a Numpy array with the Pandas [`as_matrix`](https://pandas.pydata.org/pandas-docs/version/0.23.4/generated/pandas.DataFrame.as_matrix.html) method. To exercise this capability, do the following:
+> **Exercise 2-5:** A limited number of mathematical operatons can be performed directly on numeric columns in a Pandas data frame. To use the richer capabilities of NumPy the columns of a of a Pandas data frame can be coerced to a Numpy array with the Pandas [`as_matrix`](https://pandas.pydata.org/pandas-docs/version/0.23.4/generated/pandas.DataFrame.as_matrix.html) method. To exercise this capability, do the following:
 > a. Coerce the columns named `first_col` and `second_col` into a NumPy array. 
 > b. Take the element-wise square toot of the resulting array using the Numpy [`sqrt`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.sqrt.html) function. 
 > c. Assign the resulting Numpy array values back to the columns in the Data Frame.

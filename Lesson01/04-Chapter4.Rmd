@@ -2,7 +2,7 @@
 title: "Chapter 4: Correlation is Not Causation!"
 author: "Steve Elston"
 date: "March 27, 2020"
-bibliography: bibliography.bib
+bibliography: ../bibliography.bib
 output: pdf_document
 ---
 
@@ -67,7 +67,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 
-Nobel_chocolate = pd.read_csv('data/nobel-chocolate.csv', thousands=',')
+Nobel_chocolate = pd.read_csv('../data/nobel-chocolate.csv', thousands=',')
 print(Nobel_chocolate)
 ```
 
@@ -107,7 +107,7 @@ Our example is based on observation data. Observational data are collected by ob
 Continuing with our example, could there be other variables which might explain the number of Nobel laureates per ten million a country might produces. The answer is, quite likely yes. There are several candidates, such as GDP per person or education levels in a country. The code below loads a data set Gross Domestic Product (GDP) for the 18 countries taken from the [World Bank Open Data](https://data.worldbank.org/).  
 
 ```{python}
-GDP = pd.read_csv('data/GDP_Country.csv')
+GDP = pd.read_csv('../data/GDP_Country.csv')
 print(GDP)
 ```
 
@@ -128,11 +128,11 @@ Nobel_chocolate.loc[:, ['Laureates10_million', 'Chocolate', 'GDP_person_thousand
 
 The high correlation of chocolate consumption and the Nobel laureates per ten million people has already been noted. The correlation between the GDP per person and Nobel laureates is also fairly high. Additionally, the correlation between chocolate consumption and GDP per person is high as well. Is it possible that people in countries with higher GDP can afford to eat more chocolate as well as more likely to win Nobel Prizes?    
 
-> **Exercise:** There are three variables of interest, Laureates10_million, Chocolate, and GDP_person_thousands. Use the Pandas `describe` method to compute summary statistics for these variables. Based on these statistics, which of these variables shows a high degree of skewness? What bias in the data does this condition highlight?    
+> **Exercise 4-1:** There are three variables of interest, Laureates10_million, Chocolate, and GDP_person_thousands. Use the Pandas `describe` method to compute summary statistics for these variables. Based on these statistics, which of these variables shows a high degree of skewness? What bias in the data does this condition highlight?    
 
-> **Exercise:** To confirm your conclusion from the previous exercise,k create distribution plots of each of the three variables. Do these plots agree with your conclusions from the previous exercises? 
+> **Exercise 4-2:** To confirm your conclusion from the previous exercise,k create distribution plots of each of the three variables. Do these plots agree with your conclusions from the previous exercises? 
 
-> **Exercise:** It makes more sense that GDP per person is a significant factor in explaining why people in a country win Nobel prizes. But, before drawing any conclusions you should examine the relationships visually. To do so, make two scatter plots:  a) Nobel Prizes per ten million peoples vs. GDP per ten thousand people. b) Chocolate consumption per person  vs. GDP per ten thousand people. Is it possible that people in countries with higher GDP per person are more likely to both eat chocolate and to engage in intellectual pursuits?         
+> **Exercise 4-3:** It makes more sense that GDP per person is a significant factor in explaining why people in a country win Nobel prizes. But, before drawing any conclusions you should examine the relationships visually. To do so, make two scatter plots:  a) Nobel Prizes per ten million peoples vs. GDP per ten thousand people. b) Chocolate consumption per person  vs. GDP per ten thousand people. Is it possible that people in countries with higher GDP per person are more likely to both eat chocolate and to engage in intellectual pursuits?         
 
 # Correlation with Kendall's tau
 
@@ -230,11 +230,11 @@ plt.title('Log Nobel Prizes vs. Chocolate Consumption\nwith polynomial fit, no o
 
 The relationship is now very close to a straight line. After several iterations of data exploration we found the log transformation was successful. None the less, this analysis does not imply a causal relationship!     
 
-> **Exercise:** As has been stated several times, EDA is an iterative process. In the forgoing example, the number of Nobel laureates per 10 million was log transformed. Is it possible that transforming the chocolate consumption variable is a better idea? To test this idea, create a chart with the log of per person chocolate consumption on the horizontal axis and Nobel laureates per 10 million on the vertical axis. Include a polynomial curve. Does this transformation success in creating a straight line relationship? How does this fit compare to the plot of log of Nobel laureates vs. personal chocolate consumption?     
+> **Exercise 4-4:** As has been stated several times, EDA is an iterative process. In the forgoing example, the number of Nobel laureates per 10 million was log transformed. Is it possible that transforming the chocolate consumption variable is a better idea? To test this idea, create a chart with the log of per person chocolate consumption on the horizontal axis and Nobel laureates per 10 million on the vertical axis. Include a polynomial curve. Does this transformation success in creating a straight line relationship? How does this fit compare to the plot of log of Nobel laureates vs. personal chocolate consumption?     
 
-> **Exercise:** This exercise continues the iterative process of exploring the data set. In a previous exercise you created a chart of Nobel laureates vs GDP. It may be the case that transforming GDP gives a fit closer to a straight line. To find out create several plots including a second order regression line: a) GDP per person on the horrizontal axis vs. log Nobel Prizes on the vertical axis, b) log GDP per person on the horrizontal axis vs. Nobel Prizes on the vertical axis, and c) log GDP per person on the horrizonatal axis vs. log Nobel Prizes on the vertical axis. Which of these plots appears to give the straightest line relationship.
+> **Exercise 4-5:** This exercise continues the iterative process of exploring the data set. In a previous exercise you created a chart of Nobel laureates vs GDP. It may be the case that transforming GDP gives a fit closer to a straight line. To find out create several plots including a second order regression line: a) GDP per person on the horrizontal axis vs. log Nobel Prizes on the vertical axis, b) log GDP per person on the horrizontal axis vs. Nobel Prizes on the vertical axis, and c) log GDP per person on the horrizonatal axis vs. log Nobel Prizes on the vertical axis. Which of these plots appears to give the straightest line relationship.
 
-> **Exercise:** Now, you will repeat the previous exercise with the outlier (the last row of the data frame) removed. Which relationship appears to give the straightest line? How does this result compare to those obtained with the outlier included? 
+> **Exercise 4-6:** Now, you will repeat the previous exercise with the outlier (the last row of the data frame) removed. Which relationship appears to give the straightest line? How does this result compare to those obtained with the outlier included? 
 
 
 # Summary    

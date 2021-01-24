@@ -2,7 +2,7 @@
 title: "Chapter 3: Getting to know your data"
 author: "Steve Elston"
 date: "March 27, 2020"
-bibliography: bibliography.bib
+bibliography: ../bibliography.bib
 output: pdf_document
 ---
 
@@ -53,7 +53,7 @@ Graphics played a significant role in 19th century statistics. Before many of no
 Florence Nightingale was a 19th Century innovator in medical data analysis [@Nightingale]. @McDonald_2020 describes her work with the noted medical statistician Dr William Farr. Nightingale and Farr documented the effect of implementing the recommendations of the Royal Sanitary Commission on reducing deaths of British soldiers during the Crimean War (1855-1856). Nightingale wrote several reports on the subject, the last of which included the area chart shown below. You can see the dramatic reduction in deaths after March 1855.   
 
 ```{r Nightingale, out.width = '100%', fig.cap='Rose diagram of British Army deaths by cause, published by Florance Nightinglale in 1858', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/Nightingale.jpeg"))
+knitr::include_graphics(rep("../images/Nightingale.jpeg"))
 ```
 
 Nightingale's publications and public lectures where quite influential. She captured the imagination of the British public and triggered action by the political establishment.  
@@ -61,7 +61,7 @@ Nightingale's publications and public lectures where quite influential. She capt
 Another innovator in 19th Century medical data analysis was John Snow [@Snow]. Snow investigated the 1854 outbreak of cholera in London. He created the map shown below to identify water from a specific pump as the source of the infections. Unfortunately, there was only a minimal official response to Snow's work during his lifetime.    
 
 ```{r SnowMap, out.width = '90%', fig.cap='Map of the London Cholera outbreak compiled by John Snow, 1854', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/SnowMap.jpg"))
+knitr::include_graphics(rep("../images/SnowMap.jpg"))
 ```
 
 @Tufte has documented many other examples of innovative 19th Century data visualization. 
@@ -112,7 +112,7 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 
 ## Load the .csv file
-auto_price = pd.read_csv('data/Automobile price data _Raw_.csv')
+auto_price = pd.read_csv('../data/Automobile price data _Raw_.csv')
 
 ## Add column names 
 auto_price.columns = ['symboling', 'normalized_losses', 'make', 'fuel_type', 'aspiration',
@@ -215,7 +215,7 @@ The **quartiles** are computed by dividing the data samples into 4 equal parts. 
 The concepts of the median and quartiles is illustrated in the figure. The black dots on the horizontal axis represent the sample values.      
 
 ```{r qunatiles, out.width = '60%', fig.cap='Quartiles and median of a sample', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/quartiles.png"))
+knitr::include_graphics(rep("../images/quartiles.png"))
 ```
 
 In the figure you can see that the average of the two values closest to the middle are used to compute the median.    
@@ -304,7 +304,7 @@ auto_price[['counts', 'fuel_type', 'aspiration', 'make']].groupby(['make', 'fuel
 Notice that with three levels the table is quite a bit harder to understand. In general, as the number of grouping variables increases, frequency tables become progressively more difficult to understand, and the value of this method decreases.      
 
 
-> **Exercise:** Create the code to create a frequency table of body style and then number of doors. What does this table tell you about which types of cars are the most and least popular?  
+> **Exercise 3-1:** Create the code to create a frequency table of body style and then number of doors. What does this table tell you about which types of cars are the most and least popular?  
 
 
 # Introduction to Visual EDA   
@@ -433,7 +433,7 @@ The distribution of auto price is far from symmetric. There are far more low pri
 The concept of a Gaussian weighting kernel is shown in the figure below. The density for each point in the interval is computed from a kernel weighted average of the sample values. The kernel moves over the interval to find the complete density estimate. The large dots on the horizontal axis represent the samples.         
 
 ```{r KDE, out.width = '70%', fig.cap='KDE weights on a data sample', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/KDE.png"))
+knitr::include_graphics(rep("../images/KDE.png"))
 ```
 
 The Seaborn `distplot` function can also be used to display a KDE plot. An example is shown below. The `rug` argument is set to `True` so you can see the density of the data values for yourself. 
@@ -474,7 +474,7 @@ A well established method for visualizing a distributions of a variable grouped 
 
 
 ```{r BoxPlot, out.width = '70%', fig.cap='Interpretation of a box plot', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/BoxPlot.png"))
+knitr::include_graphics(rep("../images/BoxPlot.png"))
 ```
 
 
@@ -514,7 +514,7 @@ The violin plot shows more detail of the density of the subsets of the auto pric
 2. The distributions of prices of hardtops and convertibles is spread over a wide range.  
 3. One oddity, the KDE curve shows density for prices of less than zero. Using the `cut` argument to the `violinplot` function can reduce this effect. 
 
-> **Exercise:** Can we show distributions of a numeric variable grouped by more than one categorical variable? Yes, another variable can be projected by using color. With Seaborn, this task is accomplished using the `hue` argument. Create a new version of the foregoing violin plot, with the `hue` argument set to the fuel type. What additional information does this change give you about the price of cars? Have aspects of the original violin plot become harder to interpret in this new view?
+> **Exercise 3-2:** Can we show distributions of a numeric variable grouped by more than one categorical variable? Yes, another variable can be projected by using color. With Seaborn, this task is accomplished using the `hue` argument. Create a new version of the foregoing violin plot, with the `hue` argument set to the fuel type. What additional information does this change give you about the price of cars? Have aspects of the original violin plot become harder to interpret in this new view?
 
 If a violin plot shows more detail of a distribution, where would a box plot be useful? For situations where there is a small number of groups of categories, a violin plot is usually preferred. However, there are many situations with hundreds or thousands of groups where the simplicity of the box plot is preferred. In these situations the detail in violin plots is lost in any event.
 
@@ -606,5 +606,8 @@ In this chapter we have discussed some basic ideas of exploratory data analysis 
 It is clear there is more one can learn about the data sets discussed here. As is usually the case, the initial EDA has only scratched the surface of the important relationships. 
 
 ##### Copyright 2020, Stephen F Elston. All rights reserved.   
+
+## Bibliography     
+
 
 .
