@@ -28,7 +28,7 @@ $$P(A|B)$$
 
 
 ```{r ConditionalSets, out.width = '100%', fig.cap='Example of conditional probability of discrete events; credit, Wikipedia commons', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/Prob1.png"))
+knitr::include_graphics(rep("../images/Prob1.png"))
 ```
 
 Start by examining Figure 1, which shows a number of discrete events. The overall **sample space** is the space of all possible events in the set $S$. This space is divided into several **subspaces** or **subsets**, $A$, $B$ and $C$. The subsets $A$ and $B$ are shown as circles, with an **intersection** where the two sets overlap. Events in this intersection occur in both $A$ and $B$. 
@@ -66,13 +66,13 @@ $$P(A \cap B)  = P(A|B)P(B)$$
 2. **Union:** The probability of the union of two sets of events is the sum of the probabilities of the sets less the intersection between the sets. Examining Figure 1, you can see that the last term is required to not count the intersection twice. We can express this idea as:   
 $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
 
-> **Exercise:** Continusing with our example, apply the above equation to compute the probability of the union of $A$ and $B$. 
+> **Exercise 8-1:** Continusing with our example, apply the above equation to compute the probability of the union of $A$ and $B$. 
 
 
 3. **Negation:** The negation operator, $\neg$, can be applied to sets of events. For example, we can compute the probability of an event being in the subset $A$ but not in the subset $B$ as:
 $$P(A\ and\ \neg B) = P(A) - P(B \cap A)$$
 
-> **Exercise:** Continuing with the running example, compute $P(A\ and\ \neg B)$ using the above relationship.
+> **Exercise 8-2:** Continuing with the running example, compute $P(A\ and\ \neg B)$ using the above relationship.
 
 We can use the combination of basic logical set operations and negation to factor more complex relationships. For example, we can apply **[De Morgan's Laws](https://en.wikipedia.org/wiki/De_Morgan%27s_laws)**:
 
@@ -81,7 +81,7 @@ P(\neg (A \cup B)) &= P(\neg A\ \cap \neg B)\\
 P(\neg (A \cap B)) &= P(\neg A\ \cup \neg B)
 \end{align}
 
-> **Exercise:** Apply De Morgan's Laws to compute $P(\neg (A \cup B)$ and $P(\neg (A \cap B))$ for the running example.
+> **Exercise 8-3:** Apply De Morgan's Laws to compute $P(\neg (A \cup B)$ and $P(\neg (A \cap B))$ for the running example.
 
 ### Independence and mutual exclusivity
 
@@ -100,7 +100,7 @@ We can also note that:
 $$P(A|B) = P(A) \Leftrightarrow P(B|A) = P(B) \iff A \cap B = \emptyset$$
 
 
-> **Exercise:** An example helps to make this concept less abstract. Say you have a fair coin and a fair 6-sided dice (numbered 1-6). What is the probability that you will flip the coin and get a head, and roll the dice and get a 6. You should ask yourself if these events have any dependency on each other. Given your answer compute the probability of these two events both ocuring.   
+> **Exercise 8-4:** An example helps to make this concept less abstract. Say you have a fair coin and a fair 6-sided dice (numbered 1-6). What is the probability that you will flip the coin and get a head, and roll the dice and get a 6. You should ask yourself if these events have any dependency on each other. Given your answer compute the probability of these two events both ocuring.   
 
 
 But what if the intersection between the events is an empty set, $A \cap B = \emptyset$. In this case we say the events in A are **mutually exclusive** of events in B. In other words, events cannot occur in both the sets $A$ and $B$. As a result we can write the following:
@@ -116,7 +116,7 @@ But, just because A is mutually exclusive of B, does not mean B is mutually excl
 
 $$P(A|B) = P(A) \nLeftrightarrow P(B|A) = P(B)$$
 
-> **Exercise:** Consider an example of drawing a playing card randomly from a deck. The deck of cards has equal numbers of suites $= \{hearts, spades, clubs, diamonds \}$. A card can only have one suite. Use the relationships given above to compute the probability that the card you draw is a heart?
+> **Exercise 8-5:** Consider an example of drawing a playing card randomly from a deck. The deck of cards has equal numbers of suites $= \{hearts, spades, clubs, diamonds \}$. A card can only have one suite. Use the relationships given above to compute the probability that the card you draw is a heart?
 
 
 ## Conditional distributions and Bayes' Theorem
@@ -209,7 +209,7 @@ p(eye) &= \sum_{columns} p(eye|hair)\ p(hair) = \sum_{columns} p(hair,eye)
 Like all probability distributions, the marginal probability distribution must sum to 1.0. It is always good to check this condition to ensure the sums have been applied correctly.  
 
 
-> **Exercise:** Use the table of hair and eye color to compute the marginal distributions, $p(eye)$ and $p(hair)$. Make sure you check that these marginal probabilities sum to approximately 1.0. What inferences can you make from these marginal distributions? What is the most common eye color? What is the least common hair color?  
+> **Exercise 8-6:** Use the table of hair and eye color to compute the marginal distributions, $p(eye)$ and $p(hair)$. Make sure you check that these marginal probabilities sum to approximately 1.0. What inferences can you make from these marginal distributions? What is the most common eye color? What is the least common hair color?  
 
 ##  Conditional Probability Example
 
@@ -227,7 +227,7 @@ Let's try a simple and widely used example of using conditional probabilities to
 On the surface, it seems that a 99% reliable test is rather good. Such a test would ensure that, on average, 99 people out of 100 who have the disease will be identified and treated. But, let's dig into the conditional probabilities and see how things really work out. 
 
 ```{r CondTree, out.width = '100%', fig.cap='Graph showing dependency of conditional distribution', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/CondTree.jpg"))
+knitr::include_graphics(rep("../images/CondTree.jpg"))
 ```
 
 The Figure 2. shows a **conditional probability tree** for this problem. This tree is technically referred to as a **directed graphical model (DAG)**. Starting at the root the DAG defines a conditional dependency structure of the probability distributions. The goal is to evaluate the medical test as a **decision rule** for providing treatment to patients.    
@@ -246,7 +246,7 @@ We can summarize the four possible outcomes using a **confusion matrix** or **tr
 |Disease| True Positive Rate | False Negative Rate |
 |No Disease| False Positive Rate | True Negative Rate |
 
-> **Exercise:** Using the information provided you will now use conditional probabilities to analyze the effectiveness of the claimed test. Perform the following steps to find out. Your goal with this exercise is to fill in the confusion matrix shown above.  
+> **Exercise 8-7:** Using the information provided you will now use conditional probabilities to analyze the effectiveness of the claimed test. Perform the following steps to find out. Your goal with this exercise is to fill in the confusion matrix shown above.  
 > 1. Start with the easy cases. You know the probability of a patient having the disease and the accuracy of the test. Create and execute the code to compute the conditional probabilities of a positive test given that a randomly selected patient has the disease, and a negative test given the randomly selected patient does not have the disease. 
 > 2. Next, you will compute the conditional probabilities for the cases where the test is in error. Create and execute the code to compute the conditional probabilities of a negative test given the randomly selected patient has the disease, and a positive test given the patient does not have the disease. Compare these results to the conditional probabilities you computed in step 1.
 > 3. Finally, create and execute the code to compute the sum of the probabilities of all the possible outcomes. Does the sum equal to 1.0? 
@@ -268,12 +268,12 @@ But, Meadow did not disclose or consider that the second child to die was found 
 The long running television game show, [*Let's Make A Deal*](https://en.wikipedia.org/wiki/Let%27s_Make_a_Deal), originally created and hosted by *Monte Hall*, had its hay-day in the 1970s. At the finale of the show, Monte would tell the winning contestant that they could pick one of three doors. Behind one door there would be a valuable prize like a car. Worthless items, like a goat, were placed behind the other two doors. The contestant would pick a door. At this point Monte would build suspense by opening one of the other doors. Monte knew which door had the valuable prize, and would always reveal one of the worthless prizes. He would then tell the contestant that they could change their choice of doors. The question is, should the contestant switch or stick with their original choice? Figure 4. illustrates the situation the contestant faces if they pick Door 1:
 
 ```{r Doors, out.width = '100%', fig.cap='Illustration of Monte Hall game; Credit, Wikipedia commons', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/Doors.jpg"))
+knitr::include_graphics(rep("../images/Doors.jpg"))
 ```
 
 The [Monte Hall Problem](https://en.wikipedia.org/wiki/Monty_Hall_problem) has a long and convoluted history. In 1975, Steve Selvin published a letter in the *American Statistician* posing the problem of which strategy is optimal. The resulting debate created considerable controversy. This debate was put at full boil when [Marilyn vos Savant](https://en.wikipedia.org/wiki/Marilyn_vos_Savant) wrote in her *Ask Marilyn* column in *Parade* magazine that the contestant should definitely switch. She was then ridiculed by several statisticians. But, was ultimately proven to be correct.
 
-> **Exercise:** What would you do if you were the contestant? Fortunately for you, you know something about conditional probabilities. Further, you know the following probabilities. 
+> **Exercise 8-8:** What would you do if you were the contestant? Fortunately for you, you know something about conditional probabilities. Further, you know the following probabilities. 
 > Your first choice, of one of the three doors, is purely random, since only Monte knows which door hides the car. 
 > -  There is a probability of 2/3 that your initial pick will be one of the two doors with a goat. At this point, with probability 1 Monte will open the door with the other goat, since he cannot reveal the location of the car. You can only win a car by switching doors.      
 > -  There is a probability of 1/3 that your initial pick will be the only door with the car. At this point, with probability 1/2 Monte can open either of the other doors, as they both contain goats. But, if you switch doors at this time, you will win a goat.    

@@ -25,14 +25,14 @@ There are a great many probability distributions which have been developed over 
 Jacob Bernoulli (1654, 1705) was a Swiss mathematician who pioneered many subjects in mathematics, including the mathematical theory of probability. 
 
 ```{r Brenoulli, out.width = '30%', fig.cap='Jacob Bernoulli: Be happy he is not your statistics professor!\n Credit, Wikipedia commons', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/Bernoulli.jpg"))
+knitr::include_graphics(rep("../images/Bernoulli.jpg"))
 ```
 
 Bernoulli died before he could publish his book, *Artis conjectandi*. This book included a theory of probabilities from trials with discrete outcomes. His incomplete book was eventually published posthumously in 1713.
 
 
 ```{r Brenoulli_Book, out.width = '400%', fig.cap='First probability textbook: How good is your Latin?\n Credit, Wikipedia commons', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/Ars.jpg"))
+knitr::include_graphics(rep("../images/Ars.jpg"))
 ```
 
 
@@ -144,7 +144,7 @@ Variance &= N p(1-p)
 \end{align}
 
 
-> **Exercise:** You will compute and compare several sets of realizations of a Binomial distributions, with probability of success $p = 0.75$, and $N = \{5, 25, 75, 100 \}$. For each value of $N$, compute 1000 independent samples. You may use the [numpy.random.binomial](https://numpy.org/doc/stable/reference/random/generated/numpy.random.binomial.html) function to compute these realizations. Then do the following:  
+> **Exercise 7-1:** You will compute and compare several sets of realizations of a Binomial distributions, with probability of success $p = 0.75$, and $N = \{5, 25, 75, 100 \}$. For each value of $N$, compute 1000 independent samples. You may use the [numpy.random.binomial](https://numpy.org/doc/stable/reference/random/generated/numpy.random.binomial.html) function to compute these realizations. Then do the following:  
 > 1. Compute and print the theoretical and sample means and variances for each case of 1000 realizations. Are the sample means and variances close to the theoretical values? Does the correspondance between the sample values and theortical values improve with sample size, and what does this tell you about working with small and large samples?  
 > 2. Create and execute the code to plot density histograms of the four sets of realizations of 1000 on a 2x2 grid of plots. 
 > 3. On the histogram plots supperimpose a plot of the density on the Normal distribution with the theoretical mean and variance, using 100 points.  
@@ -172,7 +172,7 @@ Mean &= \lambda\\
 Variance &= \lambda
 \end{align}
 
-> **Exercise:** Create and execute code to compute $1000$ realizations of Poisson distributions with average arrival rates, $\lambda = \{ 1, 5, 25, 100\}$. You can use the [numpy.random.poisson](https://numpy.org/doc/stable/reference/random/generated/numpy.random.poisson.html) function to compute these realizations.  
+> **Exercise 7-2:** Create and execute code to compute $1000$ realizations of Poisson distributions with average arrival rates, $\lambda = \{ 1, 5, 25, 100\}$. You can use the [numpy.random.poisson](https://numpy.org/doc/stable/reference/random/generated/numpy.random.poisson.html) function to compute these realizations.  
 > 1. Compute and print the sample mean and variance for each set of realization along with the theoretical values. Are the sample means and variances close to the theoretical values? Does the correspondance between the sample values and theortical values improve with sample size, and what does this tell you about working with small and large samples?  
 > 2. Create and execute the code to plot the density histograms of the four sets of realizations of 1000 on a 2x2 grid of plots. 
 > 3. On the histogram plots supperimpose a plot of the density on the Normal distribution with the theoretical mean and variance, using 100 points.  
@@ -255,7 +255,7 @@ The expectation of a uniform distribution on the interval $\{ a,b \}$ is easy to
 
 Which is just the mean. 
 
-> **Exercise:** Create and execute code to compute and plot histograms with kernel density estimates of the uniform distribution on the interval $\{ 0, 1 \}$ for $\{100, 1000, 10000, 100000\}$ realizations on a 4x4 grid. You can compute the realizations using the [numpy.random.uniform](https://numpy.org/doc/stable/reference/random/generated/numpy.random.uniform.html) function. How close to the ideal Uniform distribution are these different realizations?    
+> **Exercise 7-3:** Create and execute code to compute and plot histograms with kernel density estimates of the uniform distribution on the interval $\{ 0, 1 \}$ for $\{100, 1000, 10000, 100000\}$ realizations on a 4x4 grid. You can compute the realizations using the [numpy.random.uniform](https://numpy.org/doc/stable/reference/random/generated/numpy.random.uniform.html) function. How close to the ideal Uniform distribution are these different realizations?    
 
 ### Normal distribution
 
@@ -289,7 +289,7 @@ For a Normal distribution with mean $\mu$, $\mathcal{N}(\mu,1)$, we can find the
 
 $$\mathrm{E}[\mathcal{N}(\mu,1)] = \mathrm{E}[\mathcal{N}(0,1) + \mu] = \mathrm{E}[\mathcal{N}(0,1)] + \mu = 0 + \mu = \mu$$
 
-> **Exercise:** for the four sets of parameters shown in the table below, compute 10000 realizaitons of the distribution and plot the density function on the interval $-3 \le x \le 9$. You can use the [numpy.random.normal](https://numpy.org/doc/stable/reference/random/generated/numpy.random.normal.html) function. Make sure you use distinct lines for these plots. How does the location and scale change with the two parameters?
+> **Exercise 7-4:** for the four sets of parameters shown in the table below, compute 10000 realizaitons of the distribution and plot the density function on the interval $-3 \le x \le 9$. You can use the [numpy.random.normal](https://numpy.org/doc/stable/reference/random/generated/numpy.random.normal.html) function. Make sure you use distinct lines for these plots. How does the location and scale change with the two parameters?
 
 
 | $\mu$ | $\sigma$ |
@@ -300,7 +300,7 @@ $$\mathrm{E}[\mathcal{N}(\mu,1)] = \mathrm{E}[\mathcal{N}(0,1) + \mu] = \mathrm{
 | 4     | 4       |
 
 
-> **Exercise:** The density function of the Normal distribution exhibits the famous **'bell-shaped curve'**. But, how does the shape become apparent as the number of samples increases? Execute the code in the cell below to find out. Compute and plot histograms and density estiamtes for $[100, 1000, 10000, 100000]$ realizations. How does the distribution change with the number of realizations. Does the distribution approach the ideal 'bell shaped curve' as the number of samples increases?
+> **Exercise 7-5:** The density function of the Normal distribution exhibits the famous **'bell-shaped curve'**. But, how does the shape become apparent as the number of samples increases? Execute the code in the cell below to find out. Compute and plot histograms and density estiamtes for $[100, 1000, 10000, 100000]$ realizations. How does the distribution change with the number of realizations. Does the distribution approach the ideal 'bell shaped curve' as the number of samples increases?
 
 
 ### Log-Normal distribution
@@ -311,7 +311,7 @@ The Log-Normal distribution is based on a log-transformation of the random varia
 
 $$P(x) = \frac{1}{x} \frac{1}{\sigma \sqrt{2 \pi}} \exp{\frac{-(log(x) - \mu)^2}{2 \sigma^2}}$$
 
-> **Exercise:** You will now make two side-by-side plots to compare a log-distributed variable and the same variable log-trnsformed. 
+> **Exercise 7-6:** You will now make two side-by-side plots to compare a log-distributed variable and the same variable log-trnsformed. 
 > 1. Compute and plot a histogram and the kernel density estimate of 100000 realizations of a standard Log-Normal distribution using the [scipy.stats.lognorm.pdf](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.lognorm.html) function.  
 > 2. Now log-transform the realizations of the log-Normal random variable and plot a histogram and the kernel density estimate. 
 > 3. In a seperate plot area, display a q-q Normal plot of the log-transformed random variable.  
@@ -329,7 +329,7 @@ where\\
 \Gamma(x) = Gamma\ function
 $$
 
-> **Exercise:** Despite the complex density formula, you can gain a fair feel for the behavior of the t-distribution by plotting it for several values of the degrees of freedom, $\nu$, and comparing it to the Normal distribution. Create and execute code to plot the density function for the t-distribution for degrees of freedom, $\nu = \{1, 2, 4, 8, \infty \}$, along with the density of the standard Normal distribution for 100 points on the interval $\{ -4,4 \}$. You can use the [scipy.stats.pdf](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.t.html) function. Make sure you use distinct lines and include a legend for each. Answer these questions:   
+> **Exercise 7-7:** Despite the complex density formula, you can gain a fair feel for the behavior of the t-distribution by plotting it for several values of the degrees of freedom, $\nu$, and comparing it to the Normal distribution. Create and execute code to plot the density function for the t-distribution for degrees of freedom, $\nu = \{1, 2, 4, 8, \infty \}$, along with the density of the standard Normal distribution for 100 points on the interval $\{ -4,4 \}$. You can use the [scipy.stats.pdf](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.t.html) function. Make sure you use distinct lines and include a legend for each. Answer these questions:   
 > 1. How do the shape (body and tails) of the t-distribution change with $\nu$?    
 > 2. How would you describe the convergence of the t-distribution to the Normal with changing $\nu$?    
 
@@ -353,7 +353,7 @@ Two useful special cases of the Gamma distribution are:
 $$exp(\lambda) = \lambda e^{-\lambda x}$$
 2. $Gam(\nu/2,2) = \chi^2_\nu$ is the **Chi-squared distribution** with $\nu$ degrees of freedom. The $\chi^2_\nu$ distribution has many uses in statistics. One important use is the distribution of estimates of the variance of the Normal distribution. Using the relationship to the Gamma distribution, we can then write the PDF of the $\chi^2_\nu$ distribution:    
 $$\chi^2_\nu=\frac{x^{\nu/2-1}\ e^{-x}}{\sigma^{\nu/2}\ \Gamma(\nu/2)}\\ for\ \nu\ degrees\ of\ freedom$$
-> **Exercise:** To gain a feel for the $\chi^2_\nu$ distribution you will plot it for 100 points on the interval $\{ 0 \le x \le 9 \}$ for $\nu = \{1, 2, 3, 6, 9 \}$ degrees of freedom. Make sure the lines for each degree of freedom are unique, and include a legend.  
+> **Exercise 7-8:** To gain a feel for the $\chi^2_\nu$ distribution you will plot it for 100 points on the interval $\{ 0 \le x \le 9 \}$ for $\nu = \{1, 2, 3, 6, 9 \}$ degrees of freedom. Make sure the lines for each degree of freedom are unique, and include a legend.  
 
 ## Multivariate Distributions
 
@@ -389,7 +389,7 @@ Where $|\mathbf{\Sigma}|$ is the determinant of the covariance matrix.
 
 Notice that along the diagonal the values are the $n$ variances of each dimension, $\sigma_{i,i}$. The off-diagonal terms describe the **dependency** between the $n$ dimensions of the distribution.   
 
-> **Exercise:** In some cases, there is little or no dependency between the $n$ dimensions of the distribution. How does this **statistical independence** change the on-diagonal and off-diagonal elements of the covariance matrix? Does it appear that this simplification leaves a model with $n$ univariate Normal random variables? 
+> **Exercise 7-9:** In some cases, there is little or no dependency between the $n$ dimensions of the distribution. How does this **statistical independence** change the on-diagonal and off-diagonal elements of the covariance matrix? Does it appear that this simplification leaves a model with $n$ univariate Normal random variables? 
 
 
 ## Distributions for Multiple Outomes; the Categorical and Multinomial Distribution    
@@ -432,7 +432,7 @@ For the case of $k=3$ you can visualize the possible outcomes of a single Catego
  
 
 ```{r Simplex, out.width = '100%', fig.cap='Simplex for $Mult_3$', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/Simplex.png     "))
+knitr::include_graphics(rep("../images/Simplex.png     "))
 ```
 
 
@@ -463,10 +463,10 @@ $$p(x_1, x_2, \ldots, x_k ; n, \pi_1, \pi_2, \ldots, \pi_k) = \frac{\prod_i \big
 This is still a difficult relationship to work with. Fortunately, in many practical cases we can work with the far simpler categorical distribution.   
 
 
-> **Exercise:** All possible outcomes of 4 trails of a Categorical distribution with $k=3$ are shown on the simplex in Figure 4. Assume a series of 4 trials is performed. Consider three possible sets of outcomes shown on the Figure, A, B, and C. For each of these compute the probability vector $\Pi$.       
+> **Exercise 7-10:** All possible outcomes of 4 trails of a Categorical distribution with $k=3$ are shown on the simplex in Figure 4. Assume a series of 4 trials is performed. Consider three possible sets of outcomes shown on the Figure, A, B, and C. For each of these compute the probability vector $\Pi$.       
 
 ```{r Multinomial, out.width = '100%', fig.cap='Sample space, $(x_1,x_2,x_3)$, of $Mult_3$ with 4 samples', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/Multinomial.png"))
+knitr::include_graphics(rep("../images/Multinomial.png"))
 ```
 
 
@@ -489,7 +489,7 @@ $$P(H) = \frac{1}{1 + 1} = \frac{1}{2}$$
 As an example of the use of odds in statistics, consider the [**odds ratio**](https://en.wikipedia.org/wiki/Odds_ratio), $\frac{p}{1-p}$, which is used to predict the response variable in logistic regression. This important transformation will be discussed in Chapter XXX of this book.  
 
 
-> **Exercise:** Answer the following questions:   
+> **Exercise 7-11:** Answer the following questions:   
 > 1. We have said that the odds of rolling a 6 when throwing a single fair die are 1:5. Using these odds as the basis of your calculation, what is the probability of rolling a 6?    
 > 2. What are the odds and probability of rolling a total of 7 when throwing two fair dice?
 
