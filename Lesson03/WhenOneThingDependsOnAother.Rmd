@@ -1,0 +1,51 @@
+---
+title: "When One Thing Depends on Another; Conditional Probability"
+author: "Steve Elston"
+date: "01/13/2021"
+output:
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("/usr/bin/python3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+
+-----------------------------------------------------------------
+
+## Introduciton      
+
+As a result, to model and understand the probability of contracting the infectious disease, we must include other random variables in our model on which the probability of infection depends. In more technical terms, the probability of contracting the disease is **conditional** on other random variables.   
+
+As the foregoing example indicates, statistical models of complex processes invariably require the use of **conditional probability distributions**. In this chapter we will review the key properties of conditional probability distributions we will use in the remainder of this book.   
+
+--------------------------------------------------
+
+## Properties of Conditional Probability
+
+**Conditional probability** is the probability that event A occurs given that event B has occurred. We can write conditional probability as follow, which we say is the probability of A given B:
+
+$$P(A|B)$$
+
+
+```{r ConditionalSets, out.width = '100%', fig.cap='Example of conditional probability of discrete events; credit, Wikipedia commons', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Prob1.png"))
+```
+
+Start by examining Figure 1, which shows a number of discrete events. The overall **sample space** is the space of all possible events in the set $S$. This space is divided into several **subspaces** or **subsets**, $A$, $B$ and $C$. The subsets $A$ and $B$ are shown as circles, with an **intersection** where the two sets overlap. Events in this intersection occur in both $A$ and $B$. 
+
+
+
+
+
+
+
+
+
