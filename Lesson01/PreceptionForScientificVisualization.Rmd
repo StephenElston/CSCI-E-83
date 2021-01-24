@@ -21,15 +21,36 @@ matplotlib$use("Agg", force = TRUE)
 
 ## Why This Course?     
 
-- **Data science** is the science of **understanding data**   
+
+**Data science** is the science of **understanding data**   
 
 - Statistics is the science of making **principled inferences** from data    
   - Inference leads to understanding     
   - Inference is becoming harder with large complex data sets  
 
 - Doing rigorous data science requires understanding statistics     
+  - Statistical practice has advanced significantly to address large complex data sets    
+  - Statistical practice now dominated by computer-intensive methods
 
 
+-----------------------------------------------------------------
+
+## Why This Course?     
+
+Our focus is on the big ideas of computer-intensive statistics and data analysis arising in the late 20th and early 21st Centuries     
+
+- **Exploratory data analysis (EDA)** to understand relationships in big complex data sets          
+- **Foundational generic algorithms** used throughout statistics and machine learning including, maximum likelihood estimation, MCMC sampleing and the EM algorithm (time permitting)
+
+- **Resampling methods** for building models and inference    
+
+- **Large scale hypothesis testing** for complex and high-dimensional data sets   
+
+- **Bayesian hierarchical models** for complex processes     
+
+- **Over-parameterized models and regularization** to model complex high-dimensional data 
+
+- **Robust staztistics** to deal with data violating model assumptions - time permitting
 
 
 ----------------------------------------------------------------
@@ -37,19 +58,21 @@ matplotlib$use("Agg", force = TRUE)
 
 ## Course Objectives
 
-- Broad introduction to the theoretical and methodological basis of data science.     
-  - Data exploration and visualization     
+Building your statistical toolbox
+
+- Broad introduction to the theoretical and methodological basis of data science 
   - Probability theory    
-  - Statistical theory    
-  - Theory or linear statistical models      
+  - Statistical theory        
+  - Understanding data relationships and inference     
+  - Sampling theory 
+  - Theory or linear and hierarchical statistical models      
   
 - Understand the basis of core machine learning algorithms       
-  - How these methods work     
+  - How these methods work and when to used them     
   - Why these methods fail    
   - What to do when things go wrong   
 
-
-- Moving beyond cookbook or blog post approach to data science      
+- Moving beyond a cookbook or blog post approach to data science      
 
 
 -------------------------------------------------------------

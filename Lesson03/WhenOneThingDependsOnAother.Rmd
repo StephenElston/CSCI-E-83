@@ -22,6 +22,8 @@ matplotlib$use("Agg", force = TRUE)
 
 ## Introduciton      
 
+Many real-world random variables depend on other random variables    
+
 As a result, to model and understand the probability of contracting the infectious disease, we must include other random variables in our model on which the probability of infection depends. In more technical terms, the probability of contracting the disease is **conditional** on other random variables.   
 
 As the foregoing example indicates, statistical models of complex processes invariably require the use of **conditional probability distributions**. In this chapter we will review the key properties of conditional probability distributions we will use in the remainder of this book.   
