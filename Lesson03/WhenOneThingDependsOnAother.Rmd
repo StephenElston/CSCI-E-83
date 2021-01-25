@@ -24,29 +24,157 @@ matplotlib$use("Agg", force = TRUE)
 
 Many real-world random variables depend on other random variables    
 
-As a result, to model and understand the probability of contracting the infectious disease, we must include other random variables in our model on which the probability of infection depends. In more technical terms, the probability of contracting the disease is **conditional** on other random variables.   
+- statistical models of complex processes invariably require the use of **conditional probability distributions**     
 
-As the foregoing example indicates, statistical models of complex processes invariably require the use of **conditional probability distributions**. In this chapter we will review the key properties of conditional probability distributions we will use in the remainder of this book.   
+- **Conditional probability** is the probability that event A occurs given that event B has occurred 
+- Write conditional probability of A given B:    
+
+$$P(A|B)$$
+
+- **Example:** Model of the probability of contracting the infectious disease, depends on other variables
+  - In more technical terms, the probability of contracting the disease is **conditional** on other random variables.   
+  - Age, contact with people carrying the disease, immunity, etc. 
+
 
 --------------------------------------------------
 
 ## Properties of Conditional Probability
 
-**Conditional probability** is the probability that event A occurs given that event B has occurred. We can write conditional probability as follow, which we say is the probability of A given B:
+Example: 
 
-$$P(A|B)$$
-
-
-```{r ConditionalSets, out.width = '100%', fig.cap='Example of conditional probability of discrete events; credit, Wikipedia commons', fig.align='center', echo=FALSE}
+```{r ConditionalSets, out.width = '30%', fig.cap='Example of conditional probability of discrete events; credit, Wikipedia commons', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/Prob1.png"))
 ```
 
-Start by examining Figure 1, which shows a number of discrete events. The overall **sample space** is the space of all possible events in the set $S$. This space is divided into several **subspaces** or **subsets**, $A$, $B$ and $C$. The subsets $A$ and $B$ are shown as circles, with an **intersection** where the two sets overlap. Events in this intersection occur in both $A$ and $B$. 
+- **Sample space** is the space of all possible events in the set $S$     
+
+- Sample space is divided into several **subspaces** or **subsets**, $A$, $B$ and $C$    
+
+- **intersection** where the two sets overlap occur in both $A$ and $B$      
 
 
+--------------------------------------------------
+
+## Properties of Conditional Probability
+
+Example: 
+
+```{r ConditionalSets2, out.width = '20%', fig.cap='Example of conditional probability of discrete events; credit, Wikipedia commons', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Prob1.png"))
+```
+
+- **intersection** where the two sets overlap occur in both $A$ and $B$    
+  - First, find the relationship between conditional probability and the intersection between the sets, $P(A \cap B)$  
+  - The probability of the intersection is theproduct of two probabilities:    
+  1. $P(B)$ since B must be true to be in this intersection.    
+  2. $P(A|B)$ since A must also occur when B is occurring
+  - The result is:   
+
+$$P(A \cap B) = P(A|B) P(B)$$
 
 
+-------------------------------------------------
 
+## Properties of Conditional Probability
+
+$$P(A \cap B) = P(A|B) P(B)$$
+
+Rearranging terms we get the following: 
+
+\begin{align}
+P(A|B) &= \frac{P(A \cap B)}{P(B)} \\
+& = \frac{\frac{2}{10}}{\frac{4}{10}} = \frac{2}{4} = \frac{1}{2}
+\end{align}
+
+We could have, just as well, written the last equation as: 
+
+$$P(B \cap A) = P(B|A)P(A)$$
+
+Now, the probability of an identical event in the same intersection:   
+
+$$P(A \cap B) = P(A|B) P(B) = P(B|A)P(A) = P(B \cap A)$$
+
+**Factorization** of a probability function is key tool: Notice that the factorization of a conditional probability distributions in not unique  
+
+
+----------------------------------------------------
+
+## Set operations and probability
+
+Set operations are applied to probability problems    
+
+1. **Intersection:**   
+
+$$P(A \cap B)  = P(A|B)P(B)$$
+
+2. **Union:** Probability is the sum of the probabilities of the sets less the intersection between the sets:
+
+$$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
+
+3. **Negation:** Example, compute the probability of an event being in subset $A$ but not in $B$:   
+
+$$P(A\ and\ \neg B) = P(A) - P(B \cap A)$$
+
+
+**Example:** We can apply **[De Morgan's Laws](https://en.wikipedia.org/wiki/De_Morgan%27s_laws)**:
+
+\begin{align}
+P(\neg (A \cup B)) &= P(\neg A\ \cap \neg B)\\
+P(\neg (A \cap B)) &= P(\neg A\ \cup \neg B)
+\end{align}
+
+
+--------------------------------------------------------
+
+## Independence and mutual exclusivity
+
+The factorization of probability distributions can be simplified if events are either **independent** or **mutually exclusive**    
+
+- At first glance, these concepts may seem similar
+  - Are quite different
+  - Very different implications
+
+- **Independence** of sets $A$ and $B$ means the occurrence of an event in $A$, does not have any dependency on an event in $B$   
+
+- **Mutual exclusivity** means events cannot occur in both the sets $A$ and $B$
+
+-----------------------------------------
+
+## Independence
+
+Express independence of random variables, $A \perp B$, mathematically:   
+
+\begin{align}
+P(A\ \cap B) &= P(A|B)P(B) = P(A)P(B)\\ 
+P(A\ \cup B) &= P(A) + P(B) - P(A)P(B)\\
+P(A|B) &= P(A)\\
+P(A| \neg B) &= P(A)
+\end{align}
+ 
+But independence of A given B does not imply independence of B given A:
+
+$$P(A|B) = P(A)P(B) \nLeftrightarrow P(B|A) = P(B)P(A)$$
+
+
+---------------------------------------------
+
+## Mutual Exclusivity     
+
+If the intersection between events is an empty set:  
+
+$$A \cap B = \emptyset$$     
+
+Then, events in A are **mutually exclusive** of events in B:
+
+\begin{align}
+P(A \cup B) &= P(A) + P(B)\\
+P(A|B) &= 0\\
+P(A| \neg B) &= \frac{P(A)}{1 - P(B)}
+\end{align}
+
+And, $A$ mutually exclusive of B, implies B is mutually exclusive of A:
+
+$$P(A|B) = P(A) + P(B) \Leftrightarrow P(B|A) = P(B) + P(A) \iff A \cap B = \emptyset$$
 
 
 

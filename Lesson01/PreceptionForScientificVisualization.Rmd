@@ -58,7 +58,7 @@ Our focus is on the big ideas of computer-intensive statistics and data analysis
 
 ## Course Objectives
 
-Building your statistical toolbox
+This survey course will build your statistical toolbox
 
 - Broad introduction to the theoretical and methodological basis of data science 
   - Probability theory    
@@ -77,13 +77,26 @@ Building your statistical toolbox
 
 -------------------------------------------------------------
 
-## Grading
+## Grading: Undergraduate
+
+Activity | Grade weight |
+|:---:|:---:|
+|Participation (in-class and discussion board activity$^*$) | 10% |
+| Assignments and milestones | 90% |     
+
+$^*$ at least 20 posts in Piazza on discussion questions, class materials, answering other students questions. Also, responding to polls and discussion questions in class. 
+
+
+-------------------------------------------------------------
+
+## Grading: Graduate
 
 |Activity | Grade weight |
 |:---:|:---:|
-|Participation (in-class and discussion board activity$^*$) | 20% |
-|Quizzes | 20% |
-| Assignments and milestones | 60% |     
+|Participation (in-class and discussion board activity$^*$) | 10% |
+| Assignments and milestones | 60% |   
+| Independent project proposal | 5% |   
+| Independent project report | 25% |
 
 $^*$ at least 20 posts in Piazza on discussion questions, class materials, answering other students questions. Also, responding to polls and discussion questions in class. 
 
@@ -129,8 +142,8 @@ Communicating with your instructors and other students is a significant aspect o
 - Comment on weekly discussion topics       
 
 Piazza is the primary communications method and you are **required to sign up for the course Piazza forum**   
-- piazza.com/washington/winter2021/datasci520cswi21    
-- Pass code: DS520_2021     
+- piazza.com/extension.harvard/spring2021/cscie83    
+- Pass code: cscie83_2021     
 
 
 -----------------------------------------------
@@ -159,12 +172,15 @@ Then, back to the lecture
 
 ## Why Exploration and Visualization?    
 
+**Exploratory data analysis (EDA)** tools are essential to good data science
+
 - Why not just start building machine learning models?   
 
 - Understanding relationships in data saves missteps and unexplained poor model performance     
   - Which variables are actually important?   
   - How do these variables behave?   
-  - Are there errors and outliers in the data?   
+  - Are there errors and outliers in the data?  
+  - How good is a model fit? 
 
 - Communications is an important component of data science     
   - Analytic results are only useful if they are understood and trusted     

@@ -87,17 +87,18 @@ P(\neg (A \cap B)) &= P(\neg A\ \cup \neg B)
 
 The factorization of probability distributions can be simplified if events are either **independent** or **mutually exclusive**. At first glance, these concepts may seem similar. However, they are quite different, and with very different implications. 
 
-To start, we will investigate the concept of independence. As the name implies, the occurrence of one type of event in the set $A$, does not have any dependency on another type of event in the set $B$. We can express independence of random variables, $A \perp B$, mathematically:   
+To start, we will investigate the concept of independence. As the name implies, the occurrence of one type of event in the set $A$, does not have any dependency on another type of event in the set $B$. We can express properties of independent random variables, $A \perp B$, mathematically:   
 
-$$P(A\ \cup B) = P(A|B)P(B) = P(A)P(B)\\ 
-since\ if\ A \perp B,\\
-A \cap B = \emptyset\\
-and\\
-P(A|B) = P(A) \Leftrightarrow P(B|A) = P(B)$$
+\begin{align}
+P(A\ \cap B) &= P(A|B)P(B) = P(A)P(B)\\ 
+P(A\ \cup B) &= P(A) + P(B) - P(A)P(B)\\
+P(A|B) &= P(A)\\
+P(A| \neg B) &= P(A)
+\end{align}
  
-We can also note that:
+But, be careful! Independence of $A$ given $B$ does not imply, independence of $B$ given $A$:
 
-$$P(A|B) = P(A) \Leftrightarrow P(B|A) = P(B) \iff A \cap B = \emptyset$$
+$$P(A|B) = P(A)P(B) \nLeftrightarrow P(B|A) = P(B)P(A)$$
 
 
 > **Exercise 8-4:** An example helps to make this concept less abstract. Say you have a fair coin and a fair 6-sided dice (numbered 1-6). What is the probability that you will flip the coin and get a head, and roll the dice and get a 6. You should ask yourself if these events have any dependency on each other. Given your answer compute the probability of these two events both ocuring.   
@@ -105,12 +106,11 @@ $$P(A|B) = P(A) \Leftrightarrow P(B|A) = P(B) \iff A \cap B = \emptyset$$
 
 But what if the intersection between the events is an empty set, $A \cap B = \emptyset$. In this case we say the events in A are **mutually exclusive** of events in B. In other words, events cannot occur in both the sets $A$ and $B$. As a result we can write the following:
 
-$$P(A \cup B) = P(A) + P(B)\\
-because\ either\\
-P(A) = 0\\
-or\\
-P(B) = 0
-$$
+\begin{align}
+P(A \cup B) &= P(A) + P(B)\\
+P(A|B) &= 0\\
+P(A| \neg B) &= \frac{P(A)}{1 - P(B)}
+\end{align}
 
 But, just because A is mutually exclusive of B, does not mean B is mutually exclusive of A. Or, in terms of our notation:
 
