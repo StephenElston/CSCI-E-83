@@ -37,7 +37,7 @@ matplotlib$use("Agg", force = TRUE)
 
 -------------------------------------
 
-## Limitation Scientific Graphics  
+## Limitation of Scientific Graphics  
 
 All scientific graphics are limited to a **2-dimensional projection**    
 
@@ -211,7 +211,7 @@ Sometimes a **creative alternative** is best
 
 - Finding a good one can require significant creativity!    
 
-- Example, choropleth for mutli=dimensional geographic data   
+- Example, choropleth for mutli-dimensional geographic data   
 
 - Example, time series of box plots      
 
@@ -271,7 +271,7 @@ Display multiple plot views in an array or grid
 
 Scatter plot matrix used to investigate relationships between a number of variables    
 
-- Key idea; display a scatter plots of each variable versus all other variables    
+- Key idea: D+-isplay a scatter plots of each variable versus all other variables    
    - Primarily EDA tool    
    - Conveys lots of information - requires study! 
 
