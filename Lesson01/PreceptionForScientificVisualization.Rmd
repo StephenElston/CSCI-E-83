@@ -58,14 +58,14 @@ Our focus is on the big ideas of computer-intensive statistics and data analysis
 
 ## Course Objectives
 
-This survey course will build your statistical toolbox
+This survey course will help build your statistical toolbox
 
 - Broad introduction to the theoretical and methodological basis of data science 
   - Probability theory    
   - Statistical theory        
   - Understanding data relationships and inference     
   - Sampling theory 
-  - Theory or linear and hierarchical statistical models      
+  - Theory of linear and hierarchical statistical models      
   
 - Understand the basis of core machine learning algorithms       
   - How these methods work and when to used them     
@@ -126,9 +126,9 @@ $^*$ at least 20 posts in Piazza on discussion questions, class materials, answe
 
 - Graduated in Mechanical Engineering, Santa Clara University   
 
-- Completed Data Science certificate program    
-
 - Area of interest: Business and Healthcare   
+
+- Loves games and audio nerd    
 
 ---------------------------------------------------------------------
 
@@ -275,7 +275,7 @@ $$aspect\ ratio = \frac{width}{height}\ : 1$$
 
 ## Example of Changing Aspect Ratio
 
-- Longest scientific time series is the sunspot count 
+Longest scientific time series is the sunspot count: 
 
 ```{python, echo=FALSE}
 sunspots_data = sm.datasets.sunspots.load_pandas().data
@@ -373,7 +373,7 @@ Regardless of the approach there are some significant limitations
 
 -----------------------------------------------
 
-## Engine Size by Marker Size and Price by Sequential Color Pallent     
+## Engine Size by Marker Size and Price by Sequential Color Palette     
 
 ```{python, echo=FALSE}
 ax = sns.scatterplot(x='city_mpg', y='curb_weight', data=auto_price,
@@ -435,7 +435,7 @@ plt.show()
 - This aesthetic is only useful when two conditions are met:
 1. The number of categories is small
 2. Distinctive shape are chosen for the markers
-- Human perception limits the number of shapes humans can precieve well
+- Human perception limits the number of shapes humans can perceive well
 
 -------------------------------------------------------
 

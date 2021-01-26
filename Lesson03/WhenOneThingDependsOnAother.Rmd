@@ -177,5 +177,137 @@ And, $A$ mutually exclusive of B, implies B is mutually exclusive of A:
 $$P(A|B) = P(A) + P(B) \Leftrightarrow P(B|A) = P(B) + P(A) \iff A \cap B = \emptyset$$
 
 
+----------------------------------------------------
 
 
+## Conditional distributions and Bayes' Theorem
+
+**Bayes' theorem**, also known as **Bayes' rule**, is a powerful tool to think about and analyze conditional probabilities        
+
+- We can derive Bayes Theorem starting with the following relationships: 
+
+$$P(A \cap B) = P(A|B)P(B)\\
+P(B \cap A) = P(B|A)P(A)$$
+
+- Now:
+
+$$P(A \cap B) = P(B \cap A)$$
+
+- Which leads to:
+
+\begin{align}
+P(A|B)P(B) &= P(B|A)P(A)\\
+P(A|B) &= \frac{P(B|A)P(A)}{P(B)}
+\end{align}
+
+Which is Bayes' theorem! 
+
+
+----------------------------------------------------------
+
+## Interpreting Bayes Theorm
+
+How can we interpret Bayes' theorem in a useful way?  
+
+- Consider an example using Bayes Theorem for an hypothesis test given some data or **evidence**    
+
+- We must make an assertion of our prior probability that the hypothesis is true   
+
+$$prior(hypothesis)$$     
+
+- We also must choose a likelihood function of the evidence given the hypothesis   
+
+$$Likelihood(evidence\ |\ hypothesis)$$   
+
+----------------------------------------------------------
+
+## Interpreting Bayes Theorm
+
+Now, we can think of Bayes' theorem in the following terms:
+
+$$Posterior(hypotheis\ |\ evidence) = \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{P(evidence)}$$
+
+- We discuss selection of prior probability distributions and likelihood functions in subsequent lectures    
+
+- The denominator $P(evidence)$ or **partition function** is problematic        
+
+- Required to normalize the posterior distribution to range $0 \le Posterior(hypotheis\ |\ evidence) \le 1$  
+
+- Denominator must account for all possible outcomes, or alternative hypotheses, $h'$:   
+
+$$Posterior(hypotheis\ |\ evidence) = \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{\sum_{ h' \in\ All\ possible\ hypotheses}Likelihood(evidence\ |\ h')\ prior(h')}$$
+
+This is a formidable problem!    
+
+----------------------------------------------------------
+
+## Marginal Distributions   
+
+In many cases we are interested in the **marginal distribution**      
+
+- Example, it is often the case that only one or a few parameters of a joint distribution will be of interest     
+  - In other words, we are interested in the marginal distribution of these parameters   
+  - The denominator of Bayes theorem, $P(data)$, can  be computed as a marginal distribution   
+
+- Consider a multivariate probability density function with $n$ variables, $p(\theta_1, \theta_2, \ldots, \theta_n)$     
+  - **Marginal distribution** is the distribution of one variable with the others integrated out.  
+  - Integrate over all other variables $\{ \theta_2, \ldots, \theta_n \}$ the result is the marginal distribution, $p(\theta_1)$:       
+
+$$p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)\ d\theta2, \ldots, d \theta_n$$
+
+- For discrete distribution the above is a summation    
+
+
+------------------------------------------
+
+##  Conditional Probability Example
+
+A simple and widely used example of using conditional probabilities to work out the chance of having a rare disease.
+
+- Sickle Cell Anemia is a serious, but fairy rare disease    
+
+- The probability that a given patient, drawn at random from the population of all people in the United States, has the disease is $P(S) = \frac{1}{3200} = 0.0003125$. We can describe the possible events in diagnosing this condition as: 
+  - $S \Rightarrow$ a patient has the disease. 
+  - $S' \Rightarrow$ a patient does not have the disease.
+  - $\oplus \Rightarrow$ patient tests positive.
+  - $- \Rightarrow$ a patient tests negative.
+  
+------------------------------------------
+
+##  Conditional Probability Example
+
+What if a medical company claims that it has developed a test that is 99% accurate?   
+
+- We can write:
+  - $P(S |\oplus) = 0.99$
+  - $P(S'|-) = 0.99$
+  
+- On the surface, it seems that a 99% reliable test is rather good   
+  - On average, 99 people out of 100 who have the disease will be identified and treated  
+  - But, dig into the conditional probabilities and make sure! 
+
+```{r CondTree, out.width = '30%', fig.cap='Graph showing dependency of conditional distribution', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/CondTree.jpg"))
+```
+
+
+
+------------------------------------------
+
+##  Conditional Probability Example
+
+The Figure 2. shows a **conditional probability tree** for this problem. This tree is technically referred to as a **directed graphical model (DAG)**. Starting at the root the DAG defines a conditional dependency structure of the probability distributions. The goal is to evaluate the medical test as a **decision rule** for providing treatment to patients.    
+
+If you follow the tree from the root you can visualize the computation of probabilities for each of the 4 possible outcomes of a test on a patient. Let's summarize the conditional probabilities we need to compute for these outcomes:
+
+- $P(\oplus | S)$ is the conditional probability the test will correctly identify a patient with the disease. 
+- $P(- | S)$; is the conditional probability of a negative test for a patient with the disease. We call this situation a **Type II Error** or **False Negative**.
+-  $P(\oplus | S')$ is the conditional probability that a patient with no disease will test positive. We call this situation a **Type I Error** or **False Positive**.
+- $P(- | S')$; is the conditional probability of a negative test for a patient who does not have the disease.    
+
+We can summarize the four possible outcomes using a **confusion matrix** or **truth table**. The proportion of each case are typically shown in normalized, or decimal, form. An example for this case is shown here:
+
+| | Positive Test | Negative Test |
+|:---:|:---:|:---:|
+|Disease| True Positive Rate | False Negative Rate |
+|No Disease| False Positive Rate | True Negative Rate |
