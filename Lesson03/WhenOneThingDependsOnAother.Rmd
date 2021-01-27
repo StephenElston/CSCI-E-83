@@ -286,28 +286,37 @@ What if a medical company claims that it has developed a test that is 99% accura
   - On average, 99 people out of 100 who have the disease will be identified and treated  
   - But, dig into the conditional probabilities and make sure! 
 
-```{r CondTree, out.width = '30%', fig.cap='Graph showing dependency of conditional distribution', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("../images/CondTree.jpg"))
-```
-
 
 
 ------------------------------------------
 
 ##  Conditional Probability Example
 
-The Figure 2. shows a **conditional probability tree** for this problem. This tree is technically referred to as a **directed graphical model (DAG)**. Starting at the root the DAG defines a conditional dependency structure of the probability distributions. The goal is to evaluate the medical test as a **decision rule** for providing treatment to patients.    
+From the root the **directed acyclical graphical model (DAG)** defines a conditional dependency structure
 
-If you follow the tree from the root you can visualize the computation of probabilities for each of the 4 possible outcomes of a test on a patient. Let's summarize the conditional probabilities we need to compute for these outcomes:
+- Goal: Evaluate the medical test as a **decision rule** for treatment    
 
-- $P(\oplus | S)$ is the conditional probability the test will correctly identify a patient with the disease. 
-- $P(- | S)$; is the conditional probability of a negative test for a patient with the disease. We call this situation a **Type II Error** or **False Negative**.
--  $P(\oplus | S')$ is the conditional probability that a patient with no disease will test positive. We call this situation a **Type I Error** or **False Positive**.
-- $P(- | S')$; is the conditional probability of a negative test for a patient who does not have the disease.    
+- Summarize the conditional probabilities for these outcomes:
+  - $P(\oplus | S)$: Conditional probability the test correctly identifies patient with disease 
+  - $P(- | S)$: Conditional probability of a negative test for a patient with the disease; **Type II Error** or **False Negative**
+  -  $P(\oplus | S')$: Conditional probability that a patient with no disease tests positive; **Type I Error** or **False Positive**
+   - $P(- | S')$: Conditional probability of a negative test for a patient with no disease  
+   
+   ```{r CondTree, out.width = '30%', fig.cap='Graph showing dependency of conditional distribution', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/CondTree.jpg"))
+```
 
-We can summarize the four possible outcomes using a **confusion matrix** or **truth table**. The proportion of each case are typically shown in normalized, or decimal, form. An example for this case is shown here:
+------------------------------------------
+
+##  Conditional Probability Example
+
+Four possible outcomes shown using a **confusion matrix** or **truth table**   
+
+- Table shows conditional probabilities of each outcome  
 
 | | Positive Test | Negative Test |
 |:---:|:---:|:---:|
-|Disease| True Positive Rate | False Negative Rate |
-|No Disease| False Positive Rate | True Negative Rate |
+|**Disease**| True Positive Rate | False Negative Rate |
+|**No Disease**| False Positive Rate | True Negative Rate |
+
+- **Tip:** Make sure the numbers in your confusion matrix sum to 1.0

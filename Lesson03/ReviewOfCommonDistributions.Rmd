@@ -197,7 +197,7 @@ Bernoulli distributions model the results of a **single trial** or **single real
 P(x\ |\ p) &= \bigg\{ 
 \begin{matrix}
 p\ if\ x = 1\\
-(p - 1)\ if\ x = 0
+(1 - p)\ if\ x = 0
 \end{matrix}\\
 or\\
 P(x\ |\ p) &= p^x(1 - p)^{(1-x)}\ x \in {0, 1}
