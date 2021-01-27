@@ -276,7 +276,7 @@ Scatter plot matrix used to investigate relationships between a number of variab
    - Conveys lots of information - requires study! 
 
 - Each pairwise relationship is displayed twice    
-  - Two possible orientations     
+  - Two possible orientations     gi
   - Or two different plot types   
 
 - Can place histograms and KDE plots on diagonal    
