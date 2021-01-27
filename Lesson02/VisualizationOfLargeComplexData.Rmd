@@ -271,7 +271,7 @@ Display multiple plot views in an array or grid
 
 Scatter plot matrix used to investigate relationships between a number of variables    
 
-- Key idea: D+-isplay a scatter plots of each variable versus all other variables    
+- Key idea: Display a scatter plots of each variable versus all other variables    
    - Primarily EDA tool    
    - Conveys lots of information - requires study! 
 
