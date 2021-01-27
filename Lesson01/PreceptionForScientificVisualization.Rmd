@@ -3,10 +3,10 @@ title: "Perception of Scientific Visualization"
 author: "Steve Elston"
 date: "12/26/2020"
 output:
-  ioslides_presentation: default
+  slidy_presentation: default
   pdf_document: default
   beamer_presentation: default
-  slidy_presentation: default
+  ioslides_presentation: default
 ---
 
 ```{r setup, include=FALSE}
