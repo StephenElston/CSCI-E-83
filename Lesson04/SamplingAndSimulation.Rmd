@@ -1,0 +1,75 @@
+---
+title: "Sampling and Simulation"
+author: "Steve Elston"
+date: "01/13/2021"
+output:
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("/usr/bin/python3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+
+-----------------------------------------------------------------
+
+## Introduciton      
+
+Sampling is a fundamental process in the collection and analysis of data    
+
+- Sampling is important because we almost never have data on a whole population   
+
+- Sampling must be randomized to preclude biases    
+
+- Key points to keep in mind:   
+  - Understanding sampling is essential to ensure data is representative of the entire population   
+  - Use inferences on the sample to say something about the population   
+  - The sample must be randomly drawn from the population  
+
+- Sampling from distribution is the building block of simulation     
+
+- We wil take up the topic of resampling later    
+
+
+--------------------------------------
+
+## Sampling Example
+
+
+| Use Case | Sample | Population |
+|---|---|---|
+| A/B Testing | The users we show either web sites A or B | All possible users, past present and future|   
+|World Cup Soccer | 32 teams which qualify in one season | All national teams in past, present and future years|   
+|Average height of data science students | Students in a data science class | All students taking data science classes world wide|   
+|Tolerances of a manufactured part | Samples taken from production lines | All parts manufactured in the past, present and future |   
+|Numbers of a species in a habitat |Population counts from sampled habitats |All possible habitats in the past, present and future |   
+
+- In several cases it is not only impractical, but impossible to collect data from the entire population  
+
+- We nearly always work with samples, rather than the entire population.    
+
+
+----------------------------------------------------
+
+## Importance of random sampling   
+
+All statistical methods rely on the use of **randomized unbiased samples**    
+
+- Failure to randomized samples violates many key assumptions of statistical models     
+
+- An understanding of proper use of sampling methods is essential to statistical inference      
+
+- Most commonly used machine learning algorithms assume that training data are **unbiased** and **independent identically distributed (iid)**   
+  - These conditions only met if training data sample is randomized   
+  - Otherwise, the training data will be biased and not represent the underlying process distribution 
+
+
+
+
