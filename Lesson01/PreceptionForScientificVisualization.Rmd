@@ -126,11 +126,8 @@ $^*$ at least 20 posts in Piazza on discussion questions, class materials, answe
 ## Teaching Fellow: Kyle Asano
 
 - BS, mechanical engineering and bioengineering (minor), Santa Clara University   
-<<<<<<< HEAD
-=======
 
 - Undergraduate research on drug-delivery using genetic modification technology
->>>>>>> temp
 
 - Area of interest: Business and Healthcare   
 
