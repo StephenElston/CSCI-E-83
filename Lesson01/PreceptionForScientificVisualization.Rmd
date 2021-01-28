@@ -1,5 +1,5 @@
 ---
-title: "Perception of Scientific Visualization"
+title: "Perception for Scientific Visualization"
 author: "Steve Elston"
 date: "12/26/2020"
 output:
@@ -149,18 +149,21 @@ Piazza is the primary communications method and you are **required to sign up fo
 - Pass code: cscie83_2021     
 
 
+**Ask for the help you need!**
+
 -----------------------------------------------
 
 ## Communications
 
-For private matters, you can directly communicate with the instructional team:      
+For private matters, you can directly communicate with the instructional team:        
+- Grades      
+- Absences      
+- Etc       
 
 Steve Elston, Instructor, stephen.elston@quantia.com    
-Kyle Asano, TF, asano.kyle@gmail.com    
+Kyle Asano, TF, asano.kyle@gmail.com  
 
-- Grades
-- Absences
-- Etc     
+**Office hours:** If you need indivitual assistance, please ask to schedule office hours. Don't be shy!   
 
 Communications by Canvas may be **significantly delayed!**
 
