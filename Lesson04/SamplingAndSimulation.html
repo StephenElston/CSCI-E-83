@@ -467,7 +467,7 @@ Steve Elston
 </ul>
 </div>
 <div id="importance-of-random-sampling" class="slide section level2">
-<h1>Importance of random sampling</h1>
+<h1>Importance of Random Sampling</h1>
 <p>All statistical methods rely on the use of <strong>randomized unbiased samples</strong></p>
 <ul>
 <li><p>Failure to randomized samples violates many key assumptions of statistical models</p></li>
@@ -479,6 +479,243 @@ Steve Elston
 <li>Otherwise, the training data will be biased and not represent the underlying process distribution</li>
 </ul></li>
 </ul>
+</div>
+<div id="sampling-distributions" class="slide section level2">
+<h1>Sampling distributions</h1>
+<p>Sampling of a population is done from an unknown <strong>population distribution</strong>, <span class="math inline">\(\mathcal{F}\)</span></p>
+<ul>
+<li><p>Any statistic we compute for the generating process is based on a sample, <span class="math inline">\(\hat{\mathcal{F}}\)</span></p></li>
+<li><p>The statistic is an approximation, <span class="math inline">\(s(\hat{\mathcal{F}})\)</span></p></li>
+<li><p>If we continue to take random samples from the population and compute estimates of a statistic, we say the statistic has a <strong>sampling distribution</strong></p>
+<ul>
+<li>Hypothetical concept of the sampling distribution is a foundation of <strong>frequentist statistics</strong><br />
+</li>
+<li>Frequentist statistics built on the idea of randomly resampling the population distribution and recomputing a statistic</li>
+</ul></li>
+<li><p>In the frequentist world, statistical inferences are performed on the sampling distribution</p>
+<ul>
+<li>Sampling process must not bias the estimates of the statisti</li>
+</ul></li>
+</ul>
+</div>
+<div id="sampling-and-the-law-of-large-numbers" class="slide section level2">
+<h1>Sampling and the law of large numbers</h1>
+<p>The <strong>law of large numbers</strong> is a theorem that states that <strong>statistics of independent random samples converge to the population values as more samples are used</strong></p>
+<ul>
+<li>Example, for a population distribution, <span class="math inline">\(\mathcal{N}(\mu,\sigma)\)</span>, the sample mean is:</li>
+</ul>
+<p><span class="math display">\[Let\ \bar{X} = \frac{1}{n}\sum_{i=1}^{n} X_i\]</span></p>
+<p>Then by the law of Large Numbers:</p>
+<p><span class="math display">\[ \bar{X} \rightarrow E(X) = \mu\\
+as\\
+n \rightarrow \infty\]</span></p>
+<ul>
+<li>This result</li>
+</ul>
+</div>
+<div id="sampling-and-the-law-of-large-numbers-1" class="slide section level2">
+<h1>Sampling and the law of large numbers</h1>
+<p>The law of large numbers is foundational to statistics</p>
+<ul>
+<li><p>We rely on the law of large numbers whenever we work with samples</p></li>
+<li><p>Assume that <strong>larger samples are more representatives of the population we are sampling</strong></p></li>
+<li><p>Is foundation of sampling theory, plus modern computational methods; simulation, bootstrap resampling, and Monte Carlo methods</p></li>
+<li><p>If the real world did not follow this theorem much of statistics, to say nothing of science and technology, would fail badly.</p></li>
+</ul>
+</div>
+<div id="sampling-and-the-law-of-large-numbers-2" class="slide section level2">
+<h1>Sampling and the law of large numbers</h1>
+<p>The law of large numbers has a long history</p>
+<ul>
+<li><p>Jacob Bernoulli posthumously published the first proof for the Binomial distribution in 1713</p></li>
+<li><p>Law of large numbers is sometimes referred to as <strong>Bernoulli’s theorem</strong></p></li>
+<li><p>A more general proof was published by Poisson in 1837.</p></li>
+</ul>
+</div>
+<div id="sampling-and-the-law-of-large-numbers-3" class="slide section level2">
+<h1>Sampling and the law of large numbers</h1>
+<p>A simple example</p>
+<ul>
+<li><p>The mean fair coin flips (0,1)=(T,H) converges to the expected value with more flips</p></li>
+<li><p>The mean converges to the expected value of 0.5 for <span class="math inline">\(n = 5, 50, 500, 5000\)</span></p></li>
+</ul>
+<pre><code>## 5  0.80
+## 50  0.36
+## 500  0.48
+## 5000  0.49</code></pre>
+</div>
+<div id="standard-error-and-convergance-for-a-normal-distribution" class="slide section level2">
+<h1>Standard error and convergance for a Normal distribution</h1>
+<p>As we sampled from a Normal distribution, the mean and standard deviation of the sample converged to the population mean</p>
+<ul>
+<li>What can we say about the expected error of the mean estimate as the number of samples increases?
+<ul>
+<li>This measure is known as the <strong>standard error</strong> of the sample mean<br />
+</li>
+<li>As corollary of the law of large numbers the standard error is defined:</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[se = \pm \frac{sd}{\sqrt{(n)}}\]</span></p>
+<ul>
+<li>Standard error decreases as the square root of <span class="math inline">\(n\)</span>
+<ul>
+<li>Example, if you wish to halve the error, you will need to sample four times as many values.<br />
+</li>
+<li>For the mean estimate, <span class="math inline">\(\mu\)</span>, define the uncertainty in terms of <strong>confidence intervals</strong><br />
+</li>
+<li>Example, 95% confidence interval:</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[CI_{95} =\mu \pm 1.96\ se\]</span></p>
+</div>
+<div id="sampling-strategies" class="slide section level2">
+<h1>Sampling Strategies</h1>
+<p>There are a great number of possible sampling methods.</p>
+<ul>
+<li><p>Some of the most commonly used methods</p></li>
+<li><p><strong>Bernoulli sampling</strong>, a foundation of random sampling</p></li>
+<li><p><strong>Stratified sampling</strong>, when groups with different characteristics must be sampled</p></li>
+<li><p><strong>Cluster sampling</strong>, to reduce cost of sampling</p></li>
+<li><p><strong>Systematic sampling and convenience sampling</strong>, a slippery slope</p></li>
+</ul>
+</div>
+<div id="bernoulli-sampling" class="slide section level2">
+<h1>Bernoulli Sampling</h1>
+<p><strong>Bernoulli sampling</strong> is a widely used foundational random sampling strategy</p>
+<ul>
+<li><p>Bernoulli sampling has the following properties:</p></li>
+<li><p>A <strong>single random sample</strong> of the population is created</p></li>
+<li><p>A particular value in the population is selected based on the outcome of a Bernoulli trial with fixed probability of success, <span class="math inline">\(p\)</span></p></li>
+<li><p>Example, a company sells a product by weight</p>
+<ul>
+<li>To ensure the quality of a packaging process so few packages are underweight<br />
+</li>
+<li>Impractical to empty and weight the contents of every package<br />
+</li>
+<li>Bernoulli randomly sampled packages from the production line and weigh contents<br />
+</li>
+<li>Statistical inferences are made from sample</li>
+</ul></li>
+</ul>
+</div>
+<div id="bernoulli-sampling-1" class="slide section level2">
+<h1>Bernoulli Sampling</h1>
+<p>An example with synthetic data. - Generate 2000 random samples from the standard Normal distribution<br />
+- The realizations are randomly divided into 4 groups with <span class="math inline">\(p = [0.1,0.3,0.4,0.2]\)</span><br />
+- The probability of a sample being in a groups is not uniform, and sums to 1.0.</p>
+<ul>
+<li>Head of the data frame is displayed:</li>
+</ul>
+<pre><code>##         var  group
+## 0  1.469248      1
+## 1 -1.150144      2
+## 2  2.519226      2
+## 3 -0.082478      2
+## 4 -0.033601      0
+## 5 -1.636656      0
+## 6 -0.412092      2
+## 7  1.784949      1
+## 8  0.042383      2
+## 9 -0.619732      2</code></pre>
+</div>
+<div id="bernoulli-sampling-2" class="slide section level2">
+<h1>Bernoulli Sampling</h1>
+<p>The population of 2000 values was sampled from the standard Normal distribution</p>
+<p>The mean of each group should be close to 0.0:<br />
+1. The sample is divided between 4 groups<br />
+2. Summary statistics are computed for each group</p>
+<pre><code>##        Count      Mean        SE  Upper_CI  Lower_CI
+## group                                               
+## 0       1022 -0.030849  0.032249  0.032360 -0.094058
+## 1       2979 -0.000648  0.017912  0.034459 -0.035755
+## 2       3994  0.003840  0.015827  0.034861 -0.027181
+## 3       2005 -0.014848  0.022617  0.029480 -0.059177</code></pre>
+</div>
+<div id="sampling-grouped-data" class="slide section level2">
+<h1>Sampling Grouped Data</h1>
+<p>Group data is quite common in application</p>
+<p>A few examples include:</p>
+<ol style="list-style-type: decimal">
+<li><p>Pooling opinion by county and income group, where income groups and counties have significant differences in population</p></li>
+<li><p>Testing a drug which may have different effectiveness by sex and ethnic group</p></li>
+<li><p>Spectral characteristics of stars by type</p></li>
+</ol>
+</div>
+<div id="stratified-sampling" class="slide section level2">
+<h1>Stratified Sampling</h1>
+<p>What is a sampling stategy for grouped or stratified data?</p>
+<ul>
+<li><p><strong>Stratified sampling</strong> strategies are used when data are organized in <strong>strata</strong></p></li>
+<li><p><strong>Simple Idea:</strong> independently sample each equal numbers of cases from each strata</p></li>
+<li><p>The simplest version of stratified sampling creates an <strong>equal-size Bernoulli sample</strong> from each strata</p></li>
+<li><p>In many cases, nested samples are required</p>
+<ul>
+<li>For example, a top level sample can be grouped by zip code, a geographic strata<br />
+</li>
+<li>Within each zip code, people are then sampled by income bracket strata<br />
+</li>
+<li>Equal sized Bernoulli samples are collected at the lowest level</li>
+</ul></li>
+</ul>
+</div>
+<div id="example" class="slide section level2">
+<h1>Example</h1>
+<p>Bernoulli sample 100 from each group and compute summary statistics</p>
+<pre><code>##        Count      Mean        SE  Upper_CI  Lower_CI
+## group                                               
+## 0        100 -0.041753  0.097958  0.150244 -0.233750
+## 1        100 -0.159626  0.092409  0.021495 -0.340748
+## 2        100 -0.072279  0.097027  0.117893 -0.262451
+## 3        100  0.129402  0.102523  0.330347 -0.071543</code></pre>
+</div>
+<div id="cluster-sampling" class="slide section level2">
+<h1>Cluster Sampling</h1>
+<p>When sampling is expensive a strategy is required to reduce the cost</p>
+<ul>
+<li>Examples of expensive to collect data:
+<ul>
+<li>Surveys of customers at a chain of stores<br />
+</li>
+<li>Door to door survey of homeowners<br />
+</li>
+<li>Sampling wildlife populations in a dispersed habitat</li>
+</ul></li>
+</ul>
+<p>Population can be divided into randomly selected clusters:<br />
+- Define the clusters for the population<br />
+- Randomly select the required number of clusters<br />
+- Sample from selected clusters<br />
+- Optionally, stratify the sample within each cluster</p>
+</div>
+<div id="cluster-sampling-1" class="slide section level2">
+<h1>Cluster Sampling</h1>
+<p>As an example, select a few store locations and Bernoulli sample customers at these locations.</p>
+<pre><code>##        Count      Mean        SE  Upper_CI  Lower_CI
+## group                                               
+## 0         97  0.023343  0.103481  0.226166 -0.179479
+## 1         97  0.049290  0.104858  0.254812 -0.156232
+## 2         98  0.056362  0.109000  0.270002 -0.157278
+## 3        102 -0.146424  0.105291  0.059947 -0.352795
+## 4        111 -0.025847  0.100979  0.172072 -0.223765
+## 5        100  0.079969  0.090989  0.258308 -0.098369
+## 6        104 -0.064531  0.101523  0.134454 -0.263515
+## 7        111 -0.057377  0.092665  0.124247 -0.239000
+## 8         87  0.038115  0.103077  0.240147 -0.163916
+## 9         93  0.033201  0.100668  0.230510 -0.164109</code></pre>
+</div>
+<div id="cluster-sampling-2" class="slide section level2">
+<h1>Cluster Sampling</h1>
+<p>Randomly select 3 cluseters</p>
+<pre><code>## cluster sampled are:</code></pre>
+<pre><code>## 7
+## 5
+## 4</code></pre>
+<p>Display summary statistics</p>
+<pre><code>##        Count      Mean        SE  Upper_CI  Lower_CI
+## group                                               
+## 4        111 -0.025847  0.100979  0.172072 -0.223765
+## 5        100  0.079969  0.090989  0.258308 -0.098369
+## 7        111 -0.057377  0.092665  0.124247 -0.239000</code></pre>
 </div>
 
   <!-- dynamically load mathjax for compatibility with self-contained -->

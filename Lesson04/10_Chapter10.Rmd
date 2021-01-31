@@ -93,11 +93,11 @@ out = [pop.sample(n = x).mean(axis = 0) for x in sample_size]
 for n,x in zip(sample_size,out): print("%.0f  %.2f" %(n, x))
 ```
 
-### Convergance of Bernolli trials 
 
 > **Exercise:** You will use the series of Bernoulli trials just computed to examine the convergance of the estimated probability, $p$. This compuational experiment is equivelent to determing if a long series of flips of a fair coin converge to $p = 0.5$. Now do the following:   
 > 1. Create and execute code to compute the running mean of the realizations of a series of Bernoulli trials as the sample size increases from 1 to 5000. Your result should be in the form of a data frame with one column containg the number of samples and the other the running mean.   
 > 2. Create a function to scatter plot the estimate of $p$ vs. the running number of samples. Include a distinctive horrizontal line at the theoretical value of $p$. Make sure your plot is correctly labled. Run your funtion twice; once for 1 to 500 realizations, and once for 1 to 5000 realizations. 
+> 3. Do the estimates of $p$ appear to converge to the known value and the number of realizations increases? 
 
 ```{python}
 # Calculate and plot a running average of N-trials of flipping a fair coin
@@ -118,7 +118,7 @@ plot_samples(running_average, 500, p)
 plot_samples(running_average, 5000, p)
 ```
 
-Do the estimates of $p$ appear to converge to the known value and the number of realizations increases? 
+
 
 ### Standard error and convergance for a Normal distribution
 
@@ -141,6 +141,7 @@ $$CI_{95} =\mu \pm 1.96\ se$$
 > 1. Compute the mean using 1 to 10000 samples of from a standard Normal distributon; $\mathcal{N(1,0)}$.   
 > 2. Create a data frame with the following columns; i) the number of samples, ii) the running mean estimates, iii) the theoretical upper confidence interval, iv) the running estiamted upper confidence interval, v) the theoretical lower confidence interval, iv) the running estiamted lower confidence interval.   
 > 3. Create a scatter plot of the mean estiamtes. Include on this plot distinctive lines showing the upper and lower theoretical confidence intervals and the population (theoretical) mean. Include a legend and other required annotation on your plot.  
+> Does your plot show convergence to the population mean as you would expect from the law of large numbers?
 
 ```{python}
 ## Plot means and SE for 10000 Normal distributions
@@ -167,9 +168,9 @@ def plot_se(df):
 plot_se(norms)  
 ```
 
-> Does your plot show convergence to the population mean as you would expect from the law of large numbers?
 
-> **Exercise:** Now that you have a feel for how mean converges following the law of large numbers. The next question to ask is if the variance and therefore the standard error also converge as the number of samples increase. To find out create and execute code to make two plots, one above the other. On the upper, create a scatter plot of the upper confidence interval bound estimates. Include a distinctive line for the theoretical upper confidnce interval. Make sure your plot includes proper annotations. Create the equivelent plot for the lower confidence interval bound.     
+
+> **Exercise:** Now that you have a feel for how mean converges following the law of large numbers. The next question to ask is if the variance and therefore the standard error also converge as the number of samples increase. To find out create and execute code to make two plots, one above the other. On the upper, create a scatter plot of the upper confidence interval bound estimates. Include a distinctive line for the theoretical upper confidnce interval. Make sure your plot includes proper annotations. Create the equivelent plot for the lower confidence interval bound.   
 > Now, examine this result. Do the estimates of the upper and lower confidence intervals appear to converge as expected as the number of samples increase?    
 
 

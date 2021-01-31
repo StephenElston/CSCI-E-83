@@ -58,7 +58,7 @@ Sampling is a fundamental process in the collection and analysis of data
 
 ----------------------------------------------------
 
-## Importance of random sampling   
+## Importance of Random Sampling   
 
 All statistical methods rely on the use of **randomized unbiased samples**    
 
@@ -68,8 +68,329 @@ All statistical methods rely on the use of **randomized unbiased samples**
 
 - Most commonly used machine learning algorithms assume that training data are **unbiased** and **independent identically distributed (iid)**   
   - These conditions only met if training data sample is randomized   
-  - Otherwise, the training data will be biased and not represent the underlying process distribution 
+  - Otherwise, the training data will be biased and not represent the underlying process distribution
+  
+  
+--------------------------------------------
 
+## Sampling distributions   
+
+Sampling of a population is done from an unknown **population distribution**, $\mathcal{F}$      
+
+- Any statistic we compute for the generating process is based on a sample, $\hat{\mathcal{F}}$     
+
+- The statistic is an approximation, $s(\hat{\mathcal{F}})$    
+
+- If we continue to take random samples from the population and compute estimates of a statistic, we say the statistic has a **sampling distribution**   
+  - Hypothetical concept of the sampling distribution is a foundation of **frequentist statistics**   
+  - Frequentist statistics built on the idea of randomly resampling the population distribution and recomputing a statistic         
+
+ - In the frequentist world, statistical inferences are performed on the sampling distribution    
+   - Sampling process must not bias the estimates of the statisti
+
+   
+-------------------------------------   
+
+## Sampling and the law of large numbers
+
+The **law of large numbers** is a theorem that states that **statistics of independent random samples converge to the population values as more samples are used**      
+
+- Example, for a population distribution, $\mathcal{N}(\mu,\sigma)$, the sample mean is:
+
+$$Let\ \bar{X} = \frac{1}{n}\sum_{i=1}^{n} X_i$$
+
+Then by the law of Large Numbers:
+
+$$ \bar{X} \rightarrow E(X) = \mu\\
+as\\
+n \rightarrow \infty$$
+
+- This result 
+
+-------------------------------------   
+
+## Sampling and the law of large numbers
+
+The law of large numbers is foundational to statistics    
+
+- We rely on the law of large numbers whenever we work with samples   
+
+- Assume that **larger samples are more representatives of the population we are sampling**     
+
+- Is foundation of sampling theory, plus modern computational methods;  simulation, bootstrap resampling, and Monte Carlo methods   
+
+- If the real world did not follow this theorem much of statistics, to say nothing of science and technology, would fail badly. 
+
+
+-------------------------------------   
+
+## Sampling and the law of large numbers   
+
+The law of large numbers has a long history     
+
+- Jacob Bernoulli posthumously published the first proof for the Binomial distribution in 1713   
+
+- Law of large numbers is sometimes referred to as **Bernoulli's theorem**     
+  
+- A more general proof was published by Poisson in 1837.  
+
+-------------------------------------   
+
+## Sampling and the law of large numbers
+
+A simple example     
+
+- The mean fair coin flips (0,1)=(T,H) converges to the expected value with more flips      
+
+- The mean converges to the expected value of 0.5 for $n = 5, 50, 500, 5000$  
+
+
+```{python, echo = FALSE}
+import numpy as np
+import numpy.random as nr
+import pandas as pd
+import matplotlib.pyplot as plt
+import math
+```
+
+```{python, echo = FALSE}
+nr.seed(3457)
+n = 1
+p = 0.5
+size = 1000000
+# Create a large binomial distributed population. 
+pop = pd.DataFrame({'var':nr.binomial(n, p, size)}) 
+# Sample the population for different sizes and compute the mean
+sample_size = [5, 50, 500, 5000]
+out = [pop.sample(n = x).mean(axis = 0) for x in sample_size] 
+for n,x in zip(sample_size,out): print("%.0f  %.2f" %(n, x))
+```
+
+
+-----------------------------------------------
+
+## Standard error and convergance for a Normal distribution
+
+As we sampled from a Normal distribution, the mean and standard deviation of the sample converged to the population mean    
+
+- What can we say about the expected error of the mean estimate as the number of samples increases?   
+  - This measure is known as the **standard error** of the sample mean    
+  - As corollary of the law of large numbers the standard error is defined:
+
+$$se = \pm \frac{sd}{\sqrt{(n)}}$$
+
+- Standard error decreases as the square root of $n$   
+  - Example, if you wish to halve the error, you will need to sample four times as many values.   
+  - For the mean estimate, $\mu$, define the uncertainty in terms of **confidence intervals**    
+  - Example, 95% confidence interval:
+
+$$CI_{95} =\mu \pm 1.96\ se$$ 
+
+
+-----------------------------------------------
+
+## Sampling Strategies
+
+There are a great number of possible sampling methods. 
+
+- Some of the most commonly used methods
+
+- **Bernoulli sampling**, a foundation of random sampling   
+
+- **Stratified sampling**, when groups with different characteristics must be sampled   
+
+- **Cluster sampling**, to reduce cost of sampling     
+
+- **Systematic sampling and convenience sampling**, a slippery slope
+
+
+---------------------------------------------------------
+
+## Bernoulli Sampling
+
+**Bernoulli sampling** is a widely used foundational random sampling strategy    
+
+- Bernoulli sampling has the following properties:    
+
+- A **single random sample** of the population is created    
+
+- A particular value in the population is selected based on the outcome of a Bernoulli trial with fixed probability of success, $p$     
+
+- Example, a company sells a product by weight     
+  - To ensure the quality of a packaging process so few packages are underweight   
+  - Impractical to empty and weight the contents of every package   
+  - Bernoulli randomly sampled packages from the production line and weigh contents   
+  - Statistical inferences are made from sample 
+
+
+--------------------------------------------------
+
+## Bernoulli Sampling
+
+An example with synthetic data. 
+- Generate 2000 random samples from the standard Normal distribution    
+- The realizations are randomly divided into 4 groups with $p = [0.1,0.3,0.4,0.2]$     
+- The probability of a sample being in a groups is not uniform, and sums to 1.0.  
+
+- Head of the data frame is displayed:
+
+```{python, echo=FALSE}
+nr.seed(345)
+population_size = 10000
+data = pd.DataFrame({"var":nr.normal(size = population_size), 
+                     "group":nr.choice(range(4), size= population_size, p = [0.1,0.3,0.4,0.2])})
+data.head(10)
+```
+
+--------------------------------------------------
+
+## Bernoulli Sampling
+
+The population of 2000 values was sampled from the standard Normal distribution    
+
+The mean of each group should be close to 0.0:    
+1. The sample is divided between 4 groups     
+2. Summary statistics are computed for each group      
+
+```{python, echo=FALSE}
+def count_mean(dat):
+    import numpy as np
+    import pandas as pd
+    groups = dat.groupby('group') # Create the groups
+    n_samples = groups.size()
+    se = np.sqrt(np.divide(groups.aggregate(np.var).loc[:, 'var'], n_samples))
+    means = groups.aggregate(np.mean).loc[:, 'var']
+    ## Create a data frame with the counts and the means of the groups
+    return pd.DataFrame({'Count': n_samples, 
+                        'Mean': means,
+                        'SE': se,
+                        'Upper_CI': np.add(means, 1.96 * se),
+                        'Lower_CI': np.add(means, -1.96 * se)})
+count_mean(data)
+```
+
+
+--------------------------------------------------
+
+## Sampling Grouped Data
+
+Group data is quite common in application
+
+A few examples include:     
+
+1. Pooling opinion by county and income group, where income groups and counties have significant differences in population        
+
+2. Testing a drug which may have different effectiveness by sex and ethnic group    
+
+3. Spectral characteristics of stars by type  
+
+
+-----------------------------------------------
+
+## Stratified Sampling     
+
+What is a sampling stategy for grouped or stratified data?    
+
+- **Stratified sampling** strategies are used when data are organized in **strata**    
+
+- **Simple Idea:** independently sample each equal numbers of cases from each strata   
+
+- The simplest version of stratified sampling creates an **equal-size Bernoulli sample** from each strata
+
+- In many cases, nested samples are required  
+  - For example, a top level sample can be grouped by zip code, a geographic strata     
+  - Within each zip code, people are then sampled by income bracket strata    
+  - Equal sized Bernoulli samples are collected at the lowest level     
+  
+  
+-----------------------------------------------------
+
+## Example    
+
+Bernoulli sample 100 from each group and compute summary statistics
+
+```{python, echo=FALSE}
+p = 0.01
+def stratify(dat, p):
+    groups = dat.groupby('group') # Create the groups
+    nums = min(groups.size()) # Find the size of the smallest group
+    num = int(p * dat.shape[0]) # Compute the desired number of samples per group
+    if num <= nums: 
+        ## If sufficient group size, sample each group.
+        ## We drop the unneeded index level and return, 
+        ## which leaves a data frame with just the original row index. 
+        return groups.apply(lambda x: x.sample(n=num)).droplevel('group')
+    else: # Oops. p is to large and our groups cannot accommodate the choice of p.
+        pmax = nums / dat.shape[0]
+        print('The maximum value of p = ' + str(pmax))
+stratified = stratify(data, p)
+count_mean(stratified)
+```
+
+
+--------------------------------------
+
+## Cluster Sampling
+
+When sampling is expensive a strategy is required to reduce the cost  
+
+- Examples of expensive to collect data:   
+  - Surveys of customers at a chain of stores   
+  - Door to door survey of homeowners   
+  - Sampling wildlife populations in a dispersed habitat     
+
+Population can be divided into randomly selected clusters:    
+  - Define the clusters for the population    
+  - Randomly select the required number of clusters   
+  - Sample from selected clusters    
+  - Optionally, stratify the sample within each cluster   
+
+
+--------------------------------------
+
+## Cluster Sampling
+
+As an example, select a few store locations and Bernoulli sample customers at these locations.
+
+
+```{python, echo=FALSE}
+## First compute the clusters
+num_clusters = 10
+num_vals = 1000
+## Create a data frame with randomly sampled cluster numbers
+clusters = pd.DataFrame({'group': range(num_clusters)}).sample(n = num_vals, replace = True)
+## Add a column to the data frame with Normally distributed values
+clusters.loc[:, 'var'] = nr.normal(size = num_vals)
+```
+
+```{python, echo=FALSE}
+count_mean(clusters)
+```
+
+
+--------------------------------------
+
+## Cluster Sampling
+
+Randomly select 3 cluseters
+
+```{python, echo=FALSE}
+## Randomly sample the group numbers, making sure we sample from 
+## unique values of the group numbers. 
+clusters_samples = nr.choice(clusters.loc[:, 'group'].unique(), 
+                             size = 3, replace = False)
+## Now sample all rows with the selected cluster numbers
+clus_samples = clusters.loc[clusters.loc[:, 'group'].isin(clusters_samples), :]
+print('cluster sampled are: ')
+for x in clusters_samples:
+    print(x)
+```
+
+Display summary statistics 
+
+```{python, echo=FALSE}
+count_mean(clus_samples)
+```
 
 
 
