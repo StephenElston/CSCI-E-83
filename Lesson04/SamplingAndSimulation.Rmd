@@ -26,7 +26,9 @@ Sampling is a fundamental process in the collection and analysis of data
 
 - Sampling is important because we almost never have data on a whole population   
 
-- Sampling must be randomized to preclude biases    
+- Sampling must be randomized to preclude biases     
+
+- As sample size increases the standard error of a statistic computed from the sample decreases by the law of large numbers   
 
 - Key points to keep in mind:   
   - Understanding sampling is essential to ensure data is representative of the entire population   
@@ -392,5 +394,52 @@ Display summary statistics
 count_mean(clus_samples)
 ```
 
+------------------------------
+
+## Systematic Sampling
+
+**Convenience and systematic sampling** are a slippery slope toward biased inferences      
+
+- Systematic methods lack randomization    
+
+- Convenience sampling selects the cases that are easiest to obtain     
+  - Commonly sited example known as **database sampling**      
+  - Example, the first N rows resulting from a database query     
+  - Example, every k-th case of the population   
+  
+  
+-------------------------------------------------
+
+## A few more thoughts on sampling
+
+There are many practical aspects of sampling.
+
+- Random sampling is essential to the underlying assumptions of statistical inference    
+
+- Whenever you are planing to sample data, make sure you have a clear sampling plan     
+
+- Know the number of clusters, strata, samples in advance    
+
+- Don’t stop sampling when desired result is achieved: e.g. error measure!     
+
+
+------------------------------------------
+
+## Summary
+
+Sampling is a fundamental process in the collection and analysis of data    
+
+- Sampling is important because we almost never have data on a whole population   
+
+- Sampling must be randomized to preclude biases    
+
+- As sample size increases the standard error of a statistic computed from the sample decreases by the law of large numbers
+
+- Key points to keep in mind:   
+  - Understanding sampling is essential to ensure data is representative of the entire population   
+  - Use inferences on the sample to say something about the population   
+  - The sample must be randomly drawn from the population  
+
+- Sampling from distribution is the building block of simulation     
 
 

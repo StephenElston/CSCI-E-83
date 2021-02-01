@@ -20,7 +20,7 @@ matplotlib$use("Agg", force = TRUE)
 
 The concept of **likelihood** and **maximum likelihood estimation (MLE)** have been at the core of much of statistical modeling for about 100 years. In 21st Century, these ideas continue to be foundational. 
 
-Understanding the concept of likelihood and the use of MLE methods is key to understanding many parametric statistical methods. Further, widely used machine learning models, including some deep learning models, use MLE. For example, in Chapter XXXXXXXXXXXX we will investiage the algorithms for generalized linear models which rely on MLE.  
+Understanding the concept of likelihood and the use of MLE methods is key to understanding many parametric statistical methods. Further, widely used machine learning models, including some deep learning models, use MLE. For example, in Chapter XXXXXXXXXXXX we will investigate the algorithms for generalized linear models which rely on MLE.  
 
 Stigler -@Stigler_2007 traces the long history of the concepts of likelihood and the MLE. The history starts with workers in the early 19th Century, including Gauss and Bernoulli. Major advances are marked by Fisher's seminal work in the 1920s and 1930s in establishing key properties of the MLE.        
 
@@ -62,7 +62,7 @@ import numpy.random as nr
 
 An example will help illustrate the foregoing concepts. The code below plots the likelihood for 5, 10 and 20 samples from a standard Normal distribution. In this example, we vary the parameter $\mu$, and assume the parameter $\sigma$ is fixed and known. The steps are:     
 - A random sample is drawn from a standard Normal distribution.    
-- For the random sample the log-likelihood is computed at each location parameter value. In code we do this by summing the logrithm of the PDFs for each observation at a value of the parameter $\mu$. The lambda (anonymous  function) specified the log of the PDF using the [scipy.stats.norm.logpdf](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html) function.      
+- For the random sample the log-likelihood is computed at each location parameter value. In code we do this by summing the logarithm of the PDFs for each observation at a value of the parameter $\mu$. The lambda (anonymous  function) specified the log of the PDF using the [scipy.stats.norm.logpdf](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html) function.      
 - The log-likelihood is plotted for each of the location parameter values.    
 
 ```{python}

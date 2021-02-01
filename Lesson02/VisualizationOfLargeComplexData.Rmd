@@ -17,6 +17,47 @@ matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
 ```
 
+
+----------------------------------------------------------------
+
+## Review: Why is Perception Important?  
+
+
+- **Goal:** Communicate information visually
+- Visualization technique maximize the information a viewer perceives
+- limits of human perception are a significant factor in understanding complex relationships
+- Can apply results of the considerable research on human perceptions for data visualization
+
+
+-----------------------------------------------------------
+
+## Use Aesthetics to Improve Perception 
+
+- Use aesthetics to improve perception
+- We take a very broad view of the term 'aesthetic' here
+- A plot aesthetics is any property of a visualization which highlight aspects of the data relationships
+- Aesthetics are used to project additional dimensions of complex data onto the 2-dimensional plot surface
+
+
+
+-----------------------------------------------------------
+
+## Properties of Common Aesthetics
+
+| Property or Aesthetic |Perception| Data Types |
+|:---------|:-----------|:------------|
+|Aspect ratio | Good | Numeric |
+|Regression lines | Good | Numeric plus categorical |
+|Marker position | Good | Numeric |
+|Bar length | Good | Counts, numeric |
+|Sequential color palette | Moderate | Numeric, ordered categorical |
+|Marker size | Moderate | Numeric, ordered categorical |
+|Line types | Limited | Categorical |
+|Qualitative color palette | Limited | Categorical|
+| Marker shape | Limited | Categorical |
+| Area | Limited | Numeric or categorical |
+| Angle | Limited | Numeric |
+
 -------------------------------------
 
 ## Visualizing Large Complex Data is Difficult  
@@ -34,6 +75,7 @@ matplotlib$use("Agg", force = TRUE)
   - Huge number of variables with many potential relationships   
   - **This is the hard part!**
 
+Note: we will address use of dimensionality reduction techniques in another lesson 
 
 -------------------------------------
 
