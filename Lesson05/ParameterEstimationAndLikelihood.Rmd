@@ -1,0 +1,194 @@
+
+---
+title: "Parameter Estimation and Likelihood"
+author: "Steve Elston"
+date: "01/13/2021"
+output:
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("/usr/bin/python3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+---------------------------------
+
+## Introduction   
+
+The concept of **likelihood** and **maximum likelihood estimation (MLE)** have been at the core of much of statistical modeling for about 100 years   
+
+- In 21st Century, likelihood and MLE ideas continue to be foundational      
+
+-  Understanding the concept of likelihood and the use of MLE methods is key to understanding many parametric statistical methods     
+  - Likelihood is a measure of how well a model fits data     
+  - MLE is a generic methods for parameter estimation    
+
+- MLE used widely for machine learning models, including some deep learning models      
+
+
+------------------------------------------------------
+
+## Likelihood   
+
+Likelihood is a measure of how well a **parametric model** fits a data sample
+
+- For a data sample, $\mathbf{X} = x_1, x_2, \ldots, x_n$    
+
+- Model for these data, with a parameter vector $\vec{\theta}$, is the conditional density function given the observations $\mathbf{X}$: 
+
+$$\mathcal{L}(\vec{\theta}\ |\ \mathbf{X} ) = f(\mathbf{X}\ |\ \vec{\theta})$$
+
+- $f(\mathbf{X}\ |\ \vec{\theta}$ can be either a PDF, for continuous distributions, or a PMF, for discrete distributions
+
+
+
+------------------------------------------------------
+
+## Likelihood   
+
+In most practical cases, we work with the **log likelibood**      
+
+- For observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the log likelihood:    
+
+$$l(\vec{\theta}\ |\ \mathbf{X}) = log\big( \mathcal{L}(\vec{\theta}\ |\ \mathbf{X}) \big) = \sum_{j} log \Big( f(x_j\ |\ \vec{\theta}) \Big)$$
+
+- The log likelihood summed over the sample is much easier to work with       
+
+
+-----------------------------------------
+
+## Example: The Normal likelihood
+
+The univariate Normal probability density function with parameter vector $(\mu,\sigma)$ for a single observation, $x$:     
+
+$$f(x,\mu,\sigma^2) = -\frac{1}{(2 \pi \sigma^2)^{1/2}} exp\Big[ - \frac{1}{2 \sigma^2}  (x - \mu)^2 \Big]$$
+
+
+For n observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the log-likelihood:  
+
+$$l(\mu, \sigma\ |\ \mathbf{X}) = - \frac{n}{2} log( 2 \pi \sigma^2 ) - \frac{1}{2 \sigma^2} \sum_{j=1}^n (x_j - \mu)^2$$
+- The log-likelihood is a function of the parameters, $(\mu,\sigma)$$     
+
+
+
+------------------------------------------
+
+## Example: The Normal likelihood
+
+An example to illustrate the foregoing concepts    
+
+- Plot the likelihood for 5, 10 and 20 samples from a standard Normal distribution   
+
+- Vary the parameter $\mu$, and assume the parameter $\sigma$ is fixed and known. The steps are:     
+- A random sample is drawn from a standard Normal distribution    
+
+- For the random sample the log-likelihood is computed at each location parameter value    
+
+- Notice that as the number of observations increases so does the likelihood.
+
+
+```{python, echo=FALSE}
+## Imports
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+import numpy as np
+import numpy.random as nr
+
+def plot_likelihood_1(sample_dist, pdf, num_samples, start, stop, linestyle):
+    ## Setup for plot
+    plt.rc('font', size=24)
+    fig, ax = plt.subplots(figsize=(5, 4), ) 
+    X = np.arange(start, stop, step=0.05)
+
+    ## Loop over number of samples
+    for i,samps in enumerate(num_samples): 
+        ## Compute a sample from standard Normal
+        sample = sample_dist(samps)
+        ## Loop over the x values and compute the likelihood
+        y=[]
+        for mu in X:
+            y.append(pdf(sample, mu).sum())
+        ## Plot the likelihood    
+        _=ax.plot(X, y, linewidth=4, label= str(samps) + ' samples', linestyle=linestyle[i] )
+
+    ## Add annotions to plot
+    ax.vlines(0.0, ymin=min(y), ymax=0.0, linewidth=3, linestyles='dotted')
+    ax.set_ylabel('Log-likelihood', fontsize=10)
+    ax.set_xlabel('x', fontsize=10)
+    ax.set_title('Normal log-likelihood for different sample sizes', fontsize=10)
+    ax.legend(fontsize=10)
+#    ax.set_xticklabels(ticks, fontsize= 10)
+#    ax.set_yticklabels(ticks, fontsize= 10)
+    plt.show()         
+
+
+sample_dist = lambda x: nr.normal(size=x)
+pdf = lambda x, y: norm.logpdf(x, loc=y)
+num_samples = [5, 10, 20]
+start = -10.0
+stop = 10.0
+linestyle = ['solid','dashed','dashdot']
+plot_likelihood_1(sample_dist, pdf, num_samples, start, stop, linestyle)
+```
+
+-----------------------------------
+
+## Example: Binomial Likelihood   
+
+Example of log-likelihood for the Binomial distribution   
+
+-Differences include with Normal distribution:   
+  - Binomial distribution models **discrete events**      
+  - Range of the single parameter, $\pi$, restricted to the range $0 \le \pi \le 1$      
+
+- Binomial distribution has the following probability mass function (PMF) for $k$ successes in $n$ trials:        
+
+$$
+f(k, n, \pi) = \binom{n}{y} \pi^k (1 - \pi)^{n-k}
+$$
+
+- Log-likelihood is easily found:    
+
+$$l(k, n | \pi) = log \binom{n}{k} + k\ log(\pi) + (n-k)\ log(1-\pi)$$
+
+- Binomial log-likelihood has a strong dependence on both the sample size, $n$ and the number of successes, $k$         
+
+
+-------------------------------------------------------------
+
+## The Maximum Likehihood Estimator    
+
+**Maximum likelihood estimator (MLE)** is a foundational tool for much of statistical inference and machine learning      
+
+- Given a log-likelihood function, find the model parameters which maximize it  
+
+- Further, knowing the distribution allows us to quantify the uncertainty of the MLE parameter estimates   
+
+- The model parameter estimates found by MLE is Normal for large samples, a remarkable property 
+
+We will only give an overview of the essential elements of the theory. Many standard statistics and machine learning texts contain much greater detail. For example, Chapter 7 of Freedman -@Freedman_2009 provides an overview of MLE theory along with many specific examples. Section 4.4 of Davidson -@Davidson_2008 provides a rigorous derviation of significant properties of the MLE.    
+
+The MLE is a **point estimator**. The solution is an estimate of a single parameter value, or point value, with the highest likelihood. We will explore measures of uncertainty for point estimates in the next section of this book.     
+
+The maximum likelihood for the model parameters is achieved when two conditions are met:  
+
+$$
+\frac{\partial\ l(\theta)| \mathbf{X}}{\partial \theta} = 0 \\
+\frac{\partial^2\ l(\theta)| \mathbf{X} }{\partial \theta^2} < 0
+$$
+
+
+You can interpret these two conditions as follows:    
+- The first derivative of the log-likelihood function, or slope, will be 0 at either maximum or minimum points. In general, $\vec{\theta}$ is a vector of model parameters, and the partial derivatives of log-likelihood are a vector; the gradient of the log likelihood with respect to the model parameters. These first derivatives or gradient of the log-likelihood are known as the **score function**.        
+- The second derivatives of the log-likelihood indicates the curvature. A maximum has negative curvature, whereas, a minimum has positive curvature.   
+
+
+
+
