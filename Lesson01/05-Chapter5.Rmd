@@ -130,7 +130,7 @@ You can see that the banking angle in the plot is now considerably lower than be
 > 5. Set the `truncate` argument to true.   
 > Reference to the Seaborn documentation will be helpful. Notice that the relationship between the price and city MPG does not follow a straight line for either fuel type for the 1:1 aspect ratio. How does increasing or decreasing the aspect ratio change your perception of these relationships?    
 
-> **Exercise 5-2:** Poor human perception of angle was mentioned in the introduction to this chapter. To demonstrate this create three line plots with the following end points using the same set of axes: a) (0,0) and (10,8), b) (0,5) and (10,14), and c) (0,10) and (10,20). Make sure the aspect ratio of the plots are approximately 1:1. Notice these plots all have the same slopes. But, how well can you perceive these different slopes?   
+> **Exercise 5-2:** Poor human perception of angle was mentioned in the introduction to this chapter. To demonstrate this create a plot with three lines using the following x,y end points using the same set of axes: a) (0,0) and (10,8), b) (0,5) and (10,14), and c) (0,10) and (10,20). Make sure the aspect ratio of the plots are approximately 1:1. Notice these plots all have the same slopes. But, how well can you perceive these different slopes?   
 
 
 ## Marker Position and Scatter Plots
