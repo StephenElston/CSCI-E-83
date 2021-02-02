@@ -191,7 +191,8 @@ The result is the expected 12 = 2 + 4 + 6.
 As has been mentioned, the dot product is the projection of one vector on another. The code below demonstrates this point by taking the dot product of a vector with 3 times the same vector. 
 
 ```{python}
-np.dot(y, np.transpose(np.dot(3,y)))
+#np.dot(y, np.transpose(np.dot(3,y)))
+np.dot(y, np.transpose(y))
 ```
 
 This dot project is 3 times the dot product of $a$ with itself. Demonstrating that the projection scales with the length of the vectors.    
@@ -409,14 +410,14 @@ The result is an identity matrix, as it should be.
 When using NumPy, you will very often need a subset of an array for some operations. Fortunately, NumPy arrays are easy to subset, an operation known as [**slicing** or **indexing**](https://docs.scipy.org/doc/numpy/reference/arrays.indexing.html). For a NumPy array, the slicing operator are the square brackets, `[]`. For a 2-dimensional matrix the syntax for this operator is:
 
 $$
-slice = array[row\_start:row\_end,\ column\_start,column\_end]
+slice = array[row\_start:row\_end,\ column\_start:column\_end]
 $$
 
 Where, keeping in mind that NumPy indices are zero based,     
 $row\_start =$ the index of the first row in the slice.     
 $row\_start =$ the index of the first row not in the slice.    
-$row\_start =$ the index of the first column in the slice.     
-$row\_start =$ the index of the first column not in the slice.    
+$column\_start =$ the index of the first column in the slice.     
+$column\_start =$ the index of the first column not in the slice.    
 
 The figure below shows an example of slicing a 2-dimensional array, or matrix. The matrix has dimension $8 x 6$, and a slice of dimension $4 x 3$ is created. Notice the syntax of the row and column slices. 
 
