@@ -173,9 +173,13 @@ $$l(k, n | \pi) = log \binom{n}{k} + k\ log(\pi) + (n-k)\ log(1-\pi)$$
 
 - The model parameter estimates found by MLE is Normal for large samples, a remarkable property 
 
-We will only give an overview of the essential elements of the theory. Many standard statistics and machine learning texts contain much greater detail. For example, Chapter 7 of Freedman -@Freedman_2009 provides an overview of MLE theory along with many specific examples. Section 4.4 of Davidson -@Davidson_2008 provides a rigorous derviation of significant properties of the MLE.    
+- The MLE is a **point estimator**    
 
-The MLE is a **point estimator**. The solution is an estimate of a single parameter value, or point value, with the highest likelihood. We will explore measures of uncertainty for point estimates in the next section of this book.     
+- An estimate of a single parameter value, or point value, with the highest likelihood  
+
+-------------------------------------------------------------
+
+## The Maximum Likehihood Estimator  
 
 The maximum likelihood for the model parameters is achieved when two conditions are met:  
 
@@ -185,9 +189,229 @@ $$
 $$
 
 
-You can interpret these two conditions as follows:    
-- The first derivative of the log-likelihood function, or slope, will be 0 at either maximum or minimum points. In general, $\vec{\theta}$ is a vector of model parameters, and the partial derivatives of log-likelihood are a vector; the gradient of the log likelihood with respect to the model parameters. These first derivatives or gradient of the log-likelihood are known as the **score function**.        
-- The second derivatives of the log-likelihood indicates the curvature. A maximum has negative curvature, whereas, a minimum has positive curvature.   
+Interpret these two conditions:     
+
+- First derivative of log-likelihood function, or slope, is 0 at either maximum or minimum points    
+  - In general, $\vec{\theta}$ is a vector of model parameters   
+  - Partial derivatives of log-likelihood are a vector - the gradient with respect to the model parameters   
+  - Gradient of the log-likelihood are known as the **score function**   
+  
+- The second derivatives of the log-likelihood indicates the curvature      
+  - Maximum has negative curvature   
+  - Minimum has positive curvature
+  
+  
+-----------------------------------------------------
+
+## Fisher information and properties of MLE     
+
+The maximum likelihood estimator has useful and desireable properties  
+
+- Start with a matrix of second partial derivatives of the log-likelihood function   
+
+- Matrix is the **observed information matrix** of the model, $\mathcal{J}(\vec{\theta})$.   
+
+
+$$
+\mathcal{J}(\vec{\theta}) = 
+\begin{pmatrix}
+  \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_1^2} & 
+  \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_2\ \partial \theta_1} & 
+  \cdots & 
+  \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_n\ \partial \theta_1}\\
+   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_1\ \partial \theta_2} &
+   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_2^2} & 
+   \cdots &
+   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_2\ \partial \theta_n}\\
+   \vdots & \vdots & \vdots & \vdots \\
+   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_n\ \partial \theta_1} &
+   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_n\ \partial \theta_2} & 
+   \cdots &
+   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_n^2} 
+ \end{pmatrix}
+$$
+
+Useful properties of the information matrix   
+
+- The more negative the values of the second partial derivatives, the greater the curvature of the log-likehihood    
+  - log-likelihood likelihood function with more negative values has limbs    
+  - Narow peak implies that the information on parameter values is high    
+  
+- The matrix is symmetric, or information is symmetric around the maximum likelihood point
+
+
+-----------------------------------------------------
+
+## Fisher information and properties of MLE   
+
+Can one consider the information of the MLE before sampling data or performing an experiment? T
+
+- Can use the **expected information** or **Fisher information**    
+
+- Fisher information is the expectation over the second derivative of the observed information            
+$$\mathcal{J}(\vec{\theta}) = -\mathbf{E}\big\{ \mathcal{I}(\vec{\theta}) \big\} = -\mathbf{E}\big\{ \frac{\partial^2\ l(\mathbf{X} | \theta)}{\partial \theta^2} \big\}$$
+
+-----------------------------------------------------
+
+## Fisher information and properties of MLE   
+
+Fisher information leads to an important relationship    
+
+- The MLE parameter estimate $\hat{\theta}$ is a Normally distributed random variable
+
+- Arrises from the Taylor expansion of the maximum likelihood estimator   
+
+$$
+0 = \frac{\partial\ l(\hat{\theta})_\mathbf{X}}{\partial \theta} = 
+\frac{\partial\ l(\theta)_\mathbf{X}}{\partial \theta} + 
+\frac{\partial^2\ l(\hat{\theta})_\mathbf{X}}{\partial \theta^2} (\hat{\theta} - \theta)
+$$
+or     
+
+$$
+0 = l'(\theta)_\mathbf{X} + l''(\hat{\theta})_\mathbf{X}
+$$
+
+- $l'(\theta)_\mathbf{X} =$ first partial derivative  
+
+- $l''(\hat{\theta})_\mathbf{X} =$ second partial derivative. 
+
+-----------------------------------------------------
+
+## Fisher information and properties of MLE   
+
+Continuing with the simplified notation, and solving for $\hat{\theta}$;    
+
+$$
+\hat{\theta} = \theta + \frac{l'(\theta)_\mathbf{X}/n}{-l''(\hat{\theta})_\mathbf{X}/n}
+$$
+
+Fisher information relates to the score function as its variance   
+
+$$
+\frac{\partial\ l(\theta)}{ \partial \theta}\ \dot{\sim}\
+\mathcal{N} \big(0, 1/ \mathcal{I}_\theta \big)
+$$
+
+
+For **large sample**, $n \rightarrow \infty$, take the expectation over $\mathbf{X}$. Assuming first and second derivatives exist and continuous, then by the Central Limit Theorem:    
+
+$$\hat{\theta} \dot{\sim} \mathcal{N}\Big(\theta, \frac{1}{n\mathcal{I}(\theta)} \Big)$$
+
+-----------------------------------------------------
+
+## Fisher information and properties of MLE   
+
+$$
+\frac{\partial\ l(\theta)}{ \partial \theta}\ \dot{\sim}\
+\mathcal{N} \big(0, 1/ \mathcal{I}_\theta \big)
+$$
+
+Relationship shows several important properties     
+
+- The maximum likelihood estimate of model parameters, $\hat{\theta}$, is Normally distributed      
+- The larger the Fisher information, the lower the variance of the parameter estimate    
+  - Greater curvature of the log likelihood function gives more certain the parameter estimates       
+  - The variance of the parameter estimate is inversely proportional to the number of samples, $n$.   
+
+------------------------------
+
+## Example of MLE for Normal distribution   
+
+MLE for the Normal distribution   
+
+- Find derivatives of the log-likelihood function with respect to the model parameters, $\mu$ and $\sigma2$    
+
+$$
+\begin{pmatrix}
+\frac{\partial l}{\partial \mu} \\
+\frac{\partial l}{\partial \sigma^2}
+\end{pmatrix}
+=
+\begin{pmatrix}
+\frac{1}{\sigma^2} \sum_j (x_j - \mu) \\
+-\frac{n}{2 \sigma^2} + 
+\frac{1}{2 \sigma^4} \sum_j (x_j - \mu)^2
+\end{pmatrix}
+=
+\begin{pmatrix}
+0 \\ 0
+\end{pmatrix}
+$$
+
+Solving above for the estimate of the mean, $\bar{x}$  
+
+
+$$
+\sum_{j=1}n (x_j - \mu) = 0 
+$$
+$$
+\bar{x} = \frac{1}{n} \sum_{j=1} x_j
+$$
+------------------------------
+
+## Example of MLE for Normal distribution   
+
+MLE for the Normal distribution   
+
+$$
+\begin{pmatrix}
+\frac{\partial l}{\partial \mu} \\
+\frac{\partial l}{\partial \sigma^2}
+\end{pmatrix}
+=
+\begin{pmatrix}
+\frac{1}{\sigma^2} \sum_j (x_j - \mu) \\
+-\frac{n}{2 \sigma^2} + 
+\frac{1}{2 \sigma^4} \sum_j (x_j - \mu)^2
+\end{pmatrix}
+=
+\begin{pmatrix}
+0 \\ 0
+\end{pmatrix}
+$$
+
+Find the maximum likelihood estimate of $\sigma^2$    
+
+$$
+\frac{1}{s^2} \sum_{j=1} (x_j - \mu)^2 = n
+$$
+$$
+s^2 = \frac{1}{n} \sum_{j=1}^n (x_j - \bar{y})^2 
+$$
+
+
+------------------------------
+
+## Example of MLE for Normal distribution   
+
+
+
+$$
+\mathcal{J}(\vec{\theta}) = 
+\begin{pmatrix}
+\frac{\partial^2 l}{\partial \mu^2} & \frac{\partial^2 l}{\partial \mu\ \partial \sigma^2}\\
+\frac{\partial^2 l}{\partial \mu\ \partial \sigma^2} & \frac{\partial^2 l}{\partial (\sigma^2)^2}
+\end{pmatrix} 
+= 
+\begin{pmatrix}
+-\frac{n}{\sigma^2} & -\frac{n}{\sigma^4}(\bar{x} - \mu) \\
+-\frac{n}{\sigma^4}(\bar{x} - \mu) & -\frac{n}{2\sigma^4} + \frac{1}{\sigma^6} \sum_j (x_j - \mu)^2
+\end{pmatrix}
+= 
+\begin{pmatrix}
+-\frac{n}{\sigma^2} & 0 \\
+0 & -\frac{n}{2\sigma^4} 
+\end{pmatrix}
+$$
+
+The simplification results from the fact that $\bar{x} \rightarrow  \mathbf{E}(\mathbf{x_j})  = \mu$ and $s^2 \rightarrow \mathbf{E} \big\{ (x_j - \mu)^2 \big\} = \sigma^2$ in the limit of a large sample from the law of large numbers.   
+
+There are some aspects of these relationships which make the MLE method attractive:     
+- The curvature of the MLE for both parameters increases with the number of samples $n$. In other words, the peak of the log-likelihood function becomes better defined as $n$ increases.     
+- The maximum likelihood estimates of the parameters, $\mu$ and $\sigma^2$ are independent. The off-diagonal terms are $0$.      
+
+
 
 
 

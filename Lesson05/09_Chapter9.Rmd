@@ -2,7 +2,7 @@
 title: "Chapter 9; Parameter Estiamtion and Likelihood"
 author: "Steve Elston"
 date: "10/4/2020"
-bibliography: bibliography.bib
+bibliography: ../bibliography.bib
 output: pdf_document
 ---
 
@@ -58,6 +58,8 @@ import matplotlib.pyplot as plt
 from scipy.stats import norm
 import numpy as np
 import numpy.random as nr
+import pandas as pd
+import seaborn as sns
 ```
 
 An example will help illustrate the foregoing concepts. The code below plots the likelihood for 5, 10 and 20 samples from a standard Normal distribution. In this example, we vary the parameter $\mu$, and assume the parameter $\sigma$ is fixed and known. The steps are:     
@@ -177,11 +179,11 @@ You can interpret these two conditions as follows:
 
 The maximum likelihood estimator has some useful and desireable properties. These properties form a basis for understanding MLE methods. To understand these concepts we will outline the derivation of some key properties. Additional details can be found in many reference, including Effron and Hastie -@Efron_Hastie_2016 Section 4.2 or Davidson -@Davidson_2008 Section 4.4.   
 
-We start with a matrix of second partial derivatives of the log-likelihood function. For a multi-parameter model, the second derivatives of the log-likelihood function form a matrix. The elements of the matrix include all second partial derivitives with respect to each model parameter. This matrix is known as the **observed information matrix** of the model, $\mathcal{J}(\vec{\theta})$.   
+We start with a matrix of second partial derivatives of the log-likelihood function. For a multi-parameter model, the second derivatives of the log-likelihood function form a matrix. The elements of the matrix include all second partial derivatives with respect to each model parameter. This matrix is known as the **observed information matrix** of the model, $\mathcal{J}(\vec{\theta})$.   
 
 
 $$
-\mathcal{I}(\vec{\theta}) = 
+\mathcal{J}(\vec{\theta}) = 
 \begin{pmatrix}
   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_1^2} & 
   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_2\ \partial \theta_1} & 
@@ -205,10 +207,10 @@ The observed information matrix has some useful properties:
 
 The computing the observed information matrix is useful if you have obervations. But, how can one consider the information of the MLE before sampling data or performing an experiment? The answer is to use the **expected information** or **Fisher information**. Fisher information is computed by taking the expectation over the second derivative of the log-likelihood, or the observed information:        
 
-$$\mathcal{I}(\vec{\theta}) = -\mathbf{E}\big\{ \mathcal{I}(\vec{\theta}) \big\} = -\mathbf{E}\big\{ \frac{\partial^2\ l(\mathbf{X} | \theta)}{\partial \theta^2} \big\}$$
+$$\mathcal{J}(\vec{\theta}) = -\mathbf{E}\big\{ \mathcal{I}(\vec{\theta}) \big\} = -\mathbf{E}\big\{ \frac{\partial^2\ l(\mathbf{X} | \theta)}{\partial \theta^2} \big\}$$
 
 
-The Fisher information leads to an important relationship. The MLW parameter estimate $\hat{\theta}$ is a Normally distributed random variable. To see this we start with a Taylor expansion of the maximum likelihood estimator:   
+The Fisher information leads to an important relationship. The MLE parameter estimate $\hat{\theta}$ is a Normally distributed random variable. To see this we start with a Taylor expansion of the maximum likelihood estimator:   
 
 $$
 0 = \frac{\partial\ l(\hat{\theta})_\mathbf{X}}{\partial \theta} = 
@@ -390,7 +392,8 @@ Examine your plot and answer these questions:
 > - Compare the parameter values estimated with the gradient descent algorithm with the values computed using closed form solutons with Numpy functions. Are you estimated parameters close to the closed form solutions?   
 > - Examine the plots of the parameter values and norm of the gradient vs. iteration. Can you see evidence that one parameter is easier to fit than the other?   
 > - Examine the countour plot with descent path. Does the trajectory of the descent path always follow the maxium gradient direction? In other words, is the trajectory of the descent path always perpendicular to the countour lines of the log likelihood function?  
-> -Can you see evidence that the descent path is affected by the possible range of the parameter values?       
+> -Can you see evidence that the descent path is affected by the possible range of the parameter values?  
+> **Tip:** you can reuse the plot functions you create for this exercise for the next exercise. 
 
 
 ### Stochastic gadient descent (SGD)
@@ -423,7 +426,7 @@ while(grad > stopping_criteria):
 Notice that if the sampling continues for more than one cycle through the cases, the samples are biased. In practice, this small bias does not seem to mater much.  
 
 
-> **Exercise:** In the previous exercise, you used bgatch gradient descent to estimate the parameters of the distributio of the log housing prices. Now, you will use SGD to estimate these parameters. Using a Bernoulli mini=batch sample size of 100 log housing price values, follow these steps:   
+> **Exercise:** In the previous exercise, you used batch gradient descent to estimate the parameters of the distributio of the log housing prices. Now, you will use SGD to estimate these parameters. Using a Bernoulli mini=batch sample size of 100 log housing price values, follow these steps:   
 - Create python functions to compute the Hessian of the log-likelihood, given the parameter values and the data sample. For the univariate Normal distribution, you can 
 - Create and execute python code to perform the gradient descent update, by calling the gradient function. Use starting parameter values, $\mu=1.0$ and $\sigma^2=1.0$. To simplify the algorithm use a fixed learning rate, $\gamma = 0.0001$. Use a simple stopping criteria of the norm of the gradient being less than $0.001$. Save the norm of the gradient and both parameter values at each iteration of the algorithm. Hints: 1) Keep in mind that the paramters and the graident are both vectors, so vector operations from the Numpy package should be used. 2) Depending on the Bernoulli sample of log price values your algorithm may not converge, in which case you should decrease the learning rate parameter, $gamma$. 
 - Plot the norm of the gradient along with the values of both parameters vs. the iteration number.   
@@ -479,7 +482,7 @@ This update requires computing the **inverse Hessian** matrix. There are several
 - If there are a large number of model parameters, the Hessian will have high dimensionality. Computing the inverse of of a high dimensional matrix is computationally intensive.   
 - Computing the full gradient and Hessian requires summing over all observations. For large data sets, this process can become prohibitive. 
 
-For large scale problems **quasi-Newton** methods are used. These methods use an approximation to avoid the need to compute the full inverse Hessian. The **Broyden–Fletcher–Goldfarb–Shanno (BFGS)** [@Fletcher_1987;@Noceal_Wright_2006] algorithm the most widely used quasi-Newton method. 
+For large scale problems **quasi-Newton** methods are used. These methods use an approximation to avoid the need to compute the full inverse Hessian. The **limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS)** [@Fletcher_1987;@Noceal_Wright_2006] algorithm the most widely used quasi-Newton method. 
 
 As with the gradient descent method, the learning rate or step size must be selected. This can be done with a hyperparameter search. Or more commonly, using a line search proceedure. Line search is used in the BFGS algorithm, for example.   
 
@@ -489,35 +492,69 @@ As with the gradient descent method, the learning rate or step size must be sele
 
 ## Limitations of MLE   
 
-The maximum likelihood estimator has a number of important limitations which should be kept in mind whenever you use it. In this section we will explore some, but far from all,        
+The maximum likelihood estimator has a number of important limitations which should be kept in mind whenever you use it. In this section we will explore some, but far from all, of these limitations.         
 
 ### Incorrect model and complex distributions   
 
-Further, in many real-world problems the distribution and, therefore the likelihood function, are not simple. These situations are problematic for maximum likelihood methods. The MLE will generally not find a useful solution for a maximum of the distribution. 
+In many real-world problems the distribution and, therefore the likelihood function, are not simple. These situations are problematic for maximum likelihood methods. The MLE will generally not find a useful solution for a maximum of the distribution. 
 
-For example, consider what happens when we 
+For example, consider what happens when we assume a likelihood function that is only approximately correct. This situation could arise from either  The incorrect likelihood function   
 
 As another example, a distribution might be mixture of simple distributions. In this case, the mixture will have multiple modes. One mode of the distribution will be the maximum. However, the mode found by any gradient-based algorithm is dependent on the starting point. An MLE algorithm will find the nearest **local maximum**. But, there is no guarantee of fiding the actual maximum likelihood.      
 
 Another 
 
+```{python}
+samples = np.concatenate((nr.normal(loc=0.0, scale=1.0, size=10000), 
+                          nr.normal(loc=6.0, scale=2.0, size=10000), 
+                          nr.normal(loc=-4.0, scale=1.5, size=5000)))
+samples = pd.Series(samples) #, name='Multi_Modal_Samples') 
+
+plt.rc('font', size=24)
+fig, ax = plt.subplots(2, 1, figsize=(15, 20))      
+#_=plt.hist(samples, bins=100)
+sns.kdeplot(data=samples, ax=ax[0], linewidth=5)
+ax[0].set_xlabel('X')
+ax[0].set_ylabel('Probability Density')
+ax[0].set_title('Multi-Modal Probability Density')
+
+scale = np.var(samples)
+logpdf = lambda x, y: norm.logpdf(x, loc=y, scale=scale)
+mu_values = np.arange(-15.0, 15.0, 0.1)
+log_likelihood = []
+for mu in mu_values:
+    log_likelihood.append(logpdf(samples,mu).sum())
+max_LL = mu_values[np.argmax(log_likelihood)]    
+ax[1].plot(mu_values,log_likelihood, linewidth=5)
+ax[1].axvline(max_LL, linewidth=5, linestyle='--', color='black')
+ax[1].set_title('Log-likelihood vs. location value')
+ax[1].set_xlabel('X')
+ax[1].set_ylabel('Log-likelihood')
+```
+
 *********
 
 ### Parameter near limits
 
-For many distributions, parameter values have limits. In these cases, log-likelihood function may have an extremely high gradient. The result can be poorly determined parameter estimates.
+For many distributions, parameter values have limits. In these cases, log-likelihood function may have an extremely high gradient near the limit. The result can be poorly determined parameter estimates and slow convergence.
 
-You have already seen the example of estimating the variance near 0 for a Normal distribution model. In another example, you have seen that finding a maximum likelihood estiamte for the parameter of the Binomial distribution can be difficult, with slow convergence, near the limits of $0$ and $1$. 
+You have already seen the example of estimating the variance near 0 for a Normal distribution model. In another example, you have seen that finding a maximum likelihood estimate for the parameter of the Binomial distribution can be difficult near the limits of the range; $0$ and $1$. 
 
 ### High dimensional problems   
 
 The MLE method often finds poor solutions to problems in high dimensions. By high dimensions we mean a large numbers of parameters. For these problems, the likelihood function has corresponding high dimensionality; one dimension for each parameter. 
 
-For high dimensional problems, it is often the case that the gradient and Hessian are not well determined. Sources of uncertainty in the variables can lead to considerable uncertainty in determining the gradient in high dimensions. MLE algorithms may not converge of will converge to results with a large uncertainty. We will address methods to deal with some of these problems in Section XXXXX of this book.          
+For high dimensional problems, it is often the case that the gradient and Hessian are not well determined. Sources of uncertainty in the variables can lead to considerable uncertainty in determining the gradient in high dimensions. MLE algorithms may not converge of will converge to results with a large uncertainty. 
+
+Even it cases with only a few parameters MLE methods can have convergence problems. In this chapter you have seen the affect of difficulties fitting the variance parameter have on fitting the location parameter for a univariate Normal distribution.  
+
+We will address methods to deal with some of these problems in Section XXXXX of this book.          
 
 ### Correlated features  
 
-The forgoing discussion assumes that the variables used for the MLE process are independent. In reality, this is never truely the case. If some variables have a high correlation, the MLE algorithm can breakdown since graidents will not be well determined. We will have considerably more to say about this problem in Section XXXXXXX of this book.      
+The forgoing discussion assumes that the variables used for the MLE process are independent. In reality, this is never truly the case. If some variables have a high correlations, the MLE algorithm can breakdown since gradients will not be well determined. We will have considerably more to say about this problem in Section XXXXXXX of this book.   
+
+
 
 #### Copyright 2020, 2021, Stephen F Elston. All rights reserved. 
 
