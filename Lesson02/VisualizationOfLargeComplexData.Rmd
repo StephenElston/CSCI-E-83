@@ -125,7 +125,8 @@ What can we do about over-plotting?
 
 - **Marker transparency:** so one can see markers underneath; useful in cases with minimal overlap of markers   
 - **Marker size:** smaller marker size reduces over-plotting within limits        
-- **Adding jitter:** adding a bit of random **jitter** to variables with limited number of values       
+- **Adding jitter:** adding a bit of random **jitter** to variables with limited number of values 
+- **Random down-sampling:** for very large data sets, you may only need a representative sample to understand key data relationships
 
 -------------------------------------------
 
@@ -208,7 +209,7 @@ Alternatives to avoid over-plotting for truly large data sets
   
 - **Mosaic plots:** display multidimensional count (categorical) data   
   - Uses tile size and color to project multiple dimensions   
-  - 2-d equivalent of a multi-variate bar chart        
+  - 2-d equivalent of a multivariate bar chart        
   
 - **Dimensionality reduction:** we will discuss this later in the course   
 
@@ -273,6 +274,58 @@ _=ax.set_xlabel('Time', fontsize=6)
 _=ax.set_ylabel('Log Median Sale Price', fontsize=8)
 ```
 
+
+--------------------------------------
+
+## Mosaic Plots
+
+How can we display multidimensional count (categorical) data at scale?   
+
+- Mosaic plots displays the relative proportion of counts of a contingency table      
+
+- Plot area is divided and fully filled by a set of tiles    
+
+- The larger the count, the larger tile area
+
+
+--------------------------------------
+
+## Mosaic Plots
+
+```{python, echo=FALSE}
+bike_share_df = pd.read_csv('../data/BikeSharing.csv')
+
+## Add month column with names
+bike_share_df.loc[:,'month'] = [calendar.month_abbr[i] for i in bike_share_df.loc[:,'mnth']]
+
+## Add column with human readable weather conditions
+weather = {1:'Clear', 2:'Mist', 3:'Light precipitation', 4:'Heavy precipitation'}
+bike_share_df.loc[:,'Weather'] = [weather[i] for i in bike_share_df.loc[:,'weathersit']]
+```
+
+```{python, echo=FALSE}
+season = {1:'winter', 2:'spring', 3:'summer', 4:'fall'}
+bike_share_df.loc[:,'Season'] = [season[i] for i in bike_share_df.loc[:,'season']]
+year = {0:'2011', 1:'2012'}
+bike_share_df.loc[:,'year'] = [year[i] for i in bike_share_df.loc[:,'yr']]
+working = {0:'No_Work', 1:'Working'}
+bike_share_df.loc[:,'WorkingDay'] = [working[i] for i in bike_share_df.loc[:,'workingday']]
+
+categorical_cols = ['year','Season', 'WorkingDay', 'Weather']
+
+
+fig, ax = plt.subplots(figsize=(5, 4))
+plt.rcParams.update({'font.size': 5})
+_=mosaicplot.mosaic(bike_share_df.loc[:,categorical_cols], 
+                    index=list(categorical_cols), 
+                    title = 'Counts of weather conditions',
+                    ax=ax)
+
+plt.show()
+```
+
+
+
 -------------------------------------
 
 ## Displays for Complex Data
@@ -300,7 +353,7 @@ How can we understand the relationships in complex data with many variables?
 Display multiple plot views in an array or grid    
 
 - Create an array of plots which project multiple related views of data relationships    
-  - Organize axes to give multi-dimensional view
+  - Organize axes to give multidimensional view
 
 - Example, scatterplot with kde plots on the margins       
   - Supported by Seaborn jointplot      
@@ -318,7 +371,7 @@ Scatter plot matrix used to investigate relationships between a number of variab
    - Conveys lots of information - requires study! 
 
 - Each pairwise relationship is displayed twice    
-  - Two possible orientations     gi
+  - Two possible orientations
   - Or two different plot types   
 
 - Can place histograms and KDE plots on diagonal    
@@ -350,7 +403,7 @@ plt.show()
 
 **Facet plots** revolutionized statistical graphics starting about 30 years ago     
 
-- Facet plots extend the number of dimensions projeted onto 2-d plot surface 
+- Facet plots extend the number of dimensions projected onto 2-d plot surface 
 
 - Key idea: Create array of plots of subsets of the data   
   - Create subsets using a group-by operation on other variables    
@@ -363,7 +416,7 @@ plt.show()
 
 ## Facet Plots     
 
-Like many good ideas facet plotting was invented serveral times
+Like many good ideas facet plotting was invented several times
 
 - Multiple contemporaneous inventors and names      
   - Tufte, 1990, introduced **method of small multiples**     
@@ -459,10 +512,9 @@ def compute_slopes(df, column, group_variable='state'):
 #compute_slopes(housing, 'state')
 state_slopes = compute_slopes(housing, 'state')
 
-## PLot states with the fastest growing prcing
+## PLot states with the fastest growing pricing
 def find_changes(df, slopes, start, end, col='state'):
     increase  = slopes.loc[start:end,'entity_name']
-    print(increase)
     increase_df = df.loc[df.loc[:,col].isin(increase),:]
     increase_df = increase_df.merge(slopes, how='left', right_on='entity_name', left_on=col)
     return(increase_df, increase)
@@ -476,7 +528,7 @@ def plot_price_by_entity(df, order, entity='state', xlims=[2007.5, 2016.5]):
     g.set(xlim=(xlims[0],xlims[1]))
     plt.show()
 
-plot_price_by_entity(big_increase_states, increase_states)
+_=plot_price_by_entity(big_increase_states, increase_states)
 ```
 
 -------------------------------------

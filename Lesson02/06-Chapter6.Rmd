@@ -112,7 +112,7 @@ housing.shape
 
 Now that the missing values have been dealt with, Let's have a first look at these data. The code below creates two basic exploratory plots, a scatter plot and a distribution plot.       
 
-> **Computational note:** The housing data set contains a great many cases. This makes rendering scatter plots diffult in some environments. One solution to this problem is to descimate the data by sampling. In this case, we will use a simple random sampling scheme to reduce the number of samples to 20% of the original.          
+> **Computational note:** The housing data set contains a great many cases. This makes rendering scatter plots diffult in some environments. One solution to this problem is to descimate the data by random sampling. In this case, we will use a Bernoulli sampling scheme to reduce the number of samples to 20% of the original.          
 
 ```{python}
 housing_reduced = housing.sample(frac=0.2, axis=0)
@@ -332,11 +332,11 @@ To demonstrate the concept of facet plotting, we will use another data set. @Fan
 
 The goal of the analysis is to predict the number of bikes in use for each hour of the day, the 'cnt' variable, using the independent variables. There are a great many relationships one can investigate in this data set. In this example we will use facet plotting to investigate. 
 
-The code below performes the following operations:  
+The code below performs the following operations:  
 
 1. loads the data set.   
 2. A new column is created in the data frame with a human readable month abbreviations. These abbreviations come from the [Python calendar package](https://docs.python.org/3/library/calendar.html).        
-3. Create a column with human readable weather conditions using a simple Python dictionary lookup.  
+3. Create a column with human readable weather conditions using a simple Python dictionary lock-up.  
 4. Display a list of the column names and types.   
 
 ```{python}
@@ -355,13 +355,13 @@ bike_share_df.dtypes
 
 ## Mosaic plots   
 
-The foregoing scalable plot types are used primarily for numeric data. But, how can we display multidimensional count (categorial) data a scale? There is no perfect answer. The **mosaic plot** is one possible answer.   
+The foregoing scalable plot types are used primarily for numeric data. But, how can we display multidimensional count (categorical) data at scale? There is no perfect answer. The **mosaic plot** is one possible answer.   
 
-The origin of the mosaic plot is not entirely clear. This plot type has been used for applications in phycology for some time, @Friendly_1992, @Friendly_1994, and @Friendly_2001. 
+The origin of the mosaic plot is not entirely clear. This plot type has been used for applications in physiology for some time, @Friendly_1992, @Friendly_1994, and @Friendly_2001. 
 
-The mosaic displays the relative proportion of counts of a contingency table. The plot area is divided in to a set of tiles that fully fill the plot area. The larger the count, the lrger the area of the tile on the plot.    
+The mosaic displays the relative proportion of counts of a contingency table. The plot area is divided in to a set of tiles that fully fill the plot area. The larger the count, the larger the area of the tile on the plot.    
 
-The concept of the mosaic plot is best understood by seeing an example. The code in the cell below creates a mosaic plot using the [statsmodels.graphics.mosaicplot.mosaic](https://www.statsmodels.org/stable/generated/statsmodels.graphics.mosaicplot.mosaic.html) function to create an example using the bicyle rental data. This function uses counts by category, and therefore requires categorical variables. The first six lines of the the code below creates categorical variables with human understandable names.        
+The concept of the mosaic plot is best understood by seeing an example. The code in the cell below creates a mosaic plot using the [statsmodels.graphics.mosaicplot.mosaic](https://www.statsmodels.org/stable/generated/statsmodels.graphics.mosaicplot.mosaic.html) function to create an example using the bicycle rental data. This function uses counts by category, and therefore requires categorical variables. The first six lines of the the code below creates categorical variables with human understandable names.        
 
 ```{python}
 season = {1:'winter', 2:'spring', 3:'summer', 4:'fall'}
@@ -384,13 +384,13 @@ _=mosaicplot.mosaic(bike_share_df.loc[:,categorical_cols],
 plt.show()
 ```
 
-The relative counts for each unique combination categorie of the categorical variables are displayed as the area of the tiles on the plot area. The tiles ae laied out as follows:    
+The relative counts for each unique combination of the categorical variables are displayed as the area of the tiles on the plot area. The tiles are laid out as follows:    
 
 - The seasons of the year are on the vertical axis.   
-- Year and working day status are on the horrizontal axis.   
+- Year and working day status are on the horizontal axis.   
 - Each combination of season, year and working day status are divided by the 4 possible weather conditions.    
 
-Study the realative areas of the tiles on this plot. There are a number of observations one can make. Some are obvious, such as the smaller number of non-working days each year. Others require a bit more thought, such as the differences in days with each weather conditions by year and season.  
+Study the relative areas of the tiles on this plot. There are a number of observations one can make. Some are obvious, such as the smaller number of non-working days each year. Others require a bit more thought, such as the differences in days with each weather conditions by year and season.  
 
 
 # Another sample data set
@@ -622,7 +622,7 @@ The first few slopes show the expected descending order. These results can now b
 The function in the code below subsets the data frame containing the cognostic. The subsets are for the range of cognostic values specified. The full data fame is then subsetted using the key column specified. The cognostic data frame and the subset are then joined using the Pandas [merge](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.merge.html) function, and the result is returned.  
 
 ```{python}
-## PLot states with the fastest growing prcing
+## PLot states with the fastest growing pricing
 def find_changes(df, slopes, start, end, col='state'):
     increase  = slopes.loc[start:end,'entity_name']
     increase_df = df.loc[df.loc[:,col].isin(increase),:]

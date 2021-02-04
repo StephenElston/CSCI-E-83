@@ -498,9 +498,9 @@ The maximum likelihood estimator has a number of important limitations which sho
 
 In many real-world problems the distribution and, therefore the likelihood function, are not simple. These situations are problematic for maximum likelihood methods. The MLE will generally not find a useful solution for a maximum of the distribution. 
 
-For example, consider what happens when we assume a likelihood function that is only approximately correct. This situation could arise from either  The incorrect likelihood function   
+For example, consider what happens when we assume a likelihood function that is only approximately correct. This situation could arise from either the population being modeled having a different distribution or simply from outliers in the form of erroneous samples.  Regardless, parameter estimates using an incorrect likelihood function are usually biased.    
 
-As another example, a distribution might be mixture of simple distributions. In this case, the mixture will have multiple modes. One mode of the distribution will be the maximum. However, the mode found by any gradient-based algorithm is dependent on the starting point. An MLE algorithm will find the nearest **local maximum**. But, there is no guarantee of fiding the actual maximum likelihood.      
+Consider what happens to the maximum likelihood estimator if the population distribution has much more complex behavior than the model. For example, the likelihood might  a distribution might be mixture of simple distributions. In this case, the mixture will have multiple modes. One mode of the distribution will be the maximum. However, the mode found by any gradient-based algorithm is dependent on the starting point. An MLE algorithm will find the nearest **local maximum**. But, there is no guarantee of fiding the actual maximum likelihood.      
 
 Another 
 
@@ -532,7 +532,6 @@ ax[1].set_xlabel('X')
 ax[1].set_ylabel('Log-likelihood')
 ```
 
-*********
 
 ### Parameter near limits
 
