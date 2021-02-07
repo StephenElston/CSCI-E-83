@@ -22,7 +22,7 @@ matplotlib$use("Agg", force = TRUE)
 
 ## Importance of Probability Theory
 
-- Probability theory is the basis of statistics, machine learning and much AI     
+- Probability theory is the basis of statistics, machine learning, and much AI     
 
 - An understanding of probability theory is an important foundation to understand these methods    
 
@@ -57,9 +57,9 @@ knitr::include_graphics(rep("../images/Ars.jpg"))
 
 $$X(\omega) \rightarrow \mathbb{R}$$
 
-- ** Example:** The mapping can be a count   
+- **Example:** The mapping can be a count   
 
-- ** Example:** A function which transforms $\omega$ to a real number, $\mathbb{R}$   
+- **Example:** A function which transforms $\omega$ to a real number, $\mathbb{R}$   
 
 - This concept appears abstract at first glance, but is fundamental to the theory of probability    
 - We will see many examples in this course
@@ -72,7 +72,7 @@ $$X(\omega) \rightarrow \mathbb{R}$$
 
 - **Discrete**   
   - Model countable events     
-  - Examples, 
+  - Examples
   - Characterized by a **probability mass function (PMF)**  
 
 - **Continuous**    
@@ -103,7 +103,7 @@ $$P(A\ \cup B) = P(A) + P(B)\\ if\ A \perp B$$
 
 ------------------------------------
 
-## Axioms of Probbility   
+## Axioms of Probability   
 
 From these three axioms we can draw some useful conclusions     
 
@@ -124,18 +124,18 @@ What value we should expect to find when we sample a random variable?
 
 - For $n$ samples, $\mathbf{X} = x_1, x_2, \ldots, x_n$, of a random variable probability mass function $p(x_i)$ the expected value is:  
 
-$$\mathrm{E}[\mathbf{X}] = \sum_{i-1}^n x_i\ p(x_i)$$
+$$\mathrm{E}[\mathbf{X}] = \sum_{i=1}^n x_i\ p(x_i)$$
 
 How can we interpret expectation?   
 
 - Expectation is a probability weighted sum of the sample of the random variable $\mathbf{X}$   
 
-- By the second axiom of probability the weights must sum to 1.0.   
+- By the second axiom of probability the weights must sum to 1.0  
 
 
 -----------------------------------------------
 
-## Proerties of Expectation     
+## Properties of Expectation     
 
 Useful properties of expectation   
 
@@ -151,11 +151,11 @@ $$\mathrm{E}[\mathbf{a\ X + b}] = a\ \mathrm{E}[\mathbf{X}] + b$$
 
 ----------------------------------------------------------------------
 
-## Axioms of probability for continuous distribtions
+## Axioms of probability for continuous distributions
 
 **Axioms of probability** for continuous probability density function, $f(x)$
 
-1. On the an interval, $\{ x_1, x_2 \}$, $P(x)$, must be bounded by 0 and 1:
+1. On the interval, $\{ x_1, x_2 \}$, $P(x)$, must be bounded by 0 and 1:
 
 $$0 \le \int_{x_1}^{x_2} f(x) dx\ \le 1$$
 
@@ -236,12 +236,12 @@ Sample space of $k$ possible outcomes, $\mathcal{X} = (e_1,e_2, \ldots, e_k)$.
 
 $$\mathbf{e_i} = (0, 0, \ldots, 1, \ldots, 0)$$
 
-- Only 1 value $e_i$ has a value of $1$; **one hot encoding** 
+- Only $1$ value $e_i$ has a value of $1$; **one hot encoding** 
 
-- For a single trial the probabilities of the $k$ possible:    
+- For a single trial the probabilities of the $k$ outcomes are:    
 
 \begin{align}
-\Pi &= (\pi_1, \pi_2, \ldots, \pi_k) \\ 
+\Pi &= (\pi_1, \pi_2, \ldots, \pi_k) \\ \\
 with\ \sum_{i}\pi_i &= 1
 \end{align}
 
@@ -284,7 +284,7 @@ knitr::include_graphics(rep("../images/Simplex.png"))
 
 The **Normal distribution** or **Gaussian distribution** is one of the most widely used probability distributions
 
-- For cases which are the product of a large number of processes or where large numbers of samples are available, random variables converge to a Normal distribution by the **central limit theorem**   
+- For cases which are the product of a large number of processes, or where large numbers of samples are available, random variables converge to a Normal distribution by the **central limit theorem**   
 - Many physical processes produce Normal measurement values    
 
 - Normal distribution has tractable mathematical properties   
@@ -396,7 +396,7 @@ $$
 
 ## The Gamma and $\chi^2$ distributions
 
-Gamma family can be parameterized in several ways; we will use a  with a shape parameter, $\nu$ and a scale parameter $\sigma$.    
+Gamma family can be parameterized in several ways; we will use a shape parameter, $\nu$, and a scale parameter, $\sigma$.    
 
 $$
 Gam(\nu,\sigma)=\frac{x^{\nu-1}\ e^{-x/\sigma}}{\sigma^\nu\ \Gamma(\nu)}\\
@@ -461,6 +461,3 @@ $$P(H) = \frac{1}{1 + 1} = \frac{1}{2}$$
 ## Summary      
 
 Key points:    
-
-
-
