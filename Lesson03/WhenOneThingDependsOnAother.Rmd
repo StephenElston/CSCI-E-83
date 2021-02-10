@@ -20,14 +20,14 @@ matplotlib$use("Agg", force = TRUE)
 
 -----------------------------------------------------------------
 
-## Introduciton      
+## Introduction      
 
 Many real-world random variables depend on other random variables    
 
-- statistical models of complex processes invariably require the use of **conditional probability distributions**     
+- Statistical models of complex processes invariably require the use of **conditional probability distributions**     
 
 - **Conditional probability** is the probability that event A occurs given that event B has occurred 
-- Write conditional probability of A given B:    
+- Write the conditional probability of A given B as:    
 
 $$P(A|B)$$
 
@@ -50,7 +50,8 @@ knitr::include_graphics(rep("../images/Prob1.png"))
 
 - Sample space is divided into several **subspaces** or **subsets**, $A$, $B$ and $C$    
 
-- **intersection** where the two sets overlap occur in both $A$ and $B$      
+- **Intersection** is where the two sets overlap occur in both $A$ and $B$   
+
 
 
 --------------------------------------------------
@@ -63,9 +64,9 @@ Example:
 knitr::include_graphics(rep("../images/Prob1.png"))
 ```
 
-- **intersection** where the two sets overlap occur in both $A$ and $B$    
+- **Intersection** is where the two sets overlap occur in both $A$ and $B$    
   - First, find the relationship between conditional probability and the intersection between the sets, $P(A \cap B)$  
-  - The probability of the intersection is theproduct of two probabilities:    
+  - The probability of the intersection is the product of two probabilities:    
   1. $P(B)$ since B must be true to be in this intersection.    
   2. $P(A|B)$ since A must also occur when B is occurring
   - The result is:   
@@ -94,12 +95,12 @@ Now, the probability of an identical event in the same intersection:
 
 $$P(A \cap B) = P(A|B) P(B) = P(B|A)P(A) = P(B \cap A)$$
 
-**Factorization** of a probability function is key tool: Notice that the factorization of a conditional probability distributions in not unique  
+**Factorization** of a probability function is a key tool: notice that the factorization of a conditional probability distribution in not unique  
 
 
 ----------------------------------------------------
 
-## Set operations and probability
+## Set Operations and Probability
 
 Set operations are applied to probability problems    
 
@@ -107,7 +108,7 @@ Set operations are applied to probability problems
 
 $$P(A \cap B)  = P(A|B)P(B)$$
 
-2. **Union:** Probability is the sum of the probabilities of the sets less the intersection between the sets:
+2. **Union:** is the sum of the probabilities of the sets minus the intersection between the sets:
 
 $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
 
@@ -126,7 +127,7 @@ P(\neg (A \cap B)) &= P(\neg A\ \cup \neg B)
 
 --------------------------------------------------------
 
-## Independence and mutual exclusivity
+## Independence and Mutual Exclusivity
 
 The factorization of probability distributions can be simplified if events are either **independent** or **mutually exclusive**    
 
@@ -180,7 +181,7 @@ $$P(A|B) = P(A) + P(B) \Leftrightarrow P(B|A) = P(B) + P(A) \iff A \cap B = \emp
 ----------------------------------------------------
 
 
-## Conditional distributions and Bayes' Theorem
+## Conditional Distributions and Bayes' Theorem
 
 **Bayes' theorem**, also known as **Bayes' rule**, is a powerful tool to think about and analyze conditional probabilities        
 
@@ -205,7 +206,7 @@ Which is Bayes' theorem!
 
 ----------------------------------------------------------
 
-## Interpreting Bayes Theorm
+## Interpreting Bayes Theorem
 
 How can we interpret Bayes' theorem in a useful way?  
 
@@ -221,21 +222,21 @@ $$Likelihood(evidence\ |\ hypothesis)$$
 
 ----------------------------------------------------------
 
-## Interpreting Bayes Theorm
+## Interpreting Bayes Theorem
 
 Now, we can think of Bayes' theorem in the following terms:
 
-$$Posterior(hypotheis\ |\ evidence) = \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{P(evidence)}$$
+$$Posterior(hypothesis\ |\ evidence) = \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{P(evidence)}$$
 
 - We discuss selection of prior probability distributions and likelihood functions in subsequent lectures    
 
 - The denominator $P(evidence)$ or **partition function** is problematic        
 
-- Required to normalize the posterior distribution to range $0 \le Posterior(hypotheis\ |\ evidence) \le 1$  
+- Required to normalize the posterior distribution to range $0 \le Posterior(hypothesis\ |\ evidence) \le 1$  
 
 - Denominator must account for all possible outcomes, or alternative hypotheses, $h'$:   
 
-$$Posterior(hypotheis\ |\ evidence) = \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{\sum_{ h' \in\ All\ possible\ hypotheses}Likelihood(evidence\ |\ h')\ prior(h')}$$
+$$Posterior(hypothesis\ |\ evidence) = \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{\sum_{ h' \in\ All\ possible\ hypotheses}Likelihood(evidence\ |\ h')\ prior(h')}$$
 
 This is a formidable problem!    
 
@@ -264,7 +265,7 @@ $$p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, 
 
 A simple and widely used example of using conditional probabilities to work out the chance of having a rare disease.
 
-- Sickle Cell Anemia is a serious, but fairy rare disease    
+- Sickle Cell Anemia is a serious, but fairly rare, disease    
 
 - The probability that a given patient, drawn at random from the population of all people in the United States, has the disease is $P(S) = \frac{1}{3200} = 0.0003125$. We can describe the possible events in diagnosing this condition as: 
   - $S \Rightarrow$ a patient has the disease. 
@@ -292,7 +293,7 @@ What if a medical company claims that it has developed a test that is 99% accura
 
 ##  Conditional Probability Example
 
-From the root the **directed acyclical graphical model (DAG)** defines a conditional dependency structure
+From the root the **directed acyclic graphical model (DAG)** defines a conditional dependency structure
 
 - Goal: Evaluate the medical test as a **decision rule** for treatment    
 
