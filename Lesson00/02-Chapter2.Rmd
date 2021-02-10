@@ -2,8 +2,11 @@
 title: "Chapter 2 Numeric and Data Tools"
 author: "Steve Elston"
 date: "March 27, 2020"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 bibliography: ../bibliography.bib
-output: pdf_document
 ---
 
 
@@ -19,7 +22,7 @@ matplotlib$use("Agg", force = TRUE)
 
 Data manipulation and numerical linear algebra are core skills in for anyone performing computational statistics. Not only that, but this background will be essential for you as your study of the rest of this book. Thus, this topic is a natural starting point.        
 
-In this chapter we will first explore numerical linear algebra using the Python NumPy package. This discussion will review some basics of linear algebra. The focus, however, is on the use of the Numpy package for numerical linear algebra. There are many excellent texts which treat linear algebra in depth, including @Strang and @Lay.  
+In this chapter we will first explore numerical linear algebra using the Python NumPy package. This discussion will review some basics of linear algebra. The focus, however, is on the use of the NumPy package for numerical linear algebra. There are many excellent texts which treat linear algebra in depth, including @Strang and @Lay.  
 
 Second, this chapter introduces the basics of data manipulation with the Pandas data frame package and NumPy. Even though data manipulation is not the subject of this book, we will be using Pandas throughout this book. @McKinney presents a broad overview of data manipulation and management using Pandas and NumPy.    
 
@@ -29,14 +32,14 @@ In this section we will review basic computational linear algebra. An understand
 
 In this book we only review the basics of linear algebra with NumPy. You can find more details in the [NumPy tutorial](https://numpy.org/devdocs/user/quickstart.html).  
 
-> **Programming Note:** NumPy is widely used for compuational statistics. NumPy computations are generally optimized. However, NumPy does not take full advantage of today's massively parallel cluster computing. Consequently, platforms like Spark [@Spark], TensorFlow [@tensorflow2015], and Torch [@paszke2017] take full advantage of today's massive scale custer computing environments. We do not address use of these platforms in this book. However, the principles of numerical linear algebra are the same.
+> **Programming Note:** NumPy is widely used for computational statistics. NumPy computations are generally optimized. However, NumPy does not take full advantage of today's massively parallel cluster computing. Consequently, platforms like Spark [@Spark], TensorFlow [@tensorflow2015], and Torch [@paszke2017] take full advantage of today's massive scale cluster computing environments. We do not address use of these platforms in this book. However, the principles of numerical linear algebra are the same.
 
 
 ## Arrays
 
 Linear algebra is the algebra of **arrays**. An array is a regular arrangement of numbers. An array can have any number of dimensions, at least in principle. 
 
-A single numeric value is a **scaler**. A scalar has dimensional of 0.  
+A single numeric value is a **scalar**. A scalar has dimensional of 0.  
 
 A **vector** is a one dimensional array. As an example a vector of length n, and the $ith$ value or element expressed as $x_i$, is written, $\mathbf{x} = [x_1, x_2, \ldots, x_n ]$. We can also express a **column** vector:   
 
@@ -153,7 +156,7 @@ $$
 dot\ product = \Sigma_i^n a_i \cdot b_i 
 $$
 
-A useful property is that the **Euclidian norm** (length), or **L2 norm**, of a vector is the square root of the dot product with itself. This can be expressed:
+A useful property is that the **Euclidean norm** (length), or **L2 norm**, of a vector is the square root of the dot product with itself. This can be expressed:
 
 $$
 \parallel a \parallel = length\ of\ vector\ a = \sqrt{a \cdot a}
@@ -301,7 +304,7 @@ Notice that to be conformable the number of columns, $m$, of the first matrix mu
 
 The code in the cell below computes a matrix product. As both matrices are of dimension $4x3$, it is necessary to take the transpose of one or the other.  
 
-> **Programming Note:** For this example, we could use the Numpy `dot` function. However, here we use the [`matmul`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.matmul.html#numpy.matmul) function. For 1 and 2 dimensional arrays, the results will be the same. But, `matmul` works with arrays of higher dimenstions, but not with scalars. The arrays must be conformable for either function to work.
+> **Programming Note:** For this example, we could use the NumPy `dot` function. However, here we use the [`matmul`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.matmul.html#numpy.matmul) function. For 1 and 2 dimensional arrays, the results will be the same. But, `matmul` works with arrays of higher dimensions, but not with scalars. The arrays must be conformable for either function to work.
 
 ```{python}
 np.matmul(np.transpose(A) , B)
@@ -402,7 +405,7 @@ np.dot(inv_C,C)
 
 The result is an identity matrix, as it should be. 
 
-> **Exercise 2-3:** The identity matrix has a special property, that it is its own inverse. To demonstate this property, create a $4x4$ identity matrix and take its inverse. Is the result the same? 
+> **Exercise 2-3:** The identity matrix has a special property, that it is its own inverse. To demonstrate this property, create a $4x4$ identity matrix and take its inverse. Is the result the same? 
 
 
 ## Slicing NumPy arrays
@@ -415,9 +418,9 @@ $$
 
 Where, keeping in mind that NumPy indices are zero based,     
 $row\_start =$ the index of the first row in the slice.     
-$row\_start =$ the index of the first row not in the slice.    
+$row\_end =$ the index of the first row not in the slice.    
 $column\_start =$ the index of the first column in the slice.     
-$column\_start =$ the index of the first column not in the slice.    
+$column\_end =$ the index of the first column not in the slice.    
 
 The figure below shows an example of slicing a 2-dimensional array, or matrix. The matrix has dimension $8 x 6$, and a slice of dimension $4 x 3$ is created. Notice the syntax of the row and column slices. 
 
@@ -470,9 +473,10 @@ B[[True,False,True,False], :]
 
 The results are the same for both of the above cases.   
 
-> **Exercise 2-4:** In the foregoing discussion of the matrix inverse, we did not address an important and common problem. Simply put, matricies with colinear or parallel columns are said to be **singular**. The inverse of a singular matrix does not exist. For now, you will determine if the columns of a matrix are nearly colinear. In compuational linear algebra, nearly colinear columns will cause matrix inverse algorithms to fail. Dealing with this problem is a focus of Part 4 of this book. You will now complete the code below to do the following: 
-> a. First you will construct a nearly sigular $4 x 4$ matrix with sequential values 1 to 16 running row-wise. 
-> b. Next, using the indices createded by the Itertools [`combinations`](https://docs.python.org/2/library/itertools.html#itertools.combinations) function you will slice the array column-wise, for every possible pair of columns.
+> **Exercise 2-4:** In the foregoing discussion of the matrix inverse, we did not address an important and common problem. Simply put, matrices with colinear or parallel columns are said to be **singular**. The inverse of a singular matrix does not exist. For now, you will determine if the columns of a matrix are nearly collinear. In computational linear algebra, nearly colinear columns will cause matrix inverse algorithms to fail. Dealing with this problem is a focus of Part 4 of this book. You will now complete the code below to do the following: 
+
+> a. First you will construct a nearly singular $4 x 4$ matrix with sequential values 1 to 16 running row-wise. 
+> b. Next, using the indices created by the Itertools [`combinations`](https://docs.python.org/2/library/itertools.html#itertools.combinations) function you will slice the array column-wise, for every possible pair of columns.
 > c. Compute the cosign of the angle between each of the column-wise slices. 
 > d. Print the indices and the cosign of the angle between them. 
 > What do these values of the cosign tell you about the columns? Are the columns nearly colinear? 
@@ -480,7 +484,7 @@ The results are the same for both of the above cases.
 
 ## Copies of NumPy arrays
 
-NumPy operations follow the same assignment rules as other Python operators. However, these assignment rules create pitfalls for newcomers. A simple `=` only assigns a new name to the same array. To ensure the ssignment creates a copy, one must use the [`copy`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.copy.html) function. This idea is illustrated in the code below. 
+NumPy operations follow the same assignment rules as other Python operators. However, these assignment rules create pitfalls for newcomers. A simple `=` only assigns a new name to the same array. To ensure the assignment creates a copy, one must use the [`copy`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.copy.html) function. This idea is illustrated in the code below. 
 
 ```{python}
 C = np.copy(B)
@@ -502,7 +506,7 @@ Pandas is an extension of NumPy's arrays. Pandas provides significant capabiliti
 
 The basic Pandas data structure is the data frame. A data frame is a tabular data structure with a number of special attributes. The most important of these attributes are the row indices, column indices and data types of the columns. A schematic view of a Pandas data frame with these important attributes is illustrated in the figure below.   
 
-```{r PandasDataFrame, out.width = '70%', fig.cap='Sematic view of a Pandas data frame', fig.align='center', echo=FALSE}
+```{r PandasDataFrame, out.width = '70%', fig.cap='Semantic view of a Pandas data frame', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/PandasDataFrame.png"))
 ```
 
@@ -610,7 +614,7 @@ Notice the difference in these results. A copy is not the same as a slice of the
 
 ## The Pandas series
 
-We have been working with the 2-dimensional Pandas data frames. There is a special case for univariate data, the [Pandas series](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html). This distinction is important. Panads series have different attributes from data frames. This means different methods are applicable. Failure to abide by this distinction will often produce unexpected results or raise exceptions.   
+We have been working with the 2-dimensional Pandas data frames. There is a special case for univariate data, the [Pandas series](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html). This distinction is important. Pandas series have different attributes from data frames. This means different methods are applicable. Failure to abide by this distinction will often produce unexpected results or raise exceptions.   
 
 The code below creates a single column slice from a data frame. The result is Pandas series. 
 
@@ -621,10 +625,10 @@ a_series
 
 A noticeable difference for this series is that there is no column name attribute. Since a Pandas series has only one column, there is no need for this attribute.  
 
-> **Exercise 2-5:** A limited number of mathematical operatons can be performed directly on numeric columns in a Pandas data frame. To use the richer capabilities of NumPy the columns of a of a Pandas data frame can be coerced to a Numpy array with the Pandas [`as_matrix`](https://pandas.pydata.org/pandas-docs/version/0.23.4/generated/pandas.DataFrame.as_matrix.html) method. To exercise this capability, do the following:
+> **Exercise 2-5:** A limited number of mathematical operations can be performed directly on numeric columns in a Pandas data frame. To use the richer capabilities of NumPy the columns of a of a Pandas data frame can be coerced to a NumPy array with the Pandas [`as_matrix`](https://pandas.pydata.org/pandas-docs/version/0.23.4/generated/pandas.DataFrame.as_matrix.html) method. To exercise this capability, do the following:
 > a. Coerce the columns named `first_col` and `second_col` into a NumPy array. 
-> b. Take the element-wise square toot of the resulting array using the Numpy [`sqrt`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.sqrt.html) function. 
-> c. Assign the resulting Numpy array values back to the columns in the Data Frame.
+> b. Take the element-wise square toot of the resulting array using the NumPy [`sqrt`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.sqrt.html) function. 
+> c. Assign the resulting NumPy array values back to the columns in the Data Frame.
 > d. Print the data frame and verify that the result is correct. 
 
 ##### Copyright 2020, 2021, Stephen F Elston. All rights reserved.    
