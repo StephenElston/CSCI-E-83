@@ -238,7 +238,7 @@ $$\mathbf{e_i} = (0, 0, \ldots, 1, \ldots, 0)$$
 
 - Only $1$ value $e_i$ has a value of $1$; **one hot encoding** 
 
-- For a single trial the probabilities of the $k$ outcomes are:    
+- For a single trial the probabilities of the $k$ possible outcomes are expressed:    
 
 \begin{align}
 \Pi &= (\pi_1, \pi_2, \ldots, \pi_k) \\ \\
