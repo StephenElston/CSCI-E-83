@@ -268,7 +268,7 @@ Hemophilia is a serious genetic condition expressed on any X chromosome
 
 As evidence the woman has two sons (not identical twins) with no expression of hemophilia      
 
-- What is the likelihood for the two sons $X = (x_1,x_2)$ not having hemopilia?   
+- What is the likelihood for the two sons $X = (x_1,x_2)$ not having hemophilia?   
 
 - Two possible cases here
   - Case where woman caries one X chromosome with hemophilia expression, $\theta = 1$
@@ -284,14 +284,14 @@ Note: we are neglecting the possibility of a mutations in one of the sons
 
 ## Bayes Theorem Example  
 
-Use Bayes theorem to compute probability woman carries X chromosome with hemophilia expression, $\theta = 1$
+Use Bayes theorem to compute probability woman carries an X chromosome with hemophilia expression, $\theta = 1$
 
 $$
 p(\theta=1 | X) = \frac{p(X|\theta=1) p(\theta=1)}{p(X|\theta=1) p(\theta=1) + p(X|\theta=0) p(\theta=0)} \\
 = \frac{0.25 * 0.5}{0.25 * 0.5 + 1.0 * 0.5} = 0.20
 $$
 
-The evidence of two sons without hemophilia causes us to update our **belief** that the probability of the woman carring the   
+The evidence of two sons without hemophilia causes us to update our **belief** that the probability of the woman carrying the disease
 
 
 ----------------------------------------------------------
@@ -391,9 +391,9 @@ $$P(A|B) = P(A) + P(B)$$
 $$P(A|B) = P(A)$$
 
 
-## Sumamry   
+## Summary   
 
-- Bayes theorem     
+- Bayes' theorem     
 $$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
 - Marginal distribution   
 
