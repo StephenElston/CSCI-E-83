@@ -154,8 +154,11 @@ P(A| \neg B) &= P(A)
  
 But independence of A given B does not imply independence of B given A:
 
-$$P(A|B) = P(A)P(B) \nLeftrightarrow P(B|A) = P(B)P(A)$$
+$$P(A|B) = P(A) \nLeftrightarrow P(B|A) = P(B)$$
 
+In other words, we need to pay attention to if A is independent of B or B is independent of A  
+- One or the other could be true
+- Both could be true
 
 ---------------------------------------------
 
@@ -234,11 +237,62 @@ $$Posterior(hypothesis\ |\ evidence) = \frac{Likelihood(evidence\ |\ hypothesis)
 
 - Required to normalize the posterior distribution to range $0 \le Posterior(hypothesis\ |\ evidence) \le 1$  
 
-- Denominator must account for all possible outcomes, or alternative hypotheses, $h'$:   
+## Interpreting Bayes Theorem
 
-$$Posterior(hypothesis\ |\ evidence) = \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{\sum_{ h' \in\ All\ possible\ hypotheses}Likelihood(evidence\ |\ h')\ prior(h')}$$
+Denominator must account for all possible outcomes, or alternative hypotheses, $h'$:   
+
+$$Posterior(hypothesis\ |\ evidence) =\\ \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{\sum_{ h' \in\ All\ possible\ hypotheses}Likelihood(evidence\ |\ h')\ prior(h')}$$
 
 This is a formidable problem!    
+
+
+## Bayes Theorem Example
+
+Hemophilia is a serious genetic condition expressed on any X chromosome    
+
+- Women have two X chromosomes and are unlikely to exhibit hemophilia   
+  - One X chromosome inherited from each parent    
+  - Must inherit hemophilia from both parents   
+
+- Men have one X chromosome and one Y chromosome   
+  - Inherit Y chromosome from the father   
+  - Inherit X chromosome, and possibly hemophilia, from the mother    
+  
+- Say a woman has a brother who exhibits hemophilia   
+  - Y chromosome expression is $\theta = 1.0$  
+  - Woman's father does not exhibit hemophilia, $\theta = 0$
+  - Our prior probability that she carries the genetic marker for hemophilia $\theta = 0.5$
+
+
+## Bayes Theorem Example  
+
+As evidence the woman has two sons (not identical twins) with no expression of hemophilia      
+
+- What is the likelihood for the two sons $X = (x_1,x_2)$ not having hemopilia?   
+
+- Two possible cases here
+  - Case where woman caries one X chromosome with hemophilia expression, $\theta = 1$
+  - Case where woman does not carry an X chromosome with hemophilia expression, $\theta = 0$   
+ 
+$$
+p(x_1=0, x_2=0 | \theta = 1) = 0.5 * 0.5 = 0.25  \\
+p(x_1=0, x_2=0 | \theta = 0) = 1.0 * 1.0 = 1.0 
+$$
+ 
+Note: we are neglecting the possibility of a mutations in one of the sons 
+
+
+## Bayes Theorem Example  
+
+Use Bayes theorem to compute probability woman carries X chromosome with hemophilia expression, $\theta = 1$
+
+$$
+p(\theta=1 | X) = \frac{p(X|\theta=1) p(\theta=1)}{p(X|\theta=1) p(\theta=1) + p(X|\theta=0) p(\theta=0)} \\
+= \frac{0.25 * 0.5}{0.25 * 0.5 + 1.0 * 0.5} = 0.20
+$$
+
+The evidence of two sons without hemophilia causes us to update our **belief** that the probability of the woman carring the   
+
 
 ----------------------------------------------------------
 
@@ -321,3 +375,30 @@ Four possible outcomes shown using a **confusion matrix** or **truth table**
 |**No Disease**| False Positive Rate | True Negative Rate |
 
 - **Tip:** Make sure the numbers in your confusion matrix sum to 1.0
+
+
+## Summary      
+
+- Conditional probability     
+  - One random variable depends on another    
+  - But not commutable  
+$$P(A|B) = P(A) \nLeftrightarrow P(B|A) = P(B)$$  
+
+- Mutually exclusivity   
+$$P(A|B) = P(A) + P(B)$$
+
+- Independence      
+$$P(A|B) = P(A)$$
+
+
+## Sumamry   
+
+- Bayes theorem     
+$$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
+- Marginal distribution   
+
+
+$$p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)\ d\theta2, \ldots, d \theta_n$$
+
+
+

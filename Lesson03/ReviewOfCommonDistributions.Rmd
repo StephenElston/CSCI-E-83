@@ -72,10 +72,11 @@ $$X(\omega) \rightarrow \mathbb{R}$$
 
 - **Discrete**   
   - Model countable events     
-  - Examples
+  - Examples; people making a purchase, number of patients with disease,....
   - Characterized by a **probability mass function (PMF)**  
 
 - **Continuous**    
+  - Examples; temperature, velocity, price,.......
   - Characterized by a **probability density function (PDF)**  
 
 
@@ -314,7 +315,9 @@ Many practical applications have an $n$-dimensional parameter vector in $\mathbb
 
 - **Multivariate Normal distribution**, parameterized by:  
 - **n-dimensional vector of locations**, $\vec{\mathbf{\mu}}$  
-- $n$ x $n$ dimensional **covariance matrix**, $\mathbf{\Sigma}$; $\mathcal{N}(\vec{\mu}, \mathbf{\Sigma})$:  
+  - The vector(multi) valued version of univariate location
+- $n$ x $n$ dimensional **covariance matrix**, $\mathbf{\Sigma}$   
+  - The multi-dimensional version of univariate variance $\sigma^2$
 
 $$f(\vec{\mathbf{x}}) = \frac{1}{{\sqrt{(2 \pi)^k |\mathbf{\Sigma}|}}}exp \big(\frac{1}{2} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})^T \mathbf{\Sigma} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})\big)$$      
 
@@ -350,7 +353,98 @@ For a Normally distributed k-dimensional multivariate random variable, $\sigma_{
 
 Where $\cdot$ is the inner product operator and $\bar{x_i}$ is the mean of $\vec{x_i}$.
 
+## Multivariate Normal   
 
+2-dimensional Normal with $\mu = [0,0]$ and $\sigma = \begin{bmatrix} 1.0 & 0.0 \\ 0.0 & 1.0 \end{bmatrix}$
+
+```{python, echo=FALSE}
+import pandas as pd
+import numpy as np
+import numpy.random as nr
+import scipy.stats as ss
+import seaborn as sns
+import matplotlib.pyplot as plt
+```
+
+```{python, echo=FALSE}
+def plot_bi_variate(x, title='1000 draws from a bivariate Normal distribution'):
+    ## Plot bi-variable points
+    fig, ax = plt.subplots(figsize=(3,3)) 
+    plt.rcParams.update({'font.size':6})
+    ax.scatter(x[:, 0], x[:, 1], alpha=.1)
+    ax.set_xlim(-4.0,4.0)
+    ax.set_ylim(-4.0,4.0)
+    _=ax.set_title(title)
+    plt.show()
+
+
+## Define the covariance and mean of the bivariate Normal. 
+sigma = np.array([[1,0.0], [0.0, 1]])
+mu = np.array([0.0, 0.0])
+## Sample 500 realizations from the bivariate Normal
+random_points = nr.multivariate_normal(mean=mu, cov=sigma,  size=1000)
+
+## Plot the result
+plot_bi_variate(random_points)
+```
+
+
+## Multivariate Normal   
+
+2-dimensional Normal with $\mu = [0,0]$ and $\sigma = \begin{bmatrix} 1.0 & 0.0 \\ 0.0 & 0.5 \end{bmatrix}$
+
+```{python, echo=FALSE}
+## Define the covariance of the bivariate Normal. 
+sigma = np.array([[1,0.0], [0.0, 0.5]])
+## Sample 500 realizations from the bivariate Normal
+random_points = nr.multivariate_normal(mean=mu, cov=sigma,  size=1000)
+
+## Plot the result
+plot_bi_variate(random_points)
+```
+
+
+## Multivariate Normal   
+
+2-dimensional Normal with $\mu = [0,0]$ and $\sigma = \begin{bmatrix} 1.0 & 0.5 \\ 0.5 & 1.0 \end{bmatrix}$
+
+```{python, echo=FALSE}
+## Define the covariance of the bivariate Normal. 
+sigma = np.array([[1,0.5], [0.5, 1.0]])
+## Sample 500 realizations from the bivariate Normal
+random_points = nr.multivariate_normal(mean=mu, cov=sigma,  size=1000)
+
+## Plot the result
+plot_bi_variate(random_points)
+```
+
+## Multivariate Normal   
+
+2-dimensional Normal with $\mu = [0,0]$ and $\sigma = \begin{bmatrix} 1.0 & -0.5 \\ -0.5 & 1.0 \end{bmatrix}$
+
+```{python, echo=FALSE}
+## Define the covariance of the bivariate Normal. 
+sigma = np.array([[1,-0.5], [-0.5, 1.0]])
+## Sample 500 realizations from the bivariate Normal
+random_points = nr.multivariate_normal(mean=mu, cov=sigma,  size=1000)
+
+## Plot the result
+plot_bi_variate(random_points)
+```
+
+## Multivariate Normal   
+
+2-dimensional Normal with $\mu = [0,0]$ and $\sigma = \begin{bmatrix} 1.0 & 0.9 \\ 0.9 & 1.0 \end{bmatrix}$
+
+```{python, echo=FALSE}
+## Define the covariance of the bivariate Normal. 
+sigma = np.array([[1,0.9], [0.9, 1.0]])
+## Sample 500 realizations from the bivariate Normal
+random_points = nr.multivariate_normal(mean=mu, cov=sigma,  size=1000)
+
+## Plot the result
+plot_bi_variate(random_points)
+```
 
 --------------------------------------------------
 
@@ -396,7 +490,9 @@ $$
 
 ## The Gamma and $\chi^2$ distributions
 
-Gamma family can be parameterized in several ways; we will use a shape parameter, $\nu$, and a scale parameter, $\sigma$.    
+Gamma family can be parameterized in several ways; we will use:    
+- A shape parameter, $\nu$, the degrees of freedom  
+- A scale parameter, $\sigma$    
 
 $$
 Gam(\nu,\sigma)=\frac{x^{\nu-1}\ e^{-x/\sigma}}{\sigma^\nu\ \Gamma(\nu)}\\
@@ -460,4 +556,29 @@ $$P(H) = \frac{1}{1 + 1} = \frac{1}{2}$$
 
 ## Summary      
 
-Key points:    
+
+
+- Axioms of probability; for discrete distribution           
+
+$$0 < P(A) \le 1 $$
+$$P(S) = \sum_{a_i \in A}P(a_i) = 1 $$
+$$P(A\ \cup B) = P(A) + P(B)\\ if\ A \perp B$$
+
+- Expectation    
+
+$$\mathrm{E}[\mathbf{X}] = \sum_{i=1}^n x_i\ p(x_i)$$
+
+## Summary     
+
+- The Categorical distribution  
+  - For outcome $i$ we **one hot encode** the results as:    
+$$\mathbf{e_i} = (0, 0, \ldots, 1, \ldots, 0)$$
+  - For a single trial the probabilities of the $k$ possible outcomes are expressed:    
+$$\Pi = (\pi_1, \pi_2, \ldots, \pi_k)$$
+  - probability mass function as:   
+
+$$f(x_i| \Pi) = \pi_i$$
+   
+- Multivariate Normal distribution, parameterized by **n-dimensional vector of locations**, $\vec{\mathbf{\mu}}$ and $n$ x $n$ dimensional **covariance matrix**
+$$f(\vec{\mathbf{x}}) = \frac{1}{{\sqrt{(2 \pi)^k |\mathbf{\Sigma}|}}}exp \big(\frac{1}{2} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})^T \mathbf{\Sigma} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})\big)$$      
+   
