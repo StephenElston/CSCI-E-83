@@ -98,7 +98,7 @@ P(A| \neg B) &= P(A)
  
 But, be careful! Independence of $A$ given $B$ does not imply, independence of $B$ given $A$:
 
-$$P(A|B) = P(A)P(B) \nLeftrightarrow P(B|A) = P(B)P(A)$$
+$$P(A|B) = P(A) \nLeftrightarrow P(B|A) = P(B)$$
 
 
 > **Exercise 8-4:** An example helps to make this concept less abstract. Say you have a fair coin and a fair 6-sided dice (numbered 1-6). What is the probability that you will flip the coin and get a head, and roll the dice and get a 6. You should ask yourself if these events have any dependency on each other. Given your answer compute the probability of these two events both ocuring.   
@@ -111,10 +111,6 @@ P(A \cup B) &= P(A) + P(B)\\
 P(A|B) &= 0\\
 P(A| \neg B) &= \frac{P(A)}{1 - P(B)}
 \end{align}
-
-But, just because A is mutually exclusive of B, does not mean B is mutually exclusive of A. Or, in terms of our notation:
-
-$$P(A|B) = P(A) \nLeftrightarrow P(B|A) = P(B)$$
 
 > **Exercise 8-5:** Consider an example of drawing a playing card randomly from a deck. The deck of cards has equal numbers of suites $= \{hearts, spades, clubs, diamonds \}$. A card can only have one suite. Use the relationships given above to compute the probability that the card you draw is a heart?
 

@@ -514,10 +514,8 @@ Two useful special cases of the Gamma distribution are:
 $$exp(\lambda) = \lambda e^{-\lambda x}$$   
 
 - $Gam(\nu/2,2) = \chi^2_\nu$ is the **Chi-squared distribution** with $\nu$ degrees of freedom The $\chi^2_\nu$ distribution has many uses in statistics.   
-
-- Used for estimates of the variance of the Normal distribution   
-
-- PDF of the $\chi^2_\nu$ distribution:    
+   - Used for estimates of the variance of the Normal distribution   
+   - PDF of the $\chi^2_\nu$ distribution:    
 $$\chi^2_\nu=\frac{x^{\nu/2-1}\ e^{-x}}{\sigma^{\nu/2}\ \Gamma(\nu/2)}\\ for\ \nu\ degrees\ of\ freedom$$
 
 
