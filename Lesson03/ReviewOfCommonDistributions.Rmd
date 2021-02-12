@@ -90,7 +90,7 @@ For discrete distributions, we can speak of a **set of events** within the **sam
 
 1. Probability for any set of events, A, is greater than 0 and less than or equal to 1    
 
-$$0 < P(A) \le 1 $$
+$$0 \le P(A) \le 1 $$
 
 
 2. The sum of the probability mass functions over the sample space must add to 1
@@ -285,7 +285,8 @@ knitr::include_graphics(rep("../images/Simplex.png"))
 
 The **Normal distribution** or **Gaussian distribution** is one of the most widely used probability distributions
 
-- For cases which are the product of a large number of processes, or where large numbers of samples are available, random variables converge to a Normal distribution by the **central limit theorem**   
+- The distribution of mean estimates of observations of a random variable drawn from any distribution converge to a Normal distribution by the **central limit theorem (CLT)**   
+
 - Many physical processes produce Normal measurement values    
 
 - Normal distribution has tractable mathematical properties   
@@ -319,7 +320,7 @@ Many practical applications have an $n$-dimensional parameter vector in $\mathbb
 - $n$ x $n$ dimensional **covariance matrix**, $\mathbf{\Sigma}$   
   - The multi-dimensional version of univariate variance $\sigma^2$
 
-$$f(\vec{\mathbf{x}}) = \frac{1}{{\sqrt{(2 \pi)^k |\mathbf{\Sigma}|}}}exp \big(\frac{1}{2} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})^T \mathbf{\Sigma} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})\big)$$      
+$$f(\vec{\mathbf{x}}) = \frac{1}{{\sqrt{(2 \pi)^n |\mathbf{\Sigma}|}}}exp \big(\frac{1}{2} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})^T \mathbf{\Sigma} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})\big)$$      
 
 - $|\mathbf{\Sigma}|$ is the determinant of the covariance matrix. 
 
@@ -343,7 +344,7 @@ $$
 \end{bmatrix} 
 $$
 
-For a Normally distributed k-dimensional multivariate random variable, $\sigma_{i,j}$ computed from the sample, $\mathbf{X}$:
+For a Normally distributed n-dimensional multivariate random variable, $\sigma_{i,j}$ computed from the sample, $\mathbf{X}$:
 
 \begin{align}
 \sigma_{i,j} &= \mathrm{E} \big[ (\vec{x}_i - \mathrm{E}[\vec{x}_i]) \cdot (\vec{x}_j - \mathrm{E}[\vec{x}_j]) \big] \\

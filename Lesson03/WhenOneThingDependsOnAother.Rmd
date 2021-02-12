@@ -176,10 +176,7 @@ P(A|B) &= 0\\
 P(A| \neg B) &= \frac{P(A)}{1 - P(B)}
 \end{align}
 
-And, $A$ mutually exclusive of B, implies B is mutually exclusive of A:
-
-$$P(A|B) = P(A) + P(B) \Leftrightarrow P(B|A) = P(B) + P(A) \iff A \cap B = \emptyset$$
-
+And, $A$ mutually exclusive of B, implies B is mutually exclusive of A
 
 ----------------------------------------------------
 
