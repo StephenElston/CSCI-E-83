@@ -18,7 +18,6 @@ matplotlib$use("Agg", force = TRUE)
 ```
 
 
------------------------------------------------------------------
 
 ## Introduciton      
 
@@ -40,8 +39,6 @@ Sampling is a fundamental process in the collection and analysis of data
 - We wil take up the topic of resampling later    
 
 
---------------------------------------
-
 ## Sampling Example
 
 
@@ -58,7 +55,6 @@ Sampling is a fundamental process in the collection and analysis of data
 - We nearly always work with samples, rather than the entire population.    
 
 
-----------------------------------------------------
 
 ## Importance of Random Sampling   
 
@@ -72,8 +68,7 @@ All statistical methods rely on the use of **randomized unbiased samples**
   - These conditions only met if training data sample is randomized   
   - Otherwise, the training data will be biased and not represent the underlying process distribution
   
-  
---------------------------------------------
+
 
 ## Sampling distributions   
 
@@ -90,8 +85,18 @@ Sampling of a population is done from an unknown **population distribution**, $\
  - In the frequentist world, statistical inferences are performed on the sampling distribution    
    - Sampling process must not bias the estimates of the statisti
 
-   
--------------------------------------   
+ 
+ 
+## Sampling distributions   
+
+Sampling of a population is done from an unknown **population distribution**, $\mathcal{F}$      
+
+- Any statistic we compute for the generating process is an approximation for the polulation, $s(\hat{\mathcal{F}})$  
+
+```{r Sampling, out.width = '60%', fig.cap='Sampling distribution of unknown population paraeter', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
+```
+ 
 
 ## Sampling and the law of large numbers
 
@@ -107,9 +112,8 @@ $$ \bar{X} \rightarrow E(X) = \mu\\
 as\\
 n \rightarrow \infty$$
 
-- This result 
+- This result is reassuring, the larger the sample the more the statistic converges to the population parameter 
 
--------------------------------------   
 
 ## Sampling and the law of large numbers
 
@@ -465,7 +469,7 @@ When creating a simulation with multiple conditionally dependent variables it is
 
 The sandwich shop simulation can be represented by a DAG
 
-```{r Brenoulli, out.width = '60%', fig.cap='Directed graph of the distributions for profit simulation', fig.align='center', echo=FALSE}
+```{r DAG, out.width = '60%', fig.cap='Directed graph of the distributions for profit simulation', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/Simulation_Directed_Graph.jpg"))
 ```
 
