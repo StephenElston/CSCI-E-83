@@ -17,6 +17,63 @@ matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
 ```
 
+## Review      
+
+
+
+- Axioms of probability; for discrete distribution           
+
+$$0 < P(A) \le 1 $$
+$$P(S) = \sum_{a_i \in A}P(a_i) = 1 $$
+$$P(A\ \cup B) = P(A) + P(B)\\ if\ A \perp B$$
+
+- Expectation    
+
+$$\mathrm{E}[\mathbf{X}] = \sum_{i=1}^n x_i\ p(x_i)$$
+
+## Review     
+
+- The Categorical distribution  
+  - For outcome $i$ we **one hot encode** the results as:    
+$$\mathbf{e_i} = (0, 0, \ldots, 1, \ldots, 0)$$
+  - For a single trial the probabilities of the $k$ possible outcomes are expressed:    
+$$\Pi = (\pi_1, \pi_2, \ldots, \pi_k)$$
+  - probability mass function as:   
+
+$$f(x_i| \Pi) = \pi_i$$
+   
+- Multivariate Normal distribution, parameterized by **n-dimensional vector of locations**, $\vec{\mathbf{\mu}}$ and $n$ x $n$ dimensional **covariance matrix**
+$$f(\vec{\mathbf{x}}) = \frac{1}{{\sqrt{(2 \pi)^k |\mathbf{\Sigma}|}}}exp \big(\frac{1}{2} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})^T \mathbf{\Sigma} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})\big)$$      
+   
+
+
+
+## Review      
+
+- Conditional probability     
+  - One random variable depends on another    
+  - But not commutable  
+$$P(A|B) = P(A) \nLeftrightarrow P(B|A) = P(B)$$  
+
+- Mutually exclusivity   
+$$P(A|B) = P(A) + P(B)$$
+
+- Independence      
+$$P(A|B) = P(A)$$
+
+
+## Review   
+
+- Bayes' theorem     
+$$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
+- Marginal distribution   
+
+
+$$p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)\ d\theta2, \ldots, d \theta_n$$
+
+
+
+
 
 
 ## Introduciton      
@@ -36,7 +93,7 @@ Sampling is a fundamental process in the collection and analysis of data
 
 - Sampling from distribution is the building block of simulation     
 
-- We wil take up the topic of resampling later    
+- We will take up the topic of resampling later    
 
 
 ## Sampling Example
@@ -83,7 +140,7 @@ Sampling of a population is done from an unknown **population distribution**, $\
   - Frequentist statistics built on the idea of randomly resampling the population distribution and recomputing a statistic         
 
  - In the frequentist world, statistical inferences are performed on the sampling distribution    
-   - Sampling process must not bias the estimates of the statisti
+   - Sampling process must not bias the estimates of the statistic
 
  
  
@@ -91,7 +148,7 @@ Sampling of a population is done from an unknown **population distribution**, $\
 
 Sampling of a population is done from an unknown **population distribution**, $\mathcal{F}$      
 
-- Any statistic we compute for the generating process is an approximation for the polulation, $s(\hat{\mathcal{F}})$  
+- Any statistic we compute for the generating process is an approximation for the population, $s(\hat{\mathcal{F}})$  
 
 ```{r Sampling, out.width = '60%', fig.cap='Sampling distribution of unknown population paraeter', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
@@ -295,7 +352,7 @@ A few examples include:
 
 ## Stratified Sampling     
 
-What is a sampling stategy for grouped or stratified data?    
+What is a sampling strategy for grouped or stratified data?    
 
 - **Stratified sampling** strategies are used when data are organized in **strata**    
 
@@ -378,7 +435,7 @@ count_mean(clusters)
 
 ## Cluster Sampling
 
-Randomly select 3 cluseters
+Randomly select 3 clusters
 
 ```{python, echo=FALSE}
 ## Randomly sample the group numbers, making sure we sample from 
@@ -460,7 +517,7 @@ When creating a simulation with multiple conditionally dependent variables it is
   - Decisions are determined by variables    
   - Setting decision variables can be performed either manually or automatically             
 - **Utility nodes**, profit in this case, are shown as diamonds    
-  - Nodes represent a **utility function** given the dependencies in the graphe   
+  - Nodes represent a **utility function** given the dependencies in the graph   
   - Utility calculations are deterministic given the input values           
 - **Directed edges** show the dependency structure of the distributions   
   - Arrows point to **child nodes** which are dependent on **parent nodes** 
