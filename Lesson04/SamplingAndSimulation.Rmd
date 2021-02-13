@@ -445,8 +445,30 @@ Simulation enables data scientists to study the behavior of stochastic processes
   - The final or posterior distribution of the process is comprised of these realizations     
 
 
+## Representation as Directed Acyclic Graphical Model
 
-## 
+When creating a simulation with multiple conditionally dependent variables it is useful to draw a directed graph; a **directed acyclic graphical model or DAG**    
+
+- The graph is a communications device showing which variables are independent and which are conditionally dependent on others with the shapes used representing the type of nodes      
+- **Probability distributions** of the variables are shown as ellipses     
+   - Distributions have parameters which must be estimated          
+- **Decision variables** are deterministic and are shown as rectangles     
+  - Decisions are determined by variables    
+  - Setting decision variables can be performed either manually or automatically             
+- **Utility nodes**, profit in this case, are shown as diamonds    
+  - Nodes represent a **utility function** given the dependencies in the graphe   
+  - Utility calculations are deterministic given the input values           
+- **Directed edges** show the dependency structure of the distributions   
+  - Arrows point to **child nodes** which are dependent on **parent nodes** 
+
+## Sandwich Shop Simulation   
+
+The sandwich shop simulation can be represented by a DAG
+
+```{r Brenoulli, out.width = '60%', fig.cap='Directed graph of the distributions for profit simulation', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Simulation_Directed_Graph.jpg"))
+```
+
 
 ## Summary
 

@@ -28,11 +28,24 @@ The realizations are drawn from complex probability distributions of the process
 
 ## Creating simulations
 
-Creating, testing and debugging simulation software can be tricky. Some techniques which can make your life easier are the same as you would use when developing any analytical software, or even software in general. But, given the stochastic nature of simulation, testing and debugging can be more difficult than other types of software. Some commonly employed techniques which will help you include:     
-- Build your simulation as a series of small, easily tested chunks. The overall simulation will comprise many of these small chunks, typically in the form of functions.    
-- Test each small functional unit individually. These tests should include at least testing some typical cases, as well as boundary or extreme cases. Sensible behavior with extreme or limiting cases is a requirement for a stable simulation. Both tabular and graphical output can be useful for evaluating these tests.    
-- Test your overall simulation each time you add a new functional component. This processes ensures that all the components work together. Attempts at *'big bang'* integration typically end in failure and confusion, with considerable waste of time.    
-- Simulations are inherently stochastic. If you want to create identical numerical results, say for automated testing, set a seed before you begin tests. It is impossible to create and maintain quality simulation code without having detailed reproducible test cases.    
+Creating, testing and debugging simulation software is tricky    
+
+- Techniques which can make your life easier are the same as you would use when developing any analytical software    
+
+- Given the stochastic nature of simulation, testing and debugging can be more difficult than other types of software      
+
+- Some commonly employed techniques which will help you include:     
+  - Build your simulation as a series of small, easily tested chunks    
+  - Overall simulation comprises many of these small chunks, typically in the form of functions       
+  - Test each small functional unit individually    
+  - Tests should include at least some typical cases, as well as boundary or extreme cases   
+  - Test your overall simulation each time you add a new functional component; attempts at *'big bang'* integration typically end in failure   
+   
+- Simulations are inherently stochastic    
+  - If you want to create identical numerical results set a seed before you begin tests   
+  - It is impossible to create and maintain quality simulation code without having detailed reproducible test cases
+  
+  
 
 
 ## The Scenario
