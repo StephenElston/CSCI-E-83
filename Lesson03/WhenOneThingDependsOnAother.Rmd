@@ -354,7 +354,7 @@ From the root the **directed acyclic graphical model (DAG)** defines a condition
   -  $P(\oplus | S')$: Conditional probability that a patient with no disease tests positive; **Type I Error** or **False Positive**
    - $P(- | S')$: Conditional probability of a negative test for a patient with no disease  
    
-   ```{r CondTree, out.width = '30%', fig.cap='Graph showing dependency of conditional distribution', fig.align='center', echo=FALSE}
+```{r CondTree, out.width = '30%', fig.cap='Graph showing dependency of conditional distribution', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/CondTree.jpg"))
 ```
 

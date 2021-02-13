@@ -422,8 +422,31 @@ There are many practical aspects of sampling.
 
 - Don’t stop sampling when desired result is achieved: e.g. error measure!     
 
+## Introduction to Simulation    
 
-------------------------------------------
+Simulation enables data scientists to study the behavior of stochastic processes with complex probability distributions    
+
+- Most real-world processes have complex behavior, resulting in complex distributions of output values   
+   - Simulation is a practical approach to understanding these complex processes     
+ 
+- Two main purposes of simulation can be summarized as:           
+   - **Testing models:** If data simulated from the model do not resemble the original data, something is likely wrong  
+   - **Understand processes with complex probability distributions:** In these cases, simulation provides a powerful and flexible computational technique to understand behavior          
+
+## Introduction to Simulation    
+
+- As cheap computational power has become ubiquitous, simulation has become a widely used technique      
+
+- Simulations compute a large number of cases, or realizations    
+   - The computing cost of each realization must be low in any practical simulation  
+   - Realizations are drawn from complex probability distributions of the process model    
+
+- In many cases, realizations are computed using conditional probability distributions    
+  - The final or posterior distribution of the process is comprised of these realizations     
+
+
+
+## 
 
 ## Summary
 

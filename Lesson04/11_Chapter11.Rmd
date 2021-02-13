@@ -65,7 +65,7 @@ Values of decision variables are selected to optimize the utility. The directed 
 
 
 ```{r Brenoulli, out.width = '100%', fig.cap='Directed graph of the distributions for profit simulation', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("images/Simulation_Directed_Graph.jpg"))
+knitr::include_graphics(rep("../images/Simulation_Directed_Graph.jpg"))
 ```
 
 
