@@ -23,7 +23,7 @@ matplotlib$use("Agg", force = TRUE)
 
 - Axioms of probability; for discrete distribution           
 
-$$0 < P(A) \le 1 $$
+$$0 \le P(A) \le 1 $$
 $$P(S) = \sum_{a_i \in A}P(a_i) = 1 $$
 $$P(A\ \cup B) = P(A) + P(B)\\ if\ A \perp B$$
 
@@ -38,7 +38,7 @@ $$\mathrm{E}[\mathbf{X}] = \sum_{i=1}^n x_i\ p(x_i)$$
 $$\mathbf{e_i} = (0, 0, \ldots, 1, \ldots, 0)$$
   - For a single trial the probabilities of the $k$ possible outcomes are expressed:    
 $$\Pi = (\pi_1, \pi_2, \ldots, \pi_k)$$
-  - probability mass function as:   
+  - Probability mass function as:   
 
 $$f(x_i| \Pi) = \pi_i$$
    
@@ -76,7 +76,7 @@ $$p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, 
 
 
 
-## Introduciton      
+## Introduction      
 
 Sampling is a fundamental process in the collection and analysis of data    
 
@@ -84,7 +84,7 @@ Sampling is a fundamental process in the collection and analysis of data
 
 - Sampling must be randomized to preclude biases     
 
-- As sample size increases the standard error of a statistic computed from the sample decreases by the law of large numbers   
+- As sample size increases, the standard error of a statistic computed from the sample decreases by the law of large numbers   
 
 - Key points to keep in mind:   
   - Understanding sampling is essential to ensure data is representative of the entire population   
@@ -121,13 +121,13 @@ All statistical methods rely on the use of **randomized unbiased samples**
 
 - An understanding of proper use of sampling methods is essential to statistical inference      
 
-- Most commonly used machine learning algorithms assume that training data are **unbiased** and **independent identically distributed (iid)**   
-  - These conditions only met if training data sample is randomized   
+- Most commonly used machine learning algorithms assume that training data are **unbiased** and **independent and identically distributed (iid)**   
+  - These conditions are only met if training data sample is randomized   
   - Otherwise, the training data will be biased and not represent the underlying process distribution
   
 
 
-## Sampling distributions   
+## Sampling Distributions   
 
 Sampling of a population is done from an unknown **population distribution**, $\mathcal{F}$      
 
@@ -144,18 +144,18 @@ Sampling of a population is done from an unknown **population distribution**, $\
 
  
  
-## Sampling distributions   
+## Sampling Distributions   
 
 Sampling of a population is done from an unknown **population distribution**, $\mathcal{F}$      
 
 - Any statistic we compute for the generating process is an approximation for the population, $s(\hat{\mathcal{F}})$  
 
-```{r Sampling, out.width = '60%', fig.cap='Sampling distribution of unknown population paraeter', fig.align='center', echo=FALSE}
+```{r Sampling, out.width = '60%', fig.cap='Sampling distribution of unknown population parameter', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
 ```
  
 
-## Sampling and the law of large numbers
+## Sampling and the Law of Large Numbers
 
 The **law of large numbers** is a theorem that states that **statistics of independent random samples converge to the population values as more samples are used**      
 
@@ -172,7 +172,7 @@ n \rightarrow \infty$$
 - This result is reassuring, the larger the sample the more the statistic converges to the population parameter 
 
 
-## Sampling and the law of large numbers
+## Sampling and the Law of Large Numbers
 
 The law of large numbers is foundational to statistics    
 
@@ -187,7 +187,7 @@ The law of large numbers is foundational to statistics
 
 -------------------------------------   
 
-## Sampling and the law of large numbers   
+## Sampling and the Law of Large Numbers   
 
 The law of large numbers has a long history     
 
@@ -199,7 +199,7 @@ The law of large numbers has a long history
 
 -------------------------------------   
 
-## Sampling and the law of large numbers
+## Sampling and the Law of Large Numbers
 
 A simple example     
 
@@ -232,7 +232,7 @@ for n,x in zip(sample_size,out): print("%.0f  %.2f" %(n, x))
 
 -----------------------------------------------
 
-## Standard error and convergance for a Normal distribution
+## Standard Error and Convergence for a Normal Distribution
 
 As we sampled from a Normal distribution, the mean and standard deviation of the sample converged to the population mean    
 
@@ -293,7 +293,7 @@ There are a great number of possible sampling methods.
 An example with synthetic data. 
 - Generate 2000 random samples from the standard Normal distribution    
 - The realizations are randomly divided into 4 groups with $p = [0.1,0.3,0.4,0.2]$     
-- The probability of a sample being in a groups is not uniform, and sums to 1.0.  
+- The probability of a sample being in a group is not uniform, and sums to 1.0.  
 
 - Head of the data frame is displayed:
 
@@ -464,24 +464,24 @@ count_mean(clus_samples)
 - Systematic methods lack randomization    
 
 - Convenience sampling selects the cases that are easiest to obtain     
-  - Commonly sited example known as **database sampling**      
+  - Commonly cited example known as **database sampling**      
   - Example, the first N rows resulting from a database query     
   - Example, every k-th case of the population   
   
   
 -------------------------------------------------
 
-## A few more thoughts on sampling
+## A Few More Thoughts on Sampling
 
 There are many practical aspects of sampling.
 
 - Random sampling is essential to the underlying assumptions of statistical inference    
 
-- Whenever you are planing to sample data, make sure you have a clear sampling plan     
+- Whenever you are planning to sample data, make sure you have a clear sampling plan     
 
 - Know the number of clusters, strata, samples in advance    
 
-- Don’t stop sampling when desired result is achieved: e.g. error measure!     
+- Don’t just stop sampling when your desired result is achieved: e.g. error measure!     
 
 ## Introduction to Simulation    
 
