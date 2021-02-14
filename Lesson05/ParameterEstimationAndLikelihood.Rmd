@@ -18,6 +18,45 @@ matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
 ```
 
+## Review   
+
+Sampling is a fundamental process in the collection and analysis of data    
+
+- Sampling is important because we almost never have data on a whole population   
+
+- Sampling must be randomized to preclude biases    
+
+- As sample size increases the standard error of a statistic computed from the sample decreases by the law of large numbers
+
+- Key points to keep in mind:   
+  - Understanding sampling is essential to ensure data is representative of the entire population   
+  - Use inferences on the sample to say something about the population   
+  - The sample must be randomly drawn from the population  
+
+- Sampling from distribution is the building block of simulation    
+
+
+## Review   
+
+Sampling of a population is done from an unknown **population distribution**, $\mathcal{F}$      
+
+- Any statistic we compute for the generating process is an approximation for the population, $s(\hat{\mathcal{F}})$  
+
+```{r Sampling, out.width = '60%', fig.cap='Sampling distribution of unknown population parameter', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
+```
+ 
+## Review   
+
+
+The **law of large numbers** is a theorem that states that **statistics of independent random samples converge to the population values as more samples are used**      
+
+- The law of large numbers is foundational to statistics and sampling theory    
+
+- Assume that **larger samples are more representatives of the population we are sampling**     
+
+- If the real world did not follow this theorem much of statistics, to say nothing of science and technology, would fail badly. 
+
 
 ## Introduction   
 
