@@ -1,0 +1,177 @@
+---
+title: "13.	Chapter 13. Are samples really different; hypothesis tests on mean"
+author: "Steve Elston"
+date: "10/27/2020"
+bibliography: bibliography.bib
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("/usr/bin/python3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+
+## Introduciton    
+
+Hypothesis testing is a fundamental process in statistical inference. Hypothesis testing seeks to answer the question, are a differences in the distributions of certain varaibles **statistically significant**? This should not be confused with the question, are differences in the distributions certain variables important to the problem being addressed? These two cases must not be confused. While hypothesis testing helps to identify candidates to consider as important differences, it cannot and does not measure importance.    
+
+A concpet which is often difficult to grasp is that many hypothesis testing methods focus only on a **null hypothesis**. A null hypothesis is the hypothesis that there is no significant difference between the distributions of the variables being considered The goal of the test is to **accept a null hypothesis**, or **reject a null hypothesis**. Notice, that this process does not directly consider if an **alternative hypothesis** is true or not. In fact, there may be many alternative hypotheses!  
+
+Let's consider practical scenario for hypothesis testing. 
+
+1. **Identify a null hypothesis that can be tested:** In this example,we want to know if using a larger logo on a web site results in significantly different use. Use is measured in terms of number of clicks per session. In this case, the **null hypothesis**, denoted $H_0$, is that the size of the logo does not matter. More formally, this null hypothesis is the population assumption of no difference in use. 
+2. The alternative hypothesis is usually stated in terms of a **treatment** and denoted $H_a$. In this example the treatment is a web site with a larger logo. And, $H_a$ is a population with a significant difference in the population of web site use.  
+3. **Select a criteria to evaluate the hypothesis:** A **significance level** or **cutoff** probability is specified. This cutoff value is the level of **confidence** required that the difference in the computed test statistic **does not occur by randomness alone**. The cutoff should be selected based on how much confidence is required that the population difference is statistically significant. Typically used cutoff values include, 0.1, 0.05, and 0.01. The correct cutoff is problem specific. If our sample has a probability of $<= 10\%$ that randomness alone caused the observed difference we will **reject the null hypothesis** that the logo does not mater. This criteria is known as the **cutoff**. 
+3. **Select a random sample from the population:** The population in this cases is all possble users of the web site. Randomly draw a number of users for each **treatment**. In statistical terminology, a treatment is the factor that differentiates the populations being compared with the test. For our example, the treatments are the current web site or the one with a larger logo (e.g. A or B). 
+4. **Calculate a test statistic** to compare the **responses**. If the test statistic is beyond the cutoff value we say the differences are **significant** and reject the null hypothesis. 
+
+The foregoing seems like a simple recipe, but there are many pitfalls.   
+- **Rejecting the null hypothesis does not mean we should accept our proposed alternative**. Failing to rejecting the null hypothesis can occur for several reasons, including:   
+  - The alternative hypothesis was false to begin with.
+  - We did not collect enough evidence given the **size of the effect**. Roughly speaking, the effect size is difference in populations under the different treatments. We will explore this aspect of the problem in the **power** discussionn below.   
+  - There can be multiple alternatives. In our example, even in the case we reject the null hypothesis, the trafic on the web site could be greater or less than the baseline site A.  
+- **Significance simply means the cutoff value has been exceeded, but does not mean the inference is actually important in human terms**. Even if the null hypothesis is rejected, we cannot answer the question of the business impact of the new web site actually being important the company from the hypothesis test alone. 
+
+We will have more to say about these and other complications latter. 
+
+```{python, echo=FALSE}
+## Import
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import norm, chi2
+from scipy.optimize import brentq
+```
+
+```{python}
+## figure1 shoing cutoff 
+def cutoff_polygon(upper, cutoff, ax, step=0.02):
+    ## Plot the cuttoff area 
+    lower = norm.ppf(cutoff)
+    if(lower > upper):
+        ax.vlines(lower, 0.0, 0.15, color='red', linewidth=3)
+        ax.text(lower-1.6, 0.16, 'Cutoff value')
+        temp = upper
+        upper = lower
+        lower = temp  
+    else:
+        ax.vlines(lower, 0.0, 0.15, color='red', linewidth=3)
+        ax.text(lower, 0.16, 'Cutoff value')
+    x = list(np.arange(lower, upper, step))
+    norm_vals = list(np.apply_along_axis(lambda x: norm.pdf(x), 0, x))
+    x = x + [upper, lower]   
+    norm_vals = norm_vals + [0.0, 0.0]
+    ax.fill(x, norm_vals, 'black')
+    
+def plot_norm(start, end, ax, title, step=0.2):
+    ## Plot the Normal distribution 
+    x = np.arange(start, end, step=0.02)
+    norm_value = np.apply_along_axis(lambda x: norm.pdf(x), 0, x)
+    ax.plot(x, norm_value, linewidth=3, color='black')
+    ax.set_title(title)
+    ax.set_xlabel('X')
+    ax.axhline(0.0, color='black')
+
+## Set up the plot grid
+plt.rc('font', size=24)
+fig, ax = plt.subplots(2, 2, figsize=(30, 18)) 
+alpha = 0.05
+
+## Two sided
+plot_norm(-4.0, 4.0, ax[0,0], title='Two sideed, cutoff = ' + str(alpha))
+cutoff_polygon(4.0, 1.0- alpha/2.0, ax[0,0])
+cutoff_polygon(-4.0, alpha/2.0, ax[0,0])
+ax[0,1].axis('off')
+
+## Upper
+plot_norm(-4.0, 4.0, ax[1,0], title='One sided, upper, cutoff = ' + str(alpha))
+cutoff_polygon(4.0, 1.0- alpha, ax[1,0])
+
+## Lower
+plot_norm(-4.0, 4.0, ax[1,1], title='Two sideed, cutoff = ' + str(alpha))
+cutoff_polygon(-4.0, alpha, ax[1,1])
+
+plt.show()
+```
+
+
+## The Hypothesis Testing Process
+
+Let's outline the steps required to perform a formal two-sample hypothesis test. These steps include: 
+
+- We first state our population assumptions in the null hypothesis: $H_0$.
+- We state our new alternative hypothesis as an alternative to the null: $H_a$. This is typically stated in terms of a **treatment**. The treatment is the factor that differentiates the population.     
+- Decide on a significance level (probability cutoff): 0.1, 0.05, and 0.01 are commonly used. The correct cutoff is problem specific.
+- Data is collected for the different treatments. In this case, the treatments are the old web site and the new web site. 
+- Compute the statistic and evaluate it based on the cutoff value. 
+- Based on our findings we can only do two things:
+  - **Reject the null-hypothesis:** This is not the same as accepting the alternative hypothesis.
+  - **Fail to reject the null hypothesis:** This is not the same as accepting the null hypothesis. 
+- Failing to rejecting the null hypothesis can occur for several reasons, including:   
+  - The alternative hypothesis was false to begin with.
+  - We did not collect enough evidence for the **size of the effect**. Roughly speaking, the effect size is difference in populations under the different treatments. We will explore this aspect of the problem in the **power** discussion. 
+
+
+## Hypothesis Testing and the Cut-Off   
+
+The primary idea of a statistical test is determining if the value of the chosen **test statistic** exceeds a cutoff value. We select the cutoff value based on the **confidence** we wish to have in the test result. For example, by specifing a cutoff of $0.05$ we are stay that the probability that the test statistic exceeding the cutoff is $0.05$. Once the cutoff value has been set and the test statistic computed, we interpret the results as follows:         
+- If the test statistic does not exceed the cutoff value, we accept the null hypthesis.   
+- On the other hand, if the test statistic exceeds the cutoff we reject the null hypothesis. 
+
+The foregoing seems straight forward enough. But, there is one other significant consideration. Which tails of the distribution of the test statistic are considered? The choice depends on the nature of the null hypothesis being tested. For a cutoff value, $\alpha$,here are three posible, and obvious, choices:   
+1. **Two-sided:** In this case, we test the computed value of the test statistic is significantly different than the null hypothesis. The difference can be positive or negative. A cutoff value of $\alpha/2$ is used on both the upper and lower tail of the test statistic distribution.    
+2. **One-sided upper tail:** In this case, the null hypothesis is that the test statistic is less than the cutoff value $\alpha$. The cutoff is applied only to the upper tail of the test statistic distribution. In other words, this case is a test that the computed test statustic is significantly greater than the null value.      
+3. **One=sided lower tail:** Finally, we have the case where the null hypothesis is that the test statistic is greater than the cutoff value $\alpha$. The cutoff is applied only to the lower  tail of the test statistic distribution. This case is a test that the computed test sta0tustic is significantly less than the null value.      
+
+These three cases are illustrated in the figure below.  
+
+
+
+
+## Hypothesis Tests for Means - the t-test    
+
+As you might expect from the name, the t-test is based on tests on a t-distribution. It turns out that the difference in means between two Normal distributions follows a t-distribution. The t-distribution has many nice properties including:
+
+- The t-distribution is the natural distribution for tests on differences of means. 
+- The t-distribution has heavier tails than the Normal and relaxes assumptions on the differences.
+- For high degrees of freedom, the t-distribution converges to a Normal distribution, by the Central Limit Theorem. 
+
+
+## Power of Tests
+
+The **power of a test** is formally defined as:
+
+$$power = P(reject\ H_0| when\ H_a\ is\ true)$$
+
+In pain language, the **power is the probability of getting a positive result when the null hypothesis is not true**. Conversely, a test with **insufficient power will not detect a real effect**. Clearly, we want the most powerful test we can find for the situation. A powerful test gives a better chance of detecting an effect. 
+
+Computing test power can be a bit complex, and analytical solutions can be difficult or impossible. Often, a simulation is used to compute power. 
+
+Let's look at the example of computing power for the two sample t-test for the difference of means. The power of this test depends on the several parameters:   
+
+- The type of test.  
+- The number of samples.   
+- The anticipated difference in the population means, which we call the **effect size**.   
+- The significance level of  the test.   
+
+When running a power test, you can ask several questions, which will assist you in designing an experiment:   
+- Most typically, you will determine how big a sample is required to have good chance of rejecting the null hypothesis given the expected effect size. 
+  * Traditionally, a power level of 0.8 is considered adequate. However, at this power level there is a 1 in 5 chance of not detecting the desired effect.  
+  * One should carefully consider the power level required for the situation at hand.
+- Or, you can also determine how big an effect needs to be given a fixed sample size (all the samples you have or can afford) to have a good chance of rejecting the null hypothesis.  
+- Finally, you can determine the how different cutoff values change the likelihood of finding an effect.   
+
+The Python statsmodels package provides power calculations for a limited set of hypothesis tests. We can use these capabilities to examine the power of t-tests under various assumptions. 
+
+The code in the cell below does the following:
+
+- Create a sequence of effect sizes.
+- Compute a vector of power values for the effect size using [statsmodels.stats.power.tt_ind_solve_power](https://www.statsmodels.org/stable/generated/statsmodels.stats.power.tt_ind_solve_power.html).
+- Plot the effect size vs. power. 
+
+Execute this code and examine the result. 
+

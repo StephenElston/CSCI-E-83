@@ -1,0 +1,387 @@
+---
+title: "Introduction to Bootstrap Methods"
+author: "Steve Elston"
+date: "02/28/2021"
+output:
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("/usr/bin/python3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+
+## Review     
+
+
+## Introduction
+
+“There were others who had forced their way to the top from the lowest rung by the aid of their bootstraps.”
+James Joyce, ‘Ulysses’ 1922
+
+Bootstrap and re-sampling methods are widely applicable statistical methods   
+
+- Resampling methods are products of the computer age    
+
+- Use computational resources unimaginable in the early 20th Century    
+
+- Repeatedly re-sampling the data relaxes some of the assumptions of classical statistical methods    
+
+- Re-sampling methods draw heavily on the law of large number and the central limit theorem      
+
+
+## Types of Resampling Methods    
+
+Commonly used re-sampling methods include:     
+
+- **Randomization or Permutation methods:** aka exact tests     
+   - Have a long history; e.g. Fisher’s exact test (1922)     
+   - Became practical for larger data sets in computer era      
+   
+- **Cross validation:** re-sample into multiple folds without replacement     
+   - Leave n out method      
+   - Has origins in the 1950s     
+   - Widely used to evaluate machine learning (ML) models      
+   
+- **Jackknife:** leave one out re-sampling       
+   - Leave one out method   
+   - Early general purpose resampling method   
+   - Has origins in the 1950s    
+   
+- **Bootstrap:** re-sample with equivalent size and replacement - our focus here    
+   - Published by Prof Brad Efron in 1979      
+   
+## General Characteristics of Resampling Methods    
+
+General characteristics of resampling methods include     
+
+- Allow computation of statistics from limited data samples     
+
+- Repeatedly compute statistics from multiple resamples of dataset     
+
+- The result converges to the sample distribution of the statistic being computed    
+
+- Make minimal distributional assumptions, when compared to classical frequentist statistics      
+
+## Pitfalls of Resampling Methods    
+
+Re-sampling methods are general and powerful but, there is no magic involved! There are pitfalls!     
+
+- If a sample is biased, the re-sampled statistic estimate based on that sample will be biased    
+   - Results can be no better than the sample you start with  
+   
+- The sample variance and Cis can be no better than the sample distribution allows    
+   - Be suspicious of overly optimistic confidence intervals    
+   - CIs can be optimistically biased        
+
+- Are computationally intensive, but often highly parallelizable   
+   
+##  Point Estimates vs. Distribution Estimates    
+
+The goal of frequentist statistics is to compute a point estimate and confidence interval      
+
+- Point estimate is the single most likely value for a statistic     
+   - Confidence interval expresses the uncertainty of the point estimate  
+
+- Confidence interval based on the properties of some assumed probability distribution
+Are there alternatives to this classical frequentist approach?    
+   - Here we focus on bootstrap methods which do not require explicit probability model    
+   - Bootstrap methods let a computer do the work, not the statistician with paper and pencil
+   
+   
+## Bootstrap Distribution    
+
+Rather than computing a point estimate directly, bootstrap methods compute a bootstrap distribution of a statistic    
+
+- Bootstrap distribution is comprised of values of the statistic computed from bootstrap resamples of the original observations (data sample)     
+
+- Computing bootstrap distribution requires **no assumptions about population distribution!**
+  - Bootstrap resampling substitutes computer power for paper and pencil statistician power
+
+- Bootstrap resampling estiamtes the **bootstrap distribution** of a statistic    
+  - Compute mostly likely point estimate of the statistic, or bootstrap estimate   
+  - The bootstrap confidence interval is computed from the bootstrap distribution    
+
+
+## Overview of the Bootstrap Algorithm    
+
+The bootstrap method follows a simple algorithm. Estimates of the point estiamte of a statistic are accumulated by these steps:    
+
+  1. Randomly sample (e.g. Bernoulli sample) n data with replacement from an original data sample of n values; The re-sample is the same size as the original data sample   
+  2. Re-compute the statistic with each resample       
+  3. Repeat steps 1 and 2 to accumulate the required number of bootstrap samples  
+  4. Accumulated bootstrap values form the bootstrap distribution; An estimate of the sample distribution of the statistic     
+  5. The mean of the computed statistic values is the bootstrap point estimate of the statistic       
+
+- By law of large numbers, bootstrap point estimate converges    
+
+- Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 200 bootstrarp samples for point estimates    
+
+
+## Overview of the Bootstrap Algorithm    
+
+```{r BootstrapMean, out.width = '90%', fig.cap='Outline of bootstrap resampling algorithm to compute mean', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/BootstrapMean.png"))
+```
+
+
+## Example; One Sample Bootstrap   
+
+Use sample of standardized scores of highschool students from [UCLA Statistical Consulting](https://stats.idre.ucla.edu/)
+
+```{python, echo=FALSE}
+import pandas as pd
+import numpy as np
+import numpy.random as nr
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+import scipy.stats as ss  
+from math import atan
+
+test_scores = pd.read_csv('../data/hsb2.csv', index_col=0)
+test_scores.head(10)
+```
+
+## Example; One Sample Bootstrap   
+
+Histogram of the math scores     
+
+```{python, echo=FALSE}
+def plot_hist(x, xlab, title, bins=20, height=3):   
+       sns.displot(x, bins=bins, kde=True, height=height, aspect=1.4)
+       plt.axvline(x=np.mean(x), color='red', linestyle='dashed', linewidth=2)
+       plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.8)
+       plt.xlabel(xlab)
+       plt.title(title)
+
+math = test_scores.loc[:,'math']
+plot_hist(math, 'Math score', 'Histogram of math scores')
+plt.show()
+```
+
+
+## Example; One Sample Bootstrap
+
+Function to compute single sample bootstrap estimate of statistic    
+
+```{python, evl=FALSE}
+def bootstrap_statistic(x, b, statistic):
+    '''
+    Function Computes b one-sample bootstrap estiamtes of data x
+    using statistic function.  
+    '''
+    n_samps = len(x)
+    boot_vals = []
+    for _ in range(b):
+        ## The heavy work is done here. The statistic is computed 
+        ## using the bootstrap sample of the observations 
+        boot_vals.append(statistic(nr.choice(x, size=n_samps, replace=True)))
+    boot_estimate = np.mean(boot_vals)
+    print('Bootstap point estimate = {:6.2f}'.format(boot_estimate))
+    return(boot_estimate, boot_vals)      
+    
+bootstrap_mean_estimate, boot_means = bootstrap_statistic(math, 200, np.mean)
+```
+
+
+## Example; One Sample Bootstrap
+
+Distribution of 200 bootstrap samples of mean estimates    
+
+```{python, echo=FALSE}
+def bootstrap_statistic(x, b, statistic):
+    '''
+    Function Computes b one-sample bootstrap estiamtes of data x
+    using statistic function.  
+    '''
+    n_samps = len(x)
+    boot_vals = []
+    for _ in range(b):
+        ## The heavy work is done here. The statistic is computed 
+        ## using the bootstrap sample of the observations 
+        boot_vals.append(statistic(nr.choice(x, size=n_samps, replace=True)))
+    boot_estimate = np.mean(boot_vals)
+    print('Bootstap point estimate = {:6.2f}'.format(boot_estimate))
+    return(boot_estimate, boot_vals)      
+    
+bootstrap_mean_estimate, boot_means = bootstrap_statistic(math, 200, np.mean)
+
+plot_hist(boot_means, 'Bootstrap mean values', 'Histogram of bootstrap distribution')
+plt.show()
+```
+
+
+## Bootstrap Confidence Intervals   
+
+Distribution of 2000 bootstrap bootstrap confidence intervals?
+
+- Use percentile method:      
+   1. Define confidence level, eg. 95% or α=0.05    
+   2. Order b bootstrap samples, $s_i$$, by value       
+   3. Lower CI index; $i = b∗α/2$   
+   4. Upper CI index; $i = b∗(1−α/2)$    
+   
+- Percentile method is know to be biased    
+   - Bias correction methods available   
+   
+- Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 2,000 bootstrap samples to estimate confidence intervals
+
+## Bootstrap Confidence Intervals    
+
+Bootstrap confidence intervals are known to be biased!    
+
+- Often bootstrap CIs are overly optimistic    
+
+- Bias can be significant for asymmetric distributions    
+
+
+## Example; One Sample Bootstrap
+
+Bootstrap distribution of 2000 of mean estimates with confidence intervals     
+
+```{python, echo=FALSE}
+def bootstrap_cis(boot_samples, alpha=0.05):
+      n = len(boot_samples)
+      sorted = np.sort(boot_samples)
+      index_lci = int(n * alpha / 2)
+      index_uci = int(n * (1 - alpha / 2))
+      print('At alpha = {0:3.2f}, lower and upper bootstap confidence intervals = {1:6.2f}   {2:6.2f}'.format(alpha, sorted[index_lci], sorted[index_uci]))
+      return(sorted[index_lci], sorted[index_uci])
+    
+bootstrap_mean_estimate, boot_means = bootstrap_statistic(math, 2000, np.mean)
+LCI, UCI = bootstrap_cis(boot_means)
+
+plot_hist(boot_means, 'Bootstrap mean values', 'Histogram of bootstrap distribution')
+plt.axvline(x=LCI, color='red', linestyle='dotted', linewidth=2)
+plt.axvline(x=UCI, color='red', linestyle='dotted', linewidth=2)
+plt.show()
+```
+
+## Two Sample Bootstrap    
+
+How can we apply the bootstrap algorithm for two-sample statistics?    
+
+- Example, difference of means of two independently sampled populations   
+
+- How to generate boot strap samples?    
+
+- Can we just sample the concatenation of the two samples?     
+
+- **No!**    
+   - There is no guarantee of a correct number of resamples for each group   
+   - Imbalanced sampling leads to bias       
+
+- Must independently sample the two groups or populations     
+   - Use two independent bootstrap samples to compute statistic
+   - Step one; compute statistic from independent resamples    
+   - Step two; compute (another) statistic from the two bootrap estimates
+
+
+## Two Sample Bootstrap     
+
+Example: algorithm to compute difference of means:    
+
+   1. Independently randomly sample (e.g. Bernoulli sample) n data with replacement from each original data sample; The number of resamples for each populations is the number of samples for that population     
+   2. Compute the statistic (e.g. mean) for the two resamples   
+   3. Compute the two-sample statistic; e.g. difference of means    
+   4. Repeat steps 1, 2, and 3 to accumulate the required number of bootstrap samples
+Accumulated bootstrap values form the bootstrap distribution; an estimate of the sample distribution of the statistic    
+   5. The mean of the computed statistic values is the bootstrap point estimate of the statistic; e.g. difference of means      
+   6. Compute CIs from bootstrap distribution
+
+## Two Sample Bootstrap   
+
+Example; find the bootstrap distribution of the difference in math scores between low and middle SES students.  
+
+```{python, echo=FALSE}
+g=sns.displot(data=test_scores.loc[test_scores.loc[:,'ses']!=3,:], 
+        x='math', bins=20,
+        row = 'ses', kde=True,
+        height=3, aspect=1.5
+        )
+g.axes[0][0].set_title('Math scores for low SES students', fontsize=20);
+g.axes[0][0].axvline(np.mean(test_scores.loc[test_scores.loc[:,'ses']==1,'math']), color='red', linestyle='dashed')
+g.axes[1][0].set_title('Math scores for mid SES students', fontsize=20);
+g.axes[1][0].axvline(np.mean(test_scores.loc[test_scores.loc[:,'ses']==2,'math']), color='red', linestyle='dashed')
+```
+
+
+## Example, Two Sample Bootstrap   
+
+```{python, eval=FALSE}
+def two_boot_two_stat(sample_1, sample_2, b, statistic_1, two_samp_statistic):
+    '''
+    Function computes two sample and two statistic bootsrap estimate.   
+    - sample_1 and sample_2, independent obervation vectors   
+    - b, number of bootstrap samples to compute
+    - statistic 1, statistic applied to the two independent bootstrap samples
+    - two_sample_statistic, statistic applied to the independent bootstrap statistics
+    '''
+    two_boot_values = []
+    n_samps_1 = len(sample_1)
+    n_samps_2 = len(sample_2)
+    for _ in range(b):  
+        ## Heavy lisfting is done here. First, the two independent bootstrap estiamtes
+        ## are computed from independent bootstrap resamples. Second, the statistic 
+        ## of the two bootstrap estimates is computed.  
+        boot_estimate_1 = statistic_1(nr.choice(sample_1, size=n_samps_1, replace=True))
+        boot_estimate_2 = statistic_1(nr.choice(sample_2, size=n_samps_2, replace=True))
+        two_boot_values.append(two_samp_statistic(boot_estimate_1, boot_estimate_2))
+    boot_estimate = np.mean(two_boot_values)
+    print('Bootstap point estimate = {:6.2f}'.format(boot_estimate))
+    return(boot_estimate, two_boot_values)    
+
+math_low_ses = test_scores.loc[test_scores.loc[:,'ses']==1,'math'] 
+math_mid_ses = test_scores.loc[test_scores.loc[:,'ses']==2,'math']
+bootstrap_diff_of_mean, boot_diffs = two_boot_two_stat(math_low_ses, math_mid_ses, 2000, np.mean, lambda x,y: x-y)
+```
+
+## Example, Two Sample Bootstrap   
+
+Compute and display the bootstrap distribution of the difference of student scores    
+
+```{python, echo=FALSE}
+def two_boot_two_stat(sample_1, sample_2, b, statistic_1, two_samp_statistic):
+    '''
+    Function computes two sample and two statistic bootsrap estimate.   
+    - sample_1 and sample_2, independent obervation vectors   
+    - b, number of bootstrap samples to compute
+    - statistic 1, statistic applied to the two independent bootstrap samples
+    - two_sample_statistic, statistic applied to the independent bootstrap statistics
+    '''
+    two_boot_values = []
+    n_samps_1 = len(sample_1)
+    n_samps_2 = len(sample_2)
+    for _ in range(b):  
+        ## Heavy lisfting is done here. First, the two independent bootstrap estiamtes
+        ## are computed from independent bootstrap resamples. Second, the statistic 
+        ## of the two bootstrap estimates is computed.  
+        boot_estimate_1 = statistic_1(nr.choice(sample_1, size=n_samps_1, replace=True))
+        boot_estimate_2 = statistic_1(nr.choice(sample_2, size=n_samps_2, replace=True))
+        two_boot_values.append(two_samp_statistic(boot_estimate_1, boot_estimate_2))
+    boot_estimate = np.mean(two_boot_values)
+    print('Bootstap point estimate = {:6.2f}'.format(boot_estimate))
+    return(boot_estimate, two_boot_values)    
+
+math_low_ses = test_scores.loc[test_scores.loc[:,'ses']==1,'math'] 
+math_mid_ses = test_scores.loc[test_scores.loc[:,'ses']==2,'math']
+bootstrap_diff_of_mean, boot_diffs = two_boot_two_stat(math_low_ses, math_mid_ses, 2000, np.mean, lambda x,y: x-y)
+LCI, UCI = bootstrap_cis(boot_diffs)
+
+plot_hist(boot_diffs, 'Bootstrap difference of means', 'Histogram of bootstrap distribution of difference of means')
+plt.axvline(x=LCI, color='red', linestyle='dotted', linewidth=2)
+plt.axvline(x=UCI, color='red', linestyle='dotted', linewidth=2)
+plt.show()  
+```
+
+## Summary  
+
+Bootstrap resamping 
