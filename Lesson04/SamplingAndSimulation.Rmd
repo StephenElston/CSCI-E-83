@@ -135,7 +135,7 @@ Sampling of a population is done from an unknown **population distribution**, $\
 
 - The statistic is an approximation, $s(\hat{\mathcal{F}})$    
 
-- If we continue to take random samples from the population and compute estimates of a statistic, we say the statistic has a **sampling distribution**   
+- If we continue to take random samples from the population and compute estimates of a statistic, we generate a  **sampling distribution**   
   - Hypothetical concept of the sampling distribution is a foundation of **frequentist statistics**   
   - Frequentist statistics built on the idea of randomly resampling the population distribution and recomputing a statistic         
 
@@ -182,7 +182,7 @@ The law of large numbers is foundational to statistics
 
 - Is foundation of sampling theory, plus modern computational methods;  simulation, bootstrap resampling, and Monte Carlo methods   
 
-- If the real world did not follow this theorem much of statistics, to say nothing of science and technology, would fail badly. 
+- If the real world did not follow this theorem, then much of statistics (to say nothing of science and technology as a whole) would have to be rethought
 
 
 -------------------------------------   
@@ -203,7 +203,7 @@ The law of large numbers has a long history
 
 A simple example     
 
-- The mean fair coin flips (0,1)=(T,H) converges to the expected value with more flips      
+- The mean fair coin flips (0,1) = (T,H) converges to the expected value with more flips      
 
 - The mean converges to the expected value of 0.5 for $n = 5, 50, 500, 5000$  
 
@@ -356,7 +356,7 @@ What is a sampling strategy for grouped or stratified data?
 
 - **Stratified sampling** strategies are used when data are organized in **strata**    
 
-- **Simple Idea:** independently sample each equal numbers of cases from each strata   
+- **Simple Idea:** independently sample an equal numbers of cases from each strata   
 
 - The simplest version of stratified sampling creates an **equal-size Bernoulli sample** from each strata
 
@@ -395,7 +395,7 @@ count_mean(stratified)
 
 ## Cluster Sampling
 
-When sampling is expensive a strategy is required to reduce the cost  
+When sampling is expensive, a strategy is required to reduce the cost  
 
 - Examples of expensive to collect data:   
   - Surveys of customers at a chain of stores   
@@ -506,7 +506,7 @@ Simulation enables data scientists to study the behavior of stochastic processes
   - The final or posterior distribution of the process is comprised of these realizations     
 
 
-## Representation as Directed Acyclic Graphical Model
+## Representation as a Directed Acyclic Graphical Model
 
 When creating a simulation with multiple conditionally dependent variables it is useful to draw a directed graph; a **directed acyclic graphical model or DAG**    
 

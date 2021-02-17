@@ -169,7 +169,7 @@ Steve Elston
 <ul>
 <li><p>Any statistic we compute for the generating process is based on a sample, <span class="math inline">\(\hat{\mathcal{F}}\)</span></p></li>
 <li><p>The statistic is an approximation, <span class="math inline">\(s(\hat{\mathcal{F}})\)</span></p></li>
-<li><p>If we continue to take random samples from the population and compute estimates of a statistic, we say the statistic has a <strong>sampling distribution</strong></p>
+<li><p>If we continue to take random samples from the population and compute estimates of a statistic, we generate a <strong>sampling distribution</strong></p>
 <ul>
 <li>Hypothetical concept of the sampling distribution is a foundation of <strong>frequentist statistics</strong><br />
 </li>
@@ -216,7 +216,7 @@ n \rightarrow \infty\]</span></p>
 <li><p>We rely on the law of large numbers whenever we work with samples</p></li>
 <li><p>Assume that <strong>larger samples are more representatives of the population we are sampling</strong></p></li>
 <li><p>Is foundation of sampling theory, plus modern computational methods; simulation, bootstrap resampling, and Monte Carlo methods</p></li>
-<li><p>If the real world did not follow this theorem much of statistics, to say nothing of science and technology, would fail badly.</p></li>
+<li><p>If the real world did not follow this theorem, then much of statistics (to say nothing of science and technology as a whole) would have to be rethought</p></li>
 </ul>
 </div>
 <div id="sampling-and-the-law-of-large-numbers-2" class="slide section level2">
@@ -232,7 +232,7 @@ n \rightarrow \infty\]</span></p>
 <h1>Sampling and the Law of Large Numbers</h1>
 <p>A simple example</p>
 <ul>
-<li><p>The mean fair coin flips (0,1)=(T,H) converges to the expected value with more flips</p></li>
+<li><p>The mean fair coin flips (0,1) = (T,H) converges to the expected value with more flips</p></li>
 <li><p>The mean converges to the expected value of 0.5 for <span class="math inline">\(n = 5, 50, 500, 5000\)</span></p></li>
 </ul>
 <pre><code>## 5  0.80
@@ -342,7 +342,7 @@ n \rightarrow \infty\]</span></p>
 <p>What is a sampling strategy for grouped or stratified data?</p>
 <ul>
 <li><p><strong>Stratified sampling</strong> strategies are used when data are organized in <strong>strata</strong></p></li>
-<li><p><strong>Simple Idea:</strong> independently sample each equal numbers of cases from each strata</p></li>
+<li><p><strong>Simple Idea:</strong> independently sample an equal numbers of cases from each strata</p></li>
 <li><p>The simplest version of stratified sampling creates an <strong>equal-size Bernoulli sample</strong> from each strata</p></li>
 <li><p>In many cases, nested samples are required</p>
 <ul>
@@ -366,7 +366,7 @@ n \rightarrow \infty\]</span></p>
 </div>
 <div id="cluster-sampling" class="slide section level2">
 <h1>Cluster Sampling</h1>
-<p>When sampling is expensive a strategy is required to reduce the cost</p>
+<p>When sampling is expensive, a strategy is required to reduce the cost</p>
 <ul>
 <li>Examples of expensive to collect data:
 <ul>
@@ -470,8 +470,8 @@ n \rightarrow \infty\]</span></p>
 </ul></li>
 </ul>
 </div>
-<div id="representation-as-directed-acyclic-graphical-model" class="slide section level2">
-<h1>Representation as Directed Acyclic Graphical Model</h1>
+<div id="representation-as-a-directed-acyclic-graphical-model" class="slide section level2">
+<h1>Representation as a Directed Acyclic Graphical Model</h1>
 <p>When creating a simulation with multiple conditionally dependent variables it is useful to draw a directed graph; a <strong>directed acyclic graphical model or DAG</strong></p>
 <ul>
 <li>The graph is a communications device showing which variables are independent and which are conditionally dependent on others with the shapes used representing the type of nodes<br />
