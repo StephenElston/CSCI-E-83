@@ -32,7 +32,7 @@ Bootstrap and re-sampling methods are widely applicable statistical methods
 
 - Use computational resources unimaginable in the early 20th Century    
 
-- Repeatedly re-sampling the data relaxes some of the assumptions of classical statistical methods    
+- Repeatedly re-sampling the data relaxes some of the assumptions of classical statistical methods
 
 - Re-sampling methods draw heavily on the law of large number and the central limit theorem      
 
@@ -62,7 +62,7 @@ Commonly used re-sampling methods include:
 
 General characteristics of resampling methods include     
 
-- Allow computation of statistics from limited data samples     
+- Allow computation of statistics from limited data samples for statistics with continuous derivatives        
 
 - Repeatedly compute statistics from multiple resamples of dataset     
 
@@ -72,16 +72,18 @@ General characteristics of resampling methods include
 
 ## Pitfalls of Resampling Methods    
 
-Re-sampling methods are general and powerful but, there is no magic involved! There are pitfalls!     
+Re-sampling methods are general and powerful but, there is no magic involved! There are pitfalls! 
 
 - If a sample is biased, the re-sampled statistic estimate based on that sample will be biased    
    - Results can be no better than the sample you start with  
+   - Example; the bootstrap estimate of mean is the unbiased sample estimate, $\bar{x}$, not the population parameter, $\mu$ 
    
 - The sample variance and Cis can be no better than the sample distribution allows    
    - Be suspicious of overly optimistic confidence intervals    
    - CIs can be optimistically biased        
 
 - Are computationally intensive, but often highly parallelizable   
+
    
 ##  Point Estimates vs. Distribution Estimates    
 
