@@ -205,7 +205,7 @@ The law of large numbers has a long history
 
 A simple example     
 
-- The mean fair coin flips (0,1) = (T,H) converges to the expected value with more flips      
+- The mean of fair coin flips (0,1) = (T,H) converges to the expected value with more flips      
 
 - The mean converges to the expected value of 0.5 for $n = 5, 50, 500, 5000$  
 
@@ -214,7 +214,10 @@ A simple example
 import numpy as np
 import numpy.random as nr
 import pandas as pd
+import statsmodels.api as sm
 import matplotlib.pyplot as plt
+import seaborn as sns
+
 import math
 ```
 
@@ -231,8 +234,15 @@ out = [pop.sample(n = x).mean(axis = 0) for x in sample_size]
 for n,x in zip(sample_size,out): print("%.0f  %.2f" %(n, x))
 ```
 
+## Sampling and the Law of Large Numbers
 
------------------------------------------------
+A simple example; mean of fair coin flips (0,1) = (T,H) converges to the expected value with more flips      
+
+
+```{r LLN_Bernoulli, out.width = '60%', fig.cap='Convergance of mean estimates for fair coin', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/LLN_Bernoulli.png"))
+```
+
 
 ## the Central Limit Theorem (CLT)
 
@@ -259,6 +269,35 @@ CLT is a sort of guarantee
 - CLT is the basis for hypothesis testing    
 
 
+## Example of CLT
+
+Start with a mixture of Normal distributions   
+
+```{python, echo=FALSE}
+x = np.concatenate([
+        nr.normal(loc=0, scale=1, size=1000),
+        nr.normal(loc=3, scale=.5, size=1000)])
+        
+
+fig, ax = plt.subplots(figsize=(3.5, 2.5), )          
+sns.kdeplot(x, ax=ax)
+```
+
+
+## Example CLT    
+
+Sample distribution of the mean of mixture of Normals is Normally distributed!    
+
+```{python, echo=FALSE}
+x_means = np.array([
+        nr.choice(x, size=50, replace=True).mean()
+        for i in range(500)])
+
+breaks = np.linspace(x_means.min(), x_means.max(), num=40)
+fig, ax = plt.subplots(1,2, figsize=(6, 2.5) ) 
+_ = ax[0].hist(x_means, bins=breaks)
+_ = sm.qqplot(x_means, line='s', ax=ax[1])
+```
 
 ## Standard Error and Convergence for a Normal Distribution
 
@@ -279,7 +318,15 @@ $$se = \pm \frac{sd}{\sqrt{(n)}}$$
 $$CI_{95} =\bar{x} \pm 1.96\ se$$ 
 
 
------------------------------------------------
+## Convergence and Standard Errors for a Normal Distribution
+
+Mean estimates for realizations of standard Normal distribution with standard errors
+
+
+```{r MeanConvergenceSEs, out.width = '40%', fig.cap='Convergance of mean estimates with standard errors', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/MeanConvergenceSEs.png"))
+```
+
 
 ## Sampling Strategies
 
