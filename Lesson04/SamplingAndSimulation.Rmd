@@ -132,14 +132,16 @@ All statistical methods rely on the use of **randomized unbiased samples**
 Sampling of a population is done from an unknown **population distribution**, $\mathcal{F}$      
 
 - Any statistic we compute for the generating process is based on a sample, $\hat{\mathcal{F}}$     
-
-- The statistic is an approximation, $s(\hat{\mathcal{F}})$    
+- The statistic is an approximation, $s(\hat{\mathcal{F}})$ of a **population parameter**   
+   - For example, the mean of the population is $\mu$   
+   - But, sample estiamte is $\bar{x}$   
 
 - If we continue to take random samples from the population and compute estimates of a statistic, we generate a  **sampling distribution**   
-  - Hypothetical concept of the sampling distribution is a foundation of **frequentist statistics**   
-  - Frequentist statistics built on the idea of randomly resampling the population distribution and recomputing a statistic         
+   - Hypothetical concept of the sampling distribution is a foundation of **frequentist statistics**
+   - Example, if we continue generating samples and computing the sample means, $\bar{x}_i$ for the ith sample   
 
- - In the frequentist world, statistical inferences are performed on the sampling distribution    
+- **Frequentist statistics** built on the idea of randomly resampling the population distribution and recomputing a statistic         
+   - In the frequentist world, statistical inferences are performed on the sampling distribution    
    - Sampling process must not bias the estimates of the statistic
 
  
@@ -232,22 +234,49 @@ for n,x in zip(sample_size,out): print("%.0f  %.2f" %(n, x))
 
 -----------------------------------------------
 
+## the Central Limit Theorem (CLT)
+
+- Law of large number is almost too obvious, but the CLT is more tricky!     
+
+- Law of large number applied to any statistic, but the CLT applies only to the **mean**     
+
+- Let $X$ be a random variable representing the population     
+   - $X$ is allowed to have **any distribution** (not limited to normal), and let $\mu$ be your **true population mean** and $\sigma$ the **true population standard deviation**
+   - Given sample size $n$ thee sampling distribution of $\bar X$is 
+
+$$\bar X \sim N(\mu, \frac{\sigma}{\sqrt n})$$
+
+## importance of CLT
+
+CLT is a sort of guarantee    
+
+- Sampling distribution of mean estimates do not depend on the population the sample was drawn from   
+- **Standard deviation** $s$ of the sampling distribution of $\bar{x}$ converges as $1/\sqrt n$
+
+
+- Only depends on the population's mean and variance, and on the sample size     
+
+- CLT is the basis for hypothesis testing    
+
+
+
 ## Standard Error and Convergence for a Normal Distribution
 
 As we sampled from a Normal distribution, the mean and standard deviation of the sample converged to the population mean    
 
 - What can we say about the expected error of the mean estimate as the number of samples increases?   
-  - This measure is known as the **standard error** of the sample mean    
-  - As corollary of the law of large numbers the standard error is defined:
+   - This measure is known as the **standard error** of the sample mean    
+   - As corollary of the law of large numbers the standard error is defined:
 
 $$se = \pm \frac{sd}{\sqrt{(n)}}$$
 
 - Standard error decreases as the square root of $n$   
-  - Example, if you wish to halve the error, you will need to sample four times as many values.   
-  - For the mean estimate, $\mu$, define the uncertainty in terms of **confidence intervals**    
-  - Example, 95% confidence interval:
+   - Example, if you wish to halve the error, you will need to sample four times as many values.   
 
-$$CI_{95} =\mu \pm 1.96\ se$$ 
+- For the mean estimate, $\bar{x}$, define the uncertainty in terms of **confidence intervals**    
+   - For 95% confidence interval:
+
+$$CI_{95} =\bar{x} \pm 1.96\ se$$ 
 
 
 -----------------------------------------------
@@ -492,7 +521,7 @@ Simulation enables data scientists to study the behavior of stochastic processes
  
 - Two main purposes of simulation can be summarized as:           
    - **Testing models:** If data simulated from the model do not resemble the original data, something is likely wrong  
-   - **Understand processes with complex probability distributions:** In these cases, simulation provides a powerful and flexible computational technique to understand behavior          
+   - **Understand processes with complex probability distributions:** In these cases, simulation provides a powerful and flexible computational technique to understand behavior   
 
 ## Introduction to Simulation    
 
@@ -530,6 +559,23 @@ The sandwich shop simulation can be represented by a DAG
 knitr::include_graphics(rep("../images/Simulation_Directed_Graph.jpg"))
 ```
 
+## Sandwich Shop Simulation   
+
+Interpreting the DAG   
+
+- The DAG is a shorthand description of the simulation model   
+
+- Leaves of the DAG are independent distributions   
+   - Parameters must be known or estimated     
+   - Can be useful to vary the parameters       
+
+- **Child** distributions are conditional on their **parents**       
+   - Parameters must be known or estimated        
+   - Resulting distribution can be quite complex    
+
+- **Decision variables** deterministicly change the model parameters   
+
+- **Utility node** uses a fixed deterministic formula to compute the value for each realization of the simulaiton    
 
 ## Summary
 
