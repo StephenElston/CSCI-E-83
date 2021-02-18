@@ -41,7 +41,7 @@ All statistical methods rely on the use of **randomized unbiased samples**. Fail
 
 Further, most commonly used machine learning algorithms assume that training data are **unbiased** and **independent identically distributed (iid)**. These conditions will only be met if the training data sample is randomized. Otherwise, the training data will be biased and not represent the underlying process distribution.    
 
-> **Exercise:** As an example of the problems that can arrise from poor sampling consider the following. A physical retailer wishes to better understand the types of customers in areas where their stores are located. People are hired to hand coupons to customers entering the stores. The coupons are all worth 5 dollars off a subsequent purchase. The coupons are activated if the customer goes to a web site and spends approximately 20 minutes completing a questionnaire. Coupons are distributed during regular business hours Monday to Friday. There are several sources of biases inherent in this sampling method. Disscuss the sources of these baises, keeping in mind there are several and the scope of your answer is open-ended.        
+> **Exercise 10-1:** As an example of the problems that can arrise from poor sampling consider the following. A physical retailer wishes to better understand the types of customers in areas where their stores are located. People are hired to hand coupons to customers entering the stores. The coupons are all worth 5 dollars off a subsequent purchase. The coupons are activated if the customer goes to a web site and spends approximately 20 minutes completing a questionnaire. Coupons are distributed during regular business hours Monday to Friday. There are several sources of biases inherent in this sampling method. Disscuss the sources of these baises, keeping in mind there are several and the scope of your answer is open-ended.        
 
 ### The sampling distributions   
 
@@ -94,7 +94,7 @@ for n,x in zip(sample_size,out): print("%.0f  %.2f" %(n, x))
 ```
 
 
-> **Exercise:** You will use the series of Bernoulli trials just computed to examine the convergance of the estimated probability, $p$. This compuational experiment is equivelent to determing if a long series of flips of a fair coin converge to $p = 0.5$. Now do the following:   
+> **Exercise 10-2:** You will use the series of Bernoulli trials just computed to examine the convergance of the estimated probability, $p$. This compuational experiment is equivelent to determing if a long series of flips of a fair coin converge to $p = 0.5$. Now do the following:   
 > 1. Create and execute code to compute the running mean of the realizations of a series of Bernoulli trials as the sample size increases from 1 to 5000. Your result should be in the form of a data frame with one column containg the number of samples and the other the running mean.   
 > 2. Create a function to scatter plot the estimate of $p$ vs. the running number of samples. Include a distinctive horrizontal line at the theoretical value of $p$. Make sure your plot is correctly labled. Run your funtion twice; once for 1 to 500 realizations, and once for 1 to 5000 realizations. 
 > 3. Do the estimates of $p$ appear to converge to the known value and the number of realizations increases? 
@@ -137,7 +137,7 @@ $$CI_{95} =\mu \pm 1.96\ se$$
 
 
 
-> **Exercise:** To explore these concepts, you will do the following:
+> **Exercise 10-3:** To explore these concepts, you will do the following:
 > 1. Compute the mean using 1 to 10000 samples of from a standard Normal distributon; $\mathcal{N(1,0)}$.   
 > 2. Create a data frame with the following columns; i) the number of samples, ii) the running mean estimates, iii) the theoretical upper confidence interval, iv) the running estiamted upper confidence interval, v) the theoretical lower confidence interval, iv) the running estiamted lower confidence interval.   
 > 3. Create a scatter plot of the mean estiamtes. Include on this plot distinctive lines showing the upper and lower theoretical confidence intervals and the population (theoretical) mean. Include a legend and other required annotation on your plot.  
@@ -170,7 +170,7 @@ plot_se(norms)
 
 
 
-> **Exercise:** Now that you have a feel for how mean converges following the law of large numbers. The next question to ask is if the variance and therefore the standard error also converge as the number of samples increase. To find out create and execute code to make two plots, one above the other. On the upper, create a scatter plot of the upper confidence interval bound estimates. Include a distinctive line for the theoretical upper confidnce interval. Make sure your plot includes proper annotations. Create the equivelent plot for the lower confidence interval bound.   
+> **Exercise 10-4:** Now that you have a feel for how mean converges following the law of large numbers. The next question to ask is if the variance and therefore the standard error also converge as the number of samples increase. To find out create and execute code to make two plots, one above the other. On the upper, create a scatter plot of the upper confidence interval bound estimates. Include a distinctive line for the theoretical upper confidnce interval. Make sure your plot includes proper annotations. Create the equivelent plot for the lower confidence interval bound.   
 > Now, examine this result. Do the estimates of the upper and lower confidence intervals appear to converge as expected as the number of samples increase?    
 
 
@@ -228,7 +228,7 @@ count_mean(data)
 
 Indeed, the means for each group all all close to, but not exactly, 0.0. 
 
-> **Exercise:** The foregoing mean estimates look reasonable for the full population of 20000. But, what happens when the population is sampled and the mean is computed from the sample? To find out, do the following:
+> **Exercise 10-5:** The foregoing mean estimates look reasonable for the full population of 20000. But, what happens when the population is sampled and the mean is computed from the sample? To find out, do the following:
 > 1. Create a Bernoulli sample of the population with sampling probability, $p = 0.04$.  You can use [numpy.random.choice](https://docs.scipy.org/doc//numpy-1.10.4/reference/generated/numpy.random.choice.html) for the sampling.   
 > 2. Compute the mean by group for the Bernoulli sample. 
 
@@ -276,7 +276,7 @@ stratified = stratify(data, p)
 count_mean(stratified)
 ```
 
-> **Exercise:** Answer the following quesitons;      
+> **Exercise 10-6:** Answer the following quesitons;      
 > 1. Are the number of samples identical for each group?         
 > 2. Are the standard errors and confidence intervals similar of each group?    
 > 3. How do these standard errors and confidence intervals compare those for the groups with non-stratified samples?  
@@ -312,7 +312,7 @@ clusters.loc[:, 'var'] = nr.normal(size = num_vals)
 clusters.head(10) # Print the head to get a feel for these data
 ```
 
-> **Exercise:** With these clusters defined you will now perform some sampling to gain a bit of understanding of these methods. Perform the following steps:  
+> **Exercise 10-7:** With these clusters defined you will now perform some sampling to gain a bit of understanding of these methods. Perform the following steps:  
 > 1. Create and exectue code to find the count of samples in each of the clusters. 
 > 2. Randomly sample 3 of the 10 clusters using [numpy.random.choice](https://docs.scipy.org/doc//numpy-1.10.4/reference/generated/numpy.random.choice.html). **Note:** if you do not set a seed, the clusters selected may be different each time your run your code. 
 > 3. Bernoulli sample each of the clusters selected with `p = 0.2`, and then stratify these samples by group.
