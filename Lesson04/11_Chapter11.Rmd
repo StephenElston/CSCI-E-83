@@ -46,8 +46,6 @@ Creating, testing and debugging simulation software is tricky
   - It is impossible to create and maintain quality simulation code without having detailed reproducible test cases
   
   
-
-
 ## The Scenario
 
 Simulation employs several key concepts; conditional probability distributions and sampling theory. In this chapter you will perform a series of exercises to simulate the profitability of a sandwich shop. Not surprisingly, the sandwich shop earns money every time a customer buys a sandwich. However, the inputs to the sandwich cost money. The daily profit is the amount customers pay for the sandwiches minus the costs of the inputs.    
@@ -82,7 +80,7 @@ knitr::include_graphics(rep("../images/Simulation_Directed_Graph.jpg"))
 ```
 
 
-> **Exercise:** Answer the following questions about the graph:     
+> **Exercise 11-1:** Answer the following questions about the graph:     
 > 1. Which are the independent variable(s) in the graph? Are the independent varaiables the only ones for which parameters must be estiamted or known apriori.   
 > 2. Which are the dependent variable(s) in the graph?    
 > 3. Which is the decision variable?    
@@ -124,7 +122,7 @@ Poisson distributions are often used to model arrival processes. The Poisson dis
 
 $$f(arrivals) = Pos(\lambda)$$
 
-> **Exercise:** You will now create and test a function, named `customer_arrivals`, to simulate the daily number of customer arrivals at the sandwich shop. The argument to this function is the mean arrival rate and the function should return the integer number of arrivals for each daily realization. Include some test cases for your function and write an explaination of the tests.    
+> **Exercise 11-2:** You will now create and test a function, named `customer_arrivals`, to simulate the daily number of customer arrivals at the sandwich shop. The argument to this function is the mean arrival rate and the function should return the integer number of arrivals for each daily realization. Include some test cases for your function and write an explaination of the tests.    
 
 
 ### Simulate bread choice
@@ -136,7 +134,7 @@ f(white, wheat, multigrain) = Cat(\Pi)\\
 \Pi = [\pi_1, \pi_2, \pi_3]
 \end{align}
 
-> **Exercise:** Create and test a function, named `bread_choice`, to simulate arriving customers' bread demand. The function takes three arguments, the number of arrivals, a list of bread choices, and the probabilities of those choices. The function returns a bread choice as a Numpy array of strings. Include some test cases for your function and write an explaination of the tests. In particular, test some extreme cases, such as where some $\pi_i = 0$.     
+> **Exercise 11-3:** Create and test a function, named `bread_choice`, to simulate arriving customers' bread demand. The function takes three arguments, the number of arrivals, a list of bread choices, and the probabilities of those choices. The function returns a bread choice as a Numpy array of strings. Include some test cases for your function and write an explaination of the tests. In particular, test some extreme cases, such as where some $\pi_i = 0$.     
 
 
 > **Computational Note:** To create the function described you can use the [numpy.random.choice](https://numpy.org/doc/stable/reference/random/generated/numpy.random.choice.html) function on the list of bread choices. The size argument is the number of customer arrivals, in this case. Thus, all the bread choices for a given day are made with one function call. In general, computing a vector of results with a single call is a computationally efficient approach. Many computational libraries, including Numpy, are optimized for **vectorized** calls.     
@@ -145,16 +143,16 @@ f(white, wheat, multigrain) = Cat(\Pi)\\
 
 Before you can compute daily profitability you must simulate bread demand for each day. The probabilities of demand for each type of bread are conditional on the number of arrivals and the bread choices. In mathematical terms we can write this relationship as $P(demand\ |\ arrivals, choice)$.     
 
-> **Exercise:** To compute this conditional distribution, you will write a function `bread_demand` with arguments of mean arrival rate of customers, the choices of breads and the probabilities of bread choice. The funciton will can the `customer_arrivals` and `bread_choice` funcitons. The function will return a numpy array of demand by bread type. Include some test cases for your function and write an explaination of the tests.      
+> **Exercise 11-4:** To compute this conditional distribution, you will write a function `bread_demand` with arguments of mean arrival rate of customers, the choices of breads and the probabilities of bread choice. The funciton will can the `customer_arrivals` and `bread_choice` funcitons. The function will return a numpy array of demand by bread type. Include some test cases for your function and write an explaination of the tests.      
 
-> **Exercise:** The conditional distribution of the bread demand might not be obvious at first. To get a feel for this distribution you will now create histograms for the demand of each bread type over an approximately 4-year period. There are about 250 business days in a year, so that the histograms show the distribution of bread demand for 1,000 days. Make sure these histograms have a reasonable aspect ratio (not elongated), and have proper labels. Once you display the histograms examine the results. Recall that a Poisson distribution approaches the Normal for a large mean arrival rate. Do these histograms appear approximately Normal? Is this behavior expected, given that the distribution is conditional on a Poisson process and a uniformally distributed process?   
+> **Exercise 11-5:** The conditional distribution of the bread demand might not be obvious at first. To get a feel for this distribution you will now create histograms for the demand of each bread type over an approximately 4-year period. There are about 250 business days in a year, so that the histograms show the distribution of bread demand for 1,000 days. Make sure these histograms have a reasonable aspect ratio (not elongated), and have proper labels. Once you display the histograms examine the results. Recall that a Poisson distribution approaches the Normal for a large mean arrival rate. Do these histograms appear approximately Normal? Is this behavior expected, given that the distribution is conditional on a Poisson process and a uniformally distributed process?   
 
  
 ### Simulate Bread Baked
 
 The number of each type of bread baked in the sandwich shop is deterministic. The shop manager has a plan for the day, and the bread is baked in advance of the customer arrivals. Naturally, the manager will choose the proportion of each bread type based on the historical expected demand. This is a decision function. The decision to be made is how many total loaves to bake?    
 
-> **Exercise:** Create a function `bread_baked` with aguments, total number of loaves, proportion of each bread type to bake, and the types of breads. The function will return a list (or Numpy array) with the number of each type of bread baked. Include some test cases for your function and write an explaination of the tests.      
+> **Exercise 11-6:** Create a function `bread_baked` with aguments, total number of loaves, proportion of each bread type to bake, and the types of breads. The function will return a list (or Numpy array) with the number of each type of bread baked. Include some test cases for your function and write an explaination of the tests.      
 
 
 ### Simulate and plot profit
@@ -162,7 +160,7 @@ The number of each type of bread baked in the sandwich shop is deterministic. Th
 The last function you need to execute the full model represented by the DAG computes the daily profit. This function is therefore the utility function. The calculation is deterministic, given the inputs of bread demand and the amount of bread baked. But don't be confused, while the utility function is deterministic, the bread demands is stochastic. As a result, profit is a random variable.    
 
 
-> **Exercise:** You will now write the function, `daily_profit`, that computes and returns the daily profit. The function calls the `bread_demand` and `compute_bread_bake` functions. The arguments to this function are:     
+> **Exercise 11-7:** You will now write the function, `daily_profit`, that computes and returns the daily profit. The function calls the `bread_demand` and `compute_bread_bake` functions. The arguments to this function are:     
 - The daily total of bread baked,    
 - Proportion of each bread type baked daily,    
 - Mean daily arrival rate,    
@@ -172,7 +170,7 @@ The last function you need to execute the full model represented by the DAG comp
 - Bread choices.    
 
 
-> **Exercise:** The distribution of daily profit is, as yet, unknown. Further, you will need to test your `daily_profit` function. In order to work towad these goals, you will now simulate a year's (250 business days) profits and plot the result as a histogram. Use a mean arrival rate of 100 and 100 breads baked per day. Examine your histogram:       
+> **Exercise 11-8:** The distribution of daily profit is, as yet, unknown. Further, you will need to test your `daily_profit` function. In order to work towad these goals, you will now simulate a year's (250 business days) profits and plot the result as a histogram. Use a mean arrival rate of 100 and 100 breads baked per day. Examine your histogram:       
 - Does the distribution of profit resemble the distribution of arrivals, or the distribuiton of bread bakced?    
 - Does this result indicate that it can mostly likely only be found by a computational method?     
 
@@ -183,7 +181,7 @@ The key question of interest to the manager of the sandwich shop is the number o
 
 But, there is still the issue of how much the results of this simulation vary from run to run. This means, there is considerable uncertainty or variability in the daily profit. Running a simulation multiple times yields the **posterior distribution** of the variables being simulated. In this case we are interested in the posterior distribution of the profitability vs. the number of breads baked.     
 
-> **Exercise:** Running the simulation of daily profit for different numbers of bread baked will help to quantify the choice and uncertainty in the number of breads to bake each day. You will perform the simulations for 4 business years (1000 days) and for number of bread baked $= [60, 80, 100, 120, 140, 160]$. Therefore, you will do the following:     
+> **Exercise 11-9:** Running the simulation of daily profit for different numbers of bread baked will help to quantify the choice and uncertainty in the number of breads to bake each day. You will perform the simulations for 4 business years (1000 days) and for number of bread baked $= [60, 80, 100, 120, 140, 160]$. Therefore, you will do the following:     
 > 1. Create an empty Pandas data frame columns, `num_baked`, and `profit`. The number of rows is the different numbers of bread baked by the number of realizations of profit for each quantity of bread.    
 > 2. Iteratie over the number of bread baked. For each number of breads, compute 1000 realizations of customer arrivals along with the profit for the sandwich shop.    
 > 3. Create a box plot showing the realizations of profit for each number of breads baked.   
@@ -201,7 +199,7 @@ The foregoing simulation has given some insight into the relationship of bread b
 - Other inventory items, besides bread, that are also perishable and have costs.    
 - The labor costs for the shop can be variable depending on a finer grain time scale. For example, if most customers arrive within a short window of time more employees are required to meet the surge in demand.      
 
-> **Exercise:** Consider some other real-world complicaitons which could be accounted for in a more complete simulation. What are they? How could you model these factors?     
+> **Exercise 11-10:** Consider some other real-world complicaitons which could be accounted for in a more complete simulation. What are they? How could you model these factors?     
 
 
 
