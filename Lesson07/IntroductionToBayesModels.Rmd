@@ -1,0 +1,51 @@
+---
+title: "Introduction to Bayesian Models"
+author: "Steve Elston"
+date: "01/13/2021"
+output:
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("/usr/bin/python3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+
+## Introduction   
+
+Despite the long history, Bayesian models have not been used extensively until recently    
+
+- 
+
+- Limited use is a result of several difficulties   
+   - The need to specify a **prior distribution** has proved a formidable intellectual obstacle    
+   - Modern Bayesian methods are often computationally intensive and have become practical only with cheap computing     
+   
+- Recent emergence of improved software and algorithms has resulted in wide and practical access to Bayesian methods         
+
+
+## Bayesian Model Use Case
+
+Bayesian methods made global headlines with the successful location of the missing Air France Flight 447   
+
+- Aircraft had disappeared in little traveled area of the South Atlantic Ocean     
+- Conventional location methods had failed to locate the wreckage; potential search area too large    
+- Bayesian methods rapidly narrowed the prospective search area   
+
+
+```{r AirFrance447, out.width = '35%', fig.cap='Posterior distribution of locations of Air France 447', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/AirFrance447_posterior_PDF.png"))
+```
+
+
+## 
+
+
+
