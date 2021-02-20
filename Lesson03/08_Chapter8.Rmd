@@ -217,8 +217,8 @@ Let's try a simple and widely used example of using conditional probabilities to
  - $\oplus \Rightarrow$ patient tests positive.
  - $- \Rightarrow$ a patient tests negative.
 2. What if a medical company claims that it has developed a test that is 99% accurate. We can then write:
-  - $P(S |\oplus) = 0.99$
-  - $P(S'|-) = 0.99$
+  - $P(\oplus | S) = 0.99$
+  - $P(- | S') = 0.99$
   
 On the surface, it seems that a 99% reliable test is rather good. Such a test would ensure that, on average, 99 people out of 100 who have the disease will be identified and treated. But, let's dig into the conditional probabilities and see how things really work out. 
 
