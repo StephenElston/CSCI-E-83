@@ -22,9 +22,12 @@ matplotlib$use("Agg", force = TRUE)
 
 Despite the long history, Bayesian models have not been used extensively until recently    
 
-- 
+- Two traditions in statistics    
+   - Frequentist we have been working with previously    
+   - Bayesian statistics   
 
 - Limited use is a result of several difficulties   
+   - Rarely taught for much of the 20th Century   
    - The need to specify a **prior distribution** has proved a formidable intellectual obstacle    
    - Modern Bayesian methods are often computationally intensive and have become practical only with cheap computing     
    
@@ -36,8 +39,10 @@ Despite the long history, Bayesian models have not been used extensively until r
 Bayesian methods made global headlines with the successful location of the missing Air France Flight 447   
 
 - Aircraft had disappeared in little traveled area of the South Atlantic Ocean     
+
 - Conventional location methods had failed to locate the wreckage; potential search area too large    
 - Bayesian methods rapidly narrowed the prospective search area   
+   - Used 'prior information' on aircraft heading and time of sattelite transmisison  
 
 
 ```{r AirFrance447, out.width = '35%', fig.cap='Posterior distribution of locations of Air France 447', fig.align='center', echo=FALSE}
@@ -45,7 +50,172 @@ knitr::include_graphics(rep("../images/AirFrance447_posterior_PDF.png"))
 ```
 
 
-## 
+## Bayesian vs. Frequentist Views
+
+With greater computational power and general acceptance, Bayes methods are now widely used    
+
+- Among pragmatists     
+   - Some problems are better handled by frequentist methods    
+   - Some problems with Bayesian methods    
+
+- Bayes models allow us to experes **prior information**    
+
+- Models that fall between these extremes are also in common use    
+  - Methods include the so-called **empirical Bayes** methods.  
 
 
+## Bayesian vs. Frequentist Views       
 
+Can compare the contrasting frequentist and Bayesian approaches   
+
+
+```{r FrequentistBayes, out.width = '50%', fig.cap='Comparison of frequentist and Bayes methods', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/FrequentistBayes.jpg"))
+```
+
+
+## Review of Bayes Theorem
+
+Bayes' Theorem is fundamental to Bayesian data analysis.    
+
+- Start with: 
+
+$$P(A \cap B) = P(A|B) P(B) $$
+
+We can also write: 
+
+$$P(A \cap B) = P(B|A) P(A) $$
+
+Eliminating $P(A \cap B):$
+
+$$ P(B)P(A|B) = P(A)P(B|A)$$
+
+Or, **Bayes theorem!** 
+
+$$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
+
+## Interpreting Bayes Theorem
+
+How can you interpret Bayes' Theorem? 
+
+- For model parameter estimation problem: 
+
+$$Posterior\ Distribution = \frac{Likelihood \bullet Prior\ Distribution}{Evidence} $$
+
+- Or, Bayes' theorem in terms of model parameters:   
+
+$$
+posterior\ distribution(𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠│𝑑𝑎𝑡𝑎) = \\ \frac{Likelihood(𝑑𝑎𝑡𝑎|𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠)\ 𝑃rior(𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠)}{P(data)}
+$$
+
+- Summarized as: 
+
+$$
+𝑃(𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠│𝑑𝑎𝑡𝑎) = \frac{P(𝑑𝑎𝑡𝑎|𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠)\ 𝑃(𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠)}{P(data)}
+$$
+
+## Interpreting Bayes Theorem
+
+What do these terms actually mean?    
+
+1. **Posterior distribution** of the parameters given the evidence or data, the goal of Bayesian analysis      
+
+2. **Prior distribution** is chosen to express information available about the model parameters apriori         
+
+3. **Likelihood** is the conditional distribution of the data given the model parameters       
+
+4. **Data** or **evidence** is the distribution of the data and normalizes the posterior   
+
+Relationships can apply to the parameters in a model; partial slopes, intercept, error distributions, lasso constants, etc 
+
+
+## Applying Bayes Theorem
+
+We need a tractable formulation of Bayes Theorem for computational problems     
+
+- We must avoid directly summing all of the possibilities to compute the denominator, $P(B)$    
+   - In many cases, computing this denominator directly is intractable      
+
+- Some interesting facts about conditional probabilities:   
+
+$$
+𝑃(𝐵 \cap A) = 𝑃(𝐵|𝐴)𝑃(𝐴) \\
+And \\
+𝑃(𝐵)=𝑃(𝐵 \cap 𝐴)+𝑃(𝐵 \cap \bar{𝐴}) 
+$$
+
+Where, $\bar{A} = not\ A$, and the marginal distribution, $P(B)$, can be written:   
+
+$$
+𝑃(𝐵)=𝑃(𝐵|𝐴)𝑃(𝐴)+𝑃(𝐵│ \bar{𝐴})𝑃(\bar{𝐴})
+$$
+
+## Applying Bayes Theorem    
+
+Using the foregoing relations we can rewrite Bayes Theorem as:
+
+$$ P(A|B) = \frac{P(A)P(B|A)}{𝑃(𝐵│𝐴)𝑃(𝐴)+𝑃(𝐵│ \bar{𝐴})𝑃(\bar{𝐴})} \\ $$
+
+- Computing the denominator requires summing all cases in the subsets $A$ and $not\  A$      
+    - This is a bit of a mess!    
+    - Fortunately, we can often avoid computing this denominator by force     
+    
+Eewrite Bayes Theorem as:
+
+$$𝑃(𝐴│𝐵)=𝑘∙𝑃(𝐵|𝐴)𝑃(𝐴)$$
+
+Ignoring the normalization constant $k$:
+
+$$𝑃(𝐴│𝐵) \propto 𝑃(𝐵|𝐴)𝑃(𝐴)$$
+
+
+## Simplified Relationship for Bayes Theorem
+
+How to we interpret the foregoing relationship?     
+
+- Consider the following relationship:
+
+$$Posterior\ Distribution \propto Likelihood \bullet Prior\ Distribution \\
+Or\\
+𝑃( 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 │ 𝑑𝑎𝑡𝑎 ) \propto 𝑃( 𝑑𝑎𝑡𝑎 | 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 )𝑃( 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 ) $$
+
+- We can find an unnormalized function proportional to the posterior distribution     
+
+- Sum over the function to find the marginal distribution $P(B)$     
+
+- Approach can transform an intractable computation into a simple summation 
+
+## Creating Bayes models
+
+The goal of a Bayesian analysis is computing and performing inference on the posterior distribution of the model parameters    
+
+The general steps are as follows:
+
+1. Identify data relevant to the research question
+
+2. Define a sampling plan for the data. Data need not be collected in a single batch    
+
+3. Define the model and the likelihood function; e.g. regression model with Normal likelihood    
+
+3. Specify a prior distribution of the model parameters   
+
+4. Use the Bayesian inference formula to compute posterior distribution of the model parameters    
+
+5. Update the posterior as data is observed   
+
+6. Inference on the posterior can be performed; compute **credible intervals**     
+
+7. Optionally, simulate data values from realizations of the posterior distribution. These values are predictions from the model. 
+
+
+## Updating Bayesian Models 
+
+An advantage of Bayesain model is that it can be updated as new observations are made   
+
+- In contrast, for frequentist models data must be collected completely in advance         
+
+- We **update our belief** by adding **new evidence**     
+
+- The posterior of a Bayesian model with no evidence is the prior   
+
+- The **previous posterior serves as a prior** for model updates   
