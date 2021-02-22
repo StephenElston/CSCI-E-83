@@ -1,7 +1,7 @@
 ---
-title: "Chapter 9; Parameter Estiamtion and Likelihood"
+title: "Chapter 9; Parameter Estimation and Likelihood"
 author: "Steve Elston"
-date: "10/4/2020"
+date: "02/22/2021"
 bibliography: ../bibliography.bib
 output: pdf_document
 ---
@@ -108,7 +108,7 @@ Notice the following expected properties:
 - As the number of samples increases the curvature of the log-likelihood increases and the width decreases.     
 
 
-> **Exercise 9-1:** With the foregoing theory and example in mind, its time to work with a real-world example. One might consider modeling the price per square foot of housing using the parametric log-Normal denisty function. The univariate log-Normal density function has two parameters, $(\mu,\sigma)$. Create a plot of the likelihood for random samples of size XXXXXXXXX by the following steps. You should write functions to create this plot, as you will use the same plot in subsequent exercises.    
+> **Exercise 9-1:** With the foregoing theory and example in mind, its time to work with a real-world example. One might consider modeling the price per square foot of housing using the parametric log-Normal density function. The univariate log-Normal density function has two parameters, $(\mu,\sigma)$. Create a plot of the likelihood for random samples of size XXXXXXXXX by the following steps. You should write functions to create this plot, as you will use the same plot in subsequent exercises.    
 > - Use the [pandas.notnull](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.notnull.html) method to remove rows where the medListPriceSqft column values are missing.    
 > - Use [numpy.log](https://numpy.org/doc/stable/reference/generated/numpy.log.html) to compute the log of the housing prices.     
 > - Use [numpy.random.choice](https://numpy.org/doc/stable/reference/random/generated/numpy.random.choice.html) to Bernoulli sample 100 values.    
@@ -146,7 +146,7 @@ You can see that the Binomial log-likelihood has a strong dependence on both the
 
 > **Exercise 9-2:** Consider how one might use the concept of likelihood to determine if a fair coin is being used in a toss. Let 'heads' be a success. The question is, how likely are the observed results to be from a fair coin? Perform the following steps:    
 > - Simulate tosses of a fair coin $(\pi = 0.5)$ with random draws from a Binomial distribution for sample sizes, 5, 20 and 100, using [numpy.random.binomial](https://numpy.org/doc/stable/reference/random/generated/numpy.random.binomial.html) with $n=1$.      
-> - Create plots of the likehihood for $0.05 \le \pi \le 0.95$ with a different line type for each set of simulated data. Use [scipy.stats.binom.logpmf](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.binom.html)to compute the log-likelihood for these plots. You will need to compute $n$ and $k$ from the randowm draws of the samples.      
+> - Create plots of the likehihood for $0.05 \le \pi \le 0.95$ with a different line type for each set of simulated data. Use [scipy.stats.binom.logpmf](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.binom.html)to compute the log-likelihood for these plots. You will need to compute $n$ and $k$ from the random draws of the samples.      
 > - Repeate this process four times so that you can compare results from different random draws of the samples.  
 > Answer the following questions:    
 > - How does the shape of the likelihood curve change with sample size? 
@@ -177,7 +177,7 @@ You can interpret these two conditions as follows:
 
 ### Fisher information and properties of MLE     
 
-The maximum likelihood estimator has some useful and desirable properties. These properties form a basis for understanding MLE methods. To understand these concepts we will outline the derivation of some key properties. Additional details can be found in many reference, including Effron and Hastie -@Efron_Hastie_2016 Section 4.2 or Davidson -@Davidson_2008 Section 4.4.   
+The maximum likelihood estimator has some useful and desirable properties. These properties form a basis for understanding MLE methods. To understand these concepts we will outline the derivation of some key properties. Additional details can be found in many references, including Effron and Hastie -@Efron_Hastie_2016 Section 4.2 or Davidson -@Davidson_2008 Section 4.4.   
 
 We start with a matrix of second partial derivatives of the log-likelihood function. For a multi-parameter model, the second derivatives of the log-likelihood function form a matrix. The elements of the matrix include all second partial derivatives with respect to each model parameter. This matrix is known as the **observed information matrix** of the model, $\mathcal{J}(\vec{\theta})$.   
 
@@ -202,10 +202,10 @@ $$
 $$
 
 The observed information matrix has some useful properties:    
-- The more negative the values of the second partial derivatives, the greater the curvature of the log-likelihood. This means that the log-likelihood likelihood function has a narrower range. The narrow peak implies that the information on the parameter value for the model is high.    
+- The more negative the values of the second partial derivatives, the greater the curvature of the log-likelihood. This means that the log-likelihood function has a narrower range. The narrow peak implies that the information on the parameter value for the model is high.    
 - The matrix is symmetric, so the information is symmetric around the maximum likelihood point.    
 
-The computing the observed information matrix is useful if you have observations. But, how can one consider the information of the MLE before sampling data or performing an experiment? The answer is to use the **expected information** or **Fisher information**. Fisher information is computed by taking the expectation over the second derivative of the log-likelihood, or the observed information:        
+For computing the observed information matrix is useful if you have observations. But, how can one consider the information of the MLE before sampling data or performing an experiment? The answer is to use the **expected information** or **Fisher information**. Fisher information is computed by taking the expectation over the second derivative of the log-likelihood, or the observed information:        
 
 $$\mathcal{J}(\vec{\theta}) = -\mathbf{E}\big\{ \mathcal{I}(\vec{\theta}) \big\} = -\mathbf{E}\big\{ \frac{\partial^2\ l(\mathbf{X} | \theta)}{\partial \theta^2} \big\}$$
 
@@ -318,15 +318,15 @@ There are some aspects of these relationships which make the MLE method attracti
 > - To create consistent values of Fisher Informatiion for each of the parameters, you must use an extimated value for the other parameter. To esimate the Fisher information for the $\mu$ parameter use the emperical estimate of the variance, $s^2$. For the Fisher information estimate of the $\sigma2$ parameter, use the estimated mean, $\bar{x}$. Compute the estimate of $s2$ and $\bar{x}$ from the entire set of log price samples.    
 > - Use [numpy.apply_along_axis](https://numpy.org/doc/stable/reference/generated/numpy.apply_along_axis.html) with a Python lambda (anonymous function) to compute the Fisher information for each parameter and sample Numpy functions.    
 > - Plot the Fisher information for both parameters on the vertical axis against sample size on the horrizontal axis. Be sure to follow proper chart paractice to ensure these curves are distinguishable.  
-> Examine these plots and nswer the following questions:   
-> - Do the values of Fisher informatuion for both parameters change in a similar way? If not, what does this tell you about your ability to estimate these paramters?    
+> Examine these plots and answer the following questions:   
+> - Do the values of Fisher information for both parameters change in a similar way? If not, what does this tell you about your ability to estimate these paramters?    
 > - Is the change in Fisher inforamtion consistent with the curvature of the likelihood functions plotted in the previous eercise?      
 > - How might consideration of Fisher information help you construct a sampling plan?   
 
 
 ### Example; Binomial distribution
 
-As another example of likelihood estimation we turn out attention to the Binomial distribution. This distribution is discrete and has a single parameter. We start with the derivative of the log-likelihood function:    
+As another example of likelihood estimation we turn our attention to the Binomial distribution. This distribution is discrete and has a single parameter. We start with the derivative of the log-likelihood function:    
 
 $$
 \frac{\partial\ l(n, k | \pi)}{\partial \theta} = \frac{k}{n} -\frac{n-k}{1-\pi} = 0 
@@ -378,19 +378,19 @@ We will use the notation, $\hat{\theta}$, to indicate an estimate of the true pa
 
 $$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$   
 
-The hyperparameter $\gamma$ is the **learning rate** or **step size**. Determining a learning rate can have a significant effect on the performance of the gradient. This hyperparameter can be chosen manually, often with by a search of the hyperparameter space.  
+The hyperparameter $\gamma$ is the **learning rate** or **step size**. Determining a learning rate can have a significant effect on the performance of the gradient. This hyperparameter can be chosen manually, often by a search of the hyperparameter space.  
 
 Using a fixed $\gamma$ is far from optimal. At the magnitude of the gradient changes toward the maximum point the optimal step size changes. More sophisticated algorithms use an adaptive method to determine an optimal step at each step. Finding this step size can be found dynamically using a **line search** procedure. The line search typically uses a quadratic approximation to find a maximum (or minimum).      
 
 > **Exercise 9-5:** As you have already seen, maximum likelihood estimation of Normal distribution parameters can be done using simple closed form solutions. Now, you will use the gradient descent method to estimate these parameters. Using a Bernoulli sample of 100 log housing price values, follow these steps:   
 > - Compute and print the mean, $mu$, and variance, $\sigma^2$, using numpy functions. You will use these values as a basis of comparison.  
-> - Create python functions to compute the gradients for both parameters, given the parameter values and the data sample. 
+> - Create python functions to compute the gradients for both parameters, given the parameter values and the data sample.    
 > - Create and execute a python function to perform the gradient descent update, by calling the gradient function. Use starting parameter values, $\mu=2.0$ and $\sigma^2=1.0$. To simplify the algorithm use a fixed learning rate, $\gamma = 0.00001$. Use a simple stopping criteria of the norm of the gradient being less than $0.1$. Save the norm of the gradient and both parameter values at each iteration of the algorithm. Hints: 1) Keep in mind that the paramters and the graident are both vectors, so vector operations from the Numpy package should be used. 2) Depending on the Bernoulli sample of log price values your algorithm may not converge, in which case you should decrease the learning rate parameter, $gamma$ or try other stopping criteria. 
 > - Create 3 plots showing i) the norm of the gradient, ii) the location parameter, and iii) the scale parameter vs. the iteration number.   
 > - Plot the values of both parameters for each iteration of the algorithm on a contour plot of the likelihood function. See pervious exercise for instructions to make the contour plot background.   
 Examine your plot and answer these questions:   
 > - Examine the plots of the parameter values and norm of the gradient vs. iteration. Can you see evidence that one parameter is easier to fit than the other?   
-> - Compare the parameter values estimated with the gradient descent algorithm with the values computed using closed form soluton. Are you estimated parameters close to the closed form solutions? If not, something is likely wrong with your gradient descent algorithm.    
+> - Compare the parameter values estimated with the gradient descent algorithm with the values computed using closed form soluton. Are your estimated parameters close to the closed form solutions? If not, something is likely wrong with your gradient descent algorithm.    
 > - Examine the countour plot with descent path. Does the trajectory of the descent path always follow the maxium gradient direction? In other words, is the trajectory of the descent path always perpendicular to the countour lines of the log likelihood function?  
 > -Can you see evidence that the descent path is affected by the possible range of the parameter values?  
 > **Tip:** you can reuse the gradient and plot functions you create for this exercise for the next exercise. 
@@ -433,8 +433,8 @@ Notice that if the sampling continues for more than one cycle through the cases,
 > - Plot the values of both parameters for each iteration of the algorithm on a contour plot of the likelihood function. See pervious exercise for instructions to make the contour plot background.   
 Examine your plot and answer these questions:   
 > - Examine the plots of the parameter values and norm of the gradient vs. iteration. Can you see evidence that one parameter is easier to fit than the other?   
-> - Notice the instability fo the norm of the gradient neart the convergence point. Can you account for this instability arrising from the mini-batch sampling? 
-> - Compare the parameter values estimated with the gradient descent algorithm with the values computed using closed form soluton. Are you estimated parameters close to the closed form solutions? If not, something is likely wrong with your gradient descent algorithm.    
+> - Notice the instability of the norm of the gradient neart the convergence point. Can you account for this instability arrising from the mini-batch sampling?     
+> - Compare the parameter values estimated with the gradient descent algorithm with the values computed using closed form soluton. Are your estimated parameters close to the closed form solutions? If not, something is likely wrong with your gradient descent algorithm.    
 > - Examine the countour plot with descent path. Does the trajectory of the descent path always follow the maxium gradient direction? In other words, is the trajectory of the descent path always perpendicular to the countour lines of the log likelihood function? Can you notice the instability of the algorithm around the convergence point?  
 > -Can you see evidence that the descent path is affected by the possible range of the parameter values?       
 
@@ -483,7 +483,7 @@ This update requires computing the **inverse Hessian** matrix. There are several
 - If there are a large number of model parameters, the Hessian will have high dimensionality. Computing the inverse of of a high dimensional matrix is computationally intensive.   
 - Computing the full gradient and Hessian requires summing over all observations. For large data sets, this process can become prohibitive. 
 
-For large scale problems **quasi-Newton** methods are used. These methods use an approximation to avoid the need to compute the full inverse Hessian. The **limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS)** [@Fletcher_1987;@Noceal_Wright_2006] algorithm the most widely used quasi-Newton method. 
+For large scale problems **quasi-Newton** methods are used. These methods use an approximation to avoid the need to compute the full inverse Hessian. The **limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS)** [@Fletcher_1987;@Noceal_Wright_2006] algorithm is the most widely used quasi-Newton method. 
 
 As with the gradient descent method, the learning rate or step size must be selected. This can be done with a hyperparameter search. Or more commonly, using a line search procedure. Line search is used in the BFGS algorithm, for example.   
 
