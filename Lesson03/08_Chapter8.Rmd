@@ -121,8 +121,8 @@ P(A| \neg B) &= \frac{P(A)}{1 - P(B)}
 
 We can derive Bayes Theorem starting with the following relationships: 
 
-$$P(A \cap B) = P(A|B)P(B)\\
-P(B \cap A) = P(B|A)P(A)$$
+$$P(A \cap B) = P(A|B)P(B)$$
+$$P(B \cap A) = P(B|A)P(A)$$
 
 Now:
 
