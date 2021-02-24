@@ -18,6 +18,9 @@ matplotlib$use("Agg", force = TRUE)
 
 ## Introduction to Resampling   
 
+“There were others who had forced their way to the top from the lowest rung by the aid of their bootstraps.”   
+James Joyce, ‘Ulysses’ 1922
+
 Resampling methods are powerful and widely used in computational statitics. By repeatedly re-sampling data some of the assumptions of classical statistical methods can be relaxed. These computationally intensive methods are products of the computer age. Resampling methods provide a natural way to find uncertainty when performing statistical inferences.  
 
 Re-sampling methods draw heavily on the central limit theorem (CLT) (Chapter XX) and the weak law of large numbers (Chapter XX). The weak law of large numbers tells us that a resampled estimate of a static converges to the correct value, when the conditions re met. The CLT tells us that the distribution of mean estiamtes is Normally distributed, as the number of resamples increases.   
@@ -61,7 +64,33 @@ The bootstrap is an extremely general and powerful re-sampling method. In princi
 
 As with other re-sampling methods, the bootstrap algorithm is computationally intensive. However, with increased computing power, use of bootstrap methods continues to expand. Further, the algorithm can be readily parallelized.  
 
+## General Characteristics of Resampling Methods    
 
+General characteristics of resampling methods include     
+
+- Allow computation of statistics from limited data samples for statistics with continuous derivatives        
+
+- Repeatedly compute statistics from multiple resamples of dataset     
+
+- The result converges to the sample distribution of the statistic being computed    
+
+- Make minimal distributional assumptions, when compared to classical frequentist statistics      
+
+## Pitfalls of Resampling Methods    
+
+Re-sampling methods are general and powerful but, there is no magic involved! There are pitfalls! 
+
+- If a sample is biased, the re-sampled statistic estimate based on that sample will be biased    
+   - Results can be no better than the sample you start with  
+   - Example; the bootstrap estimate of mean is the unbiased sample estimate, $\bar{x}$, not the population parameter, $\mu$ 
+   
+- The sample variance and Cis can be no better than the sample distribution allows    
+   - Be suspicious of overly optimistic confidence intervals    
+   - CIs can be optimistically biased        
+
+- Are computationally intensive, but often highly parallelizable   
+
+   
 
 ## Point Estimates vs. Distribution Estimates
 
@@ -88,6 +117,25 @@ $$Meanboot = \frac{\Sigma_i mean(sample_i)}{nsample}$$
 where, for example with 10 data values and example of the ith re-sample might be:
 $$sample_i = X_1 + X_2 + X_3 + X_4 + X_5 + X_6 + X_7 + X_8 + X_1 + X_5$$
 
+```{r BootstrapMean, out.width = '90%', fig.cap='Outline of bootstrap resampling algorithm to compute mean', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/BootstrapMean.png"))
+```
+
+## Bootstrap Distribution    
+
+Rather than computing a point estimate directly, bootstrap methods compute a bootstrap distribution of a statistic    
+
+- Bootstrap distribution is comprised of values of the statistic computed from bootstrap resamples of the original observations (data sample)     
+
+- Computing bootstrap distribution requires **no assumptions about population distribution!**
+  - Bootstrap resampling substitutes computer power for paper and pencil statistician power
+
+- Bootstrap resampling estiamtes the **bootstrap distribution** of a statistic    
+  - Compute mostly likely point estimate of the statistic, or bootstrap estimate   
+  - The bootstrap confidence interval is computed from the bootstrap distribution   
+  
+
+
 ### Example; single sample bootstrap
 
 In the previous example you computed the means and confidence intervals of the sample distributions of the male and female adult child height data. Now you will bootstrap the difference in means to determine if it is significant. 
@@ -109,6 +157,7 @@ test_scores.head()
 ## Plot the historgram of the math scores
 def plot_hist(x, xlab, title, bins=20, height=15):   
        sns.displot(x, bins=bins, kde=True, height=height, aspect=1.4)
+       plt.rcParams.update({'font.size': 22})
        plt.axvline(x=np.mean(x), color='red', linestyle='dashed', linewidth=2)
        plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.8)
        plt.xlabel(xlab)
@@ -144,6 +193,28 @@ plt.show()
 ```
 
 
+## Bootstrap Confidence Intervals   
+
+Distribution of 2000 bootstrap bootstrap confidence intervals?
+
+- Use percentile method:      
+   1. Define confidence level; 95% or $\alpha=0.05$    
+   2. Order b bootstrap samples, $s_i$$, by value   
+   3. Lower CI index; $i = b * \alpha/2$
+   4. Upper CI index; $i = b * (1 - \alpha/2)$
+   
+- Percentile method is know to be biased        
+   - Bias correction methods available  
+   
+- Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 2,000 bootstrap samples to estimate confidence intervals
+
+Bootstrap confidence intervals are known to be biased!    
+
+- Often bootstrap CIs are overly optimistic    
+
+- Bias can be significant for asymmetric distributions    
+
+
 
 
 ```{python}
@@ -164,6 +235,38 @@ plt.axvline(x=LCI, color='red', linestyle='dotted', linewidth=2)
 plt.axvline(x=UCI, color='red', linestyle='dotted', linewidth=2)
 plt.show()
 ```
+
+## Two Sample Bootstrap    
+
+How can we apply the bootstrap algorithm for two-sample statistics?    
+
+- Example, difference of means of two independently sampled populations   
+
+- How to generate boot strap samples?    
+
+- Can we just sample the concatenation of the two samples?     
+
+- **No!**    
+   - There is no guarantee of a correct number of resamples for each group   
+   - Imbalanced sampling leads to bias       
+
+- Must independently sample the two groups or populations     
+   - Use two independent bootstrap samples to compute statistic
+   - Step one; compute statistic from independent resamples    
+   - Step two; compute (another) statistic from the two bootrap estimates
+
+
+## Two Sample Bootstrap     
+
+Example: algorithm to compute difference of means:    
+
+   1. Independently randomly sample (e.g. Bernoulli sample) n data with replacement from each original data sample; The number of resamples for each populations is the number of samples for that population     
+   2. Compute the statistic (e.g. mean) for the two resamples   
+   3. Compute the two-sample statistic; e.g. difference of means    
+   4. Repeat steps 1, 2, and 3 to accumulate the required number of bootstrap samples
+Accumulated bootstrap values form the bootstrap distribution; an estimate of the sample distribution of the statistic    
+   5. The mean of the computed statistic values is the bootstrap point estimate of the statistic; e.g. difference of means      
+   6. Compute CIs from bootstrap distribution
 
 
 ### Example; two sample bootstrap   
