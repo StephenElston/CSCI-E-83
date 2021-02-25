@@ -86,7 +86,7 @@ $$\mathcal{L}(\vec{\theta}\ |\ \mathbf{X} ) = f(\mathbf{X}\ |\ \vec{\theta})$$
 
 ## Likelihood   
 
-In most practical cases, we work with the **log likelibood**      
+In most practical cases, we work with the **log likelihood**      
 
 - For observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the log likelihood:    
 
@@ -145,7 +145,7 @@ def plot_likelihood_1(sample_dist, pdf, num_samples, start, stop, linestyle):
         ## Plot the likelihood    
         _=ax.plot(X, y, linewidth=4, label= str(samps) + ' samples', linestyle=linestyle[i] )
 
-    ## Add annotions to plot
+    ## Add annotations to plot
     ax.vlines(0.0, ymin=min(y), ymax=0.0, linewidth=3, linestyles='dotted')
     ax.set_ylabel('Log-likelihood', fontsize=10)
     ax.set_xlabel('x', fontsize=10)
@@ -226,7 +226,7 @@ Interpret these two conditions:
 
 ## Fisher information and properties of MLE     
 
-The maximum likelihood estimator has useful and desireable properties  
+The maximum likelihood estimator has useful and desirable properties  
 
 - Start with a matrix of second partial derivatives of the log-likelihood function   
 
@@ -254,7 +254,7 @@ $$
 
 Useful properties of the information matrix   
 
-- The more negative the values of the second partial derivatives, the greater the curvature of the log-likehihood    
+- The more negative the values of the second partial derivatives, the greater the curvature of the log-likelihood    
    - log-likelihood likelihood function with more negative values has limbs    
    - Narrow peak implies that the information on parameter values is high    
    - The matrix is symmetric, or information is symmetric around the maximum likelihood point
@@ -276,7 +276,7 @@ Fisher information leads to an important relationship
 
 - The MLE parameter estimate $\hat{\theta}$ is a Normally distributed random variable
 
-- Arrises from the Taylor expansion of the maximum likelihood estimator   
+- Arises from the Taylor expansion of the maximum likelihood estimator   
 
 $$
 0 = \frac{\partial\ l(\hat{\theta})_\mathbf{X}}{\partial \theta} = 
@@ -481,11 +481,24 @@ $$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$
   - More sophisticated algorithms use an adaptive method to determine an optimal step at each step      
   - Adaptive algorithm finds step size dynamically using a **line search** procedure
 
+## Gradient descent methods   
+
+Computing gradient is computed for each dimension of the model weight vector   
+
+```{eval=FALSE}
+proceedure compute_expected_grad(weights, cases):   
+  for each dimension:
+      grad[dimension] = grad(weights, cases)
+  return grad
+```  
+
+The forgoing proceedure can be vectorized or parallelized   
+
 ## Gradient descent methods
 
 The gradient descent method finds the maximum of the log-likelihood function by following the gradient 'uphill'  
 
-- The gradient is always perpendicular to the countours 
+- The gradient is always perpendicular to the contours 
 
 ```{r GradientDescent, out.width = '60%', fig.cap='Gradient descent on countour plot of log-likelihood', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/GradientDescent.png"))
@@ -529,11 +542,16 @@ where, $E_{\hat{p}data} \big[ \big]$ is the expected value of the gradient given
 
 The pseudo code for the SGD algorithm is:       
 
-```{evale=FALSE)`
+```{eval=FALSE)`
+define learning_rate
+proceedure update_weights(weights, grad):  
+   weights = weights + learning_rate * grad
+   return weights
+
 Random_sort(cases)          
 while(grad > stopping_criteria):      
     mini-batch = sample_next_n(cases)     
-    grad = compute_expected_grad(mini_batch)      
+    grad = compute_expected_grad(weights, mini_batch)      
     weights = update_weights(weights, grad)`   
 ```    
     
@@ -683,7 +701,7 @@ For many distributions, parameter values have limits
    
 - Examples:     
    - Variance estiamtes near 0  
-   - Binomial parameter estimates near $p=0$ and $p=1$ 
+   - Binomial parameter estimates near $p=0$ and $p=1$; case with either very few successes or failure    
 
 ## Parameter near limits
 
