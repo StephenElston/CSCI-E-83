@@ -700,7 +700,7 @@ For many distributions, parameter values have limits
    - Fisher information drops rapidly near these limits, indicating poorly determined gradient   
    
 - Examples:     
-   - Variance estiamtes near 0  
+   - Variance estiamtes near 0; variables with low variance  
    - Binomial parameter estimates near $p=0$ and $p=1$; case with either very few successes or failure    
 
 ## Parameter near limits
