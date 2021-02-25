@@ -103,6 +103,8 @@ Rather than computing a point estimate directly, bootstrap methods compute a **b
 
 ## Overview of the Bootstrap Algorithm
 
+Bootstrap and re-sampling methods are widely applicable statistical methods. Unlike the statistical methods we have encountered before, these methods are products of the computer age. By repeatedly re-sampling the data some of the assumptions of classical statistical methods can be relaxed. The trade-off is that re-sampling methods are computationally intensive.   
+
 The bootstrap method follows a simple algorithm. Estimates of the statistic are accumulated by these steps:    
 
 1. Randomly sample (e.g. Bernoulli sample) N data with replacement from an original data sample of N values. That is, the re-sample is the same size as the original data sample.   
@@ -156,9 +158,9 @@ test_scores.head()
 ```{python}
 ## Plot the historgram of the math scores
 def plot_hist(x, xlab, title, bins=20, height=15):   
-       sns.displot(x, bins=bins, kde=True, height=height, aspect=1.4)
+       sns.displot(x, bins=bins, kde=True, height=height, aspect=1.4, linewidth=3)
        plt.rcParams.update({'font.size': 22})
-       plt.axvline(x=np.mean(x), color='red', linestyle='dashed', linewidth=2)
+       plt.axvline(x=np.mean(x), color='red', linestyle='dashed', linewidth=4)
        plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.8)
        plt.xlabel(xlab)
        plt.title(title)
@@ -237,6 +239,8 @@ plt.show()
 ```
 
 ## Two Sample Bootstrap    
+
+In the previous example you computed the means and confidence intervals of the sample distributions of the male and female adult child height data. Now you will bootstrap the difference in means to determine if it is significant. The result is the bootstrap distribution of the difference of means. The point estimate of the difference in means is then the mean of this distribution. And, the confidence intervals for this point estimate are also computed from this distribution.  
 
 How can we apply the bootstrap algorithm for two-sample statistics?    
 

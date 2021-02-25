@@ -158,7 +158,7 @@ Histogram of the math scores
 
 ```{python, echo=FALSE}
 def plot_hist(x, xlab, title, bins=20, height=3):   
-       sns.displot(x, bins=bins, kde=True, height=height, aspect=1.4)
+       sns.displot(x, bins=bins, kde=True, height=height, aspect=1.4, linewidth=3)
        plt.axvline(x=np.mean(x), color='red', linestyle='dashed', linewidth=2)
        plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.8)
        plt.xlabel(xlab)
