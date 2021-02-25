@@ -21,42 +21,47 @@ matplotlib$use("Agg", force = TRUE)
 “There were others who had forced their way to the top from the lowest rung by the aid of their bootstraps.”   
 James Joyce, ‘Ulysses’ 1922
 
-Resampling methods are powerful and widely used in computational statitics. By repeatedly re-sampling data some of the assumptions of classical statistical methods can be relaxed. These computationally intensive methods are products of the computer age. Resampling methods provide a natural way to find uncertainty when performing statistical inferences.  
+Resampling methods are powerful and widely used in computational statistics. By repeatedly re-sampling data some of the assumptions of classical statistical methods can be relaxed. These computationally intensive methods are largely products of the computer age. Resampling methods provide a natural way to find uncertainty when performing statistical inferences.  
 
-Re-sampling methods draw heavily on the central limit theorem (CLT) (Chapter XX) and the weak law of large numbers (Chapter XX). The weak law of large numbers tells us that a resampled estimate of a static converges to the correct value, when the conditions re met. The CLT tells us that the distribution of mean estiamtes is Normally distributed, as the number of resamples increases.   
+Resampling methods draw heavily on the central limit theorem (CLT) (Chapter XX) and the weak law of large numbers (Chapter XX). The weak law of large numbers tells us that a resampled estimate of a static converges to the correct value, when certain conditions are met. The CLT tells us that the sampling distribution of mean estimates are converge to a Normal, as the number of resamples increases.   
 
-There are several use cases for resampling methods. Specifically re-sampling methods:
+There are a great many use cases for resampling methods. Specifically re-sampling methods:
 
-- Allow computation of statistics from limited data samples.
-- Esimate a probability distribution of a statistic.  
+- Estimate a probability distribution of a statistic.  
 - Make minimal distributional assumptions, when compared to classical frequentist statistics.
 - Are computationally intensive, but often highly parallelizable.
 
 Commonly used re-sampling methods include:
 
-- **Randomization or Permutation methods:** hypothesis tests.
-- **Non-parametric bootstrap resampling:** compute statistics.
-- **Jackknife:** or leave one out re-sampling.
-- **Cross validation:** re-sample into multiple folds without replacement.
-
-Re-sampling methods are general and powerful but, there is no magic involved! When using re-sampling methods always keep in mind these pitfalls:
-- If a sample is biased, the re-sampled statistic estimated from that sample will be biased.
-- The sample variance and Cis can be no better than the data sample allows.
+- **Randomization or Permutation methods:** for hypothesis tests.
+- **Non-parametric bootstrap resampling:** to compute statistics.
+- **Jackknife:** or leave one out re-sampling to compute statistics.
+- **Cross validation:** resample into multiple folds without replacement to assess performance of statistical and machine learning models.
 
 
 ### Randomization and permutation methods
 
-Randomization and permutation methods were pioneered by Fisher as early as 1911. Fisher fully developed the theory in his 1935 book. Scalability of these permutation methods remain limited, even with modern computers. 
+Randomization and permutation methods were pioneered by Fisher as early as 1911. Fisher fully developed the theory in his 1935 book. Scalability of fully rank permutation methods remain limited, even with modern computers. But, modern methods using limited numbers of resamples have proved robust and scalable.
+
+A null distribution is estimated by randomly permuting the response variable. The statistic is computed many times using a different permutation each time. This result represents a sampling distribution of a null model. A null distribution holds if the statistic is not statistically significant and the model is not predictive. A test statistic is then compared to the quantile of the null distribution. 
+
+
+### Jack knife methods
+
+Jack knife methods are often effective when there are only limited data samples. Maurice Quenouille originally suggested this method in 1949. The jack knife was fully developed
+by John W. Tukey, who gave the method its name, in 1958. Tukey saw that method as a simple tool useful for many purposes like a pocket knife.   
+
+The jack knife computes multiple values of a statistic by **leaving out one observation** each time. Therefore, for n observations there are n estimates of the statistic. The expected value of the statistic is then the mean of the resampled estimates.  
+
+Jack knife estimates often work surprisingly well for small samples. As a result of this and some other useful properties, jack knife methods are still in use today. 
 
 ### Cross-validation
 
 Today, cross-validation is widely used in the testing of machine learning models. Cross-validation was originally proposed by Kurtz in 1948. Mosier extended the method to double cross validation in 1951. The modern method of nested or multicross-validation were introduced by Krus and Fuller in 1982. 
 
-### Jack knife methods
+At each resample, the cross validation algorithm evaluates a model by dividing the cases into **k folds**. For number of observations n, each fold contains n/k samples. The model parameters are estimated (model trained in machine learning terminology) using k-1 folds and then evaluated using the kth fold. This process is repeated k times. The average model performance and the variance of the performance metrics is then computed from the k cross validation estimates.  
 
-Jack knife methods are often effective when there are only limited data samples. Maurice Quenouille originally suggested this method in 1949. The jack knife was fully developed
-by John W. Tukey, who gave the method its name, in 1958. Tukey saw that method as a simple tool useful for many purposes like a pocket knife. 
-
+When $k = n$, cross validation is a leave one out algortihm. In this case, cross validation is similar to the jack knife algorithm.   
 
 ### Bootstrap 
 
@@ -64,39 +69,25 @@ The bootstrap is an extremely general and powerful re-sampling method. In princi
 
 As with other re-sampling methods, the bootstrap algorithm is computationally intensive. However, with increased computing power, use of bootstrap methods continues to expand. Further, the algorithm can be readily parallelized.  
 
-## General Characteristics of Resampling Methods    
+The bootstrap algorithm is the focus of this chapter. 
 
-General characteristics of resampling methods include     
-
-- Allow computation of statistics from limited data samples for statistics with continuous derivatives        
-
-- Repeatedly compute statistics from multiple resamples of dataset     
-
-- The result converges to the sample distribution of the statistic being computed    
-
-- Make minimal distributional assumptions, when compared to classical frequentist statistics      
 
 ## Pitfalls of Resampling Methods    
 
-Re-sampling methods are general and powerful but, there is no magic involved! There are pitfalls! 
+Re-sampling methods are general and powerful but, there is no magic involved! There are pitfalls one should be aware of! 
 
-- If a sample is biased, the re-sampled statistic estimate based on that sample will be biased    
-   - Results can be no better than the sample you start with  
-   - Example; the bootstrap estimate of mean is the unbiased sample estimate, $\bar{x}$, not the population parameter, $\mu$ 
+Resampled estimate of a statistic can be no better that the original sample of observations allows. If a sample is biased, the re-sampled statistic estimate based on that sample will be biased. As an example consider that the bootstrap estimate of mean is an **unbiased sample estimate**, $\bar{x}$. But, there is no guarantee this estimate is unbiased with respect to the population parameter, $\mu$.  
    
-- The sample variance and Cis can be no better than the sample distribution allows    
-   - Be suspicious of overly optimistic confidence intervals    
-   - CIs can be optimistically biased        
+The resampleed variance and confidence intervals can be no better than the sample distribution allows. In fact, bootstrap CIs are known to be optimistically biased. Be suspicious if the confidence intervals you compute seem too good to be true!     
 
-- Are computationally intensive, but often highly parallelizable   
+All resampling methods are computationally intensive. However, all of the commonly used methods are highly parallelizable. Thus, in 21st Century computing environments, resampling methods are quite scalable. But there are limits. Computing resamples statistics from very large data sets directly can be prohibitive.     
 
-   
 
 ## Point Estimates vs. Distribution Estimates
 
-The goal of **frequentist statistics** is to compute a **point estimate** and **confidence interval** for the point estimate. By a point estimate, we mean a single most likely value for a statistic. The confidence interval is based on the properties of some assumed probability distribution of the statistic. Up to now we have worked with hypothesis tests and summary statistics computed with frequentist methods. For example, with the t-test we found the most likely value of the t-statistic and the confidence interval assuming the difference of means follows a t-distribution.      
+The goal of **frequentist statistics** is to compute a **point estimate** of a statistic or parameter and **confidence interval** for the point estimate. By a point estimate, we mean a single most likely value. The confidence interval is based on the properties of some assumed sampling distribution.For example, for the difference in means, we estimate the confidence intervals by assuming a t-distribution for the sampling distribution.      
 
-Are there alternative to this frequentist approach? Yes, indeed there are. The most widely used alternative are found in **Bayesian statistics**. In this lesson, we will focus on re-sampling methods, particularly **bootstrap** methods. The bootstrap lies somewhere between classical frequentist statistics and Bayesian methods.    
+Bootstrap methods are firmly in this frequentist camp. The goal is to estimate the sampling distribution using bootstrap resamples of the original sample. The statistic computed from each resample is assumed to arrise from the sampling distribution.    
 
 Rather than computing a point estimate directly, bootstrap methods compute a **bootstrap distribution** of the statistic. The bootstrap distribution is comprised of values of the statistic computed from **bootstrap samples** of the original data sample. Based on this distribution a mostly likely point estimate of the statistic, or **bootstrap estimate** (the mean of the distribution) is computed. The **bootstrap confidence interval** is also computed from the bootstrap distribution. This approach is in contrast to the purely frequentist approach of computing point estimates and confidence intervals using the original data sample. 
 
