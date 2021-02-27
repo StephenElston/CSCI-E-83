@@ -92,13 +92,13 @@ Bootstrap methods are firmly in this frequentist camp. The goal is to estimate t
 Rather than computing a point estimate directly, bootstrap methods compute a **bootstrap distribution** of the statistic. The bootstrap distribution is comprised of values of the statistic computed from **bootstrap samples** of the original data sample. Based on this distribution a mostly likely point estimate of the statistic, or **bootstrap estimate** (the mean of the distribution) is computed. The **bootstrap confidence interval** is also computed from the bootstrap distribution. This approach is in contrast to the purely frequentist approach of computing point estimates and confidence intervals using the original data sample. 
 
 
-## Overview of the Bootstrap Algorithm
+## Overview of the Nonparametric Bootstrap Algorithm
 
-Bootstrap and re-sampling methods are widely applicable statistical methods. Unlike the statistical methods we have encountered before, these methods are products of the computer age. By repeatedly re-sampling the data some of the assumptions of classical statistical methods can be relaxed. The trade-off is that re-sampling methods are computationally intensive.   
+Bootstrap and re-sampling methods are widely applicable statistical methods. Unlike the statistical methods we have encountered before, these methods are products of the computer age. By repeatedly re-sampling the data some of the assumptions of classical statistical methods can be relaxed. While  The trade-off is that re-sampling methods are computationally intensive.   
 
 The bootstrap method follows a simple algorithm. Estimates of the statistic are accumulated by these steps:    
 
-1. Randomly sample (e.g. Bernoulli sample) N data with replacement from an original data sample of N values. That is, the re-sample is the same size as the original data sample.   
+1. **Randomly sample with replacement** (e.g. Bernoulli sample) N adat from an original data sample of N values. That is, the re-sample is the same size as the original data sample.   
 2. Re-compute the statistic with the current sample sample. This is a **bootstrap sample** of the statistic.   
 3. Repeat steps 1 and 2 to accumulate the required number of bootstrap samples. 
 4. Accumulated statistic values form the **bootstrap distribution**. 
