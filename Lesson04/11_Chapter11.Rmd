@@ -160,7 +160,7 @@ The number of each type of bread baked in the sandwich shop is deterministic. Th
 The last function you need to execute the full model represented by the DAG computes the daily profit. This function is therefore the utility function. The calculation is deterministic, given the inputs of bread demand and the amount of bread baked. But don't be confused, while the utility function is deterministic, the bread demands is stochastic. As a result, profit is a random variable.    
 
 
-> **Exercise 11-7:** You will now write the function, `daily_profit`, that computes and returns the daily profit. The function calls the `bread_demand` and `compute_bread_bake` functions. The arguments to this function are:     
+> **Exercise 11-7:** You will now write the function, `daily_profit`, that computes and returns the daily profit. The function calls the `bread_demand` and `bread_baked` functions. The arguments to this function are:     
 - The daily total of bread baked,    
 - Proportion of each bread type baked daily,    
 - Mean daily arrival rate,    
