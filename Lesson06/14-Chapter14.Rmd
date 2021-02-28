@@ -67,6 +67,8 @@ When $k = n$, cross validation is a leave one out algortihm. In this case, cross
 
 The bootstrap is an extremely general and powerful re-sampling method. In principle, the bootstrap algorithm and can provide estimates of the distributions of most any statistic. The bootstrap method was first suggested by Efron and Hinkley in 1978 and further developed by Efron in 1979. A full treatment was provided in Efron's 1980 book. 
 
+By repeatedly re-sampling the data, bootstrap methods relax some of the assumptions of classical statistical methods. For example, nonparametric bootstrap methods do not require any assumptions about a sampling distribution. In effect, bootstrap methods trade intensive computations for the mind power of the statistican.     
+
 As with other re-sampling methods, the bootstrap algorithm is computationally intensive. However, with increased computing power, use of bootstrap methods continues to expand. Further, the algorithm can be readily parallelized.  
 
 The bootstrap algorithm is the focus of this chapter. 
@@ -87,51 +89,62 @@ All resampling methods are computationally intensive. However, all of the common
 
 The goal of **frequentist statistics** is to compute a **point estimate** of a statistic or parameter and **confidence interval** for the point estimate. By a point estimate, we mean a single most likely value. The confidence interval is based on the properties of some assumed sampling distribution.For example, for the difference in means, we estimate the confidence intervals by assuming a t-distribution for the sampling distribution.      
 
-Bootstrap methods are firmly in this frequentist camp. The goal is to estimate the sampling distribution using bootstrap resamples of the original sample. The statistic computed from each resample is assumed to arrise from the sampling distribution.    
+Bootstrap methods are firmly in this frequentist camp. The goal is to estimate the sampling distribution using bootstrap resamples, $\hat{\mathcal{F}}^*$, of the original sample, $\hat{\mathcal{F}}$. The statistic computed from each resample, $s(\hat{\mathcal{F}}^*)$. is assumed to arise from the sampling distribution.    
 
-Rather than computing a point estimate directly, bootstrap methods compute a **bootstrap distribution** of the statistic. The bootstrap distribution is comprised of values of the statistic computed from **bootstrap samples** of the original data sample. Based on this distribution a mostly likely point estimate of the statistic, or **bootstrap estimate** (the mean of the distribution) is computed. The **bootstrap confidence interval** is also computed from the bootstrap distribution. This approach is in contrast to the purely frequentist approach of computing point estimates and confidence intervals using the original data sample. 
+Rather than computing a point estimate directly, bootstrap methods compute a **bootstrap distribution** of the statistic. The bootstrap distribution is an approximation of the sampling distribution of the statistic. The concept of sampling the bootstrap distribution is shown in the figure.  
+
+```{r BootstrapDistribution, out.width = '90%', fig.cap='Resampling to estiamte the bootstrap distribution of a statistic', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/BootstrapDistribution.png"))
+```
+
+The bootstrap distribution is comprised of values of the statistic computed from **bootstrap samples** of the original data sample. Based on this distribution a mostly likely point estimate of the statistic, or **bootstrap estimate**, is computed as the mean of the bootstrap distribution. The **bootstrap confidence interval** is also computed from the bootstrap distribution. This approach is in contrast to the purely frequentist approach of computing point estimates and confidence intervals using an assumed sampling distribution. 
+
 
 
 ## Overview of the Nonparametric Bootstrap Algorithm
 
-Bootstrap and re-sampling methods are widely applicable statistical methods. Unlike the statistical methods we have encountered before, these methods are products of the computer age. By repeatedly re-sampling the data some of the assumptions of classical statistical methods can be relaxed. While  The trade-off is that re-sampling methods are computationally intensive.   
+The nonparametric bootstrap algorithm is used to compute an estimate of the sampling distribution of most any statistic. The term **nonparametric** is applied in this case, since no assumptions about parametric sampling distributions are required. Instead, the resample estimates of the statistic are an approximation of the sampling distribution.   
 
-The bootstrap method follows a simple algorithm. Estimates of the statistic are accumulated by these steps:    
+### Bootstrap samples and the bootstrap distributon    
 
-1. **Randomly sample with replacement** (e.g. Bernoulli sample) N adat from an original data sample of N values. That is, the re-sample is the same size as the original data sample.   
-2. Re-compute the statistic with the current sample sample. This is a **bootstrap sample** of the statistic.   
-3. Repeat steps 1 and 2 to accumulate the required number of bootstrap samples. 
-4. Accumulated statistic values form the **bootstrap distribution**. 
-5. The mean of the computed statistic values is the **bootstrap point estimate** of the statistic.  
+Rather than computing a point estimate directly, bootstrap methods compute a **bootstrap distribution** of a statistic. The bootstrap distribution is comprised of values of the statistic computed from bootstrap resamples of the original observations (data sample). Computing the nonparametric bootstrap distribution requires **no assumptions about population distribution!**.
 
-For example, you can compute the bootstrap mean as:
+The nonparametric **bootstrap estimate** of a statistic is mostly likely point estimate of the statistic given the bootstrap distribution. As a consequence of the central limit theorem, the bootstrap estimate is the mean of the bootstrap distribution. We will address computing bootstrap confidence intervals shortly.    
+
+### The nonparametric bootstrap algorithm    
+
+The nonparametric bootstrap method follows a simple algorithm. Estimates of the statistic are accumulated by these steps:     
+
+1. **Randomly sample with replacement** (e.g. Bernoulli sample) N values from an original data sample of N values. That is, the re-sample is the same size as the original data sample. This resample is called a **bootstrap sample**.   
+2. Re-compute the statistic with the current bootstrap sample. This is a **bootstrap estimate** of the statistic.    
+3. Repeat steps 1 and 2 to accumulate the required number of bootstrap estiamtes of the statistic. 
+4. The accumulated statistic values form the **bootstrap distribution**.   
+5. The mean of the computed statistic values is the **bootstrap point estimate** of the statistic.     
+For example, you can compute the bootstrap mean as:    
 
 $$Meanboot = \frac{\Sigma_i mean(sample_i)}{nsample}$$
-where, for example with 10 data values and example of the ith re-sample might be:
+where, for example, given 10 data values, the ith bootstrap sample might be:
 $$sample_i = X_1 + X_2 + X_3 + X_4 + X_5 + X_6 + X_7 + X_8 + X_1 + X_5$$
+
+Notice two key points about the bootstrap sample which are results of randomly sampling with replacement:   
+1. Some values from the orriginal sample will not be included in a bootstrap sample.   
+2. Some values from the orriginal sample will occur multiple times in the bootstap sample. 
+
+
+This nonparametric bootstrap algorithm is illustrated in the figure. 
 
 ```{r BootstrapMean, out.width = '90%', fig.cap='Outline of bootstrap resampling algorithm to compute mean', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/BootstrapMean.png"))
 ```
 
-## Bootstrap Distribution    
-
-Rather than computing a point estimate directly, bootstrap methods compute a bootstrap distribution of a statistic    
-
-- Bootstrap distribution is comprised of values of the statistic computed from bootstrap resamples of the original observations (data sample)     
-
-- Computing bootstrap distribution requires **no assumptions about population distribution!**
-  - Bootstrap resampling substitutes computer power for paper and pencil statistician power
-
-- Bootstrap resampling estiamtes the **bootstrap distribution** of a statistic    
-  - Compute mostly likely point estimate of the statistic, or bootstrap estimate   
-  - The bootstrap confidence interval is computed from the bootstrap distribution   
-  
-
 
 ### Example; single sample bootstrap
 
-In the previous example you computed the means and confidence intervals of the sample distributions of the male and female adult child height data. Now you will bootstrap the difference in means to determine if it is significant. 
+Computing a bootstrap distribution of a mean estimate is one of the simplest examples of applying the nonparametric bootstrap algorithm. A bootstrap estimates of the mean are computed a number of times from a single original sample. The result is a bootstrap distribution of the mean. Since a single original sample is resampled, this methods is know as the **one sample bootstrap algorithm**. While we focus on the mean statistic in this example, it is important to realize that this algorithm is applicable to **most any single sample statistic**.     
+
+In this section we will compute the bootstrap distribution and bootstrap mean estimates from student standardized math test scores. This data set is known as [HSB2](https://www.openintro.org/data/index.php?data=hsb2) and is a subset of a larger sample. The data were collected by the [National Center for Education Statistics](https://nces.ed.gov/).    
+
+We start by examining the head of a data frame containing these data.  
 
 ```{python}
 import pandas as pd
@@ -145,6 +158,9 @@ test_scores = pd.read_csv('../data/hsb2.csv', index_col=0)
 test_scores.head()
 ```
 
+The first three columns show the student's sex, race and socioeconomic status (SES). The next columns indicate the type of school (public or private) and the type of program the student is in (general, academic, vocational). The final columns contain the students' scores on standardized tests for five subjects.       
+
+The code in the cell below displays a historgram with kernal density estiamte of the math scores of all students in the sample.  
 
 ```{python}
 ## Plot the historgram of the math scores
@@ -161,12 +177,9 @@ plot_hist(math, 'Math score', 'Histogram of math scores')
 plt.show()
 ```
 
+It is questionable if the distribution of math scores is Normally distributed. Fortunately, using bootstrap methods we do not need to concern ourselves with either the population or sampling distribution assumptions.   
 
-
-The code in the cell below generates bootstrap samples from the full male and female data sub-sets and then computes the difference in the means. The result is the bootstrap distribution of the difference of means. The point estimate of the difference in means is then the mean of this distribution. And, the confidence intervals for this point estimate are also computed from this distribution. 
-
-Run the code and examine the plotted results.
-
+The code below generates bootstrap and bootstrap mean estimates from those samples samples. These resamples are drawn with replacement from the math scores of all students using the [numpy.random.choice](https://numpy.org/doc/stable/reference/random/generated/numpy.random.choice.html) function. The point estimate of the mean is printed and a histogram of the bootstrap distribution is then displayed.  
 
 ```{python}
 ## Compute and plot the one sample bootstrap distribution of the mean    
@@ -179,7 +192,7 @@ def bootstrap_statistic(x, b, statistic):
     print('Bootstap point estimate = {:6.2f}'.format(boot_estimate))
     return(boot_estimate, boot_vals)      
     
-bootstrap_mean_estimate, boot_means = bootstrap_statistic(math, 200, np.mean)
+bootstrap_mean_estimate, boot_means = bootstrap_statistic(math, 2000, np.mean)
 
 plot_hist(boot_means, 'Bootstrap mean values', 'Histogram of bootstrap distribution')
 plt.show()
@@ -188,7 +201,7 @@ plt.show()
 
 ## Bootstrap Confidence Intervals   
 
-Distribution of 2000 bootstrap bootstrap confidence intervals?
+Now that we can compute a bootstrap distibution  Distribution of 2000 bootstrap bootstrap confidence intervals?
 
 - Use percentile method:      
    1. Define confidence level; 95% or $\alpha=0.05$    
@@ -220,7 +233,7 @@ def bootstrap_cis(boot_samples, alpha=0.05):
       print('At alpha = {0:3.2f}, lower and upper bootstap confidence intervals = {1:6.2f}   {2:6.2f}'.format(alpha, sorted[index_lci], sorted[index_uci]))
       return(sorted[index_lci], sorted[index_uci])
     
-bootstrap_mean_estimate, boot_means = bootstrap_statistic(math, 2000, np.mean)
+bootstrap_mean_estimate, boot_means = bootstrap_statistic(math, 10000, np.mean)
 LCI, UCI = bootstrap_cis(boot_means)
 
 plot_hist(boot_means, 'Bootstrap mean values', 'Histogram of bootstrap distribution')
@@ -282,7 +295,7 @@ def two_boot_two_stat(sample_1, sample_2, b, statistic_1, two_samp_statistic):
 
 math_low_ses = test_scores.loc[test_scores.loc[:,'ses']==1,'math'] 
 math_mid_ses = test_scores.loc[test_scores.loc[:,'ses']==2,'math']
-bootstrap_diff_of_mean, boot_diffs = two_boot_two_stat(math_low_ses, math_mid_ses, 2000, np.mean, lambda x,y: x-y)
+bootstrap_diff_of_mean, boot_diffs = two_boot_two_stat(math_low_ses, math_mid_ses, 10000, np.mean, lambda x,y: x-y)
 LCI, UCI = bootstrap_cis(boot_diffs)
 
 plot_hist(boot_diffs, 'Bootstrap difference of means', 'Histogram of bootstrap distribution of difference of means')
