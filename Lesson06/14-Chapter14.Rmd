@@ -208,9 +208,7 @@ You may well wonder how many bootstrap samples should you use to estimate the bo
 
 ## Bootstrap Confidence Intervals   
 
-Now that we can compute a bootstrap distribution the net step is to find the confidence intervals. The direct approach is to use the **percentile method**. In simple terms, the ......................
-
-- Use percentile method:      
+Now that we can compute a bootstrap distribution the net step is to find the confidence intervals. The direct approach is to use the **percentile method**. In simple terms, percentile method finds the bootstrap sample values at the $\alpha/2$ and $1-\alpha/2$ points of the bootstrap distribution.   
    1. Define confidence level; 95% or $\alpha=0.05$    
    2. Order b bootstrap samples, $s_i$$, by value   
    3. Lower CI index; $i = b * \alpha/2$
