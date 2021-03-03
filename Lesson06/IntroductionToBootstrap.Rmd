@@ -18,9 +18,6 @@ matplotlib$use("Agg", force = TRUE)
 ```
 
 
-## Review     
-
-
 ## Introduction
 
 “There were others who had forced their way to the top from the lowest rung by the aid of their bootstraps.”
@@ -107,14 +104,14 @@ Rather than computing a point estimate directly, bootstrap methods compute a boo
 - Computing bootstrap distribution requires **no assumptions about population distribution!**
   - Bootstrap resampling substitutes computer power for paper and pencil statistician power
 
-- Bootstrap resampling estiamtes the **bootstrap distribution** of a statistic    
+- Bootstrap resampling estimates the **bootstrap distribution** of a statistic    
   - Compute mostly likely point estimate of the statistic, or bootstrap estimate   
   - The bootstrap confidence interval is computed from the bootstrap distribution    
 
 
 ## Overview of the Bootstrap Algorithm    
 
-The bootstrap method follows a simple algorithm. Estimates of the point estiamte of a statistic are accumulated by these steps:    
+The bootstrap method follows a simple algorithm. Estimates of the point estimate of a statistic are accumulated by these steps:    
 
   1. Randomly sample (e.g. Bernoulli sample) n data with replacement from an original data sample of n values; The re-sample is the same size as the original data sample   
   2. Re-compute the statistic with each resample       
@@ -124,7 +121,7 @@ The bootstrap method follows a simple algorithm. Estimates of the point estiamte
 
 - By law of large numbers, bootstrap point estimate converges    
 
-- Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 200 bootstrarp samples for point estimates    
+- Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 200 bootstrap samples for point estimates    
 
 
 ## Overview of the Bootstrap Algorithm    
@@ -177,7 +174,7 @@ Function to compute single sample bootstrap estimate of statistic
 ```{python, evl=FALSE}
 def bootstrap_statistic(x, b, statistic):
     '''
-    Function Computes b one-sample bootstrap estiamtes of data x
+    Function Computes b one-sample bootstrap estimates of data x
     using statistic function.  
     '''
     n_samps = len(x)
@@ -187,7 +184,7 @@ def bootstrap_statistic(x, b, statistic):
         ## using the bootstrap sample of the observations 
         boot_vals.append(statistic(nr.choice(x, size=n_samps, replace=True)))
     boot_estimate = np.mean(boot_vals)
-    print('Bootstap point estimate = {:6.2f}'.format(boot_estimate))
+    print('Bootstrap point estimate = {:6.2f}'.format(boot_estimate))
     return(boot_estimate, boot_vals)      
     
 bootstrap_mean_estimate, boot_means = bootstrap_statistic(math, 200, np.mean)
@@ -201,7 +198,7 @@ Distribution of 200 bootstrap samples of mean estimates
 ```{python, echo=FALSE}
 def bootstrap_statistic(x, b, statistic):
     '''
-    Function Computes b one-sample bootstrap estiamtes of data x
+    Function Computes b one-sample bootstrap estimates of data x
     using statistic function.  
     '''
     n_samps = len(x)
@@ -211,7 +208,7 @@ def bootstrap_statistic(x, b, statistic):
         ## using the bootstrap sample of the observations 
         boot_vals.append(statistic(nr.choice(x, size=n_samps, replace=True)))
     boot_estimate = np.mean(boot_vals)
-    print('Bootstap point estimate = {:6.2f}'.format(boot_estimate))
+    print('bootstrap point estimate = {:6.2f}'.format(boot_estimate))
     return(boot_estimate, boot_vals)      
     
 bootstrap_mean_estimate, boot_means = bootstrap_statistic(math, 200, np.mean)
@@ -255,7 +252,7 @@ def bootstrap_cis(boot_samples, alpha=0.05):
       sorted = np.sort(boot_samples)
       index_lci = int(n * alpha / 2)
       index_uci = int(n * (1 - alpha / 2))
-      print('At alpha = {0:3.2f}, lower and upper bootstap confidence intervals = {1:6.2f}   {2:6.2f}'.format(alpha, sorted[index_lci], sorted[index_uci]))
+      print('At alpha = {0:3.2f}, lower and upper bootstrap confidence intervals = {1:6.2f}   {2:6.2f}'.format(alpha, sorted[index_lci], sorted[index_uci]))
       return(sorted[index_lci], sorted[index_uci])
     
 bootstrap_mean_estimate, boot_means = bootstrap_statistic(math, 2000, np.mean)
@@ -273,7 +270,7 @@ How can we apply the bootstrap algorithm for two-sample statistics?
 
 - Example, difference of means of two independently sampled populations   
 
-- How to generate boot strap samples?    
+- How to generate bootstrap samples?    
 
 - Can we just sample the concatenation of the two samples?     
 
@@ -284,7 +281,7 @@ How can we apply the bootstrap algorithm for two-sample statistics?
 - Must independently sample the two groups or populations     
    - Use two independent bootstrap samples to compute statistic
    - Step one; compute statistic from independent resamples    
-   - Step two; compute (another) statistic from the two bootrap estimates
+   - Step two; compute (another) statistic from the two bootstrap estimates
 
 
 ## Two Sample Bootstrap     
@@ -321,7 +318,7 @@ g.axes[1][0].axvline(np.mean(test_scores.loc[test_scores.loc[:,'ses']==2,'math']
 ```{python, eval=FALSE}
 def two_boot_two_stat(sample_1, sample_2, b, statistic_1, two_samp_statistic):
     '''
-    Function computes two sample and two statistic bootsrap estimate.   
+    Function computes two sample and two statistic bootstrap estimate.   
     - sample_1 and sample_2, independent obervation vectors   
     - b, number of bootstrap samples to compute
     - statistic 1, statistic applied to the two independent bootstrap samples
@@ -331,14 +328,14 @@ def two_boot_two_stat(sample_1, sample_2, b, statistic_1, two_samp_statistic):
     n_samps_1 = len(sample_1)
     n_samps_2 = len(sample_2)
     for _ in range(b):  
-        ## Heavy lisfting is done here. First, the two independent bootstrap estiamtes
+        ## Heavy lisfting is done here. First, the two independent bootstrap estimates
         ## are computed from independent bootstrap resamples. Second, the statistic 
         ## of the two bootstrap estimates is computed.  
         boot_estimate_1 = statistic_1(nr.choice(sample_1, size=n_samps_1, replace=True))
         boot_estimate_2 = statistic_1(nr.choice(sample_2, size=n_samps_2, replace=True))
         two_boot_values.append(two_samp_statistic(boot_estimate_1, boot_estimate_2))
     boot_estimate = np.mean(two_boot_values)
-    print('Bootstap point estimate = {:6.2f}'.format(boot_estimate))
+    print('bootstrap point estimate = {:6.2f}'.format(boot_estimate))
     return(boot_estimate, two_boot_values)    
 
 math_low_ses = test_scores.loc[test_scores.loc[:,'ses']==1,'math'] 
@@ -353,8 +350,8 @@ Compute and display the bootstrap distribution of the difference of student scor
 ```{python, echo=FALSE}
 def two_boot_two_stat(sample_1, sample_2, b, statistic_1, two_samp_statistic):
     '''
-    Function computes two sample and two statistic bootsrap estimate.   
-    - sample_1 and sample_2, independent obervation vectors   
+    Function computes two sample and two statistic bootstrap estimate.   
+    - sample_1 and sample_2, independent observation vectors   
     - b, number of bootstrap samples to compute
     - statistic 1, statistic applied to the two independent bootstrap samples
     - two_sample_statistic, statistic applied to the independent bootstrap statistics
@@ -363,14 +360,14 @@ def two_boot_two_stat(sample_1, sample_2, b, statistic_1, two_samp_statistic):
     n_samps_1 = len(sample_1)
     n_samps_2 = len(sample_2)
     for _ in range(b):  
-        ## Heavy lisfting is done here. First, the two independent bootstrap estiamtes
+        ## Heavy lifting is done here. First, the two independent bootstrap estimates
         ## are computed from independent bootstrap resamples. Second, the statistic 
         ## of the two bootstrap estimates is computed.  
         boot_estimate_1 = statistic_1(nr.choice(sample_1, size=n_samps_1, replace=True))
         boot_estimate_2 = statistic_1(nr.choice(sample_2, size=n_samps_2, replace=True))
         two_boot_values.append(two_samp_statistic(boot_estimate_1, boot_estimate_2))
     boot_estimate = np.mean(two_boot_values)
-    print('Bootstap point estimate = {:6.2f}'.format(boot_estimate))
+    print('bootstrap point estimate = {:6.2f}'.format(boot_estimate))
     return(boot_estimate, two_boot_values)    
 
 math_low_ses = test_scores.loc[test_scores.loc[:,'ses']==1,'math'] 
@@ -386,4 +383,4 @@ plt.show()
 
 ## Summary  
 
-Bootstrap resamping 
+Bootstrap resampling 

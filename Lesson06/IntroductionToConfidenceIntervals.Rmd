@@ -24,7 +24,7 @@ matplotlib$use("Agg", force = TRUE)
 
 We have 6 more class meetings    
 
-- This week and next, statitical inference, hypothesis testing, bootstrap resampling    
+- This week and next, statistical inference, hypothesis testing, bootstrap resampling    
 
 - Weeks of Feb 23, Mar 2, Bayesian methods and Markov Chain Monte Carlo (MCMC) sampling   
 
@@ -39,8 +39,8 @@ Key points on sampling
   - Sample estimates of a statistic vs population values    
   
 - Sources of uncertainty    
-  - Epistemic; arrises from the population       
-  - Statistical; arrises from sampling      
+  - Epistemic; arises from the population       
+  - Statistical; arises from sampling      
   
 - Sampling methods    
   - Why random unbiased sampling is important 
@@ -54,7 +54,7 @@ Key points on sampling
 Why sampling works     
 
 - A **statistic** is an estimate of a parameter of the **population distribution**   
-  - The distribution of the statistc is the **sampling distribution**   
+  - The distribution of the statistic is the **sampling distribution**   
   
 - The **law of large numbers (LLN)**    
   - Ensures sample distribution converges to population distribution as sample size increases   
@@ -76,9 +76,9 @@ All statistical inference has uncertainty
 
 | Hypothesis  | Fooled by Randomness |
 |:----------------------- | :----------------- |
-| How certain are you that eating a fad food improves your health? | Some of my friends are doing great on this diet |   
+| How certain are you that eating fast food improves your health? | Some of my friends are doing great on this diet |   
 | How much confidence should we have that a marketing campaign increased sales? | Sales are up in the last month since the campaign started |  
-| What is the risk inherent in a certain stock trading strategy actually improve returns? | Traders using this strategy have made money recently | 
+| How effective is a certain stock trading strategy for actually improving returns? | Traders using this strategy have made money recently | 
 | How good are the model parameter estimates? | The model has made accurate predictions so far | 
    
 
@@ -97,7 +97,7 @@ Some applications of statistical inference include:
 - Compute uncertainty in model parameter estimates    
 - Compare model performance     
 
-**Inference for prediction:** In recent decades the distinction between prediction and clasical inference has blurred to the point of being irrelevant     
+**Inference for prediction:** In recent decades the distinction between prediction and classical inference has blurred to the point of being irrelevant     
 - A common machine learning example, classification, uses decision rules determine the most likely class for each case of input values      
 - inference also used to determine the confidence in predictions            
 
@@ -134,7 +134,7 @@ $$\alpha  = P(x \ge Upper\ CI)\ \\ and \\\ 1 - \alpha = P(x \le Lower\ CI)$$
 
 Illustrate the concept of confidence intervals with an example
 
-- The **cummulative distribution function (CDF)** of a standard Normal distribution, $N(0,1)$  
+- The **cumulative distribution function (CDF)** of a standard Normal distribution, $N(0,1)$  
 
 - Double ended arrows with annotation are plotted to illustrate the 95% confidence interval on the CDF  
   - Horizontal double arrow shows the range of the confidence interval    
@@ -204,7 +204,7 @@ Where,
 - $n$ is the number of samples.   
 
 
-## One-Sided Confience Intervals    
+## One-Sided Confidence Intervals    
 
 Many situations where a one-sided confidence interval is useful    
 
