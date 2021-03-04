@@ -112,7 +112,7 @@ Rather than computing a point estimate directly, bootstrap methods compute a boo
 
 Rather than repeatedly resample the population, bootstrapping repeatedly resamples an original sample    
 
-```{r BootstrapDistribution, out.width = '60%', fig.cap='Resampling to estiamte the bootstrap distribution of a statistic', fig.align='center', echo=FALSE}
+```{r BootstrapDistribution, out.width = '70%', fig.cap='Resampling to estiamte the bootstrap distribution of a statistic', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/BootstrapDistribution.png"))
 ```
 
