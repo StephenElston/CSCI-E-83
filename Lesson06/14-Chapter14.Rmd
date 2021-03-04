@@ -27,16 +27,16 @@ Resampling methods draw heavily on the central limit theorem (CLT) (Chapter XX) 
 
 There are a great many use cases for resampling methods. Specifically re-sampling methods:
 
-- Estimate a probability distribution of a statistic.  
-- Make minimal distributional assumptions, when compared to classical frequentist statistics.
-- Are computationally intensive, but often highly parallelizable.
+- Estimate a probability distribution of a statistic.    
+- Make minimal distributional assumptions, when compared to classical frequentist statistics.    
+- Are computationally intensive, but often highly parallelizable.     
 
 Commonly used re-sampling methods include:
 
-- **Randomization or Permutation methods:** for hypothesis tests.
-- **Non-parametric bootstrap resampling:** to compute statistics.
-- **Jackknife:** or leave one out re-sampling to compute statistics.
-- **Cross validation:** resample into multiple folds without replacement to assess performance of statistical and machine learning models.
+- **Randomization or Permutation methods:** for hypothesis tests.    
+- **Non-parametric bootstrap resampling:** to compute statistics.    
+- **Jackknife:** or leave one out re-sampling to compute statistics.     
+- **Cross validation:** resample into multiple folds without replacement to assess performance of statistical and machine learning models.     
 
 
 ### Randomization and permutation methods
@@ -61,13 +61,13 @@ Today, cross-validation is widely used in the testing of machine learning models
 
 At each resample, the cross validation algorithm evaluates a model by dividing the cases into **k folds**. For number of observations n, each fold contains n/k samples. The model parameters are estimated (model trained in machine learning terminology) using k-1 folds and then evaluated using the kth fold. This process is repeated k times. The average model performance and the variance of the performance metrics is then computed from the k cross validation estimates.  
 
-When $k = n$, cross validation is a leave one out algortihm. In this case, cross validation is similar to the jack knife algorithm.   
+When $k = n$, cross validation is a leave one out algorithm. In this case, cross validation is similar to the jack knife algorithm.   
 
 ### Bootstrap 
 
 The bootstrap is an extremely general and powerful re-sampling method. In principle, the bootstrap algorithm and can provide estimates of the distributions of most any statistic. The bootstrap method was first suggested by Efron and Hinkley in 1978 and further developed by Efron in 1979. A full treatment was provided in Efron's 1980 book. 
 
-By repeatedly re-sampling the data, bootstrap methods relax some of the assumptions of classical statistical methods. For example, nonparametric bootstrap methods do not require any assumptions about a sampling distribution. In effect, bootstrap methods trade intensive computations for the mind power of the statistican.     
+By repeatedly re-sampling the data, bootstrap methods relax some of the assumptions of classical statistical methods. For example, nonparametric bootstrap methods do not require any assumptions about a sampling distribution. In effect, bootstrap methods trade intensive computations for the mind power of the statistician.     
 
 As with other re-sampling methods, the bootstrap algorithm is computationally intensive. However, with increased computing power, use of bootstrap methods continues to expand. Further, the algorithm can be readily parallelized.  
 
@@ -80,7 +80,7 @@ Re-sampling methods are general and powerful but, there is no magic involved! Th
 
 Resampled estimate of a statistic can be no better that the original sample of observations allows. If a sample is biased, the re-sampled statistic estimate based on that sample will be biased. As an example consider that the bootstrap estimate of mean is an **unbiased sample estimate**, $\bar{x}$. But, there is no guarantee this estimate is unbiased with respect to the population parameter, $\mu$.  
    
-The resampleed variance and confidence intervals can be no better than the sample distribution allows. In fact, bootstrap CIs are known to be optimistically biased. Be suspicious if the confidence intervals you compute seem too good to be true!     
+The resampled variance and confidence intervals can be no better than the sample distribution allows. In fact, bootstrap CIs are known to be optimistically biased. Be suspicious if the confidence intervals you compute seem too good to be true!     
 
 All resampling methods are computationally intensive. However, all of the commonly used methods are highly parallelizable. Thus, in 21st Century computing environments, resampling methods are quite scalable. But there are limits. Computing resamples statistics from very large data sets directly can be prohibitive.     
 
@@ -114,7 +114,6 @@ The nonparametric **bootstrap estimate** of a statistic is mostly likely point e
 ### The nonparametric bootstrap algorithm    
 
 The nonparametric bootstrap method follows a simple algorithm. Estimates of the statistic are accumulated by these steps:     
-
 1. **Randomly sample with replacement** (e.g. Bernoulli sample) N values from an original data sample of N values. That is, the re-sample is the same size as the original data sample. This resample is called a **bootstrap sample**.   
 2. Re-compute the statistic with the current bootstrap sample. This is a **bootstrap estimate** of the statistic.    
 3. Repeat steps 1 and 2 to accumulate the required number of bootstrap estiamtes of the statistic. 
@@ -138,9 +137,9 @@ knitr::include_graphics(rep("../images/BootstrapMean.png"))
 ```
 
 
-### Example; single sample bootstrap
+### Example; one-sample bootstrap
 
-Computing a bootstrap distribution of a mean estimate is one of the simplest examples of applying the nonparametric bootstrap algorithm. A bootstrap estimates of the mean are computed a number of times from a single original sample. The result is a bootstrap distribution of the mean. Since a single original sample is resampled, this methods is know as the **one sample bootstrap algorithm**. While we focus on the mean statistic in this example, it is important to realize that this algorithm is applicable to **most any single sample statistic**.     
+Computing a bootstrap distribution of a mean estimate is one of the simplest examples of applying the nonparametric bootstrap algorithm. A bootstrap estimates of the mean are computed a number of times from a single original sample. The result is a bootstrap distribution of the mean. Since a single original sample is resampled, this methods is know as the **one-sample bootstrap algorithm**. While we focus on the mean statistic in this example, it is important to realize that this algorithm is applicable to **most any one-sample statistic**.     
 
 In this section we will compute the bootstrap distribution and bootstrap mean estimates from student standardized math test scores. This data set is known as [HSB2](https://www.openintro.org/data/index.php?data=hsb2) and is a subset of a larger sample. The data were collected by the [National Center for Education Statistics](https://nces.ed.gov/).    
 
@@ -160,10 +159,10 @@ test_scores.head()
 
 The first three columns show the student's sex, race and socioeconomic status (SES). The next columns indicate the type of school (public or private) and the type of program the student is in (general, academic, vocational). The final columns contain the students' scores on standardized tests for five subjects.       
 
-The code in the cell below displays a histogram with kernal density estiamte of the math scores of all students in the sample.  
+The code in the cell below displays a histogram with kernel density estimate of the math scores of all students in the sample.  
 
 ```{python}
-## Plot the historgram of the math scores
+## Plot the histogram of the math scores
 def plot_hist(x, xlab, title, bins=20, height=15):   
        sns.displot(x, bins=bins, kde=True, height=height, aspect=1.4, linewidth=3)
        plt.rcParams.update({'font.size': 22})
@@ -182,7 +181,7 @@ It is questionable if the distribution of math scores is Normally distributed. F
 The code below generates bootstrap and bootstrap mean estimates from those samples samples. These resamples are drawn with replacement from the math scores of all students using the [numpy.random.choice](https://numpy.org/doc/stable/reference/random/generated/numpy.random.choice.html) function. The point estimate of the mean is printed and a histogram of the bootstrap distribution is then displayed.  
 
 ```{python}
-## Compute and plot the one sample bootstrap distribution of the mean    
+## Compute and plot the one-sample bootstrap distribution of the mean    
 def bootstrap_statistic(x, b, statistic):
     n_samps = len(x)
     boot_vals = []
@@ -198,38 +197,48 @@ plot_hist(boot_means, 'Bootstrap mean values', 'Histogram of bootstrap distribut
 plt.show()
 ```
 
-You can see that the bootstrap distribution of the mean estiamte is close to Normally distributed. This is a result of the CLT. 
+You can see that the bootstrap distribution of the mean estimate is close to Normally distributed. This is a result of the CLT. 
 
 You may well wonder how many bootstrap samples should you use to estimate the bootstrap distribution? Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 200 bootstrap samples for point estimates. More recent work by several authors, including Chihara and Hesterberg (2018) indicate that more samples are desirable. With modern computers using 2,000 or more samples is considered good practice.   
 
 > **Exercise 14-1:** In order to verify that the bootstrap distribution of the mean estimate for the math scores is nearly Normally distributed compute and display the quantile-quantial (Q-Q) plot of the bootstrap mean estimates.  You can use the [statsmodels.graphics.gofplots.qqplot](https://www.statsmodels.org/stable/generated/statsmodels.graphics.gofplots.qqplot.html) function, with the `line=45` argument. With the excepition of a few outliers, does the bootstrap distribution appear Normally distributed?    
 
-> **Exercise 14-2:** As has been discussed, the one sample bootstrap algorithm can be applied to most any suitable statistic. Using 200 resamples, compute the bootstrap point estiamte of the meadian of the agregate math scores from the SBS2 dataset. Display the histogram and Q-Q plots of the bootstrap distribution. Notice the deviations from the Normal distribution of this statistic. Why do you think this should be the case?   
+> **Exercise 14-2:** As has been discussed, the one-sample bootstrap algorithm can be applied to most any suitable statistic. Using 200 resamples, compute the bootstrap point estiamte of the meadian of the agregate math scores from the SBS2 dataset. Display the histogram and Q-Q plots of the bootstrap distribution. Notice the deviations from the Normal distribution of this statistic. Why do you think this should be the case?   
+
+
+### correlation coefficient as a two-sample estiamte    
+
+Do one-sample bootstrap methods only apply to statistics using a single variable. Not at all! An example is the correlation coefficient. 
+
+Correlation coefficients measure the dependency of one variable on another. But, correlation coefficients are computed from a one-sample, in the form of pairs of values of random variables. Consider several of the many possible formulations of the [Pearson's correlation coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient):   
+
+\begin{align}
+\rho_{\mathbf{X},\mathbf{Y}} &= \frac{\sum_i (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_i (x_i - \bar{x})^2(y_i - \bar{y})^2}}\\ 
+&= \frac{\sum_i (x_i - \bar{x})(y_i - \bar{y})}{\sigma_x \sigma_y} \\ 
+&= \frac{\mathbf{E}[(x_i - \bar{x})(y_i - \bar{y})]}{\sigma_x \sigma_y} = \frac{cov}{\sigma_x \sigma_y}
+\end{align}
+
+Computation of of the correlation coefficient between two random variables, $\mathbf{X}$ and $\mathbf{Y}$, is performed using matched pairs of samples, $x_i$ and $y_i$. These are not random samples from each variable. They are sampled as a single related pair; that is, a one-sample.   
+
+As a result of the foregoing, the nonparametric bootstrap distribution of correlations coefficients is computed by bootstrap resampling the pair of variables, $\mathbf{X}$ and $\mathbf{Y}$. In other words, a single bootstrap resample drawing related values. Notice that the sample nonparametric bootstrap can be applied to any of the commonly used correlation coefficients, not just Pearson's.     
+
 
 ## Bootstrap Confidence Intervals   
 
-Now that we can compute a bootstrap distribution the net step is to find the confidence intervals. The direct approach is to use the **percentile method**. In simple terms, percentile method finds the bootstrap sample values at the $\alpha/2$ and $1-\alpha/2$ points of the bootstrap distribution.   
-   1. Define confidence level; 95% or $\alpha=0.05$    
-   2. Order b bootstrap samples, $s_i$$, by value   
-   3. Lower CI index; $i = b * \alpha/2$
-   4. Upper CI index; $i = b * (1 - \alpha/2)$
+Now that we can compute a bootstrap distribution the next step is to find the confidence intervals so that we can perform some statistical inference. Classical methods of computing the bounds of confidence intervals rely on assumptions of the sampling distribution. Whereas, nonparametric confidence intervals are free of these assumptions.        
+
+The direct approach to computing nonparametric confidence intervals is know as the **percentile method**. In simple terms, percentile method finds the bootstrap sample values at the $\alpha/2$ and $1-\alpha/2$ points of the bootstrap distribution. The percentile confidence interval algorithm is nicely simple and has few steps:      
+1. Define confidence level; 95% or $\alpha=0.05$    
+2. Order b bootstrap samples, $s_i$$, by value   
+3. Lower CI index; $i = b * \alpha/2$     
+4. Upper CI index; $i = b * (1 - \alpha/2)$     
    
-- Percentile method is know to be biased        
-   - Bias correction methods available  
-   
-- Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 2,000 bootstrap samples to estimate confidence intervals
+As has been noted already, the percentile algorithm is quite simple. However, the resulting confidence intervals are known to be biased! The bias is generally worse for statistics with asymmetric sampling distributions. Often, this bias results in overly optimistic confidence intervals. There are several well-known bias corrections which are typically applied to percentile method confidence intervals. For now, we will just say that one should be highly suspicious of confidence intervals that seem too good to be true!        
 
-Bootstrap confidence intervals are known to be biased!    
-
-- Often bootstrap CIs are overly optimistic    
-
-- Bias can be significant for asymmetric distributions    
-
-
-
+In the preceding section we computed and displayed the nonparametric bootstrap estimates of the mean of the students' math scores. Now, we will extend this analysis to include estimates of the confidence intervals. The code shown using the basic percentile method to do just this.    
 
 ```{python}
-## Compute and plot the one sample bootstrap of means with confidence intervals
+## Compute and plot the one-sample bootstrap of means with confidence intervals
 def bootstrap_cis(boot_samples, alpha=0.05):
       n = len(boot_samples)
       sorted = np.sort(boot_samples)
@@ -247,50 +256,58 @@ plt.axvline(x=UCI, color='red', linestyle='dotted', linewidth=2)
 plt.show()
 ```
 
+Now we have an idea of how much variation or uncertainty we can expect for the mean estimate of the students' math scores.    
+
 As with the bootstrap point estimates, there is a question of how many bootstrap samples should you use to estimate the bootstrap confidence intervals? Since confidence intervals are estimated in the tails of the bootstrap distribution, more samples than the case of point estimates should be used. Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 2,000 bootstrap samples for confidence interval estimates. More recent work by several authors, including Chihara and Hesterberg (2018) indicate that more samples are desirable. With modern computers using 10,000 or more samples is considered good practice.     
 
 
-> **Exercise 14-3:** In exercise 14-2, you computed the bootstrap distibution and point estiamte of the median of the student math scores. Now you will compute and print the 95% confidence intervals of this bootstrap distribution. Plot the historgram of the bootstrap distribution with vertical lines showing the point estiamte and the confidence interval.      
+> **Exercise 14-3:** In exercise 14-2, you computed the bootstrap distibution and point estiamte of the median of the student math scores. Now you will compute and print the 95% confidence intervals of this bootstrap distribution. Plot the historgram of the bootstrap distribution with vertical lines showing the point estiamte and the confidence interval.  What does do these statistics tell you about how confident you can be about the estimate of the median?      
 
-> **Exercise 14-4:** As discussed, the bootstrap distriution is an estiamte of the sampling distribution of the statistic. The bootstrap confidence intervals should not change with the number of resamples, except for a small variation in error. To demonstrate this idea compute bootstrap distributions of the mean estiamte of the student math scores using 500, 2000, 5000, and 10000 resamples. Compute and print the 95% confidence intervals for each of these bootstrap distributions. Is there any substanitial or systematic change in the confidence intervals?           
+> **Exercise 14-4:** As discussed, the bootstrap distribution is an estiamte of the sampling distribution of a statistic. The bootstrap confidence intervals should not change with the number of resamples, except for a small variation in error. To demonstrate this idea compute bootstrap distributions of the mean estiamte of the student math scores using 500, 2000, 5000, and 10000 resamples. Compute and print the 95% confidence intervals for each of these bootstrap distributions. Is there any substanitial or systematic change in the confidence intervals?        
+
+> **Exercise 14-5:** The sampling distribution of the variance for Normally distributed random variables is well known to be $\chi^2$. This result is still a reasonably good approximation for cases where a random variable is not Normally distributed, as is the case with the math scores. Using 1,000 bootstap resamples you will compute the bootstrap distribution, the point estiamte and the confidence intervals can all be computed. You will now use the one-sample bootstrap algorithm to compute and print the variance and confidence interval for the students' math scores. Plot the historgram of the bootstrap distribution with vertical lines showing the point estiamte and the bounds of the confidence interval. What does do these statistics tell you about how confident you can be about the estimate of the variance?      
+
+> **Exercise 14-6:** In a pervious section, we have discussed how the one-sample nonparametric bootstrap algorithm can be applied to Pearson's correlation coefficients. Now you will compute the bootstrap distributuion of the correlation between the students' math and science scores using 2,000 resamples.      
+
+> The sampling distribution of the correlation coefficient is limited to the range $-1 \le \rho_{\mathbf{X},\mathbf{Y}} \le 1$. These bounds can lead to a biased sampling distribution. Fisher proposed a simple transformation to avoid this problem when computing confidence intervals of Pearson's correlation coefficients: 
+$$F(\rho_{\mathbf{X},\mathbf{Y}}) = arctan(\rho_{\mathbf{X},\mathbf{Y}})$$
+> You should apply the FIsher's transformation to your bootrarap estiamtes of the correlation coefficient.    
+
+> Once you have computed the bootstrap distribution, compute and print the mean and 95% confidence intervals of the correlation between the math and scince score varaibles. Next, plot the histogram including vertical lines for the mean and confidence interval bounds. Does it appear that there is consistently postive correlation between these two variables? Given the confidence intervals, would you say that this correlation is realatively weak of strong?  
+
+## Two-sample Bootstrap    
+
+In the preceding we have worked only with one-sample statistics. How can we apply the bootstrap algorithm for two-sample statistics? two-sample statistics are used extensively for statistical inference. For example, we might want to perform inference on the difference of means of two independently sampled populations. Our null hypothesis is that there is no significant difference.    
+
+In classical statistical theory the difference of means of approximately Normally distributed random variables is assumed to be t-distributed. This assumption leads to the well-know t family of hypothesis tests. Using nonparametic bootstrap resampling frees us of these assumptions. We can make inferences of difference of means for non-Normally distributed samples. Further, we can easily perform inferences on the differences of most any statistic.     
+
+The basic idea of computing nonparametric bootstrap distributions can be applied to two-sample statistics. In fact, it can be applied to multiple sample statistics. But, to do so one must carefully consider how the bootstrap samples are generated.   
+
+Can we just sample the concatenation of the two-samples? **No!** The problem is that we what the resample of each of the random variables to have the size of the respective original samples. If we resample in a naive way, there is no guarantee of having correct number of resamples for each random variable. This imbalance in the sizes of the resamples leads to significant biases. The solution is to **independently resample** the two random variables in order to correctly sample each of the populations.
+
+### Algorithm for the two-sample bootstrap     
+
+The two-sample nonparametric bootstrap algorithm ensures that the two random variables are independently resampled. This algorithm is requires some extra steps. For example, the two-sample statistic may itself be computed using statistics of the two random variables. For example, to compute the difference of means, independent bootstrap mean estimates of each of the random variables is required.   
+
+The basic two-sample nonparametric bootstrap algorithm can be described by these steps:    
+1. Independently randomly sample (e.g. Bernoulli sample) n data with replacement from each original data sample ensuring the number of resamples for each random variable is the number of original samples for each population.     
+2. Compute the statistic (e.g. the mean) for the two resamples.   
+3. Compute the two-sample statistic; e.g. difference of means.    
+4. Repeat steps 1, 2, and 3 to accumulate the required number of bootstrap samples
+of the bootstrap distribution.    
+5. The mean of the bootstrap distribution values is the bootstrap point estimate of the statistic.      
+6. Compute CIs from bootstrap distribution.
+   
+Once the two-sample bootstrap distribution and confidence intervals has been computed we can perform statistical inference. Typically, the inference involves determining if one can reject a null hypothesis given the bounds on the confidence interval. For example, if we are interested in the difference of means, the null hypothesis is that the difference is not significant with the confidence specified. However, if the confidence bounds of the statistic do not include zero we can say the difference is significant and reject this null hypothesis. In other words, we can reject the null hypothesis if the sign of the confidence bounds are the same; indicating the confidence interval is above or below zero.  z    
 
 
-## Two Sample Bootstrap    
+### Example of the two-sample bootstrap   
 
-In the previous example you computed the means and confidence intervals of the sample distributions of the male and female adult child height data. Now you will bootstrap the difference in means to determine if it is significant. The result is the bootstrap distribution of the difference of means. The point estimate of the difference in means is then the mean of this distribution. And, the confidence intervals for this point estimate are also computed from this distribution.  
+Let's consider a simple example of two-sample nonparametric bootstrap inference. In this case, we will determine if there is a significant difference in the mean math scores of the students drawn from the populations with low and mid socioeconomic status. Our null hypothesis is that there is no significant difference. We can perform this inference confidently dispite the fact that the students' math scores do not appear to be Normally distributed.    
 
-How can we apply the bootstrap algorithm for two-sample statistics?    
-
-- Example, difference of means of two independently sampled populations   
-
-- How to generate boot strap samples?    
-
-- Can we just sample the concatenation of the two samples?     
-
-- **No!**    
-   - There is no guarantee of a correct number of resamples for each group   
-   - Imbalanced sampling leads to bias       
-
-- Must independently sample the two groups or populations     
-   - Use two independent bootstrap samples to compute statistic
-   - Step one; compute statistic from independent resamples    
-   - Step two; compute (another) statistic from the two bootrap estimates
-
-
-## Two Sample Bootstrap     
-
-Example: algorithm to compute difference of means:    
-
-   1. Independently randomly sample (e.g. Bernoulli sample) n data with replacement from each original data sample; The number of resamples for each populations is the number of samples for that population     
-   2. Compute the statistic (e.g. mean) for the two resamples   
-   3. Compute the two-sample statistic; e.g. difference of means    
-   4. Repeat steps 1, 2, and 3 to accumulate the required number of bootstrap samples
-Accumulated bootstrap values form the bootstrap distribution; an estimate of the sample distribution of the statistic    
-   5. The mean of the computed statistic values is the bootstrap point estimate of the statistic; e.g. difference of means      
-   6. Compute CIs from bootstrap distribution
-
-
-### Example; two sample bootstrap   
+The code example applies the two-sample nonparametric algorithm to the difference in means of the math scores of the low and mid socioeconomic status students. There are a few important points to notice about this code:    
+- The number of resamples is equal to the original sample size for each of the random variables.  
+- The mean statistic of each of the resampled random variables is computed independently and the difference in mean statistic is computed from these results. 
 
 ```{python}
 # Bootstrap the difference of means of low and mid SES students
@@ -317,15 +334,12 @@ plt.axvline(x=UCI, color='red', linestyle='dotted', linewidth=2)
 plt.show()  
 ```
 
+The bounds of the confidence interval have different signs, but only barely. In other words, we cannot quite have 95% confidence in rejecting the null hypothesis that this difference in treatments (different socioeconomic status) does not affect the student's test scores. Still, we do see that there does seem to be at least some effect. A larger sample size might well change our inference on this problem.     
 
-> **Exercise 14-5: Difference in......
-
-
-### Correlation coefficient as a two sample estiamte   
-
-> **Exercise 14-6:**   
+> **Exercise 14-7:** There are significant mathematical challenges with performing classical inference on the difference of medians between two random variables. But fortunately, we can use nonparametric two-sample bootstrap methods to perform such inference. You will now compute the nonparametric bootstrap distribution of the difference of medians between low and mid socioeconomic status students. Using this distrubiton compute and print the mean of the difference of medians along with the bounds of the confidence interval. Then, plot a histogram of the bootstrap distribution showing the mean of the difference of medians and the bounds of the confidence intervals as vertical lines. Can you reject the null hyporthesis that there is no median difference in math scores between these two socioeconomic groups and why?          
 
 
+> **Exercise 14-8:** The small sample size makes inference between differences the low and mid socioeconomic status students difficlut. But what inferences can you make between the low and high socioeconomic status students? Repeat the process of computing the nonparametric bootstrap distribution of the difference of medians of math scores of low and high socioeconomic status students. Using this distrubiton compute and print the mean of the difference of medians along with the bounds of the confidence interval. Then, plot a histogram of the bootstrap distribution showing the mean of the difference of medians and the bounds of the confidence intervals as vertical lines. Can you reject the null hyporthesis that there is no median difference in math scores between these two socioeconomic groups and why?  
 
 #### Copyright 2020, 2021, Stephen F. Elston. All rights reserved.       
 
