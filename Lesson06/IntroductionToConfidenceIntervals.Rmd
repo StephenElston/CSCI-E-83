@@ -20,47 +20,112 @@ matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
 ```
 
-## Plan for Remainder of Course
 
-We have 6 more class meetings    
+## Review  
 
-- This week and next, statistical inference, hypothesis testing, bootstrap resampling    
+- Likelihood is a measure of how well a **parametric model** fits a data sample
 
-- Weeks of Feb 23, Mar 2, Bayesian methods and Markov Chain Monte Carlo (MCMC) sampling   
+$$\mathcal{L}(\vec{\theta}\ |\ \mathbf{X} ) = f(\mathbf{X}\ |\ \vec{\theta})$$
 
-- Weeks of Mar 9, 16, Linear models and regression    
+- In most practical cases, we work with the **log likelibood**      
+
+$$l(\vec{\theta}\ |\ \mathbf{X}) = log\big( \mathcal{L}(\vec{\theta}\ |\ \mathbf{X}) \big) = \sum_{j} log \Big( f(x_j\ |\ \vec{\theta}) \Big)$$
+
+- The maximum likelihood for the model parameters is achieved when two conditions are met:  
+
+$$
+\frac{\partial\ l(\theta)| \mathbf{X}}{\partial \theta} = 0 \\
+\frac{\partial^2\ l(\theta)| \mathbf{X} }{\partial \theta^2} < 0
+$$
+
+- Gradient of the log-likelihood is known as the score function   
+
+
+## Review   
+
+- Matrix is the **observed information matrix** of the model, $\mathcal{J}(\vec{\theta})$.   
+
+- The more negative the values of the second partial derivatives, the greater the curvature of the log-likehihood  
+
+- Fisher information or **expected information** is the expectation over the second derivative of the observed information            
+
+$$\mathcal{J}(\vec{\theta}) = -\mathbf{E}\big\{ \mathcal{I}(\vec{\theta}) \big\} = -\mathbf{E}\big\{ \frac{\partial^2\ l(\mathbf{X} | \theta)}{\partial \theta^2} \big\}$$
+
+- Fisher information relates to the score function as its variance   
+
+$$
+\frac{\partial\ l(\theta)}{ \partial \theta}\ \dot{\sim}\
+\mathcal{N} \big(0, 1/ \mathcal{I}_\theta \big)
+$$
+
+
+- For **large sample**, $n \rightarrow \infty$, take the expectation over $\mathbf{X}$:    
+
+$$\hat{\theta} \dot{\sim} \mathcal{N}\Big(\theta, \frac{1}{n\mathcal{I}(\theta)} \Big)$$
+
+
+- The maximum likelihood estimate of model parameters, $\hat{\theta}$, is Normally distributed      
+
+- The larger the Fisher information, the lower the variance of the parameter estimate    
+   - Greater curvature of the log likelihood function gives more certain the parameter estimates       
+   - The variance of the parameter estimate is inversely proportional to the number of samples, $n$   
+
+## Review  
+
+- The gradient descent method finds the maximum of the log-likelihood function by following the gradient 'uphill'    
+
+ - Given a current parameter estimate vector at step n , $\hat{\theta}_n$, the improved parameter estimate vector,  $\hat{\theta}_{n+1}$, is found:    
+
+$$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$   
+
+- The hyperparameter $\gamma$ is the **learning rate** or **step size**     
+
+- Stochastic optimization uses a Bernoulli random sample of the data to estimate the **expected update** of the model weights     
+
+$$W_{t+1} = W_t + \alpha\ E_{\hat{p}data}\Big[ \nabla_{W} J(W_t) \Big]$$ 
+
+- Where, $E_{\hat{p}data} \big[ \big]$ is the expected value of the gradient given the Bernoulli sample of the data, $\hat{p}data$.
+
+- Empirically, SGD has good convergence properties     
+
+
+## Review     
+
+- **Newton's method**, and related methods, employ a **quadratic approximation** to optimization.    
+
+- Newton's method exhibits convergence quadratic in the number of iterations     
+   - Compared to the approximate linear convergence for gradient descent methods       
+
+- The quadratic update is:  
+
+$$
+x_{n+1} = x_n + \gamma |\nabla_\theta^2 l(\vec{\theta})|^{-1} \nabla_\theta l(\vec{\theta})
+$$
+
+- $\gamma$ is a learning rate of step size
+
+- Requires computing the **inverse Hessian** matrix with practical difficulties   
+  - The inverse of the Hessian may not exist as this matrix may be singular    
+  - With large number of model parameters, the Hessian will have high dimensionality and computing inverse is computationally intensive      
+
+- For large scale problems **quasi-Newton** methods are used      
+   - Use an approximation to avoid computing the full inverse Hessian   
+   - **Limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS)** algorithm the most widely used quasi-Newton method 
+
 
 
 ## Review  
 
-Key points on sampling   
+The maximum likelihood estimator has a number of important limitations, including   
 
-- Why do we sample?   
-  - Sample estimates of a statistic vs population values    
-  
-- Sources of uncertainty    
-  - Epistemic; arises from the population       
-  - Statistical; arises from sampling      
-  
-- Sampling methods    
-  - Why random unbiased sampling is important 
-  - Bernoulli sampling; Foundation of random sampling       
-  - Stratified sampling; for populations with identifiably different characteristics        
-  - Cluster sampling; when you need to reduce cost       
-  - Convenience sampling; a slippery slope!    
+- Incorrect model and complex distributions     
 
-## Review  
+- Parameter near limits      
 
-Why sampling works     
+- High dimensional problems     
 
-- A **statistic** is an estimate of a parameter of the **population distribution**   
-  - The distribution of the statistic is the **sampling distribution**   
-  
-- The **law of large numbers (LLN)**    
-  - Ensures sample distribution converges to population distribution as sample size increases   
-  
-- The **Central Limit Theorem (CLT)**    
-  - The sample distribution of the mean converges toward Normal as the sample size increases   
+- Correlated features   
+
 
 
 ## Introduction to Statistical Inference       
@@ -219,3 +284,30 @@ $$1 - \alpha = P\big( -\infty \le x \le \alpha \big)$$
 $$\alpha = P\big( -\alpha\le x \le \infty \big)$$
 
 
+## Interpretation of Confidence Intervals      
+
+How can we interpret the confidence interval?    
+
+- Confidence intervals are with respect to the the sampling distribution of a statistic $s(\hat{\mathcal{F}})$  
+
+- $1 - \alpha$ of the sample statistic values computed from repeated samples of the population,$\hat{\mathcal{F}}_i$    
+
+- Confidence intervals do not indicate the probability $s(\hat{\mathcal{F}})$ is in a range
+
+
+```{r Sampling, out.width = '50%', fig.cap='Sampling distribution of unknown population parameter', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
+```
+
+
+## Summary       
+
+Statistical inference seeks to characterize the uncertainty in estiamtes    
+
+- Statistics are estimates of population parameters    
+
+- Inferences using statistics must consider the uncertainty in the estimates   
+
+- Confidence intervals quantify uncertainty in statistical estimates    
+   - **Two-sided confidence intervals:** express confidence that a value is within some range around the point estimate     
+  - **One-sided confidence intervals:** express confidence that the point estimate is greater or less than some range of values     

@@ -89,8 +89,8 @@ The goal of frequentist statistics is to compute a point estimate and confidence
 - Point estimate is the single most likely value for a statistic     
    - Confidence interval expresses the uncertainty of the point estimate  
 
-- Confidence interval based on the properties of some assumed probability distribution
-Are there alternatives to this classical frequentist approach?    
+- Frequentist confidence interval based on the properties of some assumed probability distribution   
+   - Are there alternatives to this classical frequentist approach?    
    - Here we focus on bootstrap methods which do not require explicit probability model    
    - Bootstrap methods let a computer do the work, not the statistician with paper and pencil
    
@@ -108,6 +108,13 @@ Rather than computing a point estimate directly, bootstrap methods compute a boo
   - Compute mostly likely point estimate of the statistic, or bootstrap estimate   
   - The bootstrap confidence interval is computed from the bootstrap distribution    
 
+## Bootstrap Distribution    
+
+Rather than repeatedly resample the population, bootstrapping repeatedly resamples an original sample    
+
+```{r BootstrapDistribution, out.width = '60%', fig.cap='Resampling to estiamte the bootstrap distribution of a statistic', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/BootstrapDistribution.png"))
+```
 
 ## Overview of the Bootstrap Algorithm    
 
@@ -121,7 +128,9 @@ The bootstrap method follows a simple algorithm. Estimates of the point estimate
 
 - By law of large numbers, bootstrap point estimate converges    
 
-- Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 200 bootstrap samples for point estimates    
+- Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 200 bootstrap samples for point estimates     
+
+- Other authors recommend a larger number (e.g. 1,000-2,000) of resamples given low computer cost
 
 
 ## Overview of the Bootstrap Algorithm    
@@ -232,6 +241,8 @@ Distribution of 2000 bootstrap bootstrap confidence intervals?
    - Bias correction methods available   
    
 - Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 2,000 bootstrap samples to estimate confidence intervals
+
+- Other authors recommend a larger number (e.g. 5,000-20,000) of resamples given low computer cost
 
 ## Bootstrap Confidence Intervals    
 
@@ -381,6 +392,47 @@ plt.axvline(x=UCI, color='red', linestyle='dotted', linewidth=2)
 plt.show()  
 ```
 
-## Summary  
 
-Bootstrap resampling 
+
+## Summary    
+
+Bootstrap estimation is widely useful and requires minimal assumption    
+
+- Bootstrap distribution is comprised of values of the statistic computed from bootstrap resamples of the original observations (data sample)      
+
+- Computing bootstrap distribution requires **no assumptions about population distribution!**
+  - Bootstrap resampling substitutes computer power for paper and pencil statistician power     
+
+- Bootstrap resampling estimates the **bootstrap distribution** of a statistic      
+  - Compute mostly likely point estimate of the statistic, or bootstrap estimate     
+  - The bootstrap confidence interval is computed from the bootstrap distribution     
+  
+
+## Summary   
+
+There are several variations of the basi nonparametric bootstrap algorithm      
+
+- One sample bootstrap    
+   - Inference on single populations   
+
+- Two sample bootstrap    
+   - Inference on different populations   
+
+- Special cases   
+   - Correlation coefficients - part of your assignment     
+
+
+## Summary    
+
+Re-sampling methods are general and powerful but, there is no magic involved! There are pitfalls! 
+
+- If a sample is biased, the re-sampled statistic estimate based on that sample will be biased    
+   - Results can be no better than the sample you start with  
+   - Example; the bootstrap estimate of mean is the unbiased sample estimate, $\bar{x}$, not the population parameter, $\mu$ 
+   
+- The sample variance and Cis can be no better than the sample distribution allows    
+   - Be suspicious of overly optimistic confidence intervals    
+   - CIs can be optimistically biased        
+
+- Are computationally intensive, but often highly parallelizable     
+
