@@ -204,7 +204,7 @@ You may well wonder how many bootstrap samples should you use to estimate the bo
 
 > **Exercise 14-1:** In order to verify that the bootstrap distribution of the mean estimate for the math scores is nearly Normally distributed compute and display the quantile-quantial (Q-Q) plot of the bootstrap mean estimates.  You can use the [statsmodels.graphics.gofplots.qqplot](https://www.statsmodels.org/stable/generated/statsmodels.graphics.gofplots.qqplot.html) function, with the `line=45` argument. With the excepition of a few outliers, does the bootstrap distribution appear Normally distributed?    
 
-> **Exercise 14-2:** As has been discussed, the one sample bootstrap algorithm can be applied to most any suitable statistic. Compute the bootstrap point estiamte of the meadian of the agregate math scores from the SBS2 dataset. Display the histogram and Q-Q plots of the bootstrap distribution. Notice the deviations from the Normal distribution of this statistic. Why do you think this should be the case?   
+> **Exercise 14-2:** As has been discussed, the one sample bootstrap algorithm can be applied to most any suitable statistic. Using 200 resamples, compute the bootstrap point estiamte of the meadian of the agregate math scores from the SBS2 dataset. Display the histogram and Q-Q plots of the bootstrap distribution. Notice the deviations from the Normal distribution of this statistic. Why do you think this should be the case?   
 
 ## Bootstrap Confidence Intervals   
 
@@ -248,6 +248,12 @@ plt.show()
 ```
 
 As with the bootstrap point estimates, there is a question of how many bootstrap samples should you use to estimate the bootstrap confidence intervals? Since confidence intervals are estimated in the tails of the bootstrap distribution, more samples than the case of point estimates should be used. Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 2,000 bootstrap samples for confidence interval estimates. More recent work by several authors, including Chihara and Hesterberg (2018) indicate that more samples are desirable. With modern computers using 10,000 or more samples is considered good practice.     
+
+
+> **Exercise 14-3:** In exercise 14-2, you computed the bootstrap distibution and point estiamte of the median of the student math scores. Now you will compute and print the 95% confidence intervals of this bootstrap distribution. Plot the historgram of the bootstrap distribution with vertical lines showing the point estiamte and the confidence interval.      
+
+> **Exercise 14-4:** As discussed, the bootstrap distriution is an estiamte of the sampling distribution of the statistic. The bootstrap confidence intervals should not change with the number of resamples, except for a small variation in error. To demonstrate this idea compute bootstrap distributions of the mean estiamte of the student math scores using 500, 2000, 5000, and 10000 resamples. Compute and print the 95% confidence intervals for each of these bootstrap distributions. Is there any substanitial or systematic change in the confidence intervals?           
+
 
 ## Two Sample Bootstrap    
 
@@ -310,6 +316,16 @@ plt.axvline(x=LCI, color='red', linestyle='dotted', linewidth=2)
 plt.axvline(x=UCI, color='red', linestyle='dotted', linewidth=2)
 plt.show()  
 ```
+
+
+> **Exercise 14-5: Difference in......
+
+
+### Correlation coefficient as a two sample estiamte   
+
+> **Exercise 14-6:**   
+
+
 
 #### Copyright 2020, 2021, Stephen F. Elston. All rights reserved.       
 
