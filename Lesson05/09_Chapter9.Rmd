@@ -416,12 +416,14 @@ Choosing batch size can require some tuning. If the batch is too small, the grad
 Empirically, SGD has good convergence properties. This behavior seems to arise since stochastic gradient samples provide a better exploration of the loss function space. The variations in the gradient from one mini-batch sample to another help the algorithm escape from saddle points or other areas of the loss function with poor convergence properties. In fact, for very large data sets, the SGD algorithm often converges before the first pass through the data is completed. 
 
 The pseudo code for the SGD algorithm is:
-`
+
+```{python, eval=FALSE}
 Random_sort(cases)
 while(grad > stopping_criteria):
     mini-batch = sample_next_n(cases)
     grad = compute_expected_grad(mini_batch)
-    weights = update_weights(weights, grad)`
+    weights = update_weights(weights, grad)
+```    
     
 Notice that if the sampling continues for more than one cycle through the cases, the samples are biased. In practice, this small bias does not seem to mater much.  
 
