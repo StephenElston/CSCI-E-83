@@ -19,52 +19,73 @@ matplotlib$use("Agg", force = TRUE)
 
 ## Review   
 
-Sampling is a fundamental process in the collection and analysis of data    
+The concept of **likelihood** and **maximum likelihood estimation (MLE)** have been at the core of much of statistical modeling for about 100 years   
 
-- Sampling is important because we almost never have data on a whole population   
+- In 21st Century, likelihood and MLE ideas continue to be foundational      
+  - The principles we can easily visualize in a few dimensions apply in high dimenstions    
+  - An understanding of these principles helps you understand modern large scale methods  
 
-- Sampling must be randomized to preclude biases    
+-  Understanding the concept of likelihood and the use of MLE methods is key to understanding many parametric statistical methods     
+  - Likelihood is a measure of how well a model fits data     
+  - MLE is a generic methods for parameter estimation    
 
-- As sample size increases the standard error of a statistic computed from the sample decreases by the law of large numbers
-
-- By the central limit theorem, the sampling distribution of the mean converges to Normal as the sample size increases
-
-- Key points to keep in mind:   
-  - Understanding sampling is essential to ensure data is representative of the entire population   
-  - Use inferences on the sample to say something about the population   
-  - The sample must be randomly drawn from the population  
-
-## Review
-
-Sampling of a population is done from an unknown **population distribution**, $\mathcal{F}$      
-
-- Any statistic we compute for the generating process is based on a sample, $\hat{\mathcal{F}}$     
-- The statistic is an approximation, $s(\hat{\mathcal{F}})$ of a **population parameter**   
-   - For example, the mean of the population is $\mu$   
-   - But, sample estiamte is $\bar{x}$   
-
-- If we continue to take random samples from the population and compute estimates of a statistic, we generate a  **sampling distribution**   
-   - Hypothetical concept of the sampling distribution is a foundation of **frequentist statistics**
-   - Example, if we continue generating samples and computing the sample means, $\bar{x}_i$ for the ith sample   
-
-- **Frequentist statistics** built on the idea of randomly resampling the population distribution and recomputing a statistic         
-   - In the frequentist world, statistical inferences are performed on the sampling distribution    
-   - Sampling process must not bias the estimates of the statistic
+- MLE used widely for machine learning models, including some deep learning models      
 
 
+## Review   
 
-## Review  
+Statistical inference seeks to characterize the uncertainty in estiamtes    
 
-- Sampling from distribution is the building block of simulation      
+- Statistics are estimates of population parameters    
 
-- As cheap computational power has become ubiquitous, simulation has become a widely used technique      
+- Inferences using statistics must consider the uncertainty in the estimates   
 
-- Simulations compute a large number of cases, or realizations    
-   - The computing cost of each realization must be low in any practical simulation  
-   - Realizations are drawn from complex probability distributions of the process model    
+- Confidence intervals quantify uncertainty in statistical estimates    
+   - **Two-sided confidence intervals:** express confidence that a value is within some range around the point estimate     
+  - **One-sided confidence intervals:** express confidence that the point estimate is greater or less than some range of values     
 
-- In many cases, realizations are computed using conditional probability distributions    
-  - The final or posterior distribution of the process is comprised of these realizations  
+
+## Review    
+
+Bootstrap estimation is widely useful and requires minimal assumption    
+
+- Bootstrap distribution is comprised of values of the statistic computed from bootstrap resamples of the original observations (data sample)      
+
+- Computing bootstrap distribution requires **no assumptions about population distribution!**
+  - Bootstrap resampling substitutes computer power for paper and pencil statistician power     
+
+- Bootstrap resampling estimates the **bootstrap distribution** of a statistic      
+  - Compute mostly likely point estimate of the statistic, or bootstrap estimate     
+  - The bootstrap confidence interval is computed from the bootstrap distribution     
+  
+
+## Review   
+
+There are several variations of the basic nonparametric bootstrap algorithm      
+
+- One sample bootstrap    
+   - Inference on single populations   
+
+- Two sample bootstrap    
+   - Inference on different populations   
+
+- Special cases   
+   - Correlation coefficients - part of your assignment     
+
+
+## Review    
+
+Re-sampling methods are general and powerful but, there is no magic involved! There are pitfalls! 
+
+- If a sample is biased, the re-sampled statistic estimate based on that sample will be biased    
+   - Results can be no better than the sample you start with  
+   - Example; the bootstrap estimate of mean is the unbiased sample estimate, $\bar{x}$, not the population parameter, $\mu$ 
+   
+- The sample variance and Cis can be no better than the sample distribution allows    
+   - Be suspicious of overly optimistic confidence intervals    
+   - CIs can be optimistically biased        
+
+- Are computationally intensive, but often highly parallelizable     
 
 
 ## Introduction   
