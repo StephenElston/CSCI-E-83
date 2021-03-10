@@ -1,7 +1,7 @@
 ---
 title: "Introduction to Linear Models"
 author: "Steve Elston"
-date: "02/28/2021"
+date: "03/06/2021"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -17,15 +17,58 @@ matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
 ```
 
-## today's agenda
+## Review      
 
-- apply linear models to prediction problems
-- interpret and evaluate linear models
-- account for multi-colinearity in data
+For complex Bayesian models we need a computationally efficient aproximation     
 
-## Why linear models? 
+- Grid sampling is inefficient        
 
-Linearly models are widely used in statistics and machine learning   
+- MCMC sampling is based on Markov chains    
+   - Markov process is memoryless    
+   - Sampling converges to probability distribution    
+
+- Several MCMC sampling methods have been developed     
+   - Metropolis-Hastings (M-H) algorithm uses random sampling with acceptance probability     
+   - Gibbs sampling round robins on the dimensions of the parameter space   
+   - NUTS    
+   
+- NUTS is the state of the art MCMC algorithm       
+   - Uses a field of attraction to the highest density parts of the parameter space   
+   - No hyperparameters to tune    
+
+
+## Review    
+
+Hierarchical model can be sued to represent complex relationships   
+
+- Hierarchical model based on factorization of joint distribution     
+   - Factorization is not unique   
+   - Choose factorization that fits the problem    
+   
+- Model parameters (hyperparamters) each have a prior   
+
+- The model is sampled with MCMC algorithm    
+   - Find posterior of each parameter (hyperparameter) 
+
+
+## Review      
+
+Performance metrics of MCMC sampling     
+
+- Sample efficiency     
+   - Serial correlation reduces sample efficiency   
+   - ESS       
+
+- Convergence     
+   - Multiple chains should converge to the similar distributions   
+   - Want between chain and within chain variance to be the same      
+
+
+
+
+## Introduciton - Why linear models? 
+
+Linear models are widely used in statistics and machine learning   
 
 - Understandable and interpretable    
 
@@ -39,7 +82,8 @@ Linearly models are widely used in statistics and machine learning
    - We can learn a lot about the convergence of DL and RL models from linear approximations
 
 
-## what is regression?
+
+## What is regression?
 
 In statistics, **regression** refers to a family of model that attempt to predict the value of numeric random variable       
 
@@ -55,14 +99,14 @@ In statistics, **regression** refers to a family of model that attempt to predic
 
 ## Terminology    
 
-There are confusing diferennces between statistical and ML terminology      
+There are confusing differences between statistical and ML terminology      
 
 | ML termenology | Statistical terminology          |
 |--------------------------------|--------------------------------------|
 | Regression vs classification   | Continuous numeric vs categorical response      |
 | Learning algorithm or model    | Model                                |
-| Features                         | Predictor or independent variables   |
-| Target or label               | Response or dependent variables      |
+| Features                         | Predictor, exogenous, or independent variables   |
+| Target or label               | Response, endogenous, or dependent variables      |
 | Training                       | Fitting                              |
 | Trained model                  | Fitted model                         |
 | Supervised learning            | Predictive modeling                |
@@ -105,10 +149,10 @@ $$
 \end{bmatrix}
 $$
 
-- $\beta_0 =$ the *intercept term**       
+- $\beta_0 =$ the **intercept term**       
    - Intercept is value of $y$ at $x=0$       
 
-- $\beta_1 =$ model *coefficient** for the predictor variable     
+- $\beta_1 =$ model **coefficient** for the predictor variable     
    - The **slope coefficient**    
 
 - Given a variable predictor value $x_i$, the prediction, $\hat{y}_i$, is:
@@ -152,6 +196,7 @@ $$
 
 The column of 1's define the intercept term   
 
+
 ## Constructing the Model
 
 For the $n$ data samples and the parameter vector $\vec{b}$ we can construct the entire model:
@@ -185,16 +230,25 @@ y_n
 \epsilon_n
 \end{bmatrix}
 $$
-Or
+For a single prediciton:    
+
+$$y_i = \beta_0 + \beta_1 x_i + \epsilon$$
+
+
+Or, in matrix notation: 
 
 $$\hat{y} = A \vec{b} + \vec{\epsilon}$$
 
+We are assuming that the **error, $\epsilon$, is all attributable to the dependent variable**, $y$         
 
-## Estiamting the Model Parmaters      
+
+## Estimating the Model Parmaters      
 
 How do we find the best value for the coefficients      
 
 - Need to minimize an **error metric**    
+
+- Find $\vec{b}$ by minimizing the **sum of squared errors** is known as the **least squares** method   
 
 - Given training data, minimize the squared error between the prediction, $\hat{y}_i$, and the observed response variable or label, $y_i$:    
 
@@ -202,10 +256,8 @@ $$\min_{\vec{b}} \sum_i(y_i - A_{i,.} \hat{b})^2 = \min_{\vec{b}} \sum_i(y_i - \
 
 $A_{i,.}$ is the ith row of $A$
 
-- Find $\vec{b}$ by minimizing the **sum of squared errors** is known as the **least squares** method  
 
-
-## Estiamting the Model Parmaters      
+## Estimating the Model Parmaters      
 
 We could try a naive solution:    
 
@@ -217,7 +269,7 @@ Where $A^{-1}$ is the **matrix inverse** of $A$
 
 - Even in the best case the direct algorithm has complexity $O(n^2)$, so inefficient  
 
-## Estiamting the Model Parmaters   
+## Estimating the Model Parmaters   
 
 We can use the **Normal equations**   
 
@@ -252,17 +304,19 @@ Let's start with a simulated data set with one predictor and one response variab
 import numpy as np
 import numpy.random as nr
 import pandas as pd
-import statsmodels.formula.api as sm
+import statsmodels.formula.api as smf   
+import statsmodels as sm   
 from statsmodels.graphics.regressionplots import influence_plot, plot_regress_exog
 import scipy.stats as ss
 import matplotlib.pyplot as plt
 import seaborn as sns
+from math import sqrt   
 
 # Parameters of generated data
 n_points = 50
 x_start, x_end = 0, 10
 y_start, y_end = 0, 10
-y_sd = 1
+y_sd = 2
 
 # Generate data columns
 nr.seed(5666)
@@ -296,20 +350,46 @@ plt.show()
 
 Notice the linear trend    
 
+## Example - Specifing the Model    
 
-## Example
+How do we specify the model formula with statsmodels?   
+
+- Use the S/R style model formula developed by [Chambers and Hastie; Statistical Models in S (1992)](https://www.taylorfrancis.com/books/e/9780203738535).     
+
+- Uses the $\sim$ operator to mean *modeled by**  
+
+$$dependent\ variable\sim indepenent\ variables$$
+
+- Example; dependent variable (dv) modeled by two independent variables (var1 and var2):
+
+$$dv \sim var1 + var2$$
+
+- Example; dependent variable (dv) modeled by independent variables (var1) at its square, use the $I()$ operator to wrap a function:
+
+$$dv \sim var1 + I(var1**2)$$
+
+- Example; dependent variable (dv) is modeled by two independent variables (var1 and var2) and the **interaction term** with no intercept term:
+
+$$dv \sim -1 + var1:var2$$
+
+- Example; dependent variable (dv) modeled by independent numeric variable (var1) and a categorical variable (var2):
+
+$$dv \sim var1 + C(var2)$$
+
+
+## Example - Fitting the Model
 
 Fit the model using statsmodels.formula.api.ols to create a linear model object    
 
 ```{python}
 ## Define the regresson model and fit it to the data
-ols_model = sm.ols(formula = 'y ~ x', data=sim_data).fit()
+ols_model = smf.ols(formula = 'y ~ x', data=sim_data).fit()
 
 ## Print the model coefficient
 print('Intercept = %4.3f  Slope = %4.3f' % (ols_model._results.params[0], ols_model._results.params[1]))
 ```
 
-Find the predicted values for each value of #x$:  
+Find the predicted values for each value of $x$:  
 
 ```{python}
 # Add predicted to pandas dataframe
@@ -319,18 +399,18 @@ sim_data.head(5)
 ```
 
 
-## Example    
+## Example - Model Checking    
 
 Plot the regression line against the original data    
 
 ```{python, echo=FALSE}
 plt.rc('font', size=12)
-fig, ax = plt.subplots(figsize=(6, 5), ) 
-sns.lineplot(x='x', y='predicted', data=sim_data, color='red', ax=ax)
-sns.scatterplot(x='x', y='y', data=sim_data, ax=ax)
-ax.set_title('Scatter plot of original data with linear regression line')
-_=ax.set_ylim(0,11)
-plt.show()
+fig, ax = plt.subplots(figsize=(6, 5), ); 
+sns.lineplot(x='x', y='predicted', data=sim_data, color='red', ax=ax);
+sns.scatterplot(x='x', y='y', data=sim_data, ax=ax);
+ax.set_title('Scatter plot of original data with linear regression line');
+ax.set_ylim(0,11);
+plt.show();
 ```
 
 This looks like a good fit, but how good is it really? 
@@ -369,13 +449,13 @@ def residual_plot(df):
     plt.rc('font', size=12)
     fig, ax = plt.subplots(figsize=(8, 3), ) 
     RMSE = np.std(df.resids)
-    sns.scatterplot(x='predicted', y='resids', data=df, ax=ax)
-    plt.axhline(0.0, color='red', linewidth=1.0)
-    plt.axhline(2.0*RMSE, color='red', linestyle='dashed', linewidth=1.0)
-    plt.axhline(-2.0*RMSE, color='red', linestyle='dashed', linewidth=1.0)
-    plt.title('PLot of residuals vs. predicted')
-    plt.xlabel('Predicted values')
-    plt.ylabel('Residuals')
+    sns.scatterplot(x='predicted', y='resids', data=df, ax=ax);
+    plt.axhline(0.0, color='red', linewidth=1.0);
+    plt.axhline(2.0*RMSE, color='red', linestyle='dashed', linewidth=1.0);
+    plt.axhline(-2.0*RMSE, color='red', linestyle='dashed', linewidth=1.0);
+    plt.title('PLot of residuals vs. predicted');
+    plt.xlabel('Predicted values');
+    plt.ylabel('Residuals');
     plt.show()
     
 residual_plot(sim_data)  
@@ -393,15 +473,15 @@ Graphically test that the residuals are iid Normal
 ```{python, echo=FALSE}
 def plot_resid_dist(resids):
     plt.rc('font', size=12)
-    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 3))
+    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 3));
     ## Plot a histogram
-    sns.histplot(x=resids, bins=20, kde=True, ax=ax[0])
-    ax[0].set_title('Histogram of residuals')
-    ax[0].set_xlabel('Residual values')
+    sns.histplot(x=resids, bins=20, kde=True, ax=ax[0]);
+    ax[0].set_title('Histogram of residuals');
+    ax[0].set_xlabel('Residual values');
     ## Plot the Q-Q Normal plot
-    ss.probplot(resids, plot = ax[1])
-    ax[1].set_title('Q-Q Normal plot of residuals')
-    plt.show()
+    ss.probplot(resids, plot = ax[1]);
+    ax[1].set_title('Q-Q Normal plot of residuals');
+    plt.show();
 
 plot_resid_dist(sim_data.resids)
 ```
@@ -413,17 +493,15 @@ plot_resid_dist(sim_data.resids)
 
 We can quantitatively understand model performance by deffining these relationships     
 
-- Start with the **sum of squares (total SST)** is the metric for the dependent variable     
+\begin{align}
+SST &= sum\ square\ total\ = \Sigma_i(y_i - \bar{Y})^2 \\
+SSE &= sum\ square\ explained\ = \Sigma_i{(\hat{y_i} - \bar{Y})^2}\\
+SSR &= sum\ square\ residual\ = \Sigma_i{(y_i - \hat{y_i})^2}\\
+\end{align}
 
-- **Sum of squares residual(RSS)** is the fraction of SST not explained by the model   
+The relationship between these metrics: 
 
-- **Sum of squares explained (ESS)** is the faction of SST explained by the model
-   
-   
-- Then, the following relationship must hold:   
-
-
-$$SST = SSE + SSR$$   
+$$SST = SSR + SSE$$
 
 Or, we can say that the sum of squares explained by the model is:   
 
@@ -437,10 +515,11 @@ Compute the sums of squares for the running example
 y_bar = np.mean(sim_data.y)
 SST = np.sum(np.square(np.subtract(sim_data.y, y_bar)))
 SSR = np.sum(np.square(sim_data.resids))
-SSE = SST - SSR
-print('SST = {0:6.2f}'.format(TSS))
-print('SSE = {0:6.2f}'.format(ESS))
-print('SSR = {0:6.2f}'.format(RSS))
+SSE = np.sum(np.square(np.subtract(sim_data.predicted, y_bar)))
+print('SST = {0:6.2f}'.format(SST))
+print('SSE = {0:6.2f}'.format(SSE))
+print('SSR = {0:6.2f}'.format(SSR))
+print('SSE + SSR = {0:6.2f}'.format(SSE + SSR))
 ```
 
 - The model has explained most of the TSS - 
@@ -448,150 +527,351 @@ print('SSR = {0:6.2f}'.format(RSS))
 
 ## Evaluating Regression Models    
 
+We can compare the sum of square residual to the sum of square total to evaluate how well our model explains the data    
+
+$$SST - SSR = SSE$$
+We call the ratio $\frac{SSE}{SST}$ $R2$ or the **coefficient of determination**  
+
+$$R^2 = 1 - \frac{SSR}{SST}$$
+
+The $R^2$ for a perfect model would behave as follows:   
+
+\begin{align}
+SSR &\rightarrow 0\\
+R^2 &\rightarrow 1
+\end{align}
+
+A model which does not explain the data at all has: 
+
+\begin{align}
+SSR &\rightarrow SST \\ 
+R^2 &\rightarrow 0
+\end{align}
 
 
-## linear regression: coefficients
+## Evaluating Regression Models  
 
-Assume the response variable is $Y$ (numeric) and we have two predictor variables $X_1$ and $X_2$ (both numeric, we cover categorical variables later)
+As the number of model parameters increases the model will fit the data better  
 
-A **linear regression** model has the following general form
+- But, the model will become overfit as the number of parameters increases    
 
-$$Y = \beta_0 + \beta_1 \cdot X_1 + \beta_2 \cdot X_2 + \text{error}$$
-
-where $\beta_0$, $\beta_1$ and $\beta_2$ are the model's **parameters**, and we estimate them with $b_0$, $b_1$ and $b_2$, which are the **coefficients** in the below equation:
-
-$$Y = b_0 + b_1 \cdot X_1 + b_2 \cdot X_2 + \text{error}$$
-
-Note that by doing so, we add statistical uncertainty to the error term.
-The data we collect is our **sample**, and once we **fit** a model on the data we get a **fitted model**, for example $b_0 = 2.91$, $b_1 = -1.02$ and $b_2 = 3.10$.
+- Must adjust model performance for degrees of freedom - **adjusted** $R^2$
 
 
+\begin{align}
+R^2_{adj} &= 1 - \frac{\frac{SSR}{df_{SSR}}}{\frac{SST}{df_{SST}}} = 1 - \frac{var_{residual}}{var_{total}}\\
+where\\
+df_{SSR} &= SSR\ degrees\ of\ freedom\\
+df_{SST} &= SST\ degrees\ of\ freedom
+\end{align}
 
-## linear regression: residuals
+This gives $R^2_{adj}$ as:
 
-Once we have a fitted model, we can get predictions for any $X_1$ and $X_2$ values (not just the ones in the data) by plugging into the equation:
+\begin{align}
+R^2_{adj} &= 1 - (1 - R^2) \frac{n - 1}{n - k}\\ 
+where\\
+n &= number\ of\ data\ samples\\
+k &= number\ of\ model\ coefficients
+\end{align}
 
-$$\hat Y = 2.91 - 1.02 \cdot X_1 + 3.10 \cdot X_2$$
+Or, we can rewrite $R^2_{adj}$ as:
 
-Note how the error term disappeared, and we replace $Y$ with $\hat Y$, the **predicted value**.
-
-The difference between the true value $Y$ and the predicted value $\hat Y$ is called the **residual** or **error**. We have one residual **per data point** (row) of labeled data.
-
-We can also calculate the **sum of squared residuals** for the *whole* data using the following formula:
-
-$$\text{SSE} = \sum_{i = 1}^n (Y_i - \hat Y_i)^2$$
+$$R^2_{adj} =  1.0 - \frac{SSR}{SST}  \frac{n - 1}{n - 1 - k}$$
 
 
 
-## linear regression: visual intuition
+## Evaluating Regression Models  
 
-- here we have only one predictor $X$ to keep the plot simple
-- we **explain away** the variation in $Y$ using $X$, so $Y|X$ has less uncertainty than $Y$
-- if we have a good model, residuals should look like "noise" (mean 0, constant variance)
+The summary table for the OLS model provides a number of summary statistics
+
+```{python}
+ols_model.summary()
+```
+
+
+## Evaluating Regression Models   
+
+We also can evaluate models by error metrics
+
+- The **root mean square error (RMSE)** is a measure of the mean of the squared residuals
+
+$$RMSE =  \frac{1}{n}\sqrt{\Sigma^n_{i-1} (y_i - \hat{y_i})^2} = \frac{\sqrt{SSR}}{n}$$
+
+```{python}
+print('RMSE = {0:6.2}'.format(sqrt(np.sum(np.square(sim_data.resids)))/ float(sim_data.shape[0])))
+```
+
+- The **absolute median error (AME)** is a robust measure of mean residuals
+
+$$AME = \frac{\Sigma^n_{i-1} abs(y_i - \hat{y_i})}{n}$$
+
+```{python}
+print('AME= {0:6.2}'.format(np.sum(np.absolute(sim_data.resids))/ float(sim_data.shape[0])))
+```
+
+- And many more possibilities...
 
 
 
+## Evaluating Regression Models
+
+When evaluating any machine learning model consider **all evaluation methods available**    
+
+- No one method is most important all of the time    
+
+- **Different methods highlight different problems** with your model     
+
+- Don't forget to check that the **model must make sense** for you application! 
 
 
-## linear regression: matrix formulation
+## Extending the Linear Model
 
-Let $\bold{X}$ be the **model matrix**, and $\bold{b}$ be the vector of coefficients, $\bold{Y}$ be the vector for the response variable, and $\bold{e}$ be the vector of residuals.
+We extend the linear model by adding new features or predictor variables    
+
+- Higher order terms - e.g. polynomial regression    
+
+- Other exogenous variables 
+
+- We prefer the simplest model that does a reasonable job   
+   - The principle of **Ocam's razor**  
+
+- Must consider the **bias-variance trade-off**     
+
+- **High complexity model** fits the training data well     
+   - **Low bias**
+   - But might not generalize well to new cases - **high variance**     
+   
+- **Lower complexity model** can **generalize** to new cases     
+   - **low variance**   
+   - But does not fit training data as well - **high bias**
+
+
+## Extending the Linear Model
+
+Building a model matrix for a more complex linear model is easy   
+
+- We now have $p + 1$ model coefficients, including intercept term   
+   
+$$\vec{b} = [\beta_0, \beta_1, \beta_2, \ldots, \beta_p]$$   
+
+- With $p$ features the model matrix is: 
 
 $$
-\bold{X} = 
-\begin{pmatrix}
-1 & x_{11} & x_{12} \\
-1 & x_{21} & x_{22} \\
-\vdots & \vdots & \vdots \\
-1 & x_{n1} & x_{n2}
-\end{pmatrix},
-
-\hspace{5pt} \bold{b} = (b_0, b_1, b_2),
-
-\hspace{5pt} \bold{Y} = (y_1, y_2, \ldots, y_n)
-
+\begin{bmatrix}
+1, x_{1,1}, x_{1,2}, \ldots, x_{p,n}\\
+1, x_{2,1}, x_{2,2}, \ldots, x_{p,n}\\
+1, x_{3,1}, x_{3,2}, \ldots, x_{p,n}\\
+\vdots, \vdots, \vdots, \vdots, \vdots\\
+1, x_{n,1}, x_{n,2}, \ldots, x_{p,n}
+\end{bmatrix}
 $$
 
-For linear regression, this is a $n \times (p+1)$ matrix where $n$ is the number of rows in the data, and $p$ the number of columns. $\bold{X}$ has an additional column of 1s to account for the intercept terms $b_0$. Then the equation for linear regression can be rewritten as
+- We still seek the least squares solution     
 
-$$\bold{Y} = \bold{X}\bold{b} + \bold{e}$$
-
-
-## linear regression: fitting
-
-So how do we actually find $b_0$, $b_1$ and $b_2$?
-
-we solve an **optimization problem**: we minimize $||\bold{Y} - \bold{\hat Y}||$ w.r.t the vector $\bold{b} = (b_0, b_1, b_2)$, which is why it is also called the **method of least squares**
-- we can do this [analytically], solving the optimization to get a **closed-form solution**: 
-  $$\bold{b} = (\bold{X'}\bold{X})^{-1}\bold{X'}\bold{Y}$$ 
-- we can find a numerical solution to the optimization using **gradient descent**: start with a random choice for $\bold{b} = (b_0, b_1, b_2)$ and iteratively change the values in a way that reduces $||\bold{Y} - \bold{\hat Y}||$ until the results seem to converge, which happens when we reach the minimum; in practice, analytical solutions are hard to get, and even if they exist, the numerical solution is usually much more efficient
-
-[analytically]: https://en.wikipedia.org/wiki/Least_squares
+- The covariance matrix is now $ p-1\ x\ p-1$, including intercept term
 
 
+## Example of Multi-Feature Linear Model   
 
-## linear regression: assumptions
+A new simulated data set
 
-- $Y$, $X_1$ and $X_2$ are numeric, but in lesson 10 we see how to also cover categorical variables and how to extent linear regression when $Y$ is categorical
-- it is not necessary, but usually a good idea to **normalize** $X_1$ and $X_2$ before fitting
-- the data points are **independent**, which means rows $i$ and $j$ of the data are independently, otherwise regression may not be appropriate; we use time series models when the data is **auto-correlated**
-- the residuals are more or less normally distributed and with mean 0 and constant variance (a property also called **homoskedasticity**)
-- the predictor variables are **not** strongly correlated among each other, if so we run into a problem called **multi-collinearity** which can cause instability
+```{python, echo=FALSE}
+# Parameters of generated data
+n_points = 50
+x_start, x_end = -5, 5
+y_start, y_end = 0, 10
+y_sd = 10
+second_order_coefficient = 1.0
 
+# Generate data columns
+nr.seed(5677)
+x_data = np.linspace(x_start, x_end, n_points) # The x values
+y_error = np.random.normal(loc=0, scale=y_sd, size=n_points) # The Normally distributed noise
+y_data = x_data + np.multiply(np.square(x_data), second_order_coefficient) + y_error + 1.0 # The y values including an intercept
 
+# Put data in data frame
+sim_data_2 = pd.DataFrame({'x':x_data, 'y':y_data})
 
-## linear regression: evaluation
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ) 
+ax.plot(sim_data['x'], sim_data_2['y'], 'ko');
+plt.grid(True);
+ax.set_xlabel('x');
+ax.set_ylabel('y');
+ax.set_title('x vs y');
+plt.show();
+```
 
-Define the **explained sum of squares (ESS)**, **total sum of squares (TSS)**, and **residual sum of squares (RSS)** as
+## Example of Multi-Feature Linear Model   
 
-$$\text{ESS} = \sum \left( \hat Y_i - \bar Y_i \right)^2, \text{TSS} = \sum \left( Y_i - \bar Y \right)^2, \text{RSS} = \sum \left( Y_i - \hat Y \right)^2$$
-
-with some basic algebra, it can be shown that
-
-$$\text{TSS} = \text{ESS} + \text{RSS}$$
-
-- $R^2 = \frac{\text{ESS}}{\text{TSS}}$ is called the **coefficient of determination** and represents the percentage of the variation in the $Y$ that is explain away by using $X$ to predict $Y$
-
-- **RSS** divided by the number of data points gives **mean squared error (MSE)**, and the root of **MSE** is **RMSE**, which is like the average error of the model
-
-
-
-## linear regression as building block
-
-We can extend linear regression in a few different ways:
-
-- add an **interaction term** between $X_1$ and $X_2$ will give us
-
-  $$Y = \beta_0 + \beta_1 \cdot X_1 + \beta_2 \cdot X_2 + \beta_{12} \cdot X_1 \cdot X_2 + \text{error}$$
-
-- add polynomial terms like $X_1^2$ and $X_2^2$ and and so on
-
-  $$Y = \beta_0 + \beta_1 \cdot X_1 + \beta_2 \cdot X_2 + \beta_{11} \cdot X_1^2 + \beta{22} \cdot X_2^2 + \text{error}$$
-
-we can combine both ideas to get **polynomial regression**, which allows us to capture non-linearity, but we should be conservative about adding such terms otherwise we can easily end up with a too complex model that is likely to **overfit**
+First, try a simple straight line model with intercept and slope terms    
 
 
+```{python, echo=FALSE}
+## Define the regression model and fit it to the data
+ols_model_2 = smf.ols(formula = 'y ~ x', data=sim_data_2).fit()
+
+## Print the model coefficient
+print('Intercept = %4.3f  Slope = %4.3f' % (ols_model_2._results.params[0], ols_model_2._results.params[1]))
+
+# Add predicted to pandas data frame
+sim_data_2['predicted'] = ols_model_2.predict(sim_data_2.x)
+
+## Display the results 
+plt.rc('font', size=12);
+fig, ax = plt.subplots(figsize=(6, 5), ); 
+sns.lineplot(x='x', y='predicted', data=sim_data_2, color='red', ax=ax);
+sns.scatterplot(x='x', y='y', data=sim_data_2, ax=ax);
+ax.set_title('Scatter plot of original data with linear regression line');
+plt.show();
+```
+
+## Example of Multi-Feature Linear Model 
+
+What do the residuals look like? 
+
+```{python, echo=FALSE}
+# Add residuals to pandas dataframe
+sim_data_2['resids'] = np.subtract(sim_data_2.predicted, sim_data_2.y)
+    
+residual_plot(sim_data_2)
+```
+
+
+- These residuals look heteroskedastic! 
+
+
+## Example of Multi-Feature Linear Model 
+
+Test that the residuals are iid Normal   
+
+```{python, echo=FALSE}
+plot_resid_dist(sim_data_2.resids)
+```
+
+
+- Do these residuals have Normal distribution? 
+
+## Example of Multi-Feature Linear Model 
+
+The model summary is:
+
+```{python, echo=FALSE}
+ols_model_2.summary()
+```
+
+
+## Example of Multi-Feature Linear Model 
+
+Let's add a second order polynomial term, so the model is now:    
+
+$$y = \beta_0 + \beta_1 x + \beta_2 x^2$$
+
+```{python, echo=FALSE}
+## Define the regression model and fit it to the data
+ols_model_3 = smf.ols(formula = 'y ~ x + I(x**2)', data=sim_data_2).fit()
+
+# Add predicted to pandas data frame
+sim_data_2['predicted'] = ols_model_3.predict(sim_data_2.x)
+
+## Print the model coefficient
+print('Intercept = %4.3f  Parial Slope = %4.3f  Second Order Partial slope = %4.3f' % (ols_model_3._results.params[0], ols_model_3._results.params[1], ols_model_3._results.params[2]))
+
+## Display the results 
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ) 
+sns.lineplot(x='x', y='predicted', data=sim_data_2, color='red', ax=ax);
+sns.scatterplot(x='x', y='y', data=sim_data_2, ax=ax);
+ax.set_title('Scatter plot of original data with linear regression line');
+plt.show();
+```
+
+
+## Example of Multi-Feature Linear Model 
+
+What do the residuals look like with the second order term? 
+
+```{python, echo=FALSE}
+# Add residuals to pandas dataframe
+sim_data_2['resids'] = np.subtract(sim_data_2.predicted, sim_data_2.y)
+    
+residual_plot(sim_data_2)
+```
+
+- Looks like there is a problem with this model   
+
+- These residuals are close to homoskedastic! 
+
+
+## Example of Multi-Feature Linear Model 
+
+Test that the residuals are iid Normal for the polynomal model   
+
+```{python, echo=FALSE}
+plot_resid_dist(sim_data_2.resids)
+```
+
+
+- Do these residuals have close to a Normal distribution? 
+
+## Example of Multi-Feature Linear Model 
+
+The second order model summary is:
+
+```{python, echo=FALSE}
+ols_model_3.summary()
+```
+
+
+
+## Linear Model Assumptions
+
+There are a number of assumptions in linear models that you overlook at your peril!  
+
+- The feature or predictor variables should be **independent** of one another      
+   - This is rarely true in practice   
+   - **Multi-collinearity** between features makes the model **under-determined**    
+
+- We assume that numeric features or predictors have zero mean and about the same scale    
+   - We do not want to bias the estimation of regression coefficients with predictors that do not have a 0 mean   
+   - We do not want to have predictors with a large numeric range dominate training   
+   - Example: income is in the range of 10s or 100s of thousands and age is in the range of 10s, but apriori income is no more important than age as a predictor  
+   
+- Values of each predictor or feature should be iid      
+   - If variance changes with sample, the optimal value of the coefficient could not be constant    
+   - If there **serial correlation** in the predictor values, the iid assumption is violated - but can account for this such as in time series models   
+   
+   
+## Summary    
+
+Linear models are a flexible and widely used class of models   
+
+- Fit model coefficients by **least squares** estimation   
+
+- Can use many types of predictor variables   
+
+- We prefer the simplest model that does a reasonable job   
+   - The principle of **Ocam's razor**  
+
+- Must consider the **bias-variance trade-off**  
+
+
+## Summary   
+
+When evaluating any machine learning model consider **all evaluation methods available**    
+
+- No one method best all of the time    
+  - Homoskedastic Normally distributed residuals   
+  - Reasonable values $R^2$, RMSE, etc
+  - Are the model coefficients all significant? 
+
+- **Different methods highlight different problems** with your model     
+
+- Don't forget to check that the **model must make sense** for you application! 
 
 
 
 
 
-## interpreting results
-
-It is very important to know how to interpret the model's coefficients:
-
-- the **intercept** is the average value of $Y$ when x is zero: this can have a good interpretation as long as $X = 0$ is corresponds to a value that makes sense (if $X$ is centered around mean prior to modeling, $X = 0$ correspond to being average)
-- the **slope** is the change in $Y$ we should expect to see **on average**, if we increase $X$ by 1 unit: a negative slope corresponds to a decrease and a positive slope an increase in $Y$
-- **p-values** are listed for each of the coefficients, to see which ones are significant, but if the data is large enough even small effects will have significant p-values
 
 
-
-## best practices
-
-- **Okam's razor**: If a simpler model can predict with similar accuracy as the more complex model, then we choose the simpler model. A model with too many parameters is said to be **over-parametrized**. In practice, we can apply this principle using **regularization** (more on this topic later).
-- We must be careful with model evaluation: adding too many predictors can inflate the performance of a model. For example, **R-squared** will almost always increase with additional predictors, so instead we use performance measures such as the **adjusted R-squared**, **AIC** or **BIC** that penalize models with too many terms unless they really help to improve performance.
-- If we expect a lot of non-linearity we can try more sophisticated models such as **support vector regression** or **neural networks** that are better alternatives to polynomial regression, but ease of interpretability is not their strength.
-
-----------------------------------------------------------------
-
-## the end
