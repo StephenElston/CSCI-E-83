@@ -607,7 +607,6 @@ Procedure SampleLikelihood(sampling_value, observation_values):
 Procedure Prior(sampling_values, prior_parameter_value):    
     return likelihood_function(sampling_value, prior_parameter_values)    
     
-
 ComputePosterior(variables, lower_limits, upper_limits):    
     # Initialize the sampling grid
     Grid = CreateGrid(variables, lower_limits, upper_limits)
@@ -655,6 +654,35 @@ What are the 95% credible intervals for $Beta(11,\ 39)$?
 
 ```{r CredibleIntervals, out.width = '70%', fig.cap='Probability of distract drivers for next 10 cars', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/CredibleIntervals.png"))
+```
+
+## Credible Intervals are not Confidence Intervals   
+
+How are credible intervals different from the more familiar confidence intervals?  
+
+Confidence intervials and credible intervals are conceptually quite different     
+
+A confidence interval is a purely frequentest concept   
+   - Is an interval on the **sampling distribution** where repeated samples of a statistic are expected with probability $= 1-\alpha$     
+   - **Cannot interpret** a confidence interval as an interval on a probability distribution of the value of a statistic!      
+
+Credible interval is an interval on a posterior distribution of the statistic    
+   - Credible interval is exactly what the misinterpretation of the confidence interval tries to be   
+   - Credible interval is the interval with highest $1-\alpha$ probability for the statistic being estimated       
+
+- For symmetric posterior distributions, the credible interval will be numerically the same as the confidence interval    
+   - This need not be the case in general
+   
+## Credible Intervals are not Confidence Intervals    
+
+Compare confidence interval and credible interval for the case of 10 observations     
+
+- Credible intervals cross the density function at exactly the same density    
+
+- Confidence intervals have the same CDF in the tails beyond the interval       
+
+```{r CredibleConfidenceIntervals, out.width = '70%', fig.cap='Difference between credible and confidence intervals', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/CredibleConfidenceIntervals.png"))
 ```
 
 ## Simulating from the  posterior distribution: predictions
