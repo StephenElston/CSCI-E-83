@@ -183,6 +183,15 @@ Or, **Bayes theorem!**
 
 $$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
 
+## Bayes Theorem    
+
+
+```{r BayesDeNeon, out.width = '60%', fig.cap='Bayes Theorem!', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/BayesDeNeon.jpg"))
+```
+
+
+
 ## Marginal Distributions   
 
 In many cases we are interested in the **marginal distribution**      
