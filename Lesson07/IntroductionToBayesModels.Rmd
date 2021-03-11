@@ -186,7 +186,7 @@ $$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
 ## Bayes Theorem    
 
 
-```{r BayesDeNeon, out.width = '60%', fig.cap='Bayes Theorem!', fig.align='center', echo=FALSE}
+```{r BayesDeNeon, out.width = '50%', fig.cap='Bayes Theorem!', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/BayesDeNeon.jpg"))
 ```
 
@@ -416,6 +416,9 @@ An advantage of Bayesain model is that it can be updated as new observations are
 
 - The **previous posterior serves as a prior** for model updates   
 
+
+
+
 ## How can you choose a prior?
 
 The choice of the prior is a difficult, and potentially vexing, problem when performing Bayesian analysis     
@@ -557,6 +560,73 @@ Consider example with:
 ```{r DistrtractedDrivers, out.width = '40%', fig.cap='Prior, likelihood and posterior for distracted driving', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/DistrtractedDrivers.png"))
 ```
+
+
+## Sampling the Posterior   
+
+How can we find an estimate of the poster distribution?   
+
+1. We can sample from the analytic solution - if we have a conjugate    
+
+2. We can sample the likelihood and prior, take the product and normalize - for any posterior   
+
+3. Grid sample or Markov chain Monte Carlo (MCMC) sample
+
+
+## Sampling the Posterior   
+
+
+**Grid sampling** is a naive approach   
+
+- Compute the probability at each point on a regular gird    
+   - Sample over range of interesting values for variables
+   - Posterior if conjugate prior    
+   - Prior and likelihood   
+
+- *In principle* can work for any number of dimensions   
+   - In 1-dimension is just regularly spaced points on a line  
+   - Poor scaling to higher dimensions  
+
+```{r SamplingGrid, out.width = '25%', fig.cap='Sampling grid for bivariate distribution', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/SamplingGrid.png"))
+```
+
+
+## Sampling the Posterior   
+
+Algorithm for grid sampling to compute posterior from likelihood and prior    
+
+```{python, eval=FALSE}
+Procedure CreateGrid(variables, lower_limits, upper_limits): 
+    # Build the sampling grid 
+    return sampling_grid   
+    
+Procedure SampleLikelihood(sampling_value, observation_values):    
+    return likelihood_function(sampling_value, observation_values)
+    
+Procedure Prior(sampling_values, prior_parameter_value):    
+    return likelihood_function(sampling_value, prior_parameter_values)    
+    
+
+ComputePosterior(variables, lower_limits, upper_limits):    
+    # Initialize the sampling grid
+    Grid = CreateGrid(variables, lower_limits, upper_limits)
+    
+    # Initialize array to hold sampled posterior values       
+    array posterior[range(Grid)]
+
+    # Compute posterior at each sampling value in the grid  
+    for sampling_value in range(lower_limits, upper_limits):   
+        likelihood = SampleLikelihood(sampling_value, observation_values)
+        posterior = Prior(sampling_values, prior_parameter_value)   
+        posterior[sampling_value] = likelihood * posterior
+
+    # Normalize the posterior       
+    probability_data = sum(posterior)
+    posterior = posterior[range(Grid)]/probability_data 
+    return posterior    
+```
+
 
 ## Credible Intervals
 
