@@ -19,49 +19,39 @@ matplotlib$use("Agg", force = TRUE)
 
 ## Review      
 
-For complex Bayesian models we need a computationally efficient aproximation     
+Bayesian analysis is a contrast to frequentist methods          
 
-- Grid sampling is inefficient        
-
-- MCMC sampling is based on Markov chains    
-   - Markov process is memoryless    
-   - Sampling converges to probability distribution    
-
-- Several MCMC sampling methods have been developed     
-   - Metropolis-Hastings (M-H) algorithm uses random sampling with acceptance probability     
-   - Gibbs sampling round robins on the dimensions of the parameter space   
-   - NUTS    
-   
-- NUTS is the state of the art MCMC algorithm       
-   - Uses a field of attraction to the highest density parts of the parameter space   
-   - No hyperparameters to tune    
+-	The objective of Bayesian analysis is to compute a posterior distribution    
+  - Contrasts with frequentist statistics is to compute a point estimate and confidence interval from a sample      
 
 
-## Review    
+-	Bayesian models allow expressing prior information in the form of a prior distribution       
+  - Selection of prior distributions can be performed in a number of ways      
 
-Hierarchical model can be sued to represent complex relationships   
+-	The posterior distribution is said to quantify our current **belief**     
+  - We update beliefs based on additional data or evidence    
+  - A critical difference with frequentist models which must be computed from a complete sample   
+-	Inference can be performed on the posterior distribution by finding the maximum a postiori (MAP) value and a credible interval    
 
-- Hierarchical model based on factorization of joint distribution     
-   - Factorization is not unique   
-   - Choose factorization that fits the problem    
-   
-- Model parameters (hyperparamters) each have a prior   
-
-- The model is sampled with MCMC algorithm    
-   - Find posterior of each parameter (hyperparameter) 
+- Predictions are made by simulating from the posterior distribution   a
 
 
-## Review      
+## Review         
 
-Performance metrics of MCMC sampling     
+Bayesian analysis is in contrast to frequentist methods          
 
-- Sample efficiency     
-   - Serial correlation reduces sample efficiency   
-   - ESS       
+-	The objective of Bayesian analysis is to compute a posterior distribution    
+  - Frequentist statistics seeks to compute a point estimate and confidence interval from a sample      
 
-- Convergence     
-   - Multiple chains should converge to the similar distributions   
-   - Want between chain and within chain variance to be the same      
+
+-	Bayesian models allow expressing prior information in the form of a prior distribution       
+  - Selection of prior distributions can be performed in a number of ways      
+
+-	The posterior distribution is said to quantify our current **belief**     
+  - We update beliefs based on additional data or evidence    
+  - A critical difference with frequentist models which must be computed from a complete sample   
+  
+-	Inference can be performed on the posterior distribution by finding the maximum a postiori (MAP) value and a credible interval    
 
 
 
@@ -97,20 +87,36 @@ In statistics, **regression** refers to a family of model that attempt to predic
    - Neural networks (and deep learning)
 
 
-## Terminology    
+## Terminology  
 
-There are confusing differences between statistical and ML terminology      
+The confusing division in terminology arises from different communities within statistics and machine learning
 
-| ML termenology | Statistical terminology          |
-|--------------------------------|--------------------------------------|
+| Machine Learning Terminology | Statistical Terminology          |
+|:---------------------------|:------------------------------|
 | Regression vs classification   | Continuous numeric vs categorical response      |
 | Learning algorithm or model    | Model                                |
-| Features                         | Predictor, exogenous, or independent variables   |
-| Target or label               | Response, endogenous, or dependent variables      |
+| Features                       | Predictor, exogenous, or independent variables   |
 | Training                       | Fitting                              |
 | Trained model                  | Fitted model                         |
-| Supervised learning            | Predictive modeling                |
+| Supervised learning            | Predictive modeling      
 
+
+## Terminology    
+
+Different communities have created different terminology at different times for the variables in a machine learning models       
+
+Predicted Variable | Variables Used to Predict    
+:----------------------- | :------------------------------     
+ y | x   
+ Dependent | Independent    
+ Endogenous | Exogenous    
+ Response | Predictor    
+ Response | Explanatory    
+ Label | Feature    
+ Regressand | Regressors    
+ Outcome | Design   
+ Left Hand Side | Right Hand Side     
+ 
 
 
 ## Formulating the Linear Model      
@@ -289,6 +295,48 @@ $$\vec{b} = (A^TA)^{-1}A^T \hat{y}$$
    - For our single predictor model this is just dimension 2x2
    - Much easier to take inverse   
    
+## Estimating the Model Parmaters   
+
+What is the relationship between the normal equations, least squares and maximum likelihood?     
+- First consider how the Normal likelihood can be written in terms of $\vec{b}$ with $n$ feature observations $\vec{x}_i$ and $n$ labels $y_i$:
+
+$$\mathcal{L}(\vec{b}, \sigma^2) = \prod_{i=1}^n \frac{1}{(2 \pi \sigma2)^{1/2}} exp \Big\{ -\frac{1}{2 \sigma^2} \big(y_i - x_i^T \vec{b}  \big)^2 \Big\}$$
+
+- The log-likilihood is then:     
+
+$$\mathcal{l}(\vec{b}, \sigma^2) = -\frac{1}{2} \Bigg\{ n\ log(\sigma^2) + \frac{1}{\sigma^2} \sum_{i=1}^n \big(y_i - x_i^T \vec{b}  \big)^2  \Bigg\}$$
+
+- For a fixed $\sigma^2$ one can see that the **log-likelihood is maximized by minimizing the least squared error:**    
+
+$$SS(\vec{b}) = \sum_{i=1}^n \big(y_i - x_i^T \vec{b}  \big)^2$$
+
+## Estimating the Model Parmaters
+
+Minimize sum of square errors to maximize log-likelihood    
+
+- Set the first derivative os sum of square errors to zero
+
+$$\frac{\partial\ SS(\vec{b})}{\partial\ \vec{b}} = 2 \sum_{i=1}^n x_i\big(y_i - \vec{b}^T x_i   \big) = 0$$
+Or, in matrix form:     
+
+$$A^T (\vec{y} - A \vec{b}) = 0$$
+
+- Solving the above leads to the **normal equations:**    
+
+$$\vec{b} = (A^TA)^{-1}A^T \hat{y}$$
+
+## Estimating the Model Parmaters   
+
+What is the relationship between the normal equations, least squares and maximum likelihood?     
+
+- Solving the least problem is equivalent to solving the maximum likelihood estimation problem   
+
+- The normal equations are a maximum likelihhood estimator   
+
+
+- The above applies when residuals are Normally distributed    
+
+
    
 ## Example      
 

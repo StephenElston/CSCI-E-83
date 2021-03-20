@@ -528,64 +528,40 @@ Steve Elston
 </div>
 <div id="review" class="slide section level2">
 <h1>Review</h1>
-<p>For complex Bayesian models we need a computationally efficient aproximation</p>
+<p>Bayesian analysis is a contrast to frequentist methods</p>
 <ul>
-<li><p>Grid sampling is inefficient</p></li>
-<li><p>MCMC sampling is based on Markov chains</p>
-<ul>
-<li>Markov process is memoryless<br />
-</li>
-<li>Sampling converges to probability distribution</li>
-</ul></li>
-<li><p>Several MCMC sampling methods have been developed</p>
-<ul>
-<li>Metropolis-Hastings (M-H) algorithm uses random sampling with acceptance probability<br />
-</li>
-<li>Gibbs sampling round robins on the dimensions of the parameter space<br />
-</li>
-<li>NUTS</li>
-</ul></li>
-<li><p>NUTS is the state of the art MCMC algorithm</p>
-<ul>
-<li>Uses a field of attraction to the highest density parts of the parameter space<br />
-</li>
-<li>No hyperparameters to tune</li>
-</ul></li>
+<li><p>The objective of Bayesian analysis is to compute a posterior distribution<br />
+</p></li>
+<li><p>Contrasts with frequentist statistics is to compute a point estimate and confidence interval from a sample</p></li>
+<li><p>Bayesian models allow expressing prior information in the form of a prior distribution<br />
+</p></li>
+<li><p>Selection of prior distributions can be performed in a number of ways</p></li>
+<li><p>The posterior distribution is said to quantify our current <strong>belief</strong><br />
+</p></li>
+<li><p>We update beliefs based on additional data or evidence<br />
+</p></li>
+<li><p>A critical difference with frequentist models which must be computed from a complete sample<br />
+</p></li>
+<li><p>Inference can be performed on the posterior distribution by finding the maximum a postiori (MAP) value and a credible interval</p></li>
+<li><p>Predictions are made by simulating from the posterior distribution a</p></li>
 </ul>
 </div>
 <div id="review-1" class="slide section level2">
 <h1>Review</h1>
-<p>Hierarchical model can be sued to represent complex relationships</p>
+<p>Bayesian analysis is in contrast to frequentist methods</p>
 <ul>
-<li><p>Hierarchical model based on factorization of joint distribution</p>
-<ul>
-<li>Factorization is not unique<br />
-</li>
-<li>Choose factorization that fits the problem</li>
-</ul></li>
-<li><p>Model parameters (hyperparamters) each have a prior</p></li>
-<li><p>The model is sampled with MCMC algorithm</p>
-<ul>
-<li>Find posterior of each parameter (hyperparameter)</li>
-</ul></li>
-</ul>
-</div>
-<div id="review-2" class="slide section level2">
-<h1>Review</h1>
-<p>Performance metrics of MCMC sampling</p>
-<ul>
-<li>Sample efficiency
-<ul>
-<li>Serial correlation reduces sample efficiency<br />
-</li>
-<li>ESS</li>
-</ul></li>
-<li>Convergence
-<ul>
-<li>Multiple chains should converge to the similar distributions<br />
-</li>
-<li>Want between chain and within chain variance to be the same</li>
-</ul></li>
+<li><p>The objective of Bayesian analysis is to compute a posterior distribution<br />
+</p></li>
+<li><p>Frequentist statistics seeks to compute a point estimate and confidence interval from a sample</p></li>
+<li><p>Bayesian models allow expressing prior information in the form of a prior distribution<br />
+</p></li>
+<li><p>Selection of prior distributions can be performed in a number of ways</p></li>
+<li><p>The posterior distribution is said to quantify our current <strong>belief</strong><br />
+</p></li>
+<li><p>We update beliefs based on additional data or evidence<br />
+</p></li>
+<li><p>A critical difference with frequentist models which must be computed from a complete sample</p></li>
+<li><p>Inference can be performed on the posterior distribution by finding the maximum a postiori (MAP) value and a credible interval</p></li>
 </ul>
 </div>
 <div id="introduciton---why-linear-models" class="slide section level2">
@@ -621,42 +597,88 @@ Steve Elston
 </div>
 <div id="terminology" class="slide section level2">
 <h1>Terminology</h1>
-<p>There are confusing differences between statistical and ML terminology</p>
+<p>The confusing division in terminology arises from different communities within statistics and machine learning</p>
 <table>
 <thead>
 <tr class="header">
-<th>ML termenology</th>
-<th>Statistical terminology</th>
+<th align="left">Machine Learning Terminology</th>
+<th align="left">Statistical Terminology</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Regression vs classification</td>
-<td>Continuous numeric vs categorical response</td>
+<td align="left">Regression vs classification</td>
+<td align="left">Continuous numeric vs categorical response</td>
 </tr>
 <tr class="even">
-<td>Learning algorithm or model</td>
-<td>Model</td>
+<td align="left">Learning algorithm or model</td>
+<td align="left">Model</td>
 </tr>
 <tr class="odd">
-<td>Features</td>
-<td>Predictor, exogenous, or independent variables</td>
+<td align="left">Features</td>
+<td align="left">Predictor, exogenous, or independent variables</td>
 </tr>
 <tr class="even">
-<td>Target or label</td>
-<td>Response, endogenous, or dependent variables</td>
+<td align="left">Training</td>
+<td align="left">Fitting</td>
 </tr>
 <tr class="odd">
-<td>Training</td>
-<td>Fitting</td>
+<td align="left">Trained model</td>
+<td align="left">Fitted model</td>
 </tr>
 <tr class="even">
-<td>Trained model</td>
-<td>Fitted model</td>
+<td align="left">Supervised learning</td>
+<td align="left">Predictive modeling</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="terminology-1" class="slide section level2">
+<h1>Terminology</h1>
+<p>Different communities have created different terminology at different times for the variables in a machine learning models</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Predicted Variable</th>
+<th align="left">Variables Used to Predict</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">y</td>
+<td align="left">x</td>
+</tr>
+<tr class="even">
+<td align="left">Dependent</td>
+<td align="left">Independent</td>
 </tr>
 <tr class="odd">
-<td>Supervised learning</td>
-<td>Predictive modeling</td>
+<td align="left">Endogenous</td>
+<td align="left">Exogenous</td>
+</tr>
+<tr class="even">
+<td align="left">Response</td>
+<td align="left">Predictor</td>
+</tr>
+<tr class="odd">
+<td align="left">Response</td>
+<td align="left">Explanatory</td>
+</tr>
+<tr class="even">
+<td align="left">Label</td>
+<td align="left">Feature</td>
+</tr>
+<tr class="odd">
+<td align="left">Regressand</td>
+<td align="left">Regressors</td>
+</tr>
+<tr class="even">
+<td align="left">Outcome</td>
+<td align="left">Design</td>
+</tr>
+<tr class="odd">
+<td align="left">Left Hand Side</td>
+<td align="left">Right Hand Side</td>
 </tr>
 </tbody>
 </table>
@@ -829,6 +851,42 @@ y_n
 <li>For our single predictor model this is just dimension 2x2</li>
 <li>Much easier to take inverse</li>
 </ul></li>
+</ul>
+</div>
+<div id="estimating-the-model-parmaters-3" class="slide section level2">
+<h1>Estimating the Model Parmaters</h1>
+<p>What is the relationship between the normal equations, least squares and maximum likelihood?<br />
+- First consider how the Normal likelihood can be written in terms of <span class="math inline">\(\vec{b}\)</span> with <span class="math inline">\(n\)</span> feature observations <span class="math inline">\(\vec{x}_i\)</span> and <span class="math inline">\(n\)</span> labels <span class="math inline">\(y_i\)</span>:</p>
+<p><span class="math display">\[\mathcal{L}(\vec{b}, \sigma^2) = \prod_{i=1}^n \frac{1}{(2 \pi \sigma2)^{1/2}} exp \Big\{ -\frac{1}{2 \sigma^2} \big(y_i - x_i^T \vec{b}  \big)^2 \Big\}\]</span></p>
+<ul>
+<li>The log-likilihood is then:</li>
+</ul>
+<p><span class="math display">\[\mathcal{l}(\vec{b}, \sigma^2) = -\frac{1}{2} \Bigg\{ n\ log(\sigma^2) + \frac{1}{\sigma^2} \sum_{i=1}^n \big(y_i - x_i^T \vec{b}  \big)^2  \Bigg\}\]</span></p>
+<ul>
+<li>For a fixed <span class="math inline">\(\sigma^2\)</span> one can see that the <strong>log-likelihood is maximized by minimizing the least squared error:</strong></li>
+</ul>
+<p><span class="math display">\[SS(\vec{b}) = \sum_{i=1}^n \big(y_i - x_i^T \vec{b}  \big)^2\]</span></p>
+</div>
+<div id="estimating-the-model-parmaters-4" class="slide section level2">
+<h1>Estimating the Model Parmaters</h1>
+<p>Minimize sum of square errors to maximize log-likelihood</p>
+<ul>
+<li>Set the first derivative os sum of square errors to zero</li>
+</ul>
+<p><span class="math display">\[\frac{\partial\ SS(\vec{b})}{\partial\ \vec{b}} = 2 \sum_{i=1}^n x_i\big(y_i - \vec{b}^T x_i   \big) = 0\]</span> Or, in matrix form:</p>
+<p><span class="math display">\[A^T (\vec{y} - A \vec{b}) = 0\]</span></p>
+<ul>
+<li>Solving the above leads to the <strong>normal equations:</strong></li>
+</ul>
+<p><span class="math display">\[\vec{b} = (A^TA)^{-1}A^T \hat{y}\]</span></p>
+</div>
+<div id="estimating-the-model-parmaters-5" class="slide section level2">
+<h1>Estimating the Model Parmaters</h1>
+<p>What is the relationship between the normal equations, least squares and maximum likelihood?</p>
+<ul>
+<li><p>Solving the least problem is equivalent to solving the maximum likelihood estimation problem</p></li>
+<li><p>The normal equations are a maximum likelihhood estimator</p></li>
+<li><p>The above applies when residuals are Normally distributed</p></li>
 </ul>
 </div>
 <div id="example" class="slide section level2">
@@ -1031,8 +1089,8 @@ k &amp;= number\ of\ model\ coefficients
 ## Dep. Variable:                      y   R-squared:                       0.682
 ## Model:                            OLS   Adj. R-squared:                  0.676
 ## Method:                 Least Squares   F-statistic:                     103.1
-## Date:                Tue, 09 Mar 2021   Prob (F-statistic):           1.52e-13
-## Time:                        16:06:55   Log-Likelihood:                -99.565
+## Date:                Fri, 19 Mar 2021   Prob (F-statistic):           1.52e-13
+## Time:                        19:22:47   Log-Likelihood:                -99.565
 ## No. Observations:                  50   AIC:                             203.1
 ## Df Residuals:                      48   BIC:                             207.0
 ## Df Model:                           1                                         
@@ -1166,8 +1224,8 @@ k &amp;= number\ of\ model\ coefficients
 ## Dep. Variable:                      y   R-squared:                       0.106
 ## Model:                            OLS   Adj. R-squared:                  0.087
 ## Method:                 Least Squares   F-statistic:                     5.684
-## Date:                Tue, 09 Mar 2021   Prob (F-statistic):             0.0211
-## Time:                        16:06:57   Log-Likelihood:                -191.24
+## Date:                Fri, 19 Mar 2021   Prob (F-statistic):             0.0211
+## Time:                        19:22:48   Log-Likelihood:                -191.24
 ## No. Observations:                  50   AIC:                             386.5
 ## Df Residuals:                      48   BIC:                             390.3
 ## Df Model:                           1                                         
@@ -1222,8 +1280,8 @@ k &amp;= number\ of\ model\ coefficients
 ## Dep. Variable:                      y   R-squared:                       0.330
 ## Model:                            OLS   Adj. R-squared:                  0.301
 ## Method:                 Least Squares   F-statistic:                     11.55
-## Date:                Tue, 09 Mar 2021   Prob (F-statistic):           8.29e-05
-## Time:                        16:06:58   Log-Likelihood:                -184.04
+## Date:                Fri, 19 Mar 2021   Prob (F-statistic):           8.29e-05
+## Time:                        19:22:49   Log-Likelihood:                -184.04
 ## No. Observations:                  50   AIC:                             374.1
 ## Df Residuals:                      47   BIC:                             379.8
 ## Df Model:                           2                                         
