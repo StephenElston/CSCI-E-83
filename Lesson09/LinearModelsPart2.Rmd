@@ -54,13 +54,13 @@ When evaluating any machine learning model consider **all evaluation methods ava
     - Columns of feature or predictor values   
  
  $$
- X =
+A = 
 \begin{bmatrix}
-1, x_{1,1}, x_{1,2}, \ldots, x_{p,n}\\
-1, x_{2,1}, x_{2,2}, \ldots, x_{p,n}\\
-1, x_{3,1}, x_{3,2}, \ldots, x_{p,n}\\
-\vdots, \vdots, \vdots, \vdots, \vdots\\
-1, x_{n,1}, x_{n,2}, \ldots, x_{p,n}
+1, x_{1,1}, x_{1,2}, \ldots, x_{1,p}\\
+1, x_{2,1}, x_{2,2}, \ldots, x_{2,p}\\
+1, x_{3,1}, x_{3,2}, \ldots, x_{3,p}\\
+\vdots,\ \vdots,\ \vdots,\ \vdots,\ \vdots\\
+1, x_{n,1}, x_{n,2}, \ldots, x_{n,p}
 \end{bmatrix}
 $$
  
@@ -181,6 +181,90 @@ linear_model.summary()
 ```
 
 
+## Working with Categorical Variables  
+
+Wait! What happened to the coefficient for the first level of ses?  
+
+- The intercept is the **mean response** of the first level     
+
+- The other coefficients are **contrasts** with respect to mean of the first level.       
+- Consider the following possible ways we can encode responses to a categorical variable - often called a **treatment**      
+   - For $n$ treatments, there are mean responses $[ \mu_1, \mu_2, \ldots, \mu_n ]$  
+   - The alternative encoding is a treatmentwith intercept, $I$, at $n - 1$ contrasts, $[ I, c_1, \ldots, c_{n-1}$    
+   
+- The means and contrasts are related:    
+   
+$$\begin{bmatrix}
+I\\
+c_2\\
+\vdots\\
+c_n
+\end{bmatrix} = 
+\begin{bmatrix}
+\mu_1\\
+\mu_2 - I\\
+\vdots\\
+\mu_n - I
+\end{bmatrix}$$   
+
+## Working with Categorical Variables    
+
+In a linear model we can sometimes relate the coefficient values to an effect size    
+
+- Start with $n$ treatments $[t_1, t_2, \ldots, t_n ]$ with effect sizes, $[e_1, e_2, \ldots, e_n ]$     
+
+- With **no intercept term** the means represent the effect sizes:   
+
+$$\begin{bmatrix}
+e_1\\
+e_2\\
+\vdots\\
+e_n
+\end{bmatrix} = 
+\begin{bmatrix}
+\mu_1\\
+\mu_2\\
+\vdots\\
+\mu_n
+\end{bmatrix}$$  
+
+- With intercept term compute effect sizes using contrasts:  
+
+$$\begin{bmatrix}
+e_1\\
+e_2\\
+\vdots\\
+e_n
+\end{bmatrix} = 
+\begin{bmatrix}
+I\\
+I + c_1\\
+\vdots\\
+I + c_{n-1}
+\end{bmatrix}$$   
+ 
+ 
+## Working with Categorical Variables    
+
+In a linear model we can sometimes relate the coefficient values to an effect size    
+
+- Assumes the treatments are orthogonal    
+   - In other words, applied on at a time    
+   - e.g. a case can only be in one category     
+   
+- Assumes that the model coefficients are statistically independent    
+   - Coefficients are dependent in overfit model    
+   
+- Often need to **adjust** for other effects    
+   - Other treatments   
+   - Levels of other categorical variables    
+   - Use **partial slope** of continuous variables  
+   
+- In other words **apply** with care!    
+   - Don't over-interpret your model   
+   - Conditions in real world hard to verify, particularly for observational data   
+ 
+ 
 ## Dealing with Overfit Models
 
 Example: We might suspect that the terms, ses and prog are significant in predicting social science test scores:  
@@ -263,6 +347,61 @@ There is a trade-off between bias and variance
 ```{r BiasVariance, out.width = '50%', fig.cap='The trade-off between bias and variance', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/BiasVariance.png"))
 ```
+
+
+## Regularization - a Better Approach
+
+Decompose the $p$ x $p$ covariance matrix $cov(A) = \frac{1}{p}A^TA$ into **eigenvalues** and **eigenvectors**: 
+
+$$cov(A) = Q \Lambda Q^{-1}$$
+
+where,   
+
+$Q$ is the $p$ x $p$ matrix of $p$ **orthonormal eigenvectors** of length $p$  
+
+And, the $p$ eigenvales are represented as diagonal matrix: 
+
+$$
+\Lambda = 
+\begin{bmatrix}
+\lambda_1, 0, \ldots, 0\\
+0, \lambda_2, \ldots \\
+\vdots,\ \vdots,\ \vdots,\  \vdots\\
+0, 0, \ldots, \lambda_p
+\end{bmatrix}
+$$
+
+For real-valued $cov(A)$ the eigenvectors $Q$ are real valued so:   
+
+$$Q^{-1} = Q^T$$
+
+
+## Regularization - a Better Approach
+
+The inverse of the covariance can be computed from its eigendecomposition   
+
+$$cov(A)^{-1} = Q^T \Lambda^{-1} Q$$
+
+Where $Q^{-1}$ is writen:       
+
+$$
+\Lambda^{-1} = 
+\begin{bmatrix}
+\frac{1}{\lambda_1}, 0, \ldots, 0\\
+0, \frac{1}{\lambda_2}, \ldots \\
+\vdots,\ \vdots,\ \vdots,\  \vdots\\
+0, 0, \ldots, \frac{1}{\lambda_p}
+\end{bmatrix}
+$$
+
+- But, if columns of $A$ are not linearly independent, the covariance matrix is **ill-posed** and the eigenvectors are under-determined       
+
+- The eigenvalues are ordered, $\lambda_1 \ge \lambda_2 \ge \ldots \ge \lambda_p$
+
+- For ill-posed covariance matrix    
+   - The smallest $\lambda_i \rightarrow 0$   
+   - So, $\frac{1}{\lambda_i} \rightarrow \infty$
+   - The inverse covariance matrix does not exist!    
 
 
 ## L2 Regularization    

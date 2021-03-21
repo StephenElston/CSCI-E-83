@@ -69,7 +69,10 @@ Linear models are widely used in statistics and machine learning
 - Can approximate fairly complex functions    
    - A basis of understanding complex models     
    - Many non-linear models are at locally linear at convergence
-   - We can learn a lot about the convergence of DL and RL models from linear approximations
+   - We can learn a lot about the convergence of DL and RL models from linear approximations    
+
+- In this lesson we take a **frequentist view** of the linear modfel    
+   - Bayesian view is also widely used
 
 
 
@@ -95,7 +98,6 @@ The confusing division in terminology arises from different communities within s
 |:---------------------------|:------------------------------|
 | Regression vs classification   | Continuous numeric vs categorical response      |
 | Learning algorithm or model    | Model                                |
-| Features                       | Predictor, exogenous, or independent variables   |
 | Training                       | Fitting                              |
 | Trained model                  | Fitted model                         |
 | Supervised learning            | Predictive modeling      
@@ -125,27 +127,27 @@ The general formulation of a linear model can be writen:
 
 $$\hat{y} = A \vec{b} + \vec{\epsilon}$$
 
-- $\hat{y}$ is the dependent variable or label   
-   - The value we are trying to predict   
+- $\hat{y}$ is the vector of $n$$ dependent variables or labels we seek to predict   
 
-- $A$ is the **model matrix**      
+- $A$ is the $n$ x $p$ **model matrix**      
    - Defines the structure of the model    
-   - Columns are values of the predictor variables or features 
-
-- $\vec{b}$ is the vector model coefficients      
+   - $p$ columns are values of the predictor variables or features 
+   - $n$ rows of traning cases   
+   
+- $\vec{b}$ is the vector of $p$ model coefficients      
    - One coefficient for each predictor or feature  
    - Model is fit by finding an *optimal** value for each coefficient  
 
-- $\epsilon$ is the **prediction error**   
-   - The **residual** 
-   - Is Normally distributed; $\epsilon \sim \mathcal{N}(0, \sigma^2)$
+- $\epsilon$ is the vecctor representing **prediction error**   
+   - The $n$ **residuals** 
+   - Is **iid Normally distributed**; $\epsilon \sim \mathcal{N}(0, \sigma^2)$
 
 
 ## Single Predictor Regression
 
 Consider a simple case of regression with a single predictor   
 
-- Only two coefficients defining a straight line            
+- Only two coefficients ($p=2$) defining a straight line            
 
 $$
  \vec{b} = 
@@ -171,7 +173,7 @@ $$\hat{y}_i = \beta_0 + \beta_1 x_i$$
 
 How do we create the model matrix   
 
-- Start with a data table of $n$ samples         
+- Start with a data table of $n$ samples with $p=2$ columns         
    - First column is predictor variable    
    - Second column is the response variable   
 
@@ -212,7 +214,7 @@ $$
 y_1\\
 y_2\\
 y_3\\
-\vdots, \vdots\\
+\vdots\\
 y_n
 \end{bmatrix}
 = 
@@ -232,13 +234,13 @@ y_n
 \epsilon_1\\
 \epsilon_2\\
 \epsilon_3\\
-\vdots, \vdots\\
+\vdots\\
 \epsilon_n
 \end{bmatrix}
 $$
-For a single prediciton:    
+For a single prediction:    
 
-$$y_i = \beta_0 + \beta_1 x_i + \epsilon$$
+$$y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$
 
 
 Or, in matrix notation: 
@@ -273,17 +275,20 @@ Where $A^{-1}$ is the **matrix inverse** of $A$
 
 - This *might work*, **BUT**     
 
-- Even in the best case the direct algorithm has complexity $O(n^2)$, so inefficient  
+- Even in the best case the direct algorithm has complexity $O(n^2)$, so inefficient   
+
+- There is no guarantee the inverse exists     
+   - The $p$ features can be colinear   
 
 ## Estimating the Model Parmaters   
 
 We can use the **Normal equations**   
 
-- Start with the problem     
+- Start with the problem:    
 
-$$\hat{y} = A \vec{b}$$
+$$\hat{y} = A \vec{b}+ \vec{\epsilon} = 0$$
 
-- Multiply by $A^T$     
+- Multiply by $A^T$ and set $\vec{\epsilon} = 0$    
 
 $$A^TA \vec{b} = A^T \hat{y}$$
 
@@ -292,13 +297,16 @@ $$A^TA \vec{b} = A^T \hat{y}$$
 $$\vec{b} = (A^TA)^{-1}A^T \hat{y}$$
 
 - $A^TA$ is the **covariance matrix** for the data set     
-   - For our single predictor model this is just dimension 2x2
+   - Is dimension only $p$ x $p$
+   - For single predictor model this is just dimension 2x2
    - Much easier to take inverse   
+   - But poor scaling for large-scale problems, $p > 1,000$   
    
 ## Estimating the Model Parmaters   
 
-What is the relationship between the normal equations, least squares and maximum likelihood?     
-- First consider how the Normal likelihood can be written in terms of $\vec{b}$ with $n$ feature observations $\vec{x}_i$ and $n$ labels $y_i$:
+What is the relationship between the normal equations, least squares and maximum likelihood?   
+
+- First consider how the Normal likelihood can be written in terms of $\vec{b}$ with $n$ feature vectors of observations $\vec{x}_i$ and $n$ labels $y_i$:
 
 $$\mathcal{L}(\vec{b}, \sigma^2) = \prod_{i=1}^n \frac{1}{(2 \pi \sigma2)^{1/2}} exp \Big\{ -\frac{1}{2 \sigma^2} \big(y_i - x_i^T \vec{b}  \big)^2 \Big\}$$
 
@@ -306,7 +314,7 @@ $$\mathcal{L}(\vec{b}, \sigma^2) = \prod_{i=1}^n \frac{1}{(2 \pi \sigma2)^{1/2}}
 
 $$\mathcal{l}(\vec{b}, \sigma^2) = -\frac{1}{2} \Bigg\{ n\ log(\sigma^2) + \frac{1}{\sigma^2} \sum_{i=1}^n \big(y_i - x_i^T \vec{b}  \big)^2  \Bigg\}$$
 
-- For a fixed $\sigma^2$ one can see that the **log-likelihood is maximized by minimizing the least squared error:**    
+- For a fixed $\sigma^2$ one can see that the **log-likelihood is maximized by minimizing the squared error:**    
 
 $$SS(\vec{b}) = \sum_{i=1}^n \big(y_i - x_i^T \vec{b}  \big)^2$$
 
@@ -314,9 +322,9 @@ $$SS(\vec{b}) = \sum_{i=1}^n \big(y_i - x_i^T \vec{b}  \big)^2$$
 
 Minimize sum of square errors to maximize log-likelihood    
 
-- Set the first derivative os sum of square errors to zero
+- Set the first derivative of sum of square errors to zero
 
-$$\frac{\partial\ SS(\vec{b})}{\partial\ \vec{b}} = 2 \sum_{i=1}^n x_i\big(y_i - \vec{b}^T x_i   \big) = 0$$
+$$\frac{\partial\ SS(\vec{b})}{\partial\ \vec{b}} = 2 \sum_{i=1}^n x_i^T \big(y_i -  x_i^T \vec{b}  \big) = 0$$
 Or, in matrix form:     
 
 $$A^T (\vec{y} - A \vec{b}) = 0$$
@@ -325,16 +333,42 @@ $$A^T (\vec{y} - A \vec{b}) = 0$$
 
 $$\vec{b} = (A^TA)^{-1}A^T \hat{y}$$
 
+
+- But still need to compute inverse of covariance matrix, $A^TA$
+
+## Estimating the Model Parmaters   
+
+Are there more scalable ways to solve the least squares problems?      
+
+- Inverting the covariance matrix is a big improvement over a naive approach, it still requires taking large matrix inverse at scale. $p > 1,000$     
+
+- Can we solve the least squares problem in a more computationally efficient way? 
+
+- Start with the linear equations for maximum likelihood 
+
+$$A^T (\vec{y} - A \vec{b}) = 0$$
+
+- Eliminate $A^T$ from both sides    
+
+$$\vec{y} - A \vec{b} = 0$$
+
+- We can find the minimum of this linear system with an efficient solver   
+   - **Stochastic Gradient Descent (SGD)** and its relatives     
+   - Qusi-Newton methods like **L-BFGS**
+
+
 ## Estimating the Model Parmaters   
 
 What is the relationship between the normal equations, least squares and maximum likelihood?     
 
 - Solving the least problem is equivalent to solving the maximum likelihood estimation problem   
 
-- The normal equations are a maximum likelihhood estimator   
+- The normal equations are a maximum likelihood estimator   
 
+- Solving the system of linear equations, $\vec{y} - A \vec{b} = 0$, results in a least squares maximum likelihood solution   
 
 - The above applies when residuals are Normally distributed    
+
 
 
    
@@ -570,7 +604,7 @@ print('SSR = {0:6.2f}'.format(SSR))
 print('SSE + SSR = {0:6.2f}'.format(SSE + SSR))
 ```
 
-- The model has explained most of the TSS - 
+- The model has explained most of the TSS   
 
 
 ## Evaluating Regression Models    
@@ -649,12 +683,12 @@ $$RMSE =  \frac{1}{n}\sqrt{\Sigma^n_{i-1} (y_i - \hat{y_i})^2} = \frac{\sqrt{SSR
 print('RMSE = {0:6.2}'.format(sqrt(np.sum(np.square(sim_data.resids)))/ float(sim_data.shape[0])))
 ```
 
-- The **absolute median error (AME)** is a robust measure of mean residuals
+- The **median absolute error (MAE)** is a robust measure of mean residuals
 
-$$AME = \frac{\Sigma^n_{i-1} abs(y_i - \hat{y_i})}{n}$$
+$$MAE = med \big[ |y_i - \hat{y_i}| \big]$$
 
 ```{python}
-print('AME= {0:6.2}'.format(np.sum(np.absolute(sim_data.resids))/ float(sim_data.shape[0])))
+print('MAE= {0:6.2}'.format(np.median(np.absolute(sim_data.resids))))
 ```
 
 - And many more possibilities...
@@ -705,18 +739,19 @@ $$\vec{b} = [\beta_0, \beta_1, \beta_2, \ldots, \beta_p]$$
 - With $p$ features the model matrix is: 
 
 $$
+A = 
 \begin{bmatrix}
-1, x_{1,1}, x_{1,2}, \ldots, x_{p,n}\\
-1, x_{2,1}, x_{2,2}, \ldots, x_{p,n}\\
-1, x_{3,1}, x_{3,2}, \ldots, x_{p,n}\\
-\vdots, \vdots, \vdots, \vdots, \vdots\\
-1, x_{n,1}, x_{n,2}, \ldots, x_{p,n}
+1, x_{1,1}, x_{1,2}, \ldots, x_{1,p}\\
+1, x_{2,1}, x_{2,2}, \ldots, x_{2,p}\\
+1, x_{3,1}, x_{3,2}, \ldots, x_{3,p}\\
+\vdots,\ \vdots,\ \vdots,\ \vdots,\ \vdots\\
+1, x_{n,1}, x_{n,2}, \ldots, x_{n,p}
 \end{bmatrix}
 $$
 
 - We still seek the least squares solution     
 
-- The covariance matrix is now $ p-1\ x\ p-1$, including intercept term
+- The covariance matrix is now $p+1$ x $p+1$, including intercept term
 
 
 ## Example of Multi-Feature Linear Model   
@@ -897,6 +932,8 @@ Linear models are a flexible and widely used class of models
 - Fit model coefficients by **least squares** estimation   
 
 - Can use many types of predictor variables   
+
+- SGD and L-FBGS algorithms allow massive scaling of linear models   
 
 - We prefer the simplest model that does a reasonable job   
    - The principle of **Ocam's razor**  
