@@ -74,7 +74,20 @@ Linear models are widely used in statistics and machine learning
 - In this lesson we take a **frequentist view** of the linear modfel    
    - Bayesian view is also widely used
 
+## Introduciton - Why linear models? 
 
+Linear models are **readily interpretable!**       
+
+- Human interpretability is of critical importance for models used for critical decisions    
+   - Health care   
+   - Safety of systems   
+   - Social justice   
+   - etc.    
+   
+- Model coefficients provide information on response sensitivities to changes in variables    
+   - Poor human intuition about complex and nonlinear models    
+   - Less chance of *unexpected output**   
+   
 
 ## What is regression?
 
@@ -958,17 +971,6 @@ plt.show();
 This outlier has **high leverage** and changes the slope significantly   
 
 
-## Dealing With Outliers  
-
-Why are linear models sensitive to outliers    
-
-- Ordinary linear regression use **squared error loss** function    
-   - Optimal if the errors are iid Normal   
-   
--    
-
-
-
 ## Dealing With Outliers 
 
 **Cook's distance**, $D_i$, measures the influence of an outlier on a model    
@@ -995,6 +997,59 @@ _=influence_plot(ols_model_ol)
 - Outlying points shown at edges of plot    
    - Not all outliers have high leverage   
    - Can detect outliers in moderate dimensions   
+
+
+
+## Dealing With Outliers  
+
+Why are linear models sensitive to outliers    
+
+- Ordinary linear regression use **squared error loss** function    
+   - Optimal if the errors are iid Normal   
+   
+-    
+
+```{r MeanMedianInfluence, out.width = '25%', fig.cap='Influence functions for mean and median', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/MeanMedianInfluence.png"))
+```   
+
+
+*Figure from Hampel, el.al., Robust Statistics, 1986* 
+
+
+## Dealing With Outliers  
+
+
+
+```{r AlphaTrimming, out.width = '25%', fig.cap='Influence functions for mean and median', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/AlphaTrimming.png"))
+```   
+
+
+*Figure from Hampel, el.al., Robust Statistics, 1986*   
+
+
+## Dealing With Outliers  
+
+
+
+```{r Huber, out.width = '40%', fig.cap='Influence function of the Huber estimator', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Huber.png"))
+```   
+
+
+*Figure from Hampel, el.al., Robust Statistics, 1986*
+
+
+## Dealing With Outliers  
+
+```{r TukeysBiweight, out.width = '40%', fig.cap='Influence function of the Tukey\'s Biweight M-estimator', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/TukeysBiweight.png"))
+```   
+
+
+*Figure from Hampel, el.al., Robust Statistics, 1986*   
+
 
 
 ## Dealing With Outliers 
