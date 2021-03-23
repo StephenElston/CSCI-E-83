@@ -388,6 +388,7 @@ import numpy.random as nr
 import pandas as pd
 import statsmodels.formula.api as smf   
 import statsmodels as sm   
+import statsmodels.api as sm_api   
 from statsmodels.graphics.regressionplots import influence_plot, plot_regress_exog
 import scipy.stats as ss
 import matplotlib.pyplot as plt
@@ -905,6 +906,125 @@ The second order model summary is:
 ols_model_3.summary()
 ```
 
+
+## Dealing With Outliers  
+
+Outliers are a persistent problem with statistical and macine learing models   
+
+- What are outliers?    
+   - Errors or noisy measurements    
+   - Result of improper stratification    
+
+- But, may be of interest    
+   - The most interesting values    
+   - May need to explicitly model   
+   
+- Outliers can be hard to detect   
+   - Difficult in high-dimensions   
+   - Ofen find by influence on model   
+
+
+## Dealing With Outliers   
+
+Example: Add a single outlier regression data set
+
+```{python, echo=FALSE}
+## add an outlier to the data 
+new_row = [0.0,50.0,0.0,0.0]
+new_row_index = len(sim_data)
+sim_data_ol = sim_data.copy()
+sim_data_ol.loc[new_row_index] = new_row
+
+## Define the regression model and fit it to the data
+ols_model_ol = smf.ols(formula = 'y ~ x', data=sim_data_ol).fit()
+
+# Add predicted to pandas data frame
+sim_data_ol['predicted_ol'] = ols_model_ol.predict(sim_data_ol.x)
+
+## Print the model coefficient
+print('Intercept = %4.3f  Parial Slope = %4.3f' % (ols_model_ol._results.params[0], ols_model_ol._results.params[1]))
+
+## Display the results 
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ) 
+sns.lineplot(x='x', y='predicted', data=sim_data, color='black', linestyle='dotted', ax=ax, label='OLS, no outlier');
+sns.lineplot(x='x', y='predicted_ol', data=sim_data_ol, color='red', ax=ax, label='OLS w Outlier');
+sns.scatterplot(x='x', y='y', data=sim_data_ol, ax=ax);
+ax.set_title('Scatter plot of original data with linear regression line');
+plt.legend();
+plt.show();
+```
+
+This outlier has **high leverage** and changes the slope significantly   
+
+
+## Dealing With Outliers  
+
+Why are linear models sensitive to outliers    
+
+- Ordinary linear regression use **squared error loss** function    
+   - Optimal if the errors are iid Normal   
+   
+-    
+
+
+
+## Dealing With Outliers 
+
+**Cook's distance**, $D_i$, measures the influence of an outlier on a model    
+
+- Cook's distance for the ith data point is the degree of freedom adjusted average squared error against a model without this value   
+
+$$D_i = \frac{\Sigma_{j=1}^n (\hat{Y}_j - \hat{Y}_{j(i)})^2}{n (p+1)\hat{\sigma^2}}$$
+where,  
+$\hat{Y}_{j} =$ the jth prediction computed with all observations         
+$\hat{Y}_{j(i)} =$ the jth prediction computed without the ith observation   
+$p =$ number of parameters   
+$n =$ number of data points    
+
+
+
+## Dealing With Outliers     
+
+Plot Cook's distance as **leverage** vs. the residual size     
+
+```{python}
+_=influence_plot(ols_model_ol)
+```
+
+- Outlying points shown at edges of plot    
+   - Not all outliers have high leverage   
+   - Can detect outliers in moderate dimensions   
+
+
+## Dealing With Outliers 
+
+Example: regression with Huber loss function 
+
+```{python}
+## Define the robust regression model and fit it to the data
+ols_model_huber = sm_api.RLM(sim_data_ol.y, sim_data_ol.x, M=sm.robust.norms.HuberT()).fit()
+# Add predicted to pandas data frame
+sim_data_ol['predicted_huber'] = ols_model_huber.predict(sim_data_ol.x)
+```
+
+```{python, echo=FALSE}
+## Print the model coefficient
+#print('Intercept = %4.3f  Parial Slope = %4.3f' % (ols_model_huber._results.params[0], ols_model_huber._results.params[1]))
+
+## Display the results 
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ) 
+sns.lineplot(x='x', y='predicted', data=sim_data, color='black', linestyle='dotted', ax=ax, label='OLS, no outlier');
+sns.lineplot(x='x', y='predicted_huber', data=sim_data_ol, color='black', linestyle='-', ax=ax, lw=2, label='Huber w outliner');
+sns.lineplot(x='x', y='predicted_ol', data=sim_data_ol, color='red', ax=ax, label='OLS w outlier');
+sns.scatterplot(x='x', y='y', data=sim_data_ol, ax=ax);
+ax.set_title('Scatter plot of original data with linear regression line');
+plt.legend();
+plt.show();
+```
+
+Notice the different slope for the regression with Huber loss   
 
 
 ## Linear Model Assumptions

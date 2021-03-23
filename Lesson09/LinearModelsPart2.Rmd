@@ -166,7 +166,7 @@ Example: We can encode a categorical variable with the Python patsy package to g
 from patsy import dmatrices
 Y, X = dmatrices("socst ~ C(ses, levels=[1,2,3])", data=test_scores)
 print(X[:5])
-print(Y[:5,:])
+print(Y[:5])
 ```
 
 
@@ -404,6 +404,33 @@ $$
    - The inverse covariance matrix does not exist!    
 
 
+## L2 Regularization     
+
+**Example:** compute the eigenvalues of a covariance matrix     
+
+```{python}
+test_scores['socst_zero_mean'] = test_scores['socst'] - np.mean(test_scores['socst'])
+Y, X = dmatrices("socst_zero_mean ~ C(ses, levels=[1,2,3])*C(prog, levels=[1,2,3])", data=test_scores)
+cov_X = np.matmul(np.transpose(X),X)
+cov_X = np.divide(cov_X, float(cov_X.shape[0]))
+np.real(np.linalg.eigvals(cov_X))
+```
+
+The condition number of the covariance is $\sim 100$
+
+**Add regularization** with $\alpha=2.0$ and compute the eigenvalues
+
+```{python}
+alpha_sqr = 4.0 
+alpha_sqr = np.diag([alpha_sqr] * cov_X.shape[0])
+#alpha_sqr = np.diag([alpha] * cov_X.shape[0])
+#cov_X = np.divide(np.matmul(np.transpose(X),X), float(cov_X.shape[0]))
+cov_X = np.add(cov_X, alpha_sqr)
+np.real(np.linalg.eigvals(cov_X))
+```
+
+The condition number of the covariance is $\sim 10$
+
 ## L2 Regularization    
 
 L2 regularization constrains the Euclidean norm of the parameter vector, $\vec{b}$ 
@@ -454,6 +481,34 @@ $$b = (A^TA + \alpha^2I)^{-1}A^Tx$$
    - Even smallest coefficients are not driven to 0   
    - All coefficients can grow in value, but under the constraint   
 
+
+## L2 Regularization   
+
+Eigendecomposition of the regularized covariance matrix:    
+
+$$A^TA + \alpha^2I = Q 
+\begin{bmatrix}
+\lambda_1 + \alpha^2, 0, \ldots, 0\\
+0, \lambda_2 + \alpha^2, \ldots \\
+\vdots,\ \vdots,\ \vdots,\  \vdots\\
+0, 0, \ldots, \lambda_p + \alpha^2
+\end{bmatrix}
+Q^T$$
+
+The inverse covariance matrix is then: 
+
+$$A^TA + \alpha^2I = Q^T 
+\begin{bmatrix}
+\frac{1}{\lambda_1 + \alpha^2}, 0, \ldots, 0\\
+0, \frac{1}{\lambda_2 + \alpha^2}, \ldots \\
+\vdots,\ \vdots,\ \vdots,\  \vdots\\
+0, 0, \ldots, \frac{1}{\lambda_p + \alpha^2}
+\end{bmatrix}
+Q$$
+
+With any $\alpha > 0$, the inverse eigenvalues of the inverse covariance matrix are bounded     
+
+Increasing $\alpha$ increases bias, but increases the stability of the inverse   
 
 ## L2 Regularization    
 
