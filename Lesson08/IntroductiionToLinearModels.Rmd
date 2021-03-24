@@ -468,7 +468,10 @@ $$dv \sim var1 + I(var1**2)$$
 
 - Example; dependent variable (dv) is modeled by two independent variables (var1 and var2) and the **interaction term** with no intercept term:
 
-$$dv \sim -1 + var1:var2$$
+\begin{align}
+dv &\sim -1 + var1*var2\\
+dv &\sim var1 + var2 + var1:var2
+\end{align}
 
 - Example; dependent variable (dv) modeled by independent numeric variable (var1) and a categorical variable (var2):
 

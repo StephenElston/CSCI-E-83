@@ -991,7 +991,10 @@ y_n
 <ul>
 <li>Example; dependent variable (dv) is modeled by two independent variables (var1 and var2) and the <strong>interaction term</strong> with no intercept term:</li>
 </ul>
-<p><span class="math display">\[dv \sim -1 + var1:var2\]</span></p>
+<p><span class="math display">\[\begin{align}
+dv &amp;\sim -1 + var1*var2\\
+dv &amp;\sim var1 + var2 + var1:var2
+\end{align}\]</span></p>
 <ul>
 <li>Example; dependent variable (dv) modeled by independent numeric variable (var1) and a categorical variable (var2):</li>
 </ul>
@@ -1146,8 +1149,8 @@ k &amp;= number\ of\ model\ coefficients
 ## Dep. Variable:                      y   R-squared:                       0.682
 ## Model:                            OLS   Adj. R-squared:                  0.676
 ## Method:                 Least Squares   F-statistic:                     103.1
-## Date:                Tue, 23 Mar 2021   Prob (F-statistic):           1.52e-13
-## Time:                        18:33:02   Log-Likelihood:                -99.565
+## Date:                Wed, 24 Mar 2021   Prob (F-statistic):           1.52e-13
+## Time:                        10:48:42   Log-Likelihood:                -99.565
 ## No. Observations:                  50   AIC:                             203.1
 ## Df Residuals:                      48   BIC:                             207.0
 ## Df Model:                           1                                         
@@ -1282,8 +1285,8 @@ A =
 ## Dep. Variable:                      y   R-squared:                       0.106
 ## Model:                            OLS   Adj. R-squared:                  0.087
 ## Method:                 Least Squares   F-statistic:                     5.684
-## Date:                Tue, 23 Mar 2021   Prob (F-statistic):             0.0211
-## Time:                        18:33:03   Log-Likelihood:                -191.24
+## Date:                Wed, 24 Mar 2021   Prob (F-statistic):             0.0211
+## Time:                        10:48:43   Log-Likelihood:                -191.24
 ## No. Observations:                  50   AIC:                             386.5
 ## Df Residuals:                      48   BIC:                             390.3
 ## Df Model:                           1                                         
@@ -1338,8 +1341,8 @@ A =
 ## Dep. Variable:                      y   R-squared:                       0.330
 ## Model:                            OLS   Adj. R-squared:                  0.301
 ## Method:                 Least Squares   F-statistic:                     11.55
-## Date:                Tue, 23 Mar 2021   Prob (F-statistic):           8.29e-05
-## Time:                        18:33:04   Log-Likelihood:                -184.04
+## Date:                Wed, 24 Mar 2021   Prob (F-statistic):           8.29e-05
+## Time:                        10:48:44   Log-Likelihood:                -184.04
 ## No. Observations:                  50   AIC:                             374.1
 ## Df Residuals:                      47   BIC:                             379.8
 ## Df Model:                           2                                         
