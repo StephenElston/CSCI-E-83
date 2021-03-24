@@ -584,6 +584,30 @@ Steve Elston
 </ul></li>
 </ul>
 </div>
+<div id="introduciton---why-linear-models-1" class="slide section level2">
+<h1>Introduciton - Why linear models?</h1>
+<p>Linear models are <strong>readily interpretable!</strong></p>
+<ul>
+<li>Human interpretability is of critical importance for models used for critical decisions
+<ul>
+<li>Health care<br />
+</li>
+<li>Safety of systems<br />
+</li>
+<li>Social justice<br />
+</li>
+<li>etc.</li>
+</ul></li>
+<li>Model coefficients provide information on response sensitivities to changes in variables
+<ul>
+<li>Low chance of <em>unexpected output</em><br />
+</li>
+<li>Complex and nonlinear model result in poor human intuition about expected response<br />
+</li>
+<li>Complex and nonlinear models vulnerable to <em>unexpected output</em></li>
+</ul></li>
+</ul>
+</div>
 <div id="what-is-regression" class="slide section level2">
 <h1>What is regression?</h1>
 <p>In statistics, <strong>regression</strong> refers to a family of model that attempt to predict the value of numeric random variable</p>
@@ -961,7 +985,7 @@ y_n
 </ul>
 <p><span class="math display">\[dv \sim var1 + var2\]</span></p>
 <ul>
-<li>Example; dependent variable (dv) modeled by independent variables (var1) at its square, use the <span class="math inline">\(I()\)</span> operator to wrap a function:</li>
+<li>Example; dependent variable (dv) modeled by independent variables (var1) and its square, uses the <span class="math inline">\(I()\)</span> operator to wrap a function:</li>
 </ul>
 <p><span class="math display">\[dv \sim var1 + I(var1**2)\]</span></p>
 <ul>
@@ -1123,7 +1147,7 @@ k &amp;= number\ of\ model\ coefficients
 ## Model:                            OLS   Adj. R-squared:                  0.676
 ## Method:                 Least Squares   F-statistic:                     103.1
 ## Date:                Tue, 23 Mar 2021   Prob (F-statistic):           1.52e-13
-## Time:                        11:01:26   Log-Likelihood:                -99.565
+## Time:                        18:33:02   Log-Likelihood:                -99.565
 ## No. Observations:                  50   AIC:                             203.1
 ## Df Residuals:                      48   BIC:                             207.0
 ## Df Model:                           1                                         
@@ -1259,7 +1283,7 @@ A =
 ## Model:                            OLS   Adj. R-squared:                  0.087
 ## Method:                 Least Squares   F-statistic:                     5.684
 ## Date:                Tue, 23 Mar 2021   Prob (F-statistic):             0.0211
-## Time:                        11:01:27   Log-Likelihood:                -191.24
+## Time:                        18:33:03   Log-Likelihood:                -191.24
 ## No. Observations:                  50   AIC:                             386.5
 ## Df Residuals:                      48   BIC:                             390.3
 ## Df Model:                           1                                         
@@ -1315,7 +1339,7 @@ A =
 ## Model:                            OLS   Adj. R-squared:                  0.301
 ## Method:                 Least Squares   F-statistic:                     11.55
 ## Date:                Tue, 23 Mar 2021   Prob (F-statistic):           8.29e-05
-## Time:                        11:01:28   Log-Likelihood:                -184.04
+## Time:                        18:33:04   Log-Likelihood:                -184.04
 ## No. Observations:                  50   AIC:                             374.1
 ## Df Residuals:                      47   BIC:                             379.8
 ## Df Model:                           2                                         

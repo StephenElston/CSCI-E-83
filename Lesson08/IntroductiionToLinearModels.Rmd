@@ -85,8 +85,10 @@ Linear models are **readily interpretable!**
    - etc.    
    
 - Model coefficients provide information on response sensitivities to changes in variables    
-   - Poor human intuition about complex and nonlinear models    
-   - Less chance of *unexpected output**   
+   - Low chance of *unexpected output*   
+   - Complex and nonlinear model result in poor human intuition about expected response    
+   - Complex and nonlinear models vulnerable to *unexpected output*    
+   
    
 
 ## What is regression?
@@ -460,7 +462,7 @@ $$dependent\ variable\sim indepenent\ variables$$
 
 $$dv \sim var1 + var2$$
 
-- Example; dependent variable (dv) modeled by independent variables (var1) at its square, use the $I()$ operator to wrap a function:
+- Example; dependent variable (dv) modeled by independent variables (var1) and its square, uses the $I()$ operator to wrap a function:
 
 $$dv \sim var1 + I(var1**2)$$
 
