@@ -80,8 +80,8 @@ Linear models are **readily interpretable!**
 
 - Human interpretability is of critical importance for models used for critical decisions    
    - Health care   
-   - Safety of systems   
-   - Social justice   
+   - Safe operation of autonomous systems     
+   - Social justice for applications with human impact     
    - etc.    
    
 - Model coefficients provide information on response sensitivities to changes in variables    
@@ -183,6 +183,68 @@ $$
 $$\hat{y}_i = \beta_0 + \beta_1 x_i$$
 
 
+
+## Example      
+
+Let's start with a simulated data set with one predictor and one response variable 0
+
+- The response variable, $y$ is linear in $x$ with additive random noise $\sim \mathcal{N}(0,1)$
+
+- Intercept $= 0$ and slope $=1.0$
+
+- The first 10 rows:
+
+```{python, echo=FALSE}
+import numpy as np
+import numpy.random as nr
+import pandas as pd
+import statsmodels.formula.api as smf   
+import statsmodels as sm   
+import statsmodels.api as sm_api   
+from statsmodels.graphics.regressionplots import influence_plot, plot_regress_exog
+import scipy.stats as ss
+import matplotlib.pyplot as plt
+import seaborn as sns
+from math import sqrt   
+
+# Parameters of generated data
+n_points = 50
+x_start, x_end = 0, 10
+y_start, y_end = 0, 10
+y_sd = 2
+
+# Generate data columns
+nr.seed(5666)
+x_data = np.linspace(x_start, x_end, n_points) # The x values
+y_error = np.random.normal(loc=0, scale=y_sd, size=n_points) # The Normally distributed noise
+y_data = np.linspace(y_start, y_end, n_points) + y_error + 1.0 # The y values including an intercept
+
+# Put data in dataframe
+sim_data = pd.DataFrame({'x':x_data, 'y':y_data})
+
+sim_data.head(10)
+```
+
+
+## Example     
+
+Notice the linear trend for these data
+
+```{python, echo=FALSE}
+# Matplotlib may give some font errors when loading for the first time, you can ignore 
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ) 
+ax.plot(sim_data['x'], sim_data['y'], 'ko')
+plt.grid(True)
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_title('x vs y')
+plt.ylim(0,11);
+plt.show()
+```
+
+How do we copute a best fit model for this relatioship 
+   
 
 ## The Model Matrix      
 
@@ -290,7 +352,7 @@ Where $A^{-1}$ is the **matrix inverse** of $A$
 
 - This *might work*, **BUT**     
 
-- Even in the best case the direct algorithm has complexity $O(n^2)$, so inefficient   
+- Direct matrix inverse algorithm has complexity $O(n^2)$, so inefficient   
 
 - There is no guarantee the inverse exists     
    - The $p$ features can be colinear   
@@ -369,7 +431,7 @@ $$\vec{y} - A \vec{b} = 0$$
 
 - We can find the minimum of this linear system with an efficient solver   
    - **Stochastic Gradient Descent (SGD)** and its relatives     
-   - Qusi-Newton methods like **L-BFGS**
+   - Quasi-Newton methods like **L-BFGS**
 
 
 ## Estimating the Model Parmaters   
@@ -387,66 +449,6 @@ What is the relationship between the normal equations, least squares and maximum
 
 
    
-## Example      
-
-Let's start with a simulated data set with one predictor and one response variable 0
-
-- The response variable, $y$ is linear in $x$ with additive random noise $\sim \mathcal{N}(0,1)$
-
-- Intercept $= 0$ and slope $=1.0$
-
-- The first 10 rows:
-
-```{python, echo=FALSE}
-import numpy as np
-import numpy.random as nr
-import pandas as pd
-import statsmodels.formula.api as smf   
-import statsmodels as sm   
-import statsmodels.api as sm_api   
-from statsmodels.graphics.regressionplots import influence_plot, plot_regress_exog
-import scipy.stats as ss
-import matplotlib.pyplot as plt
-import seaborn as sns
-from math import sqrt   
-
-# Parameters of generated data
-n_points = 50
-x_start, x_end = 0, 10
-y_start, y_end = 0, 10
-y_sd = 2
-
-# Generate data columns
-nr.seed(5666)
-x_data = np.linspace(x_start, x_end, n_points) # The x values
-y_error = np.random.normal(loc=0, scale=y_sd, size=n_points) # The Normally distributed noise
-y_data = np.linspace(y_start, y_end, n_points) + y_error + 1.0 # The y values including an intercept
-
-# Put data in dataframe
-sim_data = pd.DataFrame({'x':x_data, 'y':y_data})
-
-sim_data.head(10)
-```
-
-
-## Example     
-
-Plot these data
-
-```{python, echo=FALSE}
-# Matplotlib may give some font errors when loading for the first time, you can ignore 
-plt.rc('font', size=12)
-fig, ax = plt.subplots(figsize=(6, 5), ) 
-ax.plot(sim_data['x'], sim_data['y'], 'ko')
-plt.grid(True)
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_title('x vs y')
-plt.ylim(0,11);
-plt.show()
-```
-
-Notice the linear trend    
 
 ## Example - Specifing the Model    
 
@@ -934,8 +936,10 @@ Outliers are a persistent problem with statistical and macine learing models
    - Result of improper stratification    
 
 - But, may be of interest    
-   - The most interesting values    
-   - May need to explicitly model   
+   - Depending on application can be the **most interesting values**!!    
+   - May need to explicitly model 
+   - Example: Fraud detection   
+   - Example: Scientific discovery  
    
 - Outliers can be hard to detect   
    - Difficult in high-dimensions   
@@ -1011,8 +1015,29 @@ Why are linear models sensitive to outliers
 
 - Ordinary linear regression use **squared error loss** function    
    - Optimal if the errors are iid Normal   
+   - Is an **unbiased estimator**   
    
--    
+- In 1-dimension median is robust to outliers   
+   - But far from an optimal estimator     
+   - High bias  
+   - Hard to implement beyond 1-dimension  
+   
+- We can study the response of estimators to outiers using an **influence function**   
+
+
+
+
+## Dealing With Outliers  
+
+Compare the influence functions of the mean and median estimators  
+
+- Mean estimator has linear influence function    
+   - Influence of outliers is **unbounded**  
+   - Derivative of the influence function is constant     
+   
+- Influence function of median estimator is discontinuous    
+   - Influence of any observation is constant   
+   - Derivative of influence function is not defined  
 
 ```{r MeanMedianInfluence, out.width = '25%', fig.cap='Influence functions for mean and median', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/MeanMedianInfluence.png"))
@@ -1024,9 +1049,19 @@ knitr::include_graphics(rep("../images/MeanMedianInfluence.png"))
 
 ## Dealing With Outliers  
 
+Could we simply edit out the outliers?    
 
+- But what fraction of the data are outliers?    
 
-```{r AlphaTrimming, out.width = '25%', fig.cap='Influence functions for mean and median', fig.align='center', echo=FALSE}
+- Know as the **alpha trimmed mean** algorithm    
+   - Order the values and remove $\alpha / 2$ highest and lowest   
+   - But, alpha trimming is a bit arbitrary   
+   - Is a biased estimator, with bias increasing with $\alpha$   
+   - $\alpha = 0.5$ is the median
+
+- Alpha trimming hard to implement in higher dimensions  
+
+```{r AlphaTrimming, out.width = '25%', fig.cap='Influence functions for alpha trimmed mean', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/AlphaTrimming.png"))
 ```   
 
@@ -1034,8 +1069,32 @@ knitr::include_graphics(rep("../images/AlphaTrimming.png"))
 *Figure from Hampel, el.al., Robust Statistics, 1986*   
 
 
+
 ## Dealing With Outliers  
 
+Are there better estimators when outliers are present    
+
+- Yes, but must accept some bias     
+
+- Idea; estimator can be unbiased near the expected value, but limit influence of outliers    
+   - Trade-off between high robustness and low bias
+
+- Many ideas have been tried      
+   - A major research focus in the 1970s and 1980s    
+   - **Huber estimator**    
+   - Family of **M-estimators**  
+
+## Dealing With Outliers  
+
+What are the properties of the Huber estimator?   
+
+- Influence function is linear near the mean but constant away from the mean   
+   - **hinge point** is at $\pm t * MAD$, where $MAD =$ **median absolute deviation**   
+   - Robustness and bias increases as $t$ decreases
+   
+- Huber estimator is low bias      
+   - Unbiased for samples near the point estimate   
+   - Constant influence away from the point estimate    
 
 
 ```{r Huber, out.width = '40%', fig.cap='Influence function of the Huber estimator', fig.align='center', echo=FALSE}
@@ -1047,6 +1106,18 @@ knitr::include_graphics(rep("../images/Huber.png"))
 
 
 ## Dealing With Outliers  
+
+**M-estimators** tapper influence to zero     
+
+- Approximately linear influence near point estimate      
+   - So nearly unbiased near the point estiamte   
+
+- Then influence tappers to 0 for extreme outliers    
+
+- An example is **Tukey's biweight**      
+   - Only a single parameter for biweight function, $r$   
+   - Robustness and bias increase with decreasing $r$
+
 
 ```{r TukeysBiweight, out.width = '40%', fig.cap='Influence function of the Tukey\'s Biweight M-estimator', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/TukeysBiweight.png"))
