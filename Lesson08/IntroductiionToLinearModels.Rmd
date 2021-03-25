@@ -17,6 +17,22 @@ matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
 ```
 
+## Welcome to Second Half of CSCI E-83!    
+
+Plan going forward:    
+
+- Week 8: Introduction to Linear Models    
+- Week 9: Linear Models Part 2 - Categorical data and regularization     
+- Week 10: Nonlinear Regression Models and Classifiers     
+- Week 11: Time Series Models       
+- Week 12: Clustering Models    
+- Week 13: Bayes MCMC methods    
+- Week 14: Hierarchical models    
+- Submit Graduate Independent Projects  
+
+Let me know if you have suggestions to change this schedule  
+
+
 ## Review      
 
 Bayesian analysis is a contrast to frequentist methods          
