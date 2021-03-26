@@ -87,7 +87,7 @@ Linear models are widely used in statistics and machine learning
    - Many non-linear models are at locally linear at convergence
    - We can learn a lot about the convergence of DL and RL models from linear approximations    
 
-- In this lesson we take a **frequentist view** of the linear modfel    
+- In this lesson we take a **frequentist view** of the linear model    
    - Bayesian view is also widely used
 
 ## Introduciton - Why linear models? 
@@ -154,22 +154,22 @@ Predicted Variable | Variables Used to Predict
 
 ## Formulating the Linear Model      
 
-The general formulation of a linear model can be writen:     
+The general formulation of a linear model can be written:     
 
-$$\hat{y} = A \vec{b} + \vec{\epsilon}$$
+$$y = A \vec{b} + \vec{\epsilon}$$
 
-- $\hat{y}$ is the vector of $n$$ dependent variables or labels we seek to predict   
+- $y$ is the vector of $n$ dependent variables or labels we seek to predict   
 
 - $A$ is the $n$ x $p$ **model matrix**      
    - Defines the structure of the model    
    - $p$ columns are values of the predictor variables or features 
-   - $n$ rows of traning cases   
+   - $n$ rows of training cases   
    
 - $\vec{b}$ is the vector of $p$ model coefficients      
    - One coefficient for each predictor or feature  
    - Model is fit by finding an *optimal** value for each coefficient  
 
-- $\epsilon$ is the vecctor representing **prediction error**   
+- $\epsilon$ is the vector representing **prediction error**   
    - The $n$ **residuals** 
    - Is **iid Normally distributed**; $\epsilon \sim \mathcal{N}(0, \sigma^2)$
 
@@ -204,7 +204,7 @@ $$\hat{y}_i = \beta_0 + \beta_1 x_i$$
 
 Let's start with a simulated data set with one predictor and one response variable 0
 
-- The response variable, $y$ is linear in $x$ with additive random noise $\sim \mathcal{N}(0,1)$
+- The response variable, $y$ is linear in $x$ with additive random noise $\sim \mathcal{N}(0,2)$
 
 - Intercept $= 0$ and slope $=1.0$
 
@@ -259,7 +259,7 @@ plt.ylim(0,11);
 plt.show()
 ```
 
-How do we copute a best fit model for this relatioship 
+How do we compute a best fit model for this relationship 
    
 
 ## The Model Matrix      
@@ -353,7 +353,7 @@ How do we find the best value for the coefficients
 
 - Given training data, minimize the squared error between the prediction, $\hat{y}_i$, and the observed response variable or label, $y_i$:    
 
-$$\min_{\vec{b}} \sum_i(y_i - A_{i,.} \hat{b})^2 = \min_{\vec{b}} \sum_i(y_i - \hat{y_i})^2 =  \min_{\vec{b}} \sum_i \epsilon_i$$
+$$\min_{\vec{b}} \sum_i(y_i - A_{i,.} \hat{b})^2 = \min_{\vec{b}} \sum_i(y_i - \hat{y_i})^2 =  \min_{\vec{b}} \sum_i \epsilon_i^2$$
 
 $A_{i,.}$ is the ith row of $A$
 
@@ -379,7 +379,7 @@ We can use the **Normal equations**
 
 - Start with the problem:    
 
-$$\hat{y} = A \vec{b}+ \vec{\epsilon} = 0$$
+$$y - A \vec{b} = \vec{\epsilon} \rightarrow 0$$
 
 - Multiply by $A^T$ and set $\vec{\epsilon} = 0$    
 
@@ -401,9 +401,9 @@ What is the relationship between the normal equations, least squares and maximum
 
 - First consider how the Normal likelihood can be written in terms of $\vec{b}$ with $n$ feature vectors of observations $\vec{x}_i$ and $n$ labels $y_i$:
 
-$$\mathcal{L}(\vec{b}, \sigma^2) = \prod_{i=1}^n \frac{1}{(2 \pi \sigma2)^{1/2}} exp \Big\{ -\frac{1}{2 \sigma^2} \big(y_i - x_i^T \vec{b}  \big)^2 \Big\}$$
+$$\mathcal{L}(\vec{b}, \sigma^2) = \prod_{i=1}^n \frac{1}{(2 \pi \sigma^2)^{1/2}} exp \Big\{ -\frac{1}{2 \sigma^2} \big(y_i - x_i^T \vec{b}  \big)^2 \Big\}$$
 
-- The log-likilihood is then:     
+- The log-likelihood is then:     
 
 $$\mathcal{l}(\vec{b}, \sigma^2) = -\frac{1}{2} \Bigg\{ n\ log(\sigma^2) + \frac{1}{\sigma^2} \sum_{i=1}^n \big(y_i - x_i^T \vec{b}  \big)^2  \Bigg\}$$
 
@@ -501,7 +501,7 @@ $$dv \sim var1 + C(var2)$$
 Fit the model using statsmodels.formula.api.ols to create a linear model object    
 
 ```{python}
-## Define the regresson model and fit it to the data
+## Define the regression model and fit it to the data
 ols_model = smf.ols(formula = 'y ~ x', data=sim_data).fit()
 
 ## Print the model coefficient
@@ -543,14 +543,14 @@ $$\vec{\epsilon} = \vec{y} - A\ \vec{b} = \vec{y} - \hat{y}$$
 
 - Residuals should be Normally distributed with $0$ mean and constant variance    
 
-$$\vec{\epsilon} \sim \mathcal{N}(0,\sigma)$$
+$$\vec{\epsilon} \sim \mathcal{N}(0,\sigma^2)$$
 
 - The residuals must be **homoskedastic** with respect to the fitted values    
-    - Homoskedasitic residuals have constant variance with predicted values    
+    - Homosedastic residuals have constant variance with predicted values    
     
 - Any trend or structure in the residuals indicates a poor model fit    
-   - In these cases variance is not constant and we say these are **heteroskedasitc** residuals       
-   - Heteroskedastic residuals indicate that model has not incorpoared all avaialble information   
+   - In these cases variance is not constant and we say these are **heteroskedastic** residuals       
+   - Heteroskedastic residuals indicate that model has not incorporated all available information   
 
 
 
@@ -610,7 +610,7 @@ plot_resid_dist(sim_data.resids)
 
 ## Evaluating Regression Models  
 
-We can quantitatively understand model performance by deffining these relationships     
+We can quantitatively understand model performance by defining these relationships     
 
 \begin{align}
 SST &= sum\ square\ total\ = \Sigma_i(y_i - \bar{Y})^2 \\
@@ -672,7 +672,7 @@ R^2 &\rightarrow 0
 
 As the number of model parameters increases the model will fit the data better  
 
-- But, the model will become overfit as the number of parameters increases    
+- But, the model will become over-fit as the number of parameters increases    
 
 - Must adjust model performance for degrees of freedom - **adjusted** $R^2$
 
@@ -925,7 +925,7 @@ residual_plot(sim_data_2)
 
 ## Example of Multi-Feature Linear Model 
 
-Test that the residuals are iid Normal for the polynomal model   
+Test that the residuals are iid Normal for the polynomial model   
 
 ```{python, echo=FALSE}
 plot_resid_dist(sim_data_2.resids)
@@ -945,7 +945,7 @@ ols_model_3.summary()
 
 ## Dealing With Outliers  
 
-Outliers are a persistent problem with statistical and macine learing models   
+Outliers are a persistent problem with statistical and machine learning models   
 
 - What are outliers?    
    - Errors or noisy measurements    
@@ -959,7 +959,7 @@ Outliers are a persistent problem with statistical and macine learing models
    
 - Outliers can be hard to detect   
    - Difficult in high-dimensions   
-   - Ofen find by influence on model   
+   - Often find by influence on model   
 
 
 ## Dealing With Outliers   
@@ -1009,7 +1009,7 @@ $\hat{Y}_{j(i)} =$ the jth prediction computed without the ith observation
 $p =$ number of parameters   
 $n =$ number of data points    
 
-
+- Cook's distance is computed using a **leave-one-out resampling algorithm!**
 
 ## Dealing With Outliers     
 
@@ -1038,7 +1038,7 @@ Why are linear models sensitive to outliers
    - High bias  
    - Hard to implement beyond 1-dimension  
    
-- We can study the response of estimators to outiers using an **influence function**   
+- We can study the response of estimators to outliers using an **influence function**   
 
 
 
@@ -1126,7 +1126,7 @@ knitr::include_graphics(rep("../images/Huber.png"))
 **M-estimators** tapper influence to zero     
 
 - Approximately linear influence near point estimate      
-   - So nearly unbiased near the point estiamte   
+   - So nearly unbiased near the point estimate   
 
 - Then influence tappers to 0 for extreme outliers    
 
@@ -1157,7 +1157,7 @@ sim_data_ol['predicted_huber'] = ols_model_huber.predict(sim_data_ol.x)
 
 ```{python, echo=FALSE}
 ## Print the model coefficient
-#print('Intercept = %4.3f  Parial Slope = %4.3f' % (ols_model_huber._results.params[0], ols_model_huber._results.params[1]))
+#print('Intercept = %4.3f  Partial Slope = %4.3f' % (ols_model_huber._results.params[0], ols_model_huber._results.params[1]))
 
 ## Display the results 
 plt.rc('font', size=12)
@@ -1180,7 +1180,7 @@ There are a number of assumptions in linear models that you overlook at your per
 
 - The feature or predictor variables should be **independent** of one another      
    - This is rarely true in practice   
-   - **Multi-collinearity** between features makes the model **under-determined**    
+   - **Multi-colinearity** between features makes the model **under-determined**    
 
 - We assume that numeric features or predictors have zero mean and about the same scale    
    - We do not want to bias the estimation of regression coefficients with predictors that do not have a 0 mean   
