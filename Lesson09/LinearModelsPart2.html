@@ -650,12 +650,6 @@ A =
 <li>L1 regularization</li>
 <li>Elastic Net</li>
 </ul></li>
-<li>Models with nonlinear response
-<ul>
-<li>The generalized linear model<br />
-</li>
-<li>Link function transforms to linear model</li>
-</ul></li>
 </ul>
 </div>
 <div id="working-with-categorical-variables" class="slide section level2">
@@ -724,8 +718,8 @@ A =
 ## Dep. Variable:                  socst   R-squared:                       0.110
 ## Model:                            OLS   Adj. R-squared:                  0.101
 ## Method:                 Least Squares   F-statistic:                     12.20
-## Date:                Thu, 25 Mar 2021   Prob (F-statistic):           1.01e-05
-## Time:                        18:33:42   Log-Likelihood:                -746.32
+## Date:                Fri, 26 Mar 2021   Prob (F-statistic):           1.01e-05
+## Time:                        17:36:24   Log-Likelihood:                -746.32
 ## No. Observations:                 200   AIC:                             1499.
 ## Df Residuals:                     197   BIC:                             1509.
 ## Df Model:                           2                                         
@@ -852,8 +846,8 @@ I + c_{n-1}
 ## Dep. Variable:                  socst   R-squared:                       0.294
 ## Model:                            OLS   Adj. R-squared:                  0.264
 ## Method:                 Least Squares   F-statistic:                     9.941
-## Date:                Thu, 25 Mar 2021   Prob (F-statistic):           1.55e-11
-## Time:                        18:33:42   Log-Likelihood:                -723.19
+## Date:                Fri, 26 Mar 2021   Prob (F-statistic):           1.55e-11
+## Time:                        17:36:24   Log-Likelihood:                -723.19
 ## No. Observations:                 200   AIC:                             1464.
 ## Df Residuals:                     191   BIC:                             1494.
 ## Df Model:                           8                                         
@@ -893,8 +887,8 @@ I + c_{n-1}
 ## Dep. Variable:                  socst   R-squared:                       0.294
 ## Model:                            OLS   Adj. R-squared:                  0.264
 ## Method:                 Least Squares   F-statistic:                     9.941
-## Date:                Thu, 25 Mar 2021   Prob (F-statistic):           1.55e-11
-## Time:                        18:33:42   Log-Likelihood:                -723.19
+## Date:                Fri, 26 Mar 2021   Prob (F-statistic):           1.55e-11
+## Time:                        17:36:24   Log-Likelihood:                -723.19
 ## No. Observations:                 200   AIC:                             1464.
 ## Df Residuals:                     191   BIC:                             1494.
 ## Df Model:                           8                                         
@@ -1131,7 +1125,7 @@ b = (A^TA + \alpha^2 I)^{-1}A^Tx\]</span></p>
 \end{bmatrix}
 Q^T\]</span></p>
 <p>The inverse covariance matrix is then:</p>
-<p><span class="math display">\[A^TA + \alpha^2I = Q^T 
+<p><span class="math display">\[\Big( A^TA + \alpha^2I \Big)^{-1} = Q^T 
 \begin{bmatrix}
 \frac{1}{\lambda_1 + \alpha^2}, 0, \ldots, 0\\
 0, \frac{1}{\lambda_2 + \alpha^2}, \ldots \\
@@ -1282,7 +1276,7 @@ L1 norm constraint of model coefficients
 <li>Hyperparameter <span class="math inline">\(\alpha\)</span> sets strength of regularization</li>
 </ul></li>
 </ul>
-<p><span class="math display">\[min [\parallel A \cdot x - b \parallel +\ \lambda\ \alpha \parallel b\parallel^1]+\ (1- \lambda)\ \alpha \parallel b\parallel^2]\]</span></p>
+<p><span class="math display">\[min \Big[ \parallel A \cdot x - b \parallel +\ \lambda\ \alpha \parallel b\parallel^1 +\ (1- \lambda)\ \alpha \parallel b\parallel^2 \Big]\]</span></p>
 </div>
 <div id="elastic-net-regularization-1" class="slide section level2">
 <h1>Elastic Net Regularization</h1>

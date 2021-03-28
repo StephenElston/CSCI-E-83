@@ -495,7 +495,7 @@ Q^T$$
 
 The inverse covariance matrix is then: 
 
-$$A^TA + \alpha^2I = Q^T 
+$$\Big( A^TA + \alpha^2I \Big)^{-1} = Q^T 
 \begin{bmatrix}
 \frac{1}{\lambda_1 + \alpha^2}, 0, \ldots, 0\\
 0, \frac{1}{\lambda_2 + \alpha^2}, \ldots \\
@@ -656,7 +656,7 @@ Do we always have to choose between soft constraint of L2 and hard constraint of
    - Hyperparameter $\lambda$ weights L1 vs. L2 regularization   
    - Hyperparameter $\alpha$ sets strength of regularization  
 
-$$min [\parallel A \cdot x - b \parallel +\ \lambda\ \alpha \parallel b\parallel^1]+\ (1- \lambda)\ \alpha \parallel b\parallel^2]$$
+$$min \Big[ \parallel A \cdot x - b \parallel +\ \lambda\ \alpha \parallel b\parallel^1 +\ (1- \lambda)\ \alpha \parallel b\parallel^2 \Big]$$
 
 ## Elastic Net Regularization   
 
