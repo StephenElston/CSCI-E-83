@@ -617,11 +617,11 @@ ComputePosterior(variables, lower_limits, upper_limits):
     # Compute posterior at each sampling value in the grid  
     for sampling_value in range(lower_limits, upper_limits):   
         likelihood = SampleLikelihood(sampling_value, observation_values)
-        posterior = Prior(sampling_values, prior_parameter_value)   
-        posterior[sampling_value] = likelihood * posterior
+        prior = Prior(sampling_values, prior_parameter_value)   
+        posterior[sampling_value] = likelihood * prior
 
     # Normalize the posterior       
-    probability_data = sum(posterior)
+    probability_data = sum(posterior[range(Grid)])
     posterior = posterior[range(Grid)]/probability_data 
     return posterior    
 ```
