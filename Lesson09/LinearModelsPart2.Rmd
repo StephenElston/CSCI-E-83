@@ -151,9 +151,24 @@ import statsmodels.api as sm
 import scipy.stats as ss  
 from math import atan
 
-test_scores = pd.read_csv('../data/hsb2.csv', index_col=0)
+test_scores = pd.read_csv('../data/hsb2.csv')#, index_col=0)
 test_scores.head(10)
 ```
+
+## Working with Categorical Variables  
+
+Example: split the data into train and test subsets    
+
+```{python}
+nr.seed(2345)
+msk = nr.choice(test_scores.index, size = 120, replace=False)
+test_scores_train = test_scores.iloc[msk,:]
+print(test_scores_train.shape)
+test_scores_test = test_scores.drop(msk, axis=0) 
+print(test_scores_test.shape)
+```
+
+
 
 
 ## Working with Categorical Variables  
@@ -174,7 +189,7 @@ Example: A simple linear model with one categorical variable
 
 ```{python}
 import statsmodels.formula.api as smf 
-linear_model = smf.ols("socst ~ C(ses)", data=test_scores).fit()
+linear_model = smf.ols("socst ~ C(ses)", data=test_scores_train).fit()
 linear_model.summary()
 ```
 
@@ -268,7 +283,7 @@ In a linear model we can sometimes relate the coefficient values to an effect si
 Example: We might suspect that the terms, ses and prog are significant in predicting social science test scores:  
 
 ```{python}
-linear_model = smf.ols("socst ~ C(ses)*C(prog)", data=test_scores).fit()
+linear_model = smf.ols("socst ~ C(ses)*C(prog)", data=test_scores_train).fit()
 linear_model.summary()
 ```
 
@@ -278,7 +293,7 @@ linear_model.summary()
 Example: After 3 or 4 rounds of *guess and cut* feature punning, we arrive at a model will only siginficant coefficients:    
 
 ```{python}
-linear_model = smf.ols("socst ~ - 1 + C(ses):C(prog)", data=test_scores).fit()
+linear_model = smf.ols("socst ~ - 1 + C(ses):C(prog)", data=test_scores_train).fit()
 linear_model.summary()
 ```
 
@@ -402,32 +417,6 @@ $$
    - The inverse covariance matrix does not exist!    
 
 
-## L2 Regularization     
-
-**Example:** compute the eigenvalues of a covariance matrix     
-
-```{python}
-test_scores['socst_zero_mean'] = test_scores['socst'] - np.mean(test_scores['socst'])
-Y, X = dmatrices("socst_zero_mean ~ C(ses, levels=[1,2,3])*C(prog, levels=[1,2,3])", data=test_scores)
-cov_X = np.matmul(np.transpose(X),X)
-cov_X = np.divide(cov_X, float(cov_X.shape[0]))
-np.real(np.linalg.eigvals(cov_X))
-```
-
-The condition number of the covariance is $\sim 100$
-
-**Add regularization** with $\alpha=2.0$ and compute the eigenvalues
-
-```{python}
-alpha_sqr = 4.0 
-alpha_sqr = np.diag([alpha_sqr] * cov_X.shape[0])
-#alpha_sqr = np.diag([alpha] * cov_X.shape[0])
-#cov_X = np.divide(np.matmul(np.transpose(X),X), float(cov_X.shape[0]))
-cov_X = np.add(cov_X, alpha_sqr)
-np.real(np.linalg.eigvals(cov_X))
-```
-
-The condition number of the covariance is $\sim 10$
 
 ## L2 Regularization    
 
@@ -508,6 +497,39 @@ With any $\alpha > 0$, the inverse eigenvalues of the inverse covariance matrix 
 
 Increasing $\alpha$ increases bias, but increases the stability of the inverse   
 
+## L2 Regularization     
+
+**Example:** compute the eigenvalues of a covariance matrix     
+
+```{python, echo=FALSE}
+test_scores_train['socst_zero_mean'] = test_scores_train['socst'] - np.mean(test_scores_train['socst'])
+test_scores_test['socst_zero_mean'] = test_scores_test['socst'] - np.mean(test_scores_test['socst'])
+```
+
+```{python}
+test_scores['socst_zero_mean'] = test_scores['socst'] - np.mean(test_scores['socst'])
+Y, X = dmatrices("socst_zero_mean ~ C(ses, levels=[1,2,3])*C(prog, levels=[1,2,3])", data=test_scores)
+cov_X = np.matmul(np.transpose(X),X)
+cov_X = np.divide(cov_X, float(cov_X.shape[0]))
+np.real(np.linalg.eigvals(cov_X))
+```
+
+The condition number of the covariance is $\sim 100$
+
+**Add regularization** with $\alpha=0.1$ and compute the eigenvalues
+
+```{python}
+alpha_sqr = 0.1 
+alpha_sqr = np.diag([alpha_sqr] * cov_X.shape[0])
+#alpha_sqr = np.diag([alpha] * cov_X.shape[0])
+#cov_X = np.divide(np.matmul(np.transpose(X),X), float(cov_X.shape[0]))
+cov_X = np.add(cov_X, alpha_sqr)
+np.real(np.linalg.eigvals(cov_X))
+```
+
+The condition number of the covariance is $\sim 10$
+
+
 ## L2 Regularization    
 
 L2 regularization constrains the Euclidean norm of the parameter vector, $\vec{b}$    
@@ -524,22 +546,28 @@ knitr::include_graphics(rep("../images/L2.jpg"))
 Example: Increasing constraint on model coefficients with larger L2 regularization hyperparameter
 
 ```{python}
-test_scores['socst_zero_mean'] = test_scores['socst'] - np.mean(test_scores['socst'])
-def regularized_coefs(df, alphas, L1_wt=0.0, n_coefs=8,
-                      formula = "socst_zero_mean ~ C(ses)*C(prog)",                                                     label='socst_zero_mean'):
+def regularized_coefs(df_train, df_test, alphas, L1_wt=0.0, n_coefs=8,
+                      formula = 'socst_zero_mean ~ C(ses)*C(prog)', 
+                      label='socst_zero_mean'):
     '''Function that computes a linear model for each value of the regualarization 
     parameter alpha and returns an array of the coefficient values. The L1_wt 
     determines the trade-off between L1 and L2 regualarization'''
     coefs = np.zeros((len(alphas),n_coefs + 1))
-    MSE = []
+    MSE_train = []
+    MSE_test = []
     for i,alpha in enumerate(alphas):
-        temp_mod = smf.ols(formula, data=df).fit_regularized(alpha=alpha,L1_wt=L1_wt)
+        ## First compute the training MSE
+        temp_mod = smf.ols(formula, data=df_train).fit_regularized(alpha=alpha,L1_wt=L1_wt)
         coefs[i,:] = temp_mod.params
-        MSE.append(np.mean(np.square(df[label] - temp_mod.predict())))
-    return coefs, MSE
-alphas = np.arange(0.01, 10.0, step = 0.1)
-Betas, MSE = regularized_coefs(test_scores, alphas)
-Betas[:5]
+        MSE_train.append(np.mean(np.square(df_train[label] - temp_mod.predict(df_train))))
+        ## Then compute the test MSE
+        MSE_test.append(np.mean(np.square(df_test[label] - temp_mod.predict(df_test))))
+        
+    return coefs, MSE_train, MSE_test
+
+alphas = np.arange(0.0, 0.3, step = 0.003)    
+Betas, MSE_test, MSE_train = regularized_coefs(test_scores_train, test_scores_test, alphas)
+#Betas[:5]
 ```
 
 ## L2 Regularization   
@@ -547,7 +575,7 @@ Betas[:5]
 Example: Increasing constraint on model coefficients with larger L2 regularization hyperparameter
 
 ```{python, echo=FALSE}
-def plot_coefs(coefs, alphas, MSE, ylim=None):
+def plot_coefs(coefs, alphas, MSE_train, MSE_test, ylim=None):
     fig, ax = plt.subplots(1,2, figsize=(12, 5)) # define axis
     for i in range(coefs.shape[1]): # Iterate over coefficients
         ax[0].plot(alphas, coefs[:,i])
@@ -557,13 +585,16 @@ def plot_coefs(coefs, alphas, MSE, ylim=None):
     ax[0].set_title('Parial slope values vs. regularization parameter number')
     if ylim is not None: ax[0].set_ylim(ylim)
     
-    ax[1].plot(alphas, MSE)
+    ax[1].plot(alphas, MSE_train, label='Training error')
+    ax[1].plot(alphas, MSE_test, label='Test error')
     ax[1].set_ylabel('Mean squared error')
-    ax[0].set_xlabel('alpha')
-    ax[0].set_title('MSE vs. regularization parameter number')
+    ax[1].set_xlabel('alpha')
+    ax[1].set_title('MSE vs. regularization parameter number')
+    plt.legend()
     plt.show()
     
-plot_coefs(Betas, alphas, MSE, ylim=(-5.0,5.0))
+    
+plot_coefs(Betas, alphas, MSE_test, MSE_train)#, ylim=(-5.0,5.0))
 ```
 
 ## L1 Regularization    
@@ -617,8 +648,8 @@ knitr::include_graphics(rep("../images/L1.jpg"))
 Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter
 
 ```{python}
-alphas = np.arange(0.01, 10.0, step = 0.1)
-Betas, MSE = regularized_coefs(test_scores, alphas, L1_wt=1.0)
+alphas = np.arange(0.0, 0.5, step = 0.005)
+Betas, MSE_train, MSE_test = regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt=1.0)
 Betas[:5]
 ```
 
@@ -628,15 +659,7 @@ Betas[:5]
 Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter
 
 ```{python, echo=FALSE}
-plot_coefs(Betas, alphas, MSE, ylim=(-10.0,10.0))
-```
-
-## L1 Regularization   
-
-Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter
-
-```{python, echo=FALSE}
-plot_coefs(Betas, alphas, MSE, ylim=(-1.0,3.0))
+plot_coefs(Betas, alphas, MSE_train, MSE_test) #, ylim=(-10.0,10.0))
 ```
 
 
@@ -663,8 +686,8 @@ $$min \Big[ \parallel A \cdot x - b \parallel +\ \lambda\ \alpha \parallel b\par
 Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter
 
 ```{python}
-alphas = np.arange(0.01, 10.0, step = 0.1)
-Betas, MSE = regularized_coefs(test_scores, alphas, L1_wt=0.5)
+alphas = np.arange(0.0, 0.5, step = 0.005)
+Betas, MSE_train, MSE_test = regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt=0.5)
 Betas[:5]
 ```
 
@@ -674,30 +697,23 @@ Betas[:5]
 Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter
 
 ```{python, echo=FALSE}
-plot_coefs(Betas, alphas, MSE, ylim=(-10.0,8.0))
+plot_coefs(Betas, alphas, MSE_train, MSE_test) #, ylim=(-10.0,8.0))
 ```
 
-## Elastic Net Regularization   
-
-Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter
-
-```{python, echo=FALSE}
-plot_coefs(Betas, alphas, MSE, ylim=(-1.0,3.0))
-```
 
 ## Elastic Net Regularization 
 
-Check the model summary for $\lambda=0.5$, $\alpha=1.5$
+Check the model summary for $\lambda=0.5$, $\alpha=0.06$
 
 ```{python}
-lm_elastic = smf.ols("socst_zero_mean ~ C(ses)*C(prog)", data=test_scores).fit_regularized(alpha=1.5, L1_wt=0.5)
+lm_elastic = smf.ols("socst_zero_mean ~ C(ses)*C(prog)", data=test_scores_train).fit_regularized(alpha=0.06, L1_wt=0.5)
 lm_elastic.params
 ```
 
 
 ```{python, echo=FALSE}
-test_scores['predicted'] = lm_elastic.predict()
-test_scores['resids'] = np.subtract(test_scores.predicted, test_scores.socst_zero_mean)
+test_scores_train['predicted'] = lm_elastic.predict(test_scores_train)
+test_scores_train['resids'] = np.subtract(test_scores_train.predicted, test_scores_train.socst_zero_mean)
 
 def residual_plot(df):
     plt.rc('font', size=12)
@@ -712,39 +728,7 @@ def residual_plot(df):
     plt.ylabel('Residuals');
     plt.show()
     
-residual_plot(test_scores)  
-```
-
-
-
-## Elastic Net Regularization 
-
-Check the model summary for $\lambda=0.5$, $\alpha=3.0$
-
-```{python}
-lm_elastic = smf.ols("socst_zero_mean ~ C(ses)*C(prog)", data=test_scores).fit_regularized(alpha=3.0, L1_wt=0.5)
-lm_elastic.params
-```
-
-
-```{python, echo=FALSE}
-test_scores['predicted'] = lm_elastic.predict()
-test_scores['resids'] = np.subtract(test_scores.predicted, test_scores.socst_zero_mean)
-
-def residual_plot(df):
-    plt.rc('font', size=12)
-    fig, ax = plt.subplots(figsize=(8, 3), ) 
-    RMSE = np.std(df.resids)
-    sns.scatterplot(x='predicted', y='resids', data=df, ax=ax);
-    plt.axhline(0.0, color='red', linewidth=1.0);
-    plt.axhline(2.0*RMSE, color='red', linestyle='dashed', linewidth=1.0);
-    plt.axhline(-2.0*RMSE, color='red', linestyle='dashed', linewidth=1.0);
-    plt.title('PLot of residuals vs. predicted');
-    plt.xlabel('Predicted values');
-    plt.ylabel('Residuals');
-    plt.show()
-    
-residual_plot(test_scores)  
+residual_plot(test_scores_train)  
 ```
 
 
