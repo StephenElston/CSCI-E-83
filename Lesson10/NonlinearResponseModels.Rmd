@@ -20,8 +20,10 @@ matplotlib$use("Agg", force = TRUE)
 ## Introduction  
 
 - Models with nonlinear response   
-   - The generalized linear model   
-   - Link function transforms to linear model  
+
+- The generalized linear model     
+
+- Link function transforms to linear model  
 
 
 ## Models with Nonlinear Response    
