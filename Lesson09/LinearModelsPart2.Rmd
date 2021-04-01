@@ -120,8 +120,6 @@ Scaling of features is required for many machine learning models
 
 
 
-
-
 ## Working with Categorical Variables 
 
 Linear models, like nearly all machine learning models, use numeric features    
@@ -407,7 +405,35 @@ $$
 \end{bmatrix}
 $$
 
-- But, if columns of $A$ are not linearly independent, the covariance matrix is **ill-posed** and the eigenvectors are under-determined       
+
+## Regularization - a Better Approach    
+
+At first look eigen-decomposition seems a bit mysterious
+
+- The eigenvalues are the **roots** of the covariance matrix    
+   - Similar to the familiar roots of a polynomial  
+
+- For square matrix, $A$, and some norm 1 vector, $x$, we can find a root, $\lambda$: 
+
+\begin{align}
+Ax &=  \lambda x \\
+Ax - \lambda x &= 0 \\
+(A - I \lambda) x &= 0
+\end{align}
+
+- For $n$ x $n$ dismensional matrix there are $n$ eigenvalues and orthogonal eigenvalue    
+
+- But, there is no guarantee that the $n$ values of $\lambda$ are unique     
+   - If columns of $A$ are colinear, there are $< n$ unique eigenvectors        
+
+## Regularization - a Better Approach
+
+If columns of $A$ are not linearly independent, the covariance matrix is **ill-posed** and the eigenvectors are under-determined       
+
+$$
+cov(A) = Q \Lambda Q^T\\
+cov(A)^{-1} = Q^T \Lambda^{-1} Q
+$$
 
 - The eigenvalues are ordered, $\lambda_1 \ge \lambda_2 \ge \ldots \ge \lambda_p$
 
@@ -471,7 +497,7 @@ $$b = (A^TA + \alpha^2I)^{-1}A^Tx$$
 
 ## L2 Regularization   
 
-Eigendecomposition of the regularized covariance matrix:    
+Eigen-decomposition of the regularized covariance matrix:    
 
 $$A^TA + \alpha^2I = Q 
 \begin{bmatrix}

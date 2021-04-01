@@ -729,8 +729,8 @@ A =
 ## Dep. Variable:                  socst   R-squared:                       0.097
 ## Model:                            OLS   Adj. R-squared:                  0.082
 ## Method:                 Least Squares   F-statistic:                     6.285
-## Date:                Sun, 28 Mar 2021   Prob (F-statistic):            0.00255
-## Time:                        15:58:17   Log-Likelihood:                -446.60
+## Date:                Thu, 01 Apr 2021   Prob (F-statistic):            0.00255
+## Time:                        08:31:01   Log-Likelihood:                -446.60
 ## No. Observations:                 120   AIC:                             899.2
 ## Df Residuals:                     117   BIC:                             907.6
 ## Df Model:                           2                                         
@@ -857,8 +857,8 @@ I + c_{n-1}
 ## Dep. Variable:                  socst   R-squared:                       0.372
 ## Model:                            OLS   Adj. R-squared:                  0.326
 ## Method:                 Least Squares   F-statistic:                     8.204
-## Date:                Sun, 28 Mar 2021   Prob (F-statistic):           1.13e-08
-## Time:                        15:58:17   Log-Likelihood:                -424.85
+## Date:                Thu, 01 Apr 2021   Prob (F-statistic):           1.13e-08
+## Time:                        08:31:02   Log-Likelihood:                -424.85
 ## No. Observations:                 120   AIC:                             867.7
 ## Df Residuals:                     111   BIC:                             892.8
 ## Df Model:                           8                                         
@@ -898,8 +898,8 @@ I + c_{n-1}
 ## Dep. Variable:                  socst   R-squared:                       0.372
 ## Model:                            OLS   Adj. R-squared:                  0.326
 ## Method:                 Least Squares   F-statistic:                     8.204
-## Date:                Sun, 28 Mar 2021   Prob (F-statistic):           1.13e-08
-## Time:                        15:58:17   Log-Likelihood:                -424.85
+## Date:                Thu, 01 Apr 2021   Prob (F-statistic):           1.13e-08
+## Time:                        08:31:02   Log-Likelihood:                -424.85
 ## No. Observations:                 120   AIC:                             867.7
 ## Df Residuals:                     111   BIC:                             892.8
 ## Df Model:                           8                                         
@@ -1034,8 +1034,38 @@ The trade-off between bias and variance
 0, 0, \ldots, \frac{1}{\lambda_p}
 \end{bmatrix}
 \]</span></p>
+</div>
+<div id="regularization---a-better-approach-4" class="slide section level2">
+<h1>Regularization - a Better Approach</h1>
+<p>At first look eigen-decomposition seems a bit mysterious</p>
 <ul>
-<li><p>But, if columns of <span class="math inline">\(A\)</span> are not linearly independent, the covariance matrix is <strong>ill-posed</strong> and the eigenvectors are under-determined</p></li>
+<li>The eigenvalues are the <strong>roots</strong> of the covariance matrix
+<ul>
+<li>Similar to the familiar roots of a polynomial</li>
+</ul></li>
+<li>For square matrix, <span class="math inline">\(A\)</span>, and some norm 1 vector, <span class="math inline">\(x\)</span>, we can find a root, <span class="math inline">\(\lambda\)</span>:</li>
+</ul>
+<p><span class="math display">\[\begin{align}
+Ax &amp;=  \lambda x \\
+Ax - \lambda x &amp;= 0 \\
+(A - I \lambda) x &amp;= 0
+\end{align}\]</span></p>
+<ul>
+<li><p>For <span class="math inline">\(n\)</span> x <span class="math inline">\(n\)</span> dismensional matrix there are <span class="math inline">\(n\)</span> eigenvalues and orthogonal eigenvalue</p></li>
+<li><p>But, there is no guarantee that the <span class="math inline">\(n\)</span> values of <span class="math inline">\(\lambda\)</span> are unique</p>
+<ul>
+<li>If columns of <span class="math inline">\(A\)</span> are colinear, there are <span class="math inline">\(&lt; n\)</span> unique eigenvectors</li>
+</ul></li>
+</ul>
+</div>
+<div id="regularization---a-better-approach-5" class="slide section level2">
+<h1>Regularization - a Better Approach</h1>
+<p>If columns of <span class="math inline">\(A\)</span> are not linearly independent, the covariance matrix is <strong>ill-posed</strong> and the eigenvectors are under-determined</p>
+<p><span class="math display">\[
+cov(A) = Q \Lambda Q^T\\
+cov(A)^{-1} = Q^T \Lambda^{-1} Q
+\]</span></p>
+<ul>
 <li><p>The eigenvalues are ordered, <span class="math inline">\(\lambda_1 \ge \lambda_2 \ge \ldots \ge \lambda_p\)</span></p></li>
 <li><p>For ill-posed covariance matrix</p>
 <ul>
@@ -1104,7 +1134,7 @@ b = (A^TA + \alpha^2 I)^{-1}A^Tx\]</span></p>
 </div>
 <div id="l2-regularization-3" class="slide section level2">
 <h1>L2 Regularization</h1>
-<p>Eigendecomposition of the regularized covariance matrix:</p>
+<p>Eigen-decomposition of the regularized covariance matrix:</p>
 <p><span class="math display">\[A^TA + \alpha^2I = Q 
 \begin{bmatrix}
 \lambda_1 + \alpha^2, 0, \ldots, 0\\
@@ -1128,29 +1158,28 @@ Q\]</span></p>
 <div id="l2-regularization-4" class="slide section level2">
 <h1>L2 Regularization</h1>
 <p><strong>Example:</strong> compute the eigenvalues of a covariance matrix</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>test_scores_train[<span class="st">&#39;socst_zero_mean&#39;</span>] <span class="op">=</span> test_scores_train[<span class="st">&#39;socst&#39;</span>] <span class="op">-</span> np.mean(test_scores_train[<span class="st">&#39;socst&#39;</span>])</span></code></pre></div>
 <pre><code>## C:/Users/StevePC2/Anaconda3/python.exe:1: SettingWithCopyWarning: 
 ## A value is trying to be set on a copy of a slice from a DataFrame.
 ## Try using .loc[row_indexer,col_indexer] = value instead
 ## 
 ## See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>test_scores_test[<span class="st">&#39;socst_zero_mean&#39;</span>] <span class="op">=</span> test_scores_test[<span class="st">&#39;socst&#39;</span>] <span class="op">-</span> np.mean(test_scores_test[<span class="st">&#39;socst&#39;</span>])</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>Y, X <span class="op">=</span> dmatrices(<span class="st">&quot;socst_zero_mean ~ C(ses, levels=[1,2,3])*C(prog, levels=[1,2,3])&quot;</span>, data<span class="op">=</span>test_scores_train)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>cov_X <span class="op">=</span> np.matmul(np.transpose(X),X)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>cov_X <span class="op">=</span> np.divide(cov_X, <span class="bu">float</span>(cov_X.shape[<span class="dv">0</span>]))</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>np.real(np.linalg.eigvals(cov_X))</span></code></pre></div>
-<pre><code>## array([24.08929989,  8.27499023,  4.95873941,  1.47920625,  1.20919067,
-##         0.96469703,  0.07152211,  0.24371898,  0.26419097])</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>test_scores[<span class="st">&#39;socst_zero_mean&#39;</span>] <span class="op">=</span> test_scores[<span class="st">&#39;socst&#39;</span>] <span class="op">-</span> np.mean(test_scores[<span class="st">&#39;socst&#39;</span>])</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>Y, X <span class="op">=</span> dmatrices(<span class="st">&quot;socst_zero_mean ~ C(ses, levels=[1,2,3])*C(prog, levels=[1,2,3])&quot;</span>, data<span class="op">=</span>test_scores)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>cov_X <span class="op">=</span> np.matmul(np.transpose(X),X)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>cov_X <span class="op">=</span> np.divide(cov_X, <span class="bu">float</span>(cov_X.shape[<span class="dv">0</span>]))</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>np.real(np.linalg.eigvals(cov_X))</span></code></pre></div>
+<pre><code>## array([41.33783544, 13.34471885,  8.85600018,  2.37491505,  1.7218998 ,
+##         1.6220889 ,  0.11774255,  0.38848204,  0.45853941])</code></pre>
 <p>The condition number of the covariance is <span class="math inline">\(\sim 100\)</span></p>
 <p><strong>Add regularization</strong> with <span class="math inline">\(\alpha=0.1\)</span> and compute the eigenvalues</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>alpha_sqr <span class="op">=</span> <span class="fl">0.1</span> </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>alpha_sqr <span class="op">=</span> np.diag([alpha_sqr] <span class="op">*</span> cov_X.shape[<span class="dv">0</span>])</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#alpha_sqr = np.diag([alpha] * cov_X.shape[0])</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#cov_X = np.divide(np.matmul(np.transpose(X),X), float(cov_X.shape[0]))</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>cov_X <span class="op">=</span> np.add(cov_X, alpha_sqr)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>np.real(np.linalg.eigvals(cov_X))</span></code></pre></div>
-<pre><code>## array([24.18929989,  8.37499023,  5.05873941,  1.57920625,  1.30919067,
-##         1.06469703,  0.17152211,  0.34371898,  0.36419097])</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>alpha_sqr <span class="op">=</span> <span class="fl">0.1</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>alpha_sqr <span class="op">=</span> np.diag([alpha_sqr] <span class="op">*</span> cov_X.shape[<span class="dv">0</span>])</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#alpha_sqr = np.diag([alpha] * cov_X.shape[0])</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#cov_X = np.divide(np.matmul(np.transpose(X),X), float(cov_X.shape[0]))</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>cov_X <span class="op">=</span> np.add(cov_X, alpha_sqr)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>np.real(np.linalg.eigvals(cov_X))</span></code></pre></div>
+<pre><code>## array([41.43783544, 13.44471885,  8.95600018,  2.47491505,  1.8218998 ,
+##         1.7220889 ,  0.21774255,  0.48848204,  0.55853941])</code></pre>
 <p>The condition number of the covariance is <span class="math inline">\(\sim 10\)</span></p>
 </div>
 <div id="l2-regularization-5" class="slide section level2">
@@ -1169,28 +1198,28 @@ L2 norm constraint of model coefficients
 <div id="l2-regularization-6" class="slide section level2">
 <h1>L2 Regularization</h1>
 <p>Example: Increasing constraint on model coefficients with larger L2 regularization hyperparameter</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regularized_coefs(df_train, df_test, alphas, L1_wt<span class="op">=</span><span class="fl">0.0</span>, n_coefs<span class="op">=</span><span class="dv">8</span>,</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                      formula <span class="op">=</span> <span class="st">&#39;socst_zero_mean ~ C(ses)*C(prog)&#39;</span>, </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                      label<span class="op">=</span><span class="st">&#39;socst_zero_mean&#39;</span>):</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">&#39;&#39;&#39;Function that computes a linear model for each value of the regualarization </span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">    parameter alpha and returns an array of the coefficient values. The L1_wt </span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">    determines the trade-off between L1 and L2 regualarization&#39;&#39;&#39;</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    coefs <span class="op">=</span> np.zeros((<span class="bu">len</span>(alphas),n_coefs <span class="op">+</span> <span class="dv">1</span>))</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    MSE_train <span class="op">=</span> []</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    MSE_test <span class="op">=</span> []</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,alpha <span class="kw">in</span> <span class="bu">enumerate</span>(alphas):</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">## First compute the training MSE</span></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        temp_mod <span class="op">=</span> smf.ols(formula, data<span class="op">=</span>df_train).fit_regularized(alpha<span class="op">=</span>alpha,L1_wt<span class="op">=</span>L1_wt)</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>        coefs[i,:] <span class="op">=</span> temp_mod.params</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>        MSE_train.append(np.mean(np.square(df_train[label] <span class="op">-</span> temp_mod.predict(df_train))))</span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">## Then compute the test MSE</span></span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        MSE_test.append(np.mean(np.square(df_test[label] <span class="op">-</span> temp_mod.predict(df_test))))</span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> coefs, MSE_train, MSE_test</span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.arange(<span class="fl">0.0</span>, <span class="fl">0.3</span>, step <span class="op">=</span> <span class="fl">0.003</span>)    </span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>Betas, MSE_test, MSE_train <span class="op">=</span> regularized_coefs(test_scores_train, test_scores_test, alphas)</span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="co">#Betas[:5]</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> regularized_coefs(df_train, df_test, alphas, L1_wt<span class="op">=</span><span class="fl">0.0</span>, n_coefs<span class="op">=</span><span class="dv">8</span>,</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                      formula <span class="op">=</span> <span class="st">&#39;socst_zero_mean ~ C(ses)*C(prog)&#39;</span>, </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                      label<span class="op">=</span><span class="st">&#39;socst_zero_mean&#39;</span>):</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">&#39;&#39;&#39;Function that computes a linear model for each value of the regualarization </span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">    parameter alpha and returns an array of the coefficient values. The L1_wt </span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">    determines the trade-off between L1 and L2 regualarization&#39;&#39;&#39;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    coefs <span class="op">=</span> np.zeros((<span class="bu">len</span>(alphas),n_coefs <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    MSE_train <span class="op">=</span> []</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    MSE_test <span class="op">=</span> []</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i,alpha <span class="kw">in</span> <span class="bu">enumerate</span>(alphas):</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        <span class="co">## First compute the training MSE</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        temp_mod <span class="op">=</span> smf.ols(formula, data<span class="op">=</span>df_train).fit_regularized(alpha<span class="op">=</span>alpha,L1_wt<span class="op">=</span>L1_wt)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        coefs[i,:] <span class="op">=</span> temp_mod.params</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        MSE_train.append(np.mean(np.square(df_train[label] <span class="op">-</span> temp_mod.predict(df_train))))</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        <span class="co">## Then compute the test MSE</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>        MSE_test.append(np.mean(np.square(df_test[label] <span class="op">-</span> temp_mod.predict(df_test))))</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> coefs, MSE_train, MSE_test</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.arange(<span class="fl">0.0</span>, <span class="fl">0.3</span>, step <span class="op">=</span> <span class="fl">0.003</span>)    </span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>Betas, MSE_test, MSE_train <span class="op">=</span> regularized_coefs(test_scores_train, test_scores_test, alphas)</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a><span class="co">#Betas[:5]</span></span></code></pre></div>
 </div>
 <div id="l2-regularization-7" class="slide section level2">
 <h1>L2 Regularization</h1>
@@ -1239,9 +1268,9 @@ L1 norm constraint of model coefficients
 <div id="l1-regularization-3" class="slide section level2">
 <h1>L1 Regularization</h1>
 <p>Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.arange(<span class="fl">0.0</span>, <span class="fl">0.5</span>, step <span class="op">=</span> <span class="fl">0.005</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>Betas, MSE_train, MSE_test <span class="op">=</span> regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt<span class="op">=</span><span class="fl">1.0</span>)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>Betas[:<span class="dv">5</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.arange(<span class="fl">0.0</span>, <span class="fl">0.5</span>, step <span class="op">=</span> <span class="fl">0.005</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>Betas, MSE_train, MSE_test <span class="op">=</span> regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>Betas[:<span class="dv">5</span>]</span></code></pre></div>
 <pre><code>## array([[ -6.52032993,   4.9411634 ,   8.48005864,  11.78120324,
 ##         -10.90012816,  -5.61643065,  -7.45952169,   7.94289118,
 ##           3.69873278],
@@ -1289,9 +1318,9 @@ L1 norm constraint of model coefficients
 <div id="elastic-net-regularization-1" class="slide section level2">
 <h1>Elastic Net Regularization</h1>
 <p>Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.arange(<span class="fl">0.0</span>, <span class="fl">0.5</span>, step <span class="op">=</span> <span class="fl">0.005</span>)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>Betas, MSE_train, MSE_test <span class="op">=</span> regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>Betas[:<span class="dv">5</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.arange(<span class="fl">0.0</span>, <span class="fl">0.5</span>, step <span class="op">=</span> <span class="fl">0.005</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Betas, MSE_train, MSE_test <span class="op">=</span> regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>Betas[:<span class="dv">5</span>]</span></code></pre></div>
 <pre><code>## array([[ -6.52032993,   4.9411634 ,   8.48005864,  11.78120324,
 ##         -10.90012816,  -5.61643065,  -7.45952169,   7.94289118,
 ##           3.69873278],
@@ -1316,8 +1345,8 @@ L1 norm constraint of model coefficients
 <div id="elastic-net-regularization-3" class="slide section level2">
 <h1>Elastic Net Regularization</h1>
 <p>Check the model summary for <span class="math inline">\(\lambda=0.5\)</span>, <span class="math inline">\(\alpha=0.06\)</span></p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>lm_elastic <span class="op">=</span> smf.ols(<span class="st">&quot;socst_zero_mean ~ C(ses)*C(prog)&quot;</span>, data<span class="op">=</span>test_scores_train).fit_regularized(alpha<span class="op">=</span><span class="fl">0.06</span>, L1_wt<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>lm_elastic.params</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>lm_elastic <span class="op">=</span> smf.ols(<span class="st">&quot;socst_zero_mean ~ C(ses)*C(prog)&quot;</span>, data<span class="op">=</span>test_scores_train).fit_regularized(alpha<span class="op">=</span><span class="fl">0.06</span>, L1_wt<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>lm_elastic.params</span></code></pre></div>
 <pre><code>## Intercept                  -3.966399
 ## C(ses)[T.2]                 2.319184
 ## C(ses)[T.3]                 3.861480
