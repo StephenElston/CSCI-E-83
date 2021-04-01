@@ -526,6 +526,14 @@ Steve Elston
   </p>
   <p class="date">03/28/2021</p>
 </div>
+<div id="introduction" class="slide section level2">
+<h1>Introduction</h1>
+<ul>
+<li><p>Models with nonlinear response</p></li>
+<li><p>The generalized linear model</p></li>
+<li><p>Link function transforms to linear model</p></li>
+</ul>
+</div>
 <div id="models-with-nonlinear-response" class="slide section level2">
 <h1>Models with Nonlinear Response</h1>
 <p>How do we deal with models that do not have nonlinear response variables?</p>
@@ -534,7 +542,10 @@ Steve Elston
 <ul>
 <li>A binary classifier</li>
 </ul></li>
-<li><p>Intensity of an arrival process, <span class="math inline">\(poisson(\lambda)\)</span> response</p></li>
+<li><p>Intensity of an arrival process, <span class="math inline">\(poisson(\lambda)\)</span> response</p>
+<ul>
+<li>Estiamte the parameter $</li>
+</ul></li>
 <li><p>The <strong>generalized linear model (GLM)</strong> is a framework for these models</p></li>
 <li><p>For each distribution use a <strong>link function</strong> to transform to a linear model</p>
 <ul>
@@ -681,8 +692,8 @@ for model matrix <span class="math inline">\(X\)</span> and coefficient vector <
 ## Model Family:                Binomial   Df Model:                            1
 ## Link Function:                  logit   Scale:                          1.0000
 ## Method:                          IRLS   Log-Likelihood:                -86.978
-## Date:                Thu, 25 Mar 2021   Deviance:                       173.96
-## Time:                        18:33:07   Pearson chi2:                     199.
+## Date:                Wed, 31 Mar 2021   Deviance:                       173.96
+## Time:                        15:48:05   Pearson chi2:                     199.
 ## No. Iterations:                     4                                         
 ## Covariance Type:            nonrobust                                         
 ## ==============================================================================
@@ -754,6 +765,59 @@ for model matrix <span class="math inline">\(X\)</span> and coefficient vector <
 ## Precision    0.85          0.20
 ## Recall       0.76          0.31
 ## F1           0.80          0.24</code></pre>
+</div>
+<div id="what-is-deviance" class="slide section level2">
+<h1>What is Deviance?</h1>
+<p>The significance of a GLM is expressed in terms of <strong>deviance</strong></p>
+<ul>
+<li><p>Deviance can be challenging to understand what deviance really means</p></li>
+<li><p>Formally, deviance is the expected value of the ratio of one probability densitt function, <span class="math inline">\(f_1(y)\)</span> to a second probability density function, <span class="math inline">\(f_2(y)\)</span>:</p></li>
+</ul>
+<p><span class="math display">\[D\big[f_1(y),f_1(y) \Big] = 2 \int_y f_1(y) log \Bigg\{ \frac{f_1(y)}{f_2(y)} \Bigg\} dy\]</span></p>
+<p>If <span class="math inline">\(f_1(y) \rightarrow f_1(y)\)</span>, then:</p>
+<p><span class="math display">\[log \Bigg\{
+\frac{f_1(y)}{f_2(y)} \Bigg\} \rightarrow log(1) \rightarrow 0\]</span></p>
+<p>And, <span class="math inline">\(D\big[f_1(y),f_1(y) \Big] \rightarrow 0\)</span></p>
+</div>
+<div id="what-is-deviance-1" class="slide section level2">
+<h1>What is Deviance?</h1>
+<p>Deviance is a measure of the divergence between two distributions</p>
+<ul>
+<li>Consider an easy to understand form of deviance for the Normal distribution
+<ul>
+<li>the mean squared error of a model is the deviance</li>
+</ul></li>
+</ul>
+</div>
+<div id="what-is-deviance-2" class="slide section level2">
+<h1>What is Deviance?</h1>
+<p>For the model above the residuals would be Binomially distributed. We need a more general formulation of deviance for such a model. For a model with label vector <span class="math inline">\(y\)</span>, predictions<span class="math inline">\(\hat{\mu}\)</span>, and estimated model parameters, <span class="math inline">\(\hat{\theta}\)</span> the general form of deviance can be written:</p>
+<p><span class="math display">\[\begin{align}
+D(y,\hat{\mu}) &amp;= 2 \Big( log \big( p(y | \hat{\theta}_{S}) \big) - log \big( p(y | \hat{\theta}_{0}) \big) \Big) \\
+&amp;= 2 \Big( \mathcal{l}(y | \hat{\theta}_{S})  -  \mathcal{l}(y | \hat{\theta}_{0})  \Big)
+\end{align}\]</span></p>
+<p>where,<br />
+- <span class="math inline">\(\mathcal{l}(y | \hat{\theta}) \big)\)</span> is the log likelihood of a model with estimated parameters, <span class="math inline">\(\hat{\theta}\)</span>, given labels <span class="math inline">\(y\)</span>.<br />
+- <span class="math inline">\(\hat{\theta}_{S}\)</span> are the estimated parameters of a <strong>saturated</strong>; a hypothetical model, <span class="math inline">\(M_S\)</span>, with a parameter for each observation, and therefore having the best possible fit to the training data.<br />
+- <span class="math inline">\(\hat{\theta}_{0}\)</span> are the actual estimated parameters of the model, <span class="math inline">\(M_0\)</span>, that we wish to evaluate.</p>
+</div>
+<div id="what-is-deviance-3" class="slide section level2">
+<h1>What is Deviance?</h1>
+<p>This all seems rather abstract. In particular, what use is this hypothetical saturated model?</p>
+<p>Fortunately, we can use the <strong>deviance ratio</strong> to compare models in a form we can actually work with. The trick is to recognize that the log likelihood of the saturated model, <span class="math inline">\(\mathcal{l}(y | \hat{\theta}_{0})\)</span>, is just a constant. With this insight we can rewrite the deviance as:</p>
+<p><span class="math display">\[D(y,\hat{\mu}) = Constant + 2 \mathcal{l}(y | \hat{\theta}_{0})\]</span></p>
+<p>This looks a bit better! Now we can work with the deviance ratio to compare two models, <span class="math inline">\(M_1\)</span> and <span class="math inline">\(M_0\)</span>:</p>
+<p><span class="math display">\[\begin{align}
+D(\hat{\theta}_1,\hat{\theta}_0) &amp;= \frac{Constant + 2 \mathcal{l}(y | \hat{\theta}_{0})}{Constant + 2 \mathcal{l}(y | \hat{\theta}_{1})} \\ 
+&amp;= Constant + 2 \mathcal{l}(y | \hat{\theta}_{0}) - Constant - 2 \mathcal{l}(y | \hat{\theta}_{1}) \\
+&amp;= 2 \mathcal{l}(y | \hat{\theta}_{0}) - 2 \mathcal{l}(y | \hat{\theta}_{1})
+\end{align}\]</span></p>
+</div>
+<div id="what-is-deviance-4" class="slide section level2">
+<h1>What is Deviance?</h1>
+<p>Which model should we use as a comparison in the above relation? The <strong>null model</strong> is a good choice. The null model is just a model that makes predictions based on the expected value of mean. This formulation is called the <strong>null deviance</strong>, and is what is typically displayed by most statistical software packages, including statsmodels. Unfortunately, this quantity is usually just called, deviance, even when it is actually null deviance, something rather different.</p>
+<p>A nice property of null deviance is that for large number of samples (approaching infinity), it is Chi Squared distributed. Thus, we can test the statistical significance of the model against the null model using the Chi Squared test. Since the derivation of this test depends on something called Wilk’s theorem, this is often referred to as <strong>Wilk’s test</strong>.</p>
+<p>The null deviance is also useful for comparing models. If you have two models and want to know which is better, pick the one with the maximum null deviance.</p>
 </div>
 
   <!-- dynamically load mathjax for compatibility with self-contained -->

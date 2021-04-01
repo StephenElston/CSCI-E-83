@@ -30,10 +30,13 @@ matplotlib$use("Agg", force = TRUE)
 
 How do we deal with models that do not have nonlinear response variables?   
 
-- Example: binary response variable, $[0,1]$ response    
+- Example: binary response variable, $[0,1]$, $Bin(\theta)$ distributed     
+   - Probability parameter $\theta$
    - A binary classifier      
    
 - Intensity of an arrival process, $poisson(\lambda)$ response   
+   - $\lambda$ 
+   - Estimate the parameter $\lambda$    
 
 - The **generalized linear model (GLM)** is a framework for these models   
    
@@ -231,3 +234,73 @@ def print_metrics(labels, scores):
 print_metrics(test_scores['schtyp'], test_scores['score'])    
 ```
 
+
+## What is Deviance?
+
+The significance of a GLM is expressed in terms of **deviance**     
+
+- Deviance can be challenging to understand what deviance really means      
+
+- Formally, deviance is the expected value of the ratio of one probability densitt function, $f_1(y)$ to a second probability density function, $f_2(y)$:
+
+$$D\big[f_1(y),f_1(y) \Big] = 2 \int_y f_1(y) log \Bigg\{ \frac{f_1(y)}{f_2(y)} \Bigg\} dy$$
+
+If $f_1(y) \rightarrow f_1(y)$, then:
+
+$$log \Bigg\{
+\frac{f_1(y)}{f_2(y)} \Bigg\} \rightarrow log(1) \rightarrow 0$$
+
+And, $D\big[f_1(y),f_1(y) \Big] \rightarrow 0$
+
+
+## What is Deviance? 
+
+Deviance is a measure of the divergence between two distributions   
+
+- Consider an easy to understand form of deviance for the Normal distribution    
+   - the mean squared error of a model is the deviance  
+
+
+
+## What is Deviance?
+
+For the model above the residuals would be Binomially distributed. We need a more general formulation of deviance for such a model. For a model with label vector $y$, predictions$\hat{\mu}$, and estimated model parameters, $\hat{\theta}$ the general form of deviance can be written:
+
+\begin{align}
+D(y,\hat{\mu}) &= 2 \Big( log \big( p(y | \hat{\theta}_{S}) \big) - log \big( p(y | \hat{\theta}_{0}) \big) \Big) \\
+&= 2 \Big( \mathcal{l}(y | \hat{\theta}_{S})  -  \mathcal{l}(y | \hat{\theta}_{0})  \Big)
+\end{align}
+
+where,    
+- $\mathcal{l}(y | \hat{\theta}) \big)$ is the log likelihood of a model with estimated parameters, $\hat{\theta}$, given labels $y$.    
+- $\hat{\theta}_{S}$ are the estimated parameters of a **saturated**; a hypothetical model, $M_S$, with a parameter for each observation, and therefore having the best possible fit to the training data.   
+- $\hat{\theta}_{0}$ are the actual estimated parameters of the model, $M_0$, that we wish to evaluate.   
+
+
+
+## What is Deviance?
+
+
+This all seems rather abstract. In particular, what use is this hypothetical saturated model? 
+
+Fortunately, we can use the **deviance ratio** to compare models in a form we can actually work with. The trick is to recognize that the log likelihood of the saturated model, $\mathcal{l}(y | \hat{\theta}_{0})$, is just a constant. With this insight we can rewrite the deviance as:
+
+$$D(y,\hat{\mu}) = Constant + 2 \mathcal{l}(y | \hat{\theta}_{0})$$
+
+This looks a bit better! Now we can work with the deviance ratio to compare two models, $M_1$ and $M_0$:   
+
+\begin{align}
+D(\hat{\theta}_1,\hat{\theta}_0) &= \frac{Constant + 2 \mathcal{l}(y | \hat{\theta}_{0})}{Constant + 2 \mathcal{l}(y | \hat{\theta}_{1})} \\ 
+&= Constant + 2 \mathcal{l}(y | \hat{\theta}_{0}) - Constant - 2 \mathcal{l}(y | \hat{\theta}_{1}) \\
+&= 2 \mathcal{l}(y | \hat{\theta}_{0}) - 2 \mathcal{l}(y | \hat{\theta}_{1})
+\end{align}
+
+
+
+## What is Deviance?
+
+Which model should we use as a comparison in the above relation? The **null model** is a good choice. The null model is just a model that makes predictions based on the expected value of mean. This formulation is called the **null deviance**, and is what is typically displayed by most statistical software packages, including statsmodels. Unfortunately, this quantity is usually just called, deviance, even when it is actually null deviance, something rather different.   
+
+A nice property of null deviance is that for large number of samples (approaching infinity), it is Chi Squared distributed. Thus, we can test the statistical significance of the model against the null model using the Chi Squared test. Since the derivation of this test depends on something called Wilk's theorem, this is often referred to as **Wilk's test**. 
+
+The null deviance is also useful for comparing models. If you have two models and want to know which is better, pick the one with the maximum null deviance.  
