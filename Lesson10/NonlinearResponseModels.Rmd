@@ -34,15 +34,30 @@ How do we deal with models that do not have nonlinear response variables?
    - Probability parameter $\theta$
    - A binary classifier      
    
-- Intensity of an arrival process, $poisson(\lambda)$ response   
-   - $\lambda$ 
+- Example: Intensity of an arrival process, $poisson(\lambda)$ response   
+   - $\lambda$ is the averate rate or **intensity** of a point process 
    - Estimate the parameter $\lambda$    
-
-- The **generalized linear model (GLM)** is a framework for these models   
    
-- For each distribution use a **link function** to transform to a linear model   
-   - Find coefficients of transformed model with OLS!
-   - Works for all exponential family response distributions     
+- Example: Categorical response variable for $n$ categories, $Cat(\pi_1, \pi_2, \ldots, \pi_n)$:    
+   - $n$ category classifier
+   - Response is probability probability for each category, $\Pi = [\pi_1, \pi_2, \ldots, \pi_n]$ 
+
+
+
+## Models with Nonlinear Response    
+
+The **generalized linear model (GLM)** is a framework for nonlinear response models   
+
+- Nonlinear response is non-Normally distributed  
+   
+- For each distribution use a **link function** to transform to a linear model    
+   - Linear model has Normally distributed response   
+   - Link function transform nonlinear response to Normal distribution  
+
+- To compute the nonlinear response  
+   - Start with a linear model, OLS    
+   - Transform response with **inverse link function**    
+   - Works for all exponential family response distributions      
    
    
 ## The Generalized Linear Model   

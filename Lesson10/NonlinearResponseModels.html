@@ -538,18 +538,40 @@ Steve Elston
 <h1>Models with Nonlinear Response</h1>
 <p>How do we deal with models that do not have nonlinear response variables?</p>
 <ul>
-<li><p>Example: binary response variable, <span class="math inline">\([0,1]\)</span> response</p>
+<li>Example: binary response variable, <span class="math inline">\([0,1]\)</span>, <span class="math inline">\(Bin(\theta)\)</span> distributed
 <ul>
+<li>Probability parameter <span class="math inline">\(\theta\)</span></li>
 <li>A binary classifier</li>
 </ul></li>
-<li><p>Intensity of an arrival process, <span class="math inline">\(poisson(\lambda)\)</span> response</p>
+<li>Example: Intensity of an arrival process, <span class="math inline">\(poisson(\lambda)\)</span> response
 <ul>
-<li>Estiamte the parameter $</li>
+<li><span class="math inline">\(\lambda\)</span> is the averate rate or <strong>intensity</strong> of a point process</li>
+<li>Estimate the parameter <span class="math inline">\(\lambda\)</span></li>
 </ul></li>
-<li><p>The <strong>generalized linear model (GLM)</strong> is a framework for these models</p></li>
+<li>Example: Categorical response variable for <span class="math inline">\(n\)</span> categories, <span class="math inline">\(Cat(\pi_1, \pi_2, \ldots, \pi_n)\)</span>:
+<ul>
+<li><span class="math inline">\(n\)</span> category classifier</li>
+<li>Response is probability probability for each category, <span class="math inline">\(\Pi = [\pi_1, \pi_2, \ldots, \pi_n]\)</span></li>
+</ul></li>
+</ul>
+</div>
+<div id="models-with-nonlinear-response-1" class="slide section level2">
+<h1>Models with Nonlinear Response</h1>
+<p>The <strong>generalized linear model (GLM)</strong> is a framework for nonlinear response models</p>
+<ul>
+<li><p>Nonlinear response is non-Normally distributed</p></li>
 <li><p>For each distribution use a <strong>link function</strong> to transform to a linear model</p>
 <ul>
-<li>Find coefficients of transformed model with OLS!</li>
+<li>Linear model has Normally distributed response<br />
+</li>
+<li>Link function transform nonlinear response to Normal distribution</li>
+</ul></li>
+<li><p>To compute the nonlinear response</p>
+<ul>
+<li>Start with a linear model, OLS<br />
+</li>
+<li>Transform response with <strong>inverse link function</strong><br />
+</li>
 <li>Works for all exponential family response distributions</li>
 </ul></li>
 </ul>
@@ -692,8 +714,8 @@ for model matrix <span class="math inline">\(X\)</span> and coefficient vector <
 ## Model Family:                Binomial   Df Model:                            1
 ## Link Function:                  logit   Scale:                          1.0000
 ## Method:                          IRLS   Log-Likelihood:                -86.978
-## Date:                Wed, 31 Mar 2021   Deviance:                       173.96
-## Time:                        15:48:05   Pearson chi2:                     199.
+## Date:                Fri, 02 Apr 2021   Deviance:                       173.96
+## Time:                        13:46:55   Pearson chi2:                     199.
 ## No. Iterations:                     4                                         
 ## Covariance Type:            nonrobust                                         
 ## ==============================================================================
