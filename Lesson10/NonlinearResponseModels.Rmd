@@ -19,11 +19,15 @@ matplotlib$use("Agg", force = TRUE)
 
 ## Introduction  
 
-- Models with nonlinear response   
+- Building models with nonlinear or non-Normal response   
 
-- The generalized linear model     
+- Use generalized linear model for nonlinear response          
 
-- Link function transforms to linear model  
+- Link function transforms to nonlinear model to linear model       
+
+- Evaluating Binomial response models   
+
+- Compare model performance with deviance   
 
 
 ## Models with Nonlinear Response    
@@ -38,7 +42,7 @@ How do we deal with models that do not have nonlinear response variables?
    - $\lambda$ is the averate rate or **intensity** of a point process 
    - Estimate the parameter $\lambda$    
    
-- Example: Categorical response variable for $n$ categories, $Cat(\pi_1, \pi_2, \ldots, \pi_n)$:    
+- Example: Categorical response variable for $n$ categories, $Multi(\pi_1, \pi_2, \ldots, \pi_n)$:    
    - $n$ category classifier
    - Response is probability probability for each category, $\Pi = [\pi_1, \pi_2, \ldots, \pi_n]$ 
 
@@ -60,6 +64,25 @@ The **generalized linear model (GLM)** is a framework for nonlinear response mod
    - Works for all exponential family response distributions      
    
    
+## The Generalized Linear Model   
+
+Link functions are avaialble for many distributions      
+
+
+- Supported in [statsmodels](https://www.statsmodels.org/stable/glm.html)        
+
+- Supported in [Scikit-Learn](https://scikit-learn.org/stable/modules/linear_model.html#generalized-linear-regression)     
+
+- Examples: 
+   - Gaussian, identity function    
+   - Inverse Gaussian   
+   - Binomial, logit function    
+   - Multinomial  
+   - Poisson    
+   - Negative Binomial   
+   - Gamma   
+   - Tweedie   
+
 ## The Generalized Linear Model   
 
 Start with a regression model for binary classification - **logistic regression**   
@@ -88,6 +111,8 @@ for model matrix $X$ and coefficient vector $\vec{b}$
 - Given estimate of $\lambda$, compute $\theta$    
 
 $$\theta = \frac{1}{1 + e^\lambda} = \frac{1}{1 + e^{X \vec{b}}}$$
+
+The **inverse link function** for Binomial response!
 
 
 ## The Generalized Linear Model  
@@ -138,10 +163,11 @@ log_fun_vectorized = np.vectorize(log_fun)
 
 log_y = log_fun_vectorized(x_seq)
 
-plt.plot(x_seq, log_y)
-plt.title('Standard Logistic Function')
-plt.xlabel('x')
-plt.ylabel('y')
+fig, ax = plt.subplots(figsize=(4,3))
+ax.plot(x_seq, log_y)
+ax.set_title('Standard Logistic Function')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
 plt.grid()
 plt.show()
 ```
@@ -161,8 +187,8 @@ How can we evaluate a classifier's accuracy?
 - Determine proportions of test cases which are classified as:     
    - True Positives (TP): Are positive and should be positive      
    - True Negatives (TN): Are negative and should be negative    
-   - False Positives (FP): Classified as positive but are actually negative   
-   - False Negatives (FN): Classified as negative but are actually positive   
+   - False Positives (FP): Classified as positive but are actually negative; **Type I errors**   
+   - False Negatives (FN): Classified as negative but are actually positive; **Type II errors**   
 
 - Organize these metrics into a **confusion matrix**      
 
@@ -250,6 +276,22 @@ print_metrics(test_scores['schtyp'], test_scores['score'])
 ```
 
 
+## Example of Logisitic Regression     
+
+How can we understand the cuttoff value in terms of the CDF of the positive and negative cases?    
+
+```{python, echo=FALSE}
+fig, ax = plt.subplots(figsize=(4, 3)) # define axis
+sns.ecdfplot(x='predicted', hue='schtyp', data=test_scores, ax=ax)
+ax.set_ylabel('Cummulative probability')
+ax.axvline(0.18, color='red', linestyle='dotted')
+```
+
+- Positive cases to the left of cuttoff are Type II errors     
+- Negative cases to the right of cutoff are Type I errors   
+- Probability curves nearly the same = poor model   
+
+
 ## What is Deviance?
 
 The significance of a GLM is expressed in terms of **deviance**     
@@ -273,13 +315,16 @@ And, $D\big[f_1(y),f_1(y) \Big] \rightarrow 0$
 Deviance is a measure of the divergence between two distributions   
 
 - Consider an easy to understand form of deviance for the Normal distribution    
-   - the mean squared error of a model is the deviance  
+   
+- Model with Normally distributed response  
+   - The mean squared error of a model is the deviance      
+   - If two distribution are identical the deviance is 0    
 
 
 
 ## What is Deviance?
 
-For the model above the residuals would be Binomially distributed. We need a more general formulation of deviance for such a model. For a model with label vector $y$, predictions$\hat{\mu}$, and estimated model parameters, $\hat{\theta}$ the general form of deviance can be written:
+Deviance of a model can be evaluated using deviance with respect to a saturated model  
 
 \begin{align}
 D(y,\hat{\mu}) &= 2 \Big( log \big( p(y | \hat{\theta}_{S}) \big) - log \big( p(y | \hat{\theta}_{0}) \big) \Big) \\
@@ -287,22 +332,23 @@ D(y,\hat{\mu}) &= 2 \Big( log \big( p(y | \hat{\theta}_{S}) \big) - log \big( p(
 \end{align}
 
 where,    
-- $\mathcal{l}(y | \hat{\theta}) \big)$ is the log likelihood of a model with estimated parameters, $\hat{\theta}$, given labels $y$.    
-- $\hat{\theta}_{S}$ are the estimated parameters of a **saturated**; a hypothetical model, $M_S$, with a parameter for each observation, and therefore having the best possible fit to the training data.   
-- $\hat{\theta}_{0}$ are the actual estimated parameters of the model, $M_0$, that we wish to evaluate.   
+- $\mathcal{l}(y | \hat{\theta}) \big)$ is the log likelihood of model with estimated parameters, $\hat{\theta}$]          
+- $\hat{\theta}_{S}$ are parameters of a **saturated** model, $M_S$, with a parameter for each observation    
+- Saturated model has the best possible fit to the training data        
+- $\hat{\theta}_{0} parameters of model, $M_0$, to evaluate.   
 
 
 
 ## What is Deviance?
 
 
-This all seems rather abstract. In particular, what use is this hypothetical saturated model? 
+Fortunately, we can use the **deviance ratio** to compare models      
 
-Fortunately, we can use the **deviance ratio** to compare models in a form we can actually work with. The trick is to recognize that the log likelihood of the saturated model, $\mathcal{l}(y | \hat{\theta}_{0})$, is just a constant. With this insight we can rewrite the deviance as:
+- Trick is to recognize that the log likelihood of the saturated model, $\mathcal{l}(y | \hat{\theta}_{0})$, is a constant:
 
 $$D(y,\hat{\mu}) = Constant + 2 \mathcal{l}(y | \hat{\theta}_{0})$$
 
-This looks a bit better! Now we can work with the deviance ratio to compare two models, $M_1$ and $M_0$:   
+- Now the deviance ratio to compare two models, $M_1$ and $M_0$ is:   
 
 \begin{align}
 D(\hat{\theta}_1,\hat{\theta}_0) &= \frac{Constant + 2 \mathcal{l}(y | \hat{\theta}_{0})}{Constant + 2 \mathcal{l}(y | \hat{\theta}_{1})} \\ 
@@ -314,8 +360,30 @@ D(\hat{\theta}_1,\hat{\theta}_0) &= \frac{Constant + 2 \mathcal{l}(y | \hat{\the
 
 ## What is Deviance?
 
-Which model should we use as a comparison in the above relation? The **null model** is a good choice. The null model is just a model that makes predictions based on the expected value of mean. This formulation is called the **null deviance**, and is what is typically displayed by most statistical software packages, including statsmodels. Unfortunately, this quantity is usually just called, deviance, even when it is actually null deviance, something rather different.   
+Can compare with **null model** with **null deviance**     
 
-A nice property of null deviance is that for large number of samples (approaching infinity), it is Chi Squared distributed. Thus, we can test the statistical significance of the model against the null model using the Chi Squared test. Since the derivation of this test depends on something called Wilk's theorem, this is often referred to as **Wilk's test**. 
+ - Unfortunately, this quantity is usually just called, deviance, but is actually null deviance  
+- For large samples null deviance is Chi Squared distributed     
 
-The null deviance is also useful for comparing models. If you have two models and want to know which is better, pick the one with the maximum null deviance.  
+- Test statistical significance of the model against the null model using the Chi Squared test   
+- Depends on  Wilk's theorem, and is referred to as **Wilk's test**. 
+
+- Can comparing models with ratio of null deviance as well  
+
+
+## Summary  
+
+- Models with nonlinear response have non-Normal distributions  
+
+- The generalized linear model accomodates nonlinear response distributions          
+
+- Link function transforms to linear model       
+   - Inverse link function transforms from Normal distribution to response distribution   
+
+- Evaluating Binomial response models    
+   - Confusion matrix organizes 
+   - Compute metrics from elements of confsion matrix
+   - Use multiple evaluation criteria 
+
+- Compare model performance with deviance   
+
