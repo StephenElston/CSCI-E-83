@@ -39,7 +39,7 @@ How do we deal with models that do not have nonlinear response variables?
    - A binary classifier      
    
 - Example: Intensity of an arrival process, $poisson(\lambda)$ response   
-   - $\lambda$ is the averate rate or **intensity** of a point process 
+   - $\lambda$ is the average rate or **intensity** of a point process 
    - Estimate the parameter $\lambda$    
    
 - Example: Categorical response variable for $n$ categories, $Multi(\pi_1, \pi_2, \ldots, \pi_n)$:    
@@ -66,7 +66,7 @@ The **generalized linear model (GLM)** is a framework for nonlinear response mod
    
 ## The Generalized Linear Model   
 
-Link functions are avaialble for many distributions      
+Link functions are available for many distributions      
 
 
 - Supported in [statsmodels](https://www.statsmodels.org/stable/glm.html)        
@@ -91,7 +91,7 @@ Start with a regression model for binary classification - **logistic regression*
 
 $$y \sim Bi(n, \theta)$$
 
-- But finding best fit value of parameter $\theta$ directly is a nonlinear problem!   
+- But finding the best fit value of parameter $\theta$ directly is a nonlinear problem!   
 - Instead, define a **link function**, known as the **logit function** for parameter $\lambda$     
 
 $$\lambda = log \Bigg\{ \frac{\theta}{1-\theta} \Bigg\}$$
@@ -128,7 +128,7 @@ and
 $$\theta_i = \frac{1}{1 + e^{\beta_0 + \beta_1 x_i}}$$
 
 
-## Logisitc Regaresion Model
+## Logistic Regression Model
 
 What does the transformation function look like?    
 
@@ -216,9 +216,9 @@ The other metrics are defined as follows:
 - Is a trade-off between precision and recall     
    - Consider changing the decision threshold    
    - High threshold $\rightarrow$ higher recall, more false negatives   
-   - Low threshold $\rightarrow$ higher precision, more false postives    
+   - Low threshold $\rightarrow$ higher precision, more false positives    
 
-## Example of Logisitic Regression    
+## Example of Logistic Regression    
 
 How well can we predict the type of school given the test scores?     
 
@@ -241,7 +241,7 @@ print(logistic_reg_model.summary())
 ```
 
 
-## Example of Logisitic Regression    
+## Example of Logistic Regression    
 
 The data frame now looks like this with the predicted probability and the binary scores:
 
@@ -250,7 +250,7 @@ test_scores.head(20)
 ```
 
 
-## Example of Logisitic Regression    
+## Example of Logistic Regression    
 
 Now, evaluate the model - the classifier is almost useless - **no Kagle awards!**:   
 
@@ -276,9 +276,9 @@ print_metrics(test_scores['schtyp'], test_scores['score'])
 ```
 
 
-## Example of Logisitic Regression     
+## Example of Logistic Regression     
 
-How can we understand the cuttoff value in terms of the CDF of the positive and negative cases?    
+How can we understand the cut-off value in terms of the CDF of the positive and negative cases?    
 
 ```{python, echo=FALSE}
 fig, ax = plt.subplots(figsize=(4, 3)) # define axis
@@ -287,8 +287,8 @@ ax.set_ylabel('Cummulative probability')
 ax.axvline(0.18, color='red', linestyle='dotted')
 ```
 
-- Positive cases to the left of cuttoff are Type II errors     
-- Negative cases to the right of cutoff are Type I errors   
+- Positive cases to the left of cut-off are Type II errors     
+- Negative cases to the right of cut-off are Type I errors   
 - Probability curves nearly the same = poor model   
 
 
@@ -298,7 +298,7 @@ The significance of a GLM is expressed in terms of **deviance**
 
 - Deviance can be challenging to understand what deviance really means      
 
-- Formally, deviance is the expected value of the ratio of one probability densitt function, $f_1(y)$ to a second probability density function, $f_2(y)$:
+- Formally, deviance is the expected value of the ratio of one probability density function, $f_1(y)$ to a second probability density function, $f_2(y)$:
 
 $$D\big[f_1(y),f_1(y) \Big] = 2 \int_y f_1(y) log \Bigg\{ \frac{f_1(y)}{f_2(y)} \Bigg\} dy$$
 
@@ -375,14 +375,14 @@ Can compare with **null model** with **null deviance**
 
 - Models with nonlinear response have non-Normal distributions  
 
-- The generalized linear model accomodates nonlinear response distributions          
+- The generalized linear model accommodates nonlinear response distributions          
 
 - Link function transforms to linear model       
    - Inverse link function transforms from Normal distribution to response distribution   
 
 - Evaluating Binomial response models    
    - Confusion matrix organizes 
-   - Compute metrics from elements of confsion matrix
+   - Compute metrics from elements of confusion matrix
    - Use multiple evaluation criteria 
 
 - Compare model performance with deviance   
