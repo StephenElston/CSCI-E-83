@@ -17,7 +17,7 @@ matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
 ```
 
-## Welcome to Second Half of CSCI E-83!    
+## Welcome to the Second Half of CSCI E-83!    
 
 Plan going forward:    
 
@@ -67,12 +67,12 @@ Bayesian analysis is in contrast to frequentist methods
   - We update beliefs based on additional data or evidence    
   - A critical difference with frequentist models which must be computed from a complete sample   
   
--	Inference can be performed on the posterior distribution by finding the maximum a postiori (MAP) value and a credible interval    
+-	Inference can be performed on the posterior distribution by finding the maximum a posteriori (MAP) value and a credible interval    
 
 
 
 
-## Introduciton - Why linear models? 
+## Introduction - Why linear models? 
 
 Linear models are widely used in statistics and machine learning   
 
@@ -90,7 +90,7 @@ Linear models are widely used in statistics and machine learning
 - In this lesson we take a **frequentist view** of the linear model    
    - Bayesian view is also widely used
 
-## Introduciton - Why linear models? 
+## Introduction - Why linear models? 
 
 Linear models are **readily interpretable!**       
 
@@ -343,7 +343,7 @@ $$\hat{y} = A \vec{b} + \vec{\epsilon}$$
 We are assuming that the **error, $\epsilon$, is all attributable to the dependent variable**, $y$         
 
 
-## Estimating the Model Parmaters      
+## Estimating the Model Parameters      
 
 How do we find the best value for the coefficients      
 
@@ -358,7 +358,7 @@ $$\min_{\vec{b}} \sum_i(y_i - A_{i,.} \hat{b})^2 = \min_{\vec{b}} \sum_i(y_i - \
 $A_{i,.}$ is the ith row of $A$
 
 
-## Estimating the Model Parmaters      
+## Estimating the Model Parameters      
 
 We could try a naive solution:    
 
@@ -373,7 +373,7 @@ Where $A^{-1}$ is the **matrix inverse** of $A$
 - There is no guarantee the inverse exists     
    - The $p$ features can be colinear   
 
-## Estimating the Model Parmaters   
+## Estimating the Model Parameters   
 
 We can use the **Normal equations**   
 
@@ -395,7 +395,7 @@ $$\vec{b} = (A^TA)^{-1}A^T \hat{y}$$
    - Much easier to take inverse   
    - But poor scaling for large-scale problems, $p > 1,000$   
    
-## Estimating the Model Parmaters   
+## Estimating the Model Parameters   
 
 What is the relationship between the normal equations, least squares and maximum likelihood?   
 
@@ -411,7 +411,7 @@ $$\mathcal{l}(\vec{b}, \sigma^2) = -\frac{1}{2} \Bigg\{ n\ log(\sigma^2) + \frac
 
 $$SS(\vec{b}) = \sum_{i=1}^n \big(y_i - x_i^T \vec{b}  \big)^2$$
 
-## Estimating the Model Parmaters
+## Estimating the Model Parameters
 
 Minimize sum of square errors to maximize log-likelihood    
 
@@ -429,11 +429,11 @@ $$\vec{b} = (A^TA)^{-1}A^T \hat{y}$$
 
 - But still need to compute inverse of covariance matrix, $A^TA$
 
-## Estimating the Model Parmaters   
+## Estimating the Model Parameters   
 
 Are there more scalable ways to solve the least squares problems?      
 
-- Inverting the covariance matrix is a big improvement over a naive approach, it still requires taking large matrix inverse at scale. $p > 1,000$     
+- Inverting the covariance matrix is a big improvement over a naive approach, it still requires taking a large matrix inverse at scale. $p > 1,000$     
 
 - Can we solve the least squares problem in a more computationally efficient way? 
 
@@ -450,7 +450,7 @@ $$\vec{y} - A \vec{b} = 0$$
    - Quasi-Newton methods like **L-BFGS**
 
 
-## Estimating the Model Parmaters   
+## Estimating the Model Parameters   
 
 What is the relationship between the normal equations, least squares and maximum likelihood?     
 
@@ -466,7 +466,7 @@ What is the relationship between the normal equations, least squares and maximum
 
    
 
-## Example - Specifing the Model    
+## Example - Specifying the Model    
 
 How do we specify the model formula with statsmodels?   
 
@@ -546,7 +546,7 @@ $$\vec{\epsilon} = \vec{y} - A\ \vec{b} = \vec{y} - \hat{y}$$
 $$\vec{\epsilon} \sim \mathcal{N}(0,\sigma^2)$$
 
 - The residuals must be **homoskedastic** with respect to the fitted values    
-    - Homosedastic residuals have constant variance with predicted values    
+    - Homoskedastic residuals have constant variance with predicted values    
     
 - Any trend or structure in the residuals indicates a poor model fit    
    - In these cases variance is not constant and we say these are **heteroskedastic** residuals       
@@ -740,7 +740,7 @@ When evaluating any machine learning model consider **all evaluation methods ava
 
 - **Different methods highlight different problems** with your model     
 
-- Don't forget to check that the **model must make sense** for you application! 
+- Don't forget to check that the **model must make sense** for your application! 
 
 
 ## Extending the Linear Model
@@ -752,7 +752,7 @@ We extend the linear model by adding new features or predictor variables
 - Other exogenous variables 
 
 - We prefer the simplest model that does a reasonable job   
-   - The principle of **Ocam's razor**  
+   - The principle of **Occam's razor**  
 
 - Must consider the **bias-variance trade-off**     
 
@@ -895,7 +895,7 @@ ols_model_3 = smf.ols(formula = 'y ~ x + I(x**2)', data=sim_data_2).fit()
 sim_data_2['predicted'] = ols_model_3.predict(sim_data_2.x)
 
 ## Print the model coefficient
-print('Intercept = %4.3f  Parial Slope = %4.3f  Second Order Partial slope = %4.3f' % (ols_model_3._results.params[0], ols_model_3._results.params[1], ols_model_3._results.params[2]))
+print('Intercept = %4.3f  Partial Slope = %4.3f  Second Order Partial slope = %4.3f' % (ols_model_3._results.params[0], ols_model_3._results.params[1], ols_model_3._results.params[2]))
 
 ## Display the results 
 plt.rc('font', size=12)
@@ -952,7 +952,7 @@ Outliers are a persistent problem with statistical and machine learning models
    - Result of improper stratification    
 
 - But, may be of interest    
-   - Depending on application can be the **most interesting values**!!    
+   - Depending on the application can be the **most interesting values**!!    
    - May need to explicitly model 
    - Example: Fraud detection   
    - Example: Scientific discovery  
@@ -980,7 +980,7 @@ ols_model_ol = smf.ols(formula = 'y ~ x', data=sim_data_ol).fit()
 sim_data_ol['predicted_ol'] = ols_model_ol.predict(sim_data_ol.x)
 
 ## Print the model coefficient
-print('Intercept = %4.3f  Parial Slope = %4.3f' % (ols_model_ol._results.params[0], ols_model_ol._results.params[1]))
+print('Intercept = %4.3f  Partial Slope = %4.3f' % (ols_model_ol._results.params[0], ols_model_ol._results.params[1]))
 
 ## Display the results 
 plt.rc('font', size=12)
@@ -1203,7 +1203,7 @@ Linear models are a flexible and widely used class of models
 - SGD and L-FBGS algorithms allow massive scaling of linear models   
 
 - We prefer the simplest model that does a reasonable job   
-   - The principle of **Ocam's razor**  
+   - The principle of **Occam's razor**  
 
 - Must consider the **bias-variance trade-off**  
 
@@ -1219,7 +1219,7 @@ When evaluating any machine learning model consider **all evaluation methods ava
 
 - **Different methods highlight different problems** with your model     
 
-- Don't forget to check that the **model must make sense** for you application! 
+- Don't forget to check that the **model must make sense** for your application! 
 
 
 

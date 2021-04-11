@@ -26,7 +26,7 @@ Linear models are a flexible and widely used class of models
 - Can use many types of predictor variables   
 
 - We prefer the simplest model that does a reasonable job   
-   - The principle of **Ocam's razor**  
+   - The principle of **Occam's razor**  
 
 - Must consider the **bias-variance trade-off**  
 
@@ -42,7 +42,7 @@ When evaluating any machine learning model consider **all evaluation methods ava
 
 - **Different methods highlight different problems** with your model     
 
-- Don't forget to check that the **model must make sense** for you application! 
+- Don't forget to check that the **model must make sense** for your application! 
 
 
 ## Review      
@@ -132,7 +132,7 @@ Linear models, like nearly all machine learning models, use numeric features
    - n categories represented by n-1 dummy variables; all 0s encodes one level    
    
 - Binary variables are an exception    
-   - Repesent with single binay variable. [0,1] values
+   - Represent with a single binary variable. [0,1] values
 
 
 ## Working with Categorical Variables  
@@ -198,10 +198,10 @@ Wait! What happened to the coefficient for the first level of ses?
 
 - The intercept is the **mean response** of the first level     
 
-- The other coefficients are **contrasts** with respect to mean of the first level.       
+- The other coefficients are **contrasted** with respect to the mean of the first level.       
 - Consider the following possible ways we can encode responses to a categorical variable - often called a **treatment**      
    - For $n$ treatments, there are mean responses $[ \mu_1, \mu_2, \ldots, \mu_n ]$  
-   - The alternative encoding is a treatmentwith intercept, $I$, at $n - 1$ contrasts, $[ I, c_1, \ldots, c_{n-1}$    
+   - The alternative encoding is a treatment with intercept, $I$, at $n - 1$ contrasts, $[ I, c_1, \ldots, c_{n-1}$    
    
 - The means and contrasts are related:    
    
@@ -288,7 +288,7 @@ linear_model.summary()
 
 ## Dealing with Overfit Models
 
-Example: After 3 or 4 rounds of *guess and cut* feature punning, we arrive at a model will only siginficant coefficients:    
+Example: After 3 or 4 rounds of *guess and cut* feature pruning, we arrive at a model with only significant coefficients:    
 
 ```{python}
 linear_model = smf.ols("socst ~ - 1 + C(ses):C(prog)", data=test_scores_train).fit()
@@ -303,7 +303,7 @@ Let's compare the results of the unpruned and pruned models
 - The metrics indicate the fit is exactly the same   
    - Why prefer the pruned model?    
    
-- What are the consequence of the over-fit model?    
+- What are the consequences of the over-fit model?    
    - Several predictors (features) are included that are not needed     
    - Including non-significant predictors can only reduce generalization of the model    
    - Consider the effect of an unexpected value of a non-significant predictor on the response recalling the response is linear in the coefficients    
@@ -370,7 +370,7 @@ where,
 
 $Q$ is the $p$ x $p$ matrix of $p$ **orthonormal eigenvectors** of length $p$  
 
-And, the $p$ eigenvales are represented as diagonal matrix: 
+And, the $p$ eigenvalues are represented as diagonal matrix: 
 
 $$
 \Lambda = 
@@ -393,7 +393,7 @@ The inverse of the covariance can be computed from its eigendecomposition
 
 $$cov(A)^{-1} = Q^T \Lambda^{-1} Q$$
 
-Where $Q^{-1}$ is writen:       
+Where $Q^{-1}$ is written:       
 
 $$
 \Lambda^{-1} = 
@@ -421,7 +421,7 @@ Ax - \lambda x &= 0 \\
 (A - I \lambda) x &= 0
 \end{align}
 
-- For $n$ x $n$ dismensional matrix there are $n$ eigenvalues and orthogonal eigenvalue    
+- For $n$ x $n$ dimensional matrix there are $n$ eigenvalues and orthogonal eigenvalue    
 
 - But, there is no guarantee that the $n$ values of $\lambda$ are unique     
    - If columns of $A$ are colinear, there are $< n$ unique eigenvectors        
@@ -575,9 +575,9 @@ Example: Increasing constraint on model coefficients with larger L2 regularizati
 def regularized_coefs(df_train, df_test, alphas, L1_wt=0.0, n_coefs=8,
                       formula = 'socst_zero_mean ~ C(ses)*C(prog)', 
                       label='socst_zero_mean'):
-    '''Function that computes a linear model for each value of the regualarization 
+    '''Function that computes a linear model for each value of the regularization 
     parameter alpha and returns an array of the coefficient values. The L1_wt 
-    determines the trade-off between L1 and L2 regualarization'''
+    determines the trade-off between L1 and L2 regularization'''
     coefs = np.zeros((len(alphas),n_coefs + 1))
     MSE_train = []
     MSE_test = []
@@ -652,7 +652,7 @@ What are the properties of the L1 regularization
 
 - The hard constraint property leads to the term **lasso regularization**    
 
-- Lasso regression is a method of **feature selecttion**   
+- Lasso regression is a method of **feature selection**   
 
 
 ## L1 Regularization   
@@ -692,7 +692,7 @@ plot_coefs(Betas, alphas, MSE_train, MSE_test) #, ylim=(-10.0,10.0))
 
 ## Elastic Net Regularization    
 
-Do we always have to choose between soft constraint of L2 and hard constraint of L1?   
+Do we always have to choose between the soft constraint of L2 and the hard constraint of L1?   
 
 - L2 regularization works well for **colinear features**    
    - Down-weights colinear features   
