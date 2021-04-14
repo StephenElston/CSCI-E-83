@@ -801,12 +801,14 @@ w_t = N(0, \theta)\]</span></p>
 <div id="autocorrelation-properties-of-white-noise-series-1" class="slide section level2">
 <h1>Autocorrelation Properties of White Noise Series</h1>
 <p>We compute the autocorrelation at lag <span class="math inline">\(k\)</span>:</p>
-<p><span class="math display">\[\rho_k = \frac{\gamma_k}{n \sigma^2} = \frac{1}{n \sigma^2} {\Sigma_{t = 1}^n (x_{t} - \mu) \cdot (x_{t-k} - \mu)}\\
-where\\
-k = lag\\
-\gamma_k = covariance\ lag\ k\\
-\mu = mean\ of\ the\ series\\
-\sigma^2 = variance\ of\ the\ series = \frac{1}{n-1}\Sigma_{t = 1}^n (x_{t} - \mu) \cdot (x_{t} - \mu)\]</span></p>
+<p><span class="math display">\[\rho_k = \frac{\gamma_k}{n \sigma^2} = \frac{1}{n \sigma^2} \sum_{t = 1}^N (x_{t} - \mu) \cdot (x_{t-k} - \mu)\]</span><br />
+Where:<br />
+<span class="math display">\[\begin{align}
+k &amp;= lag\\
+\gamma_k &amp;= covariance\ lag\ k\\
+\mu &amp;= mean\ of\ the\ series\\ 
+\sigma^2 &amp;= variance\ of\ the\ series = \frac{1}{n-1}\Sigma_{t = 1}^N (x_{t} - \mu) \cdot (x_{t} - \mu)
+\end{align}\]</span></p>
 <ul>
 <li>Notice that for any series, <span class="math inline">\(\rho_0 = 1\)</span><br />
 </li>
@@ -1300,7 +1302,7 @@ therefore \\
 ## Model:                     ARMA(2, 0)   Log Likelihood                -152.786
 ## Method:                           mle   S.D. of innovations              0.861
 ## Date:                Sat, 10 Apr 2021   AIC                            311.573
-## Time:                        08:42:59   BIC                            319.935
+## Time:                        11:27:39   BIC                            319.935
 ## Sample:                    01-31-2005   HQIC                           314.969
 ##                          - 12-31-2014                                         
 ## ==============================================================================
@@ -1387,7 +1389,7 @@ x_t, \epsilon_{t-1},\epsilon_{t-2}
 ## Model:                     ARMA(0, 1)   Log Likelihood                -163.631
 ## Method:                           mle   S.D. of innovations              0.942
 ## Date:                Sat, 10 Apr 2021   AIC                            331.262
-## Time:                        08:43:00   BIC                            336.837
+## Time:                        11:27:39   BIC                            336.837
 ## Sample:                    01-31-2005   HQIC                           333.526
 ##                          - 12-31-2014                                         
 ## ==============================================================================
@@ -1620,23 +1622,23 @@ n = number\ of\ observations\]</span></p>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                             suppress_warnings<span class="op">=</span><span class="va">True</span>,  <span class="co"># don&#39;t want convergence warnings</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                             stepwise<span class="op">=</span><span class="va">True</span>)  <span class="co"># set to stepwise</span></span></code></pre></div>
 <pre><code>## Performing stepwise search to minimize bic
-## Fit ARIMA: (1, 1, 1)x(0, 1, 1, 12) (constant=True); AIC=-1808.195, BIC=-1788.614, Time=2.249 seconds
-## Fit ARIMA: (0, 1, 0)x(0, 1, 0, 12) (constant=True); AIC=-1573.987, BIC=-1566.154, Time=0.105 seconds
-## Fit ARIMA: (1, 1, 0)x(1, 1, 0, 12) (constant=True); AIC=-1706.102, BIC=-1690.437, Time=2.381 seconds
-## Fit ARIMA: (0, 1, 1)x(0, 1, 1, 12) (constant=True); AIC=-1810.577, BIC=-1794.912, Time=2.035 seconds
-## Fit ARIMA: (0, 1, 0)x(0, 1, 0, 12) (constant=False); AIC=-1575.980, BIC=-1572.064, Time=0.082 seconds
-## Fit ARIMA: (0, 1, 1)x(0, 1, 0, 12) (constant=True); AIC=-1704.947, BIC=-1693.198, Time=0.301 seconds
-## Fit ARIMA: (0, 1, 1)x(1, 1, 1, 12) (constant=True); AIC=-1812.972, BIC=-1793.391, Time=3.218 seconds
-## Fit ARIMA: (0, 1, 1)x(0, 1, 2, 12) (constant=True); AIC=-1786.851, BIC=-1767.270, Time=2.521 seconds
+## Fit ARIMA: (1, 1, 1)x(0, 1, 1, 12) (constant=True); AIC=-1808.195, BIC=-1788.614, Time=2.392 seconds
+## Fit ARIMA: (0, 1, 0)x(0, 1, 0, 12) (constant=True); AIC=-1573.987, BIC=-1566.154, Time=0.098 seconds
+## Fit ARIMA: (1, 1, 0)x(1, 1, 0, 12) (constant=True); AIC=-1706.102, BIC=-1690.437, Time=2.255 seconds
+## Fit ARIMA: (0, 1, 1)x(0, 1, 1, 12) (constant=True); AIC=-1810.577, BIC=-1794.912, Time=1.975 seconds
+## Fit ARIMA: (0, 1, 0)x(0, 1, 0, 12) (constant=False); AIC=-1575.980, BIC=-1572.064, Time=0.096 seconds
+## Fit ARIMA: (0, 1, 1)x(0, 1, 0, 12) (constant=True); AIC=-1704.947, BIC=-1693.198, Time=0.316 seconds
+## Fit ARIMA: (0, 1, 1)x(1, 1, 1, 12) (constant=True); AIC=-1812.972, BIC=-1793.391, Time=3.175 seconds
+## Fit ARIMA: (0, 1, 1)x(0, 1, 2, 12) (constant=True); AIC=-1786.851, BIC=-1767.270, Time=2.360 seconds
 ## Near non-invertible roots for order (0, 1, 1)(0, 1, 2, 12); setting score to inf (at least one inverse root too close to the border of the unit circle: 0.996)
-## Fit ARIMA: (0, 1, 1)x(1, 1, 0, 12) (constant=True); AIC=-1752.280, BIC=-1736.615, Time=1.302 seconds
-## Fit ARIMA: (0, 1, 1)x(1, 1, 2, 12) (constant=True); AIC=-1798.703, BIC=-1775.206, Time=6.469 seconds
+## Fit ARIMA: (0, 1, 1)x(1, 1, 0, 12) (constant=True); AIC=-1752.280, BIC=-1736.615, Time=1.254 seconds
+## Fit ARIMA: (0, 1, 1)x(1, 1, 2, 12) (constant=True); AIC=-1798.703, BIC=-1775.206, Time=6.279 seconds
 ## Near non-invertible roots for order (0, 1, 1)(1, 1, 2, 12); setting score to inf (at least one inverse root too close to the border of the unit circle: 0.991)
-## Fit ARIMA: (0, 1, 0)x(0, 1, 1, 12) (constant=True); AIC=-1689.780, BIC=-1678.031, Time=2.359 seconds
-## Fit ARIMA: (0, 1, 2)x(0, 1, 1, 12) (constant=True); AIC=-1808.489, BIC=-1788.908, Time=3.720 seconds
-## Fit ARIMA: (1, 1, 0)x(0, 1, 1, 12) (constant=True); AIC=-1771.684, BIC=-1756.019, Time=1.922 seconds
-## Fit ARIMA: (1, 1, 2)x(0, 1, 1, 12) (constant=True); AIC=-1796.422, BIC=-1772.925, Time=0.800 seconds
-## Total fit time: 29.468 seconds</code></pre>
+## Fit ARIMA: (0, 1, 0)x(0, 1, 1, 12) (constant=True); AIC=-1689.780, BIC=-1678.031, Time=2.217 seconds
+## Fit ARIMA: (0, 1, 2)x(0, 1, 1, 12) (constant=True); AIC=-1808.489, BIC=-1788.908, Time=4.206 seconds
+## Fit ARIMA: (1, 1, 0)x(0, 1, 1, 12) (constant=True); AIC=-1771.684, BIC=-1756.019, Time=2.140 seconds
+## Fit ARIMA: (1, 1, 2)x(0, 1, 1, 12) (constant=True); AIC=-1796.422, BIC=-1772.925, Time=0.904 seconds
+## Total fit time: 29.674 seconds</code></pre>
 </div>
 <div id="sarimax-example-2" class="slide section level2">
 <h1>SARIMAX Example</h1>
@@ -1655,7 +1657,7 @@ n = number\ of\ observations\]</span></p>
 ## Dep. Variable:                                  y   No. Observations:                  384
 ## Model:             SARIMAX(0, 1, 1)x(0, 1, 1, 12)   Log Likelihood                 909.289
 ## Date:                            Sat, 10 Apr 2021   AIC                          -1810.577
-## Time:                                    08:43:31   BIC                          -1794.912
+## Time:                                    11:28:11   BIC                          -1794.912
 ## Sample:                                         0   HQIC                         -1804.356
 ##                                             - 384                                         
 ## Covariance Type:                              opg                                         

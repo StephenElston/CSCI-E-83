@@ -279,12 +279,15 @@ Can measure the correlation of a time series with itself
 
 We compute the autocorrelation at lag $k$:  
 
-$$\rho_k = \frac{\gamma_k}{n \sigma^2} = \frac{1}{n \sigma^2} {\Sigma_{t = 1}^n (x_{t} - \mu) \cdot (x_{t-k} - \mu)}\\
-where\\
-k = lag\\
-\gamma_k = covariance\ lag\ k\\
-\mu = mean\ of\ the\ series\\
-\sigma^2 = variance\ of\ the\ series = \frac{1}{n-1}\Sigma_{t = 1}^n (x_{t} - \mu) \cdot (x_{t} - \mu)$$
+$$\rho_k = \frac{\gamma_k}{n \sigma^2} = \frac{1}{n \sigma^2} \sum_{t = 1}^N (x_{t} - \mu) \cdot (x_{t-k} - \mu)$$    
+Where:    
+\begin{align}
+k &= lag\\
+\gamma_k &= covariance\ lag\ k\\
+\mu &= mean\ of\ the\ series\\ 
+\sigma^2 &= variance\ of\ the\ series = \frac{1}{n-1}\Sigma_{t = 1}^N (x_{t} - \mu) \cdot (x_{t} - \mu)
+\end{align}
+
 
 - Notice that for any series, $\rho_0 = 1$   
 - In other words, the autocorrelation of any time series at **lag zero** equals 1.0   
