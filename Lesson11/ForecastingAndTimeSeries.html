@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Steve Elston" />
-  <meta name="date" content="2020-09-14" />
+  <meta name="date" content="2021-04-14" />
   <title>Forecasting And Time Series Analysis</title>
   <style type="text/css">
     code{white-space: pre-wrap;}
@@ -524,7 +524,7 @@ list-style-type: none;
   <p class="author">
 Steve Elston
   </p>
-  <p class="date">09/14/2020</p>
+  <p class="date">04/14/2021</p>
 </div>
 <div id="why-are-time-series-useful" class="slide section level2">
 <h1>Why Are Time Series Useful?</h1>
@@ -566,7 +566,7 @@ Yogi Berra
 <p>Examples of series correlation:</p>
 <ul>
 <li>Temperature forecasts, where the future values are correlated with the current values</li>
-<li>The opening price of a stock are correlated with the price at the previous close<br />
+<li>The opening price of a stock is correlated with the price at the previous close<br />
 </li>
 <li>The daily sales volume of a product is correlated with the previous sales volume<br />
 </li>
@@ -595,7 +595,7 @@ Joseph Fourier
 <ul>
 <li>Yule worked on sunspot time series</li>
 <li>Walker was attempting to forecast the tropical monsoon cycle</li>
-<li>Developed the <strong>autoregressive (AR)</strong> model to account for series correlation<br />
+<li>Developed the <strong>autoregressive (AR)</strong> model to account for serial correlation<br />
 </li>
 <li>The AR model is foundation of modern time series models</li>
 </ul>
@@ -654,7 +654,7 @@ Seminal time series analysis book
 <ul>
 <li><a href="https://cran.r-project.org/web/packages/bsts/bsts.pdf">R bsts package</a> and <a href="https://docs.pymc.io/api/distributions/timeseries.html">Python PyMC3</a></li>
 </ul></li>
-<li>Long short term memory (LSTM) models; more next quarter</li>
+<li>Long short term memory (LSTM) model</li>
 <li>Hidden Markov Models (HMMs) widely used
 <ul>
 <li><a href="https://hmmlearn.readthedocs.io/en/stable/">Python Scikit Learn HMM</a> or <a href="https://www.rdocumentation.org/packages/HMM/versions/1.0">R HMM package</a></li>
@@ -1301,8 +1301,8 @@ therefore \\
 ## Dep. Variable:                      y   No. Observations:                  120
 ## Model:                     ARMA(2, 0)   Log Likelihood                -152.786
 ## Method:                           mle   S.D. of innovations              0.861
-## Date:                Sat, 10 Apr 2021   AIC                            311.573
-## Time:                        11:27:39   BIC                            319.935
+## Date:                Thu, 15 Apr 2021   AIC                            311.573
+## Time:                        14:22:15   BIC                            319.935
 ## Sample:                    01-31-2005   HQIC                           314.969
 ##                          - 12-31-2014                                         
 ## ==============================================================================
@@ -1388,8 +1388,8 @@ x_t, \epsilon_{t-1},\epsilon_{t-2}
 ## Dep. Variable:                      y   No. Observations:                  120
 ## Model:                     ARMA(0, 1)   Log Likelihood                -163.631
 ## Method:                           mle   S.D. of innovations              0.942
-## Date:                Sat, 10 Apr 2021   AIC                            331.262
-## Time:                        11:27:39   BIC                            336.837
+## Date:                Thu, 15 Apr 2021   AIC                            331.262
+## Time:                        14:22:16   BIC                            336.837
 ## Sample:                    01-31-2005   HQIC                           333.526
 ##                          - 12-31-2014                                         
 ## ==============================================================================
@@ -1622,23 +1622,23 @@ n = number\ of\ observations\]</span></p>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                             suppress_warnings<span class="op">=</span><span class="va">True</span>,  <span class="co"># don&#39;t want convergence warnings</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                             stepwise<span class="op">=</span><span class="va">True</span>)  <span class="co"># set to stepwise</span></span></code></pre></div>
 <pre><code>## Performing stepwise search to minimize bic
-## Fit ARIMA: (1, 1, 1)x(0, 1, 1, 12) (constant=True); AIC=-1808.195, BIC=-1788.614, Time=2.392 seconds
-## Fit ARIMA: (0, 1, 0)x(0, 1, 0, 12) (constant=True); AIC=-1573.987, BIC=-1566.154, Time=0.098 seconds
-## Fit ARIMA: (1, 1, 0)x(1, 1, 0, 12) (constant=True); AIC=-1706.102, BIC=-1690.437, Time=2.255 seconds
-## Fit ARIMA: (0, 1, 1)x(0, 1, 1, 12) (constant=True); AIC=-1810.577, BIC=-1794.912, Time=1.975 seconds
-## Fit ARIMA: (0, 1, 0)x(0, 1, 0, 12) (constant=False); AIC=-1575.980, BIC=-1572.064, Time=0.096 seconds
-## Fit ARIMA: (0, 1, 1)x(0, 1, 0, 12) (constant=True); AIC=-1704.947, BIC=-1693.198, Time=0.316 seconds
-## Fit ARIMA: (0, 1, 1)x(1, 1, 1, 12) (constant=True); AIC=-1812.972, BIC=-1793.391, Time=3.175 seconds
-## Fit ARIMA: (0, 1, 1)x(0, 1, 2, 12) (constant=True); AIC=-1786.851, BIC=-1767.270, Time=2.360 seconds
+## Fit ARIMA: (1, 1, 1)x(0, 1, 1, 12) (constant=True); AIC=-1808.195, BIC=-1788.614, Time=2.201 seconds
+## Fit ARIMA: (0, 1, 0)x(0, 1, 0, 12) (constant=True); AIC=-1573.987, BIC=-1566.154, Time=0.064 seconds
+## Fit ARIMA: (1, 1, 0)x(1, 1, 0, 12) (constant=True); AIC=-1706.102, BIC=-1690.437, Time=2.177 seconds
+## Fit ARIMA: (0, 1, 1)x(0, 1, 1, 12) (constant=True); AIC=-1810.577, BIC=-1794.912, Time=1.797 seconds
+## Fit ARIMA: (0, 1, 0)x(0, 1, 0, 12) (constant=False); AIC=-1575.980, BIC=-1572.064, Time=0.098 seconds
+## Fit ARIMA: (0, 1, 1)x(0, 1, 0, 12) (constant=True); AIC=-1704.947, BIC=-1693.198, Time=0.262 seconds
+## Fit ARIMA: (0, 1, 1)x(1, 1, 1, 12) (constant=True); AIC=-1812.972, BIC=-1793.391, Time=3.134 seconds
+## Fit ARIMA: (0, 1, 1)x(0, 1, 2, 12) (constant=True); AIC=-1786.851, BIC=-1767.270, Time=2.286 seconds
 ## Near non-invertible roots for order (0, 1, 1)(0, 1, 2, 12); setting score to inf (at least one inverse root too close to the border of the unit circle: 0.996)
-## Fit ARIMA: (0, 1, 1)x(1, 1, 0, 12) (constant=True); AIC=-1752.280, BIC=-1736.615, Time=1.254 seconds
-## Fit ARIMA: (0, 1, 1)x(1, 1, 2, 12) (constant=True); AIC=-1798.703, BIC=-1775.206, Time=6.279 seconds
+## Fit ARIMA: (0, 1, 1)x(1, 1, 0, 12) (constant=True); AIC=-1752.280, BIC=-1736.615, Time=1.179 seconds
+## Fit ARIMA: (0, 1, 1)x(1, 1, 2, 12) (constant=True); AIC=-1798.703, BIC=-1775.206, Time=6.084 seconds
 ## Near non-invertible roots for order (0, 1, 1)(1, 1, 2, 12); setting score to inf (at least one inverse root too close to the border of the unit circle: 0.991)
-## Fit ARIMA: (0, 1, 0)x(0, 1, 1, 12) (constant=True); AIC=-1689.780, BIC=-1678.031, Time=2.217 seconds
-## Fit ARIMA: (0, 1, 2)x(0, 1, 1, 12) (constant=True); AIC=-1808.489, BIC=-1788.908, Time=4.206 seconds
-## Fit ARIMA: (1, 1, 0)x(0, 1, 1, 12) (constant=True); AIC=-1771.684, BIC=-1756.019, Time=2.140 seconds
-## Fit ARIMA: (1, 1, 2)x(0, 1, 1, 12) (constant=True); AIC=-1796.422, BIC=-1772.925, Time=0.904 seconds
-## Total fit time: 29.674 seconds</code></pre>
+## Fit ARIMA: (0, 1, 0)x(0, 1, 1, 12) (constant=True); AIC=-1689.780, BIC=-1678.031, Time=2.248 seconds
+## Fit ARIMA: (0, 1, 2)x(0, 1, 1, 12) (constant=True); AIC=-1808.489, BIC=-1788.908, Time=3.481 seconds
+## Fit ARIMA: (1, 1, 0)x(0, 1, 1, 12) (constant=True); AIC=-1771.684, BIC=-1756.019, Time=1.774 seconds
+## Fit ARIMA: (1, 1, 2)x(0, 1, 1, 12) (constant=True); AIC=-1796.422, BIC=-1772.925, Time=0.823 seconds
+## Total fit time: 27.613 seconds</code></pre>
 </div>
 <div id="sarimax-example-2" class="slide section level2">
 <h1>SARIMAX Example</h1>
@@ -1656,8 +1656,8 @@ n = number\ of\ observations\]</span></p>
 ## ==========================================================================================
 ## Dep. Variable:                                  y   No. Observations:                  384
 ## Model:             SARIMAX(0, 1, 1)x(0, 1, 1, 12)   Log Likelihood                 909.289
-## Date:                            Sat, 10 Apr 2021   AIC                          -1810.577
-## Time:                                    11:28:11   BIC                          -1794.912
+## Date:                            Thu, 15 Apr 2021   AIC                          -1810.577
+## Time:                                    14:22:45   BIC                          -1794.912
 ## Sample:                                         0   HQIC                         -1804.356
 ##                                             - 384                                         
 ## Covariance Type:                              opg                                         

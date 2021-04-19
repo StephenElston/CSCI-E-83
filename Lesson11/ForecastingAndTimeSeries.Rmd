@@ -1,7 +1,7 @@
 ---
 title: "Forecasting And Time Series Analysis"
 author: "Steve Elston"
-date: "09/14/2020"
+date: "04/14/2021"
 output: slidy_presentation
 ---
 
@@ -51,7 +51,7 @@ matplotlib$use("Agg", force = TRUE)
 Examples of series correlation:      
 
 - Temperature forecasts, where the future values are correlated with the current values 
--  The opening price of a stock are correlated with the price at the previous close   
+-  The opening price of a stock is correlated with the price at the previous close   
 - The daily sales volume of a product is correlated with the previous sales volume     
 - A medical patient's blood pressure reading is correlated with the previous observations    
 
@@ -75,7 +75,7 @@ Modern history of time series analysis started with George Udny Yule (1927) and 
 
 - Yule worked on sunspot time series
 - Walker was attempting to forecast the tropical monsoon cycle
-- Developed the **autoregressive (AR)** model to account for series correlation    
+- Developed the **autoregressive (AR)** model to account for serial correlation    
 - The AR model is foundation of modern time series models    
 
 
@@ -121,7 +121,7 @@ knitr::include_graphics(rep("../images/BoxJenkins.jpg"))
 - Considerable research continues to expand the frontiers   
 - Bayesian time series models
   * [R bsts package](https://cran.r-project.org/web/packages/bsts/bsts.pdf) and [Python PyMC3](https://docs.pymc.io/api/distributions/timeseries.html)
-- Long short term memory (LSTM) models; more next quarter
+- Long short term memory (LSTM) model
 - Hidden Markov Models (HMMs) widely used 
   * [Python Scikit Learn HMM](https://hmmlearn.readthedocs.io/en/stable/) or [R HMM package](https://www.rdocumentation.org/packages/HMM/versions/1.0)
 
