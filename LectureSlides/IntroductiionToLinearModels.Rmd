@@ -1,0 +1,1229 @@
+---
+title: "Introduction to Linear Models"
+author: "Steve Elston"
+date: "03/06/2021"
+output:
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("/usr/bin/python3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+## Welcome to the Second Half of CSCI E-83!    
+
+Plan going forward:    
+
+- Week 8: Introduction to Linear Models    
+- Week 9: Linear Models Part 2 - Categorical data and regularization     
+- Week 10: Nonlinear Regression Models and Classifiers     
+- Week 11: Time Series Models       
+- Week 12: Clustering Models    
+- Week 13: Bayes MCMC methods    
+- Week 14: Hierarchical models    
+- Submit Graduate Independent Projects  
+
+Let me know if you have suggestions to change this schedule  
+
+
+## Review      
+
+Bayesian analysis is a contrast to frequentist methods          
+
+-	The objective of Bayesian analysis is to compute a posterior distribution    
+  - Contrasts with frequentist statistics is to compute a point estimate and confidence interval from a sample      
+
+
+-	Bayesian models allow expressing prior information in the form of a prior distribution       
+  - Selection of prior distributions can be performed in a number of ways      
+
+-	The posterior distribution is said to quantify our current **belief**     
+  - We update beliefs based on additional data or evidence    
+  - A critical difference with frequentist models which must be computed from a complete sample   
+-	Inference can be performed on the posterior distribution by finding the maximum a postiori (MAP) value and a credible interval    
+
+- Predictions are made by simulating from the posterior distribution   a
+
+
+## Review         
+
+Bayesian analysis is in contrast to frequentist methods          
+
+-	The objective of Bayesian analysis is to compute a posterior distribution    
+  - Frequentist statistics seeks to compute a point estimate and confidence interval from a sample      
+
+
+-	Bayesian models allow expressing prior information in the form of a prior distribution       
+  - Selection of prior distributions can be performed in a number of ways      
+
+-	The posterior distribution is said to quantify our current **belief**     
+  - We update beliefs based on additional data or evidence    
+  - A critical difference with frequentist models which must be computed from a complete sample   
+  
+-	Inference can be performed on the posterior distribution by finding the maximum a posteriori (MAP) value and a credible interval    
+
+
+
+
+## Introduction - Why linear models? 
+
+Linear models are widely used in statistics and machine learning   
+
+- Understandable and interpretable    
+
+- Generalize well, if properly fit     
+
+- Highly scalable – computationally efficient    
+
+- Can approximate fairly complex functions    
+   - A basis of understanding complex models     
+   - Many non-linear models are at locally linear at convergence
+   - We can learn a lot about the convergence of DL and RL models from linear approximations    
+
+- In this lesson we take a **frequentist view** of the linear model    
+   - Bayesian view is also widely used
+
+## Introduction - Why linear models? 
+
+Linear models are **readily interpretable!**       
+
+- Human interpretability is of critical importance for models used for critical decisions    
+   - Health care   
+   - Safe operation of autonomous systems     
+   - Social justice for applications with human impact     
+   - etc.    
+   
+- Model coefficients provide information on response sensitivities to changes in variables    
+   - Low chance of *unexpected output*   
+   - Complex and nonlinear model result in poor human intuition about expected response    
+   - Complex and nonlinear models vulnerable to *unexpected output*    
+   
+   
+
+## What is regression?
+
+In statistics, **regression** refers to a family of model that attempt to predict the value of numeric random variable       
+
+- Regression is a common form of a linear model        
+
+- Linear regression is a building block of many statistical and ML methods:   
+   - multivariate regression and principal component
+   - Analysis of variance (ANOVA)
+   - Polynomial regression
+   - Logistic regression for binary classification
+   - Neural networks (and deep learning)
+
+
+## Terminology  
+
+The confusing division in terminology arises from different communities within statistics and machine learning
+
+| Machine Learning Terminology | Statistical Terminology          |
+|:---------------------------|:------------------------------|
+| Regression vs classification   | Continuous numeric vs categorical response      |
+| Learning algorithm or model    | Model                                |
+| Training                       | Fitting                              |
+| Trained model                  | Fitted model                         |
+| Supervised learning            | Predictive modeling      
+
+
+## Terminology    
+
+Different communities have created different terminology at different times for the variables in a machine learning models       
+
+Predicted Variable | Variables Used to Predict    
+:----------------------- | :------------------------------     
+ y | x   
+ Dependent | Independent    
+ Endogenous | Exogenous    
+ Response | Predictor    
+ Response | Explanatory    
+ Label | Feature    
+ Regressand | Regressors    
+ Outcome | Design   
+ Left Hand Side | Right Hand Side     
+ 
+
+
+## Formulating the Linear Model      
+
+The general formulation of a linear model can be written:     
+
+$$y = A \vec{b} + \vec{\epsilon}$$
+
+- $y$ is the vector of $n$ dependent variables or labels we seek to predict   
+
+- $A$ is the $n$ x $p$ **model matrix**      
+   - Defines the structure of the model    
+   - $p$ columns are values of the predictor variables or features 
+   - $n$ rows of training cases   
+   
+- $\vec{b}$ is the vector of $p$ model coefficients      
+   - One coefficient for each predictor or feature  
+   - Model is fit by finding an *optimal** value for each coefficient  
+
+- $\epsilon$ is the vector representing **prediction error**   
+   - The $n$ **residuals** 
+   - Is **iid Normally distributed**; $\epsilon \sim \mathcal{N}(0, \sigma^2)$
+
+
+## Single Predictor Regression
+
+Consider a simple case of regression with a single predictor   
+
+- Only two coefficients ($p=2$) defining a straight line            
+
+$$
+ \vec{b} = 
+\begin{bmatrix}
+\beta_0\\
+\beta_1
+\end{bmatrix}
+$$
+
+- $\beta_0 =$ the **intercept term**       
+   - Intercept is value of $y$ at $x=0$       
+
+- $\beta_1 =$ model **coefficient** for the predictor variable     
+   - The **slope coefficient**    
+
+- Given a variable predictor value $x_i$, the prediction, $\hat{y}_i$, is:
+
+$$\hat{y}_i = \beta_0 + \beta_1 x_i$$
+
+
+
+## Example      
+
+Let's start with a simulated data set with one predictor and one response variable 0
+
+- The response variable, $y$ is linear in $x$ with additive random noise $\sim \mathcal{N}(0,2)$
+
+- Intercept $= 0$ and slope $=1.0$
+
+- The first 10 rows:
+
+```{python, echo=FALSE}
+import numpy as np
+import numpy.random as nr
+import pandas as pd
+import statsmodels.formula.api as smf   
+import statsmodels as sm   
+import statsmodels.api as sm_api   
+from statsmodels.graphics.regressionplots import influence_plot, plot_regress_exog
+import scipy.stats as ss
+import matplotlib.pyplot as plt
+import seaborn as sns
+from math import sqrt   
+
+# Parameters of generated data
+n_points = 50
+x_start, x_end = 0, 10
+y_start, y_end = 0, 10
+y_sd = 2
+
+# Generate data columns
+nr.seed(5666)
+x_data = np.linspace(x_start, x_end, n_points) # The x values
+y_error = np.random.normal(loc=0, scale=y_sd, size=n_points) # The Normally distributed noise
+y_data = np.linspace(y_start, y_end, n_points) + y_error + 1.0 # The y values including an intercept
+
+# Put data in dataframe
+sim_data = pd.DataFrame({'x':x_data, 'y':y_data})
+
+sim_data.head(10)
+```
+
+
+## Example     
+
+Notice the linear trend for these data
+
+```{python, echo=FALSE}
+# Matplotlib may give some font errors when loading for the first time, you can ignore 
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ) 
+ax.plot(sim_data['x'], sim_data['y'], 'ko')
+plt.grid(True)
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_title('x vs y')
+plt.ylim(0,11);
+plt.show()
+```
+
+How do we compute a best fit model for this relationship 
+   
+
+## The Model Matrix      
+
+How do we create the model matrix   
+
+- Start with a data table of $n$ samples with $p=2$ columns         
+   - First column is predictor variable    
+   - Second column is the response variable   
+
+$$
+\begin{bmatrix}
+x_1, y_1\\
+x_2, y_2\\
+x_3, y_3\\
+\vdots, \vdots\\
+x_n, y_n
+\end{bmatrix}
+$$
+
+## The Model Matrix      
+
+The **model matrix** for this case, including the intercept term is:   
+
+
+$$
+\begin{bmatrix}
+1, x_1\\
+1, x_2\\
+1, x_3\\
+\vdots, \vdots\\
+1, x_n
+\end{bmatrix}
+$$
+
+The column of 1's define the intercept term   
+
+
+## Constructing the Model
+
+For the $n$ data samples and the parameter vector $\vec{b}$ we can construct the entire model:
+
+$$
+\begin{bmatrix}
+y_1\\
+y_2\\
+y_3\\
+\vdots\\
+y_n
+\end{bmatrix}
+= 
+\begin{bmatrix}
+1, x_1\\
+1, x_2\\
+1, x_3\\
+\vdots, \vdots\\
+1, x_n
+\end{bmatrix}
+\begin{bmatrix}
+\beta_0\\
+\beta_1
+\end{bmatrix}
++ 
+\begin{bmatrix}
+\epsilon_1\\
+\epsilon_2\\
+\epsilon_3\\
+\vdots\\
+\epsilon_n
+\end{bmatrix}
+$$
+For a single prediction:    
+
+$$y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$
+
+
+Or, in matrix notation: 
+
+$$\hat{y} = A \vec{b} + \vec{\epsilon}$$
+
+We are assuming that the **error, $\epsilon$, is all attributable to the dependent variable**, $y$         
+
+
+## Estimating the Model Parameters      
+
+How do we find the best value for the coefficients      
+
+- Need to minimize an **error metric**    
+
+- Find $\vec{b}$ by minimizing the **sum of squared errors** is known as the **least squares** method   
+
+- Given training data, minimize the squared error between the prediction, $\hat{y}_i$, and the observed response variable or label, $y_i$:    
+
+$$\min_{\vec{b}} \sum_i(y_i - A_{i,.} \hat{b})^2 = \min_{\vec{b}} \sum_i(y_i - \hat{y_i})^2 =  \min_{\vec{b}} \sum_i \epsilon_i^2$$
+
+$A_{i,.}$ is the ith row of $A$
+
+
+## Estimating the Model Parameters      
+
+We could try a naive solution:    
+
+$$ \vec{b} = A^{-1}y$$
+
+Where $A^{-1}$ is the **matrix inverse** of $A$     
+
+- This *might work*, **BUT**     
+
+- Direct matrix inverse algorithm has complexity $O(n^2)$, so inefficient   
+
+- There is no guarantee the inverse exists     
+   - The $p$ features can be colinear   
+
+## Estimating the Model Parameters   
+
+We can use the **Normal equations**   
+
+- Start with the problem:    
+
+$$y - A \vec{b} = \vec{\epsilon} \rightarrow 0$$
+
+- Multiply by $A^T$ and set $\vec{\epsilon} = 0$    
+
+$$A^TA \vec{b} = A^T \hat{y}$$
+
+- Taking the inverse of $A^T A$ we arrive at the normal equations  
+
+$$\vec{b} = (A^TA)^{-1}A^T \hat{y}$$
+
+- $A^TA$ is the **covariance matrix** for the data set     
+   - Is dimension only $p$ x $p$
+   - For single predictor model this is just dimension 2x2
+   - Much easier to take inverse   
+   - But poor scaling for large-scale problems, $p > 1,000$   
+   
+## Estimating the Model Parameters   
+
+What is the relationship between the normal equations, least squares and maximum likelihood?   
+
+- First consider how the Normal likelihood can be written in terms of $\vec{b}$ with $n$ feature vectors of observations $\vec{x}_i$ and $n$ labels $y_i$:
+
+$$\mathcal{L}(\vec{b}, \sigma^2) = \prod_{i=1}^n \frac{1}{(2 \pi \sigma^2)^{1/2}} exp \Big\{ -\frac{1}{2 \sigma^2} \big(y_i - x_i^T \vec{b}  \big)^2 \Big\}$$
+
+- The log-likelihood is then:     
+
+$$\mathcal{l}(\vec{b}, \sigma^2) = -\frac{1}{2} \Bigg\{ n\ log(\sigma^2) + \frac{1}{\sigma^2} \sum_{i=1}^n \big(y_i - x_i^T \vec{b}  \big)^2  \Bigg\}$$
+
+- For a fixed $\sigma^2$ one can see that the **log-likelihood is maximized by minimizing the squared error:**    
+
+$$SS(\vec{b}) = \sum_{i=1}^n \big(y_i - x_i^T \vec{b}  \big)^2$$
+
+## Estimating the Model Parameters
+
+Minimize sum of square errors to maximize log-likelihood    
+
+- Set the first derivative of sum of square errors to zero
+
+$$\frac{\partial\ SS(\vec{b})}{\partial\ \vec{b}} = 2 \sum_{i=1}^n x_i^T \big(y_i -  x_i^T \vec{b}  \big) = 0$$
+Or, in matrix form:     
+
+$$A^T (\vec{y} - A \vec{b}) = 0$$
+
+- Solving the above leads to the **normal equations:**    
+
+$$\vec{b} = (A^TA)^{-1}A^T \hat{y}$$
+
+
+- But still need to compute inverse of covariance matrix, $A^TA$
+
+## Estimating the Model Parameters   
+
+Are there more scalable ways to solve the least squares problems?      
+
+- Inverting the covariance matrix is a big improvement over a naive approach, it still requires taking a large matrix inverse at scale. $p > 1,000$     
+
+- Can we solve the least squares problem in a more computationally efficient way? 
+
+- Start with the linear equations for maximum likelihood 
+
+$$A^T (\vec{y} - A \vec{b}) = 0$$
+
+- Eliminate $A^T$ from both sides    
+
+$$\vec{y} - A \vec{b} = 0$$
+
+- We can find the minimum of this linear system with an efficient solver   
+   - **Stochastic Gradient Descent (SGD)** and its relatives     
+   - Quasi-Newton methods like **L-BFGS**
+
+
+## Estimating the Model Parameters   
+
+What is the relationship between the normal equations, least squares and maximum likelihood?     
+
+- Solving the least problem is equivalent to solving the maximum likelihood estimation problem   
+
+- The normal equations are a maximum likelihood estimator   
+
+- Solving the system of linear equations, $\vec{y} - A \vec{b} = 0$, results in a least squares maximum likelihood solution   
+
+- The above applies when residuals are Normally distributed    
+
+
+
+   
+
+## Example - Specifying the Model    
+
+How do we specify the model formula with statsmodels?   
+
+- Use the S/R style model formula developed by [Chambers and Hastie; Statistical Models in S (1992)](https://www.taylorfrancis.com/books/e/9780203738535).     
+
+- Uses the $\sim$ operator to mean *modeled by**  
+
+$$dependent\ variable\sim indepenent\ variables$$
+
+- Example; dependent variable (dv) modeled by two independent variables (var1 and var2):
+
+$$dv \sim var1 + var2$$
+
+- Example; dependent variable (dv) modeled by independent variables (var1) and its square, uses the $I()$ operator to wrap a function:
+
+$$dv \sim var1 + I(var1**2)$$
+
+- Example; dependent variable (dv) is modeled by two independent variables (var1 and var2) and the **interaction term** with no intercept term:
+
+\begin{align}
+dv &\sim -1 + var1*var2\\
+dv &\sim var1 + var2 + var1:var2
+\end{align}
+
+- Example; dependent variable (dv) modeled by independent numeric variable (var1) and a categorical variable (var2):
+
+$$dv \sim var1 + C(var2)$$
+
+
+## Example - Fitting the Model
+
+Fit the model using statsmodels.formula.api.ols to create a linear model object    
+
+```{python}
+## Define the regression model and fit it to the data
+ols_model = smf.ols(formula = 'y ~ x', data=sim_data).fit()
+
+## Print the model coefficient
+print('Intercept = %4.3f  Slope = %4.3f' % (ols_model._results.params[0], ols_model._results.params[1]))
+```
+
+Find the predicted values for each value of $x$:  
+
+```{python}
+# Add predicted to pandas dataframe
+sim_data['predicted'] = ols_model.predict(sim_data.x)
+# View head of data frame
+sim_data.head(5)
+```
+
+
+## Example - Model Checking    
+
+Plot the regression line against the original data    
+
+```{python, echo=FALSE}
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ); 
+sns.lineplot(x='x', y='predicted', data=sim_data, color='red', ax=ax);
+sns.scatterplot(x='x', y='y', data=sim_data, ax=ax);
+ax.set_title('Scatter plot of original data with linear regression line');
+ax.set_ylim(0,11);
+plt.show();
+```
+
+This looks like a good fit, but how good is it really? 
+
+
+## Evaluating Regression Models    
+
+Evaluation of regression models focuses on the residuals or errors     
+
+$$\vec{\epsilon} = \vec{y} - A\ \vec{b} = \vec{y} - \hat{y}$$
+
+- Residuals should be Normally distributed with $0$ mean and constant variance    
+
+$$\vec{\epsilon} \sim \mathcal{N}(0,\sigma^2)$$
+
+- The residuals must be **homoskedastic** with respect to the fitted values    
+    - Homoskedastic residuals have constant variance with predicted values    
+    
+- Any trend or structure in the residuals indicates a poor model fit    
+   - In these cases variance is not constant and we say these are **heteroskedastic** residuals       
+   - Heteroskedastic residuals indicate that model has not incorporated all available information   
+
+
+
+## Evaluating Regression Models      
+
+**Residual plots** is a key diagnostic for any regression model   
+
+- Plot residual against the predicted values    
+
+```{python, echo=FALSE}
+# Add residuals to pandas dataframe
+sim_data['resids'] = np.subtract(sim_data.predicted, sim_data.y)
+
+def residual_plot(df):
+    plt.rc('font', size=12)
+    fig, ax = plt.subplots(figsize=(8, 3), ) 
+    RMSE = np.std(df.resids)
+    sns.scatterplot(x='predicted', y='resids', data=df, ax=ax);
+    plt.axhline(0.0, color='red', linewidth=1.0);
+    plt.axhline(2.0*RMSE, color='red', linestyle='dashed', linewidth=1.0);
+    plt.axhline(-2.0*RMSE, color='red', linestyle='dashed', linewidth=1.0);
+    plt.title('PLot of residuals vs. predicted');
+    plt.xlabel('Predicted values');
+    plt.ylabel('Residuals');
+    plt.show()
+    
+residual_plot(sim_data)  
+#sns.scatterplot(x='predicted', y='resids', data=sim_data)
+#plt.show()
+```
+
+- These residuals look homoskedastic - we are happy! 
+
+
+## Evaluating Regression Models   
+
+Graphically test that the residuals are iid Normal   
+
+```{python, echo=FALSE}
+def plot_resid_dist(resids):
+    plt.rc('font', size=12)
+    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 3));
+    ## Plot a histogram
+    sns.histplot(x=resids, bins=20, kde=True, ax=ax[0]);
+    ax[0].set_title('Histogram of residuals');
+    ax[0].set_xlabel('Residual values');
+    ## Plot the Q-Q Normal plot
+    ss.probplot(resids, plot = ax[1]);
+    ax[1].set_title('Q-Q Normal plot of residuals');
+    plt.show();
+
+plot_resid_dist(sim_data.resids)
+```
+
+- These plots look promising   
+
+
+## Evaluating Regression Models  
+
+We can quantitatively understand model performance by defining these relationships     
+
+\begin{align}
+SST &= sum\ square\ total\ = \Sigma_i(y_i - \bar{Y})^2 \\
+SSE &= sum\ square\ explained\ = \Sigma_i{(\hat{y_i} - \bar{Y})^2}\\
+SSR &= sum\ square\ residual\ = \Sigma_i{(y_i - \hat{y_i})^2}\\
+\end{align}
+
+The relationship between these metrics: 
+
+$$SST = SSR + SSE$$
+
+Or, we can say that the sum of squares explained by the model is:   
+
+$$SSE = SST - SSR$$
+
+## Evaluating Regression Models    
+
+Compute the sums of squares for the running example   
+
+```{python}
+y_bar = np.mean(sim_data.y)
+SST = np.sum(np.square(np.subtract(sim_data.y, y_bar)))
+SSR = np.sum(np.square(sim_data.resids))
+SSE = np.sum(np.square(np.subtract(sim_data.predicted, y_bar)))
+print('SST = {0:6.2f}'.format(SST))
+print('SSE = {0:6.2f}'.format(SSE))
+print('SSR = {0:6.2f}'.format(SSR))
+print('SSE + SSR = {0:6.2f}'.format(SSE + SSR))
+```
+
+- The model has explained most of the TSS   
+
+
+## Evaluating Regression Models    
+
+We can compare the sum of square residual to the sum of square total to evaluate how well our model explains the data    
+
+$$SST - SSR = SSE$$
+We call the ratio $\frac{SSE}{SST}$ $R2$ or the **coefficient of determination**  
+
+$$R^2 = 1 - \frac{SSR}{SST}$$
+
+The $R^2$ for a perfect model would behave as follows:   
+
+\begin{align}
+SSR &\rightarrow 0\\
+R^2 &\rightarrow 1
+\end{align}
+
+A model which does not explain the data at all has: 
+
+\begin{align}
+SSR &\rightarrow SST \\ 
+R^2 &\rightarrow 0
+\end{align}
+
+
+## Evaluating Regression Models  
+
+As the number of model parameters increases the model will fit the data better  
+
+- But, the model will become over-fit as the number of parameters increases    
+
+- Must adjust model performance for degrees of freedom - **adjusted** $R^2$
+
+
+\begin{align}
+R^2_{adj} &= 1 - \frac{\frac{SSR}{df_{SSR}}}{\frac{SST}{df_{SST}}} = 1 - \frac{var_{residual}}{var_{total}}\\
+where\\
+df_{SSR} &= SSR\ degrees\ of\ freedom\\
+df_{SST} &= SST\ degrees\ of\ freedom
+\end{align}
+
+This gives $R^2_{adj}$ as:
+
+\begin{align}
+R^2_{adj} &= 1 - (1 - R^2) \frac{n - 1}{n - k}\\ 
+where\\
+n &= number\ of\ data\ samples\\
+k &= number\ of\ model\ coefficients
+\end{align}
+
+Or, we can rewrite $R^2_{adj}$ as:
+
+$$R^2_{adj} =  1.0 - \frac{SSR}{SST}  \frac{n - 1}{n - 1 - k}$$
+
+
+
+## Evaluating Regression Models  
+
+The summary table for the OLS model provides a number of summary statistics
+
+```{python}
+ols_model.summary()
+```
+
+
+## Evaluating Regression Models   
+
+We also can evaluate models by error metrics
+
+- The **root mean square error (RMSE)** is a measure of the mean of the squared residuals
+
+$$RMSE =  \frac{1}{n}\sqrt{\Sigma^n_{i-1} (y_i - \hat{y_i})^2} = \frac{\sqrt{SSR}}{n}$$
+
+```{python}
+print('RMSE = {0:6.2}'.format(sqrt(np.sum(np.square(sim_data.resids)))/ float(sim_data.shape[0])))
+```
+
+- The **median absolute error (MAE)** is a robust measure of mean residuals
+
+$$MAE = med \big[ |y_i - \hat{y_i}| \big]$$
+
+```{python}
+print('MAE= {0:6.2}'.format(np.median(np.absolute(sim_data.resids))))
+```
+
+- And many more possibilities...
+
+
+
+## Evaluating Regression Models
+
+When evaluating any machine learning model consider **all evaluation methods available**    
+
+- No one method is most important all of the time    
+
+- **Different methods highlight different problems** with your model     
+
+- Don't forget to check that the **model must make sense** for your application! 
+
+
+## Extending the Linear Model
+
+We extend the linear model by adding new features or predictor variables    
+
+- Higher order terms - e.g. polynomial regression    
+
+- Other exogenous variables 
+
+- We prefer the simplest model that does a reasonable job   
+   - The principle of **Occam's razor**  
+
+- Must consider the **bias-variance trade-off**     
+
+- **High complexity model** fits the training data well     
+   - **Low bias**
+   - But might not generalize well to new cases - **high variance**     
+   
+- **Lower complexity model** can **generalize** to new cases     
+   - **low variance**   
+   - But does not fit training data as well - **high bias**
+
+
+## Extending the Linear Model
+
+Building a model matrix for a more complex linear model is easy   
+
+- We now have $p + 1$ model coefficients, including intercept term   
+   
+$$\vec{b} = [\beta_0, \beta_1, \beta_2, \ldots, \beta_p]$$   
+
+- With $p$ features the model matrix is: 
+
+$$
+A = 
+\begin{bmatrix}
+1, x_{1,1}, x_{1,2}, \ldots, x_{1,p}\\
+1, x_{2,1}, x_{2,2}, \ldots, x_{2,p}\\
+1, x_{3,1}, x_{3,2}, \ldots, x_{3,p}\\
+\vdots,\ \vdots,\ \vdots,\ \vdots,\ \vdots\\
+1, x_{n,1}, x_{n,2}, \ldots, x_{n,p}
+\end{bmatrix}
+$$
+
+- We still seek the least squares solution     
+
+- The covariance matrix is now $p+1$ x $p+1$, including intercept term
+
+
+## Example of Multi-Feature Linear Model   
+
+A new simulated data set
+
+```{python, echo=FALSE}
+# Parameters of generated data
+n_points = 50
+x_start, x_end = -5, 5
+y_start, y_end = 0, 10
+y_sd = 10
+second_order_coefficient = 1.0
+
+# Generate data columns
+nr.seed(5677)
+x_data = np.linspace(x_start, x_end, n_points) # The x values
+y_error = np.random.normal(loc=0, scale=y_sd, size=n_points) # The Normally distributed noise
+y_data = x_data + np.multiply(np.square(x_data), second_order_coefficient) + y_error + 1.0 # The y values including an intercept
+
+# Put data in data frame
+sim_data_2 = pd.DataFrame({'x':x_data, 'y':y_data})
+
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ) 
+ax.plot(sim_data['x'], sim_data_2['y'], 'ko');
+plt.grid(True);
+ax.set_xlabel('x');
+ax.set_ylabel('y');
+ax.set_title('x vs y');
+plt.show();
+```
+
+## Example of Multi-Feature Linear Model   
+
+First, try a simple straight line model with intercept and slope terms    
+
+
+```{python, echo=FALSE}
+## Define the regression model and fit it to the data
+ols_model_2 = smf.ols(formula = 'y ~ x', data=sim_data_2).fit()
+
+## Print the model coefficient
+print('Intercept = %4.3f  Slope = %4.3f' % (ols_model_2._results.params[0], ols_model_2._results.params[1]))
+
+# Add predicted to pandas data frame
+sim_data_2['predicted'] = ols_model_2.predict(sim_data_2.x)
+
+## Display the results 
+plt.rc('font', size=12);
+fig, ax = plt.subplots(figsize=(6, 5), ); 
+sns.lineplot(x='x', y='predicted', data=sim_data_2, color='red', ax=ax);
+sns.scatterplot(x='x', y='y', data=sim_data_2, ax=ax);
+ax.set_title('Scatter plot of original data with linear regression line');
+plt.show();
+```
+
+## Example of Multi-Feature Linear Model 
+
+What do the residuals look like? 
+
+```{python, echo=FALSE}
+# Add residuals to pandas dataframe
+sim_data_2['resids'] = np.subtract(sim_data_2.predicted, sim_data_2.y)
+    
+residual_plot(sim_data_2)
+```
+
+
+- These residuals look heteroskedastic! 
+
+
+## Example of Multi-Feature Linear Model 
+
+Test that the residuals are iid Normal   
+
+```{python, echo=FALSE}
+plot_resid_dist(sim_data_2.resids)
+```
+
+
+- Do these residuals have Normal distribution? 
+
+## Example of Multi-Feature Linear Model 
+
+The model summary is:
+
+```{python, echo=FALSE}
+ols_model_2.summary()
+```
+
+
+## Example of Multi-Feature Linear Model 
+
+Let's add a second order polynomial term, so the model is now:    
+
+$$y = \beta_0 + \beta_1 x + \beta_2 x^2$$
+
+```{python, echo=FALSE}
+## Define the regression model and fit it to the data
+ols_model_3 = smf.ols(formula = 'y ~ x + I(x**2)', data=sim_data_2).fit()
+
+# Add predicted to pandas data frame
+sim_data_2['predicted'] = ols_model_3.predict(sim_data_2.x)
+
+## Print the model coefficient
+print('Intercept = %4.3f  Partial Slope = %4.3f  Second Order Partial slope = %4.3f' % (ols_model_3._results.params[0], ols_model_3._results.params[1], ols_model_3._results.params[2]))
+
+## Display the results 
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ) 
+sns.lineplot(x='x', y='predicted', data=sim_data_2, color='red', ax=ax);
+sns.scatterplot(x='x', y='y', data=sim_data_2, ax=ax);
+ax.set_title('Scatter plot of original data with linear regression line');
+plt.show();
+```
+
+
+## Example of Multi-Feature Linear Model 
+
+What do the residuals look like with the second order term? 
+
+```{python, echo=FALSE}
+# Add residuals to pandas dataframe
+sim_data_2['resids'] = np.subtract(sim_data_2.predicted, sim_data_2.y)
+    
+residual_plot(sim_data_2)
+```
+
+- Looks like there is a problem with this model   
+
+- These residuals are close to homoskedastic! 
+
+
+## Example of Multi-Feature Linear Model 
+
+Test that the residuals are iid Normal for the polynomial model   
+
+```{python, echo=FALSE}
+plot_resid_dist(sim_data_2.resids)
+```
+
+
+- Do these residuals have close to a Normal distribution? 
+
+## Example of Multi-Feature Linear Model 
+
+The second order model summary is:
+
+```{python, echo=FALSE}
+ols_model_3.summary()
+```
+
+
+## Dealing With Outliers  
+
+Outliers are a persistent problem with statistical and machine learning models   
+
+- What are outliers?    
+   - Errors or noisy measurements    
+   - Result of improper stratification    
+
+- But, may be of interest    
+   - Depending on the application can be the **most interesting values**!!    
+   - May need to explicitly model 
+   - Example: Fraud detection   
+   - Example: Scientific discovery  
+   
+- Outliers can be hard to detect   
+   - Difficult in high-dimensions   
+   - Often find by influence on model   
+
+
+## Dealing With Outliers   
+
+Example: Add a single outlier regression data set
+
+```{python, echo=FALSE}
+## add an outlier to the data 
+new_row = [0.0,50.0,0.0,0.0]
+new_row_index = len(sim_data)
+sim_data_ol = sim_data.copy()
+sim_data_ol.loc[new_row_index] = new_row
+
+## Define the regression model and fit it to the data
+ols_model_ol = smf.ols(formula = 'y ~ x', data=sim_data_ol).fit()
+
+# Add predicted to pandas data frame
+sim_data_ol['predicted_ol'] = ols_model_ol.predict(sim_data_ol.x)
+
+## Print the model coefficient
+print('Intercept = %4.3f  Partial Slope = %4.3f' % (ols_model_ol._results.params[0], ols_model_ol._results.params[1]))
+
+## Display the results 
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ) 
+sns.lineplot(x='x', y='predicted', data=sim_data, color='black', linestyle='dotted', ax=ax, label='OLS, no outlier');
+sns.lineplot(x='x', y='predicted_ol', data=sim_data_ol, color='red', ax=ax, label='OLS w Outlier');
+sns.scatterplot(x='x', y='y', data=sim_data_ol, ax=ax);
+ax.set_title('Scatter plot of original data with linear regression line');
+plt.legend();
+plt.show();
+```
+
+This outlier has **high leverage** and changes the slope significantly   
+
+
+## Dealing With Outliers 
+
+**Cook's distance**, $D_i$, measures the influence of an outlier on a model    
+
+- Cook's distance for the ith data point is the degree of freedom adjusted average squared error against a model without this value   
+
+$$D_i = \frac{\Sigma_{j=1}^n (\hat{Y}_j - \hat{Y}_{j(i)})^2}{n (p+1)\hat{\sigma^2}}$$
+where,  
+$\hat{Y}_{j} =$ the jth prediction computed with all observations         
+$\hat{Y}_{j(i)} =$ the jth prediction computed without the ith observation   
+$p =$ number of parameters   
+$n =$ number of data points    
+
+- Cook's distance is computed using a **leave-one-out resampling algorithm!**
+
+## Dealing With Outliers     
+
+Plot Cook's distance as **leverage** vs. the residual size     
+
+```{python}
+_=influence_plot(ols_model_ol)
+```
+
+- Outlying points shown at edges of plot    
+   - Not all outliers have high leverage   
+   - Can detect outliers in moderate dimensions   
+
+
+
+## Dealing With Outliers  
+
+Why are linear models sensitive to outliers    
+
+- Ordinary linear regression use **squared error loss** function    
+   - Optimal if the errors are iid Normal   
+   - Is an **unbiased estimator**   
+   
+- In 1-dimension median is robust to outliers   
+   - But far from an optimal estimator     
+   - High bias  
+   - Hard to implement beyond 1-dimension  
+   
+- We can study the response of estimators to outliers using an **influence function**   
+
+
+
+
+## Dealing With Outliers  
+
+Compare the influence functions of the mean and median estimators  
+
+- Mean estimator has linear influence function    
+   - Influence of outliers is **unbounded**  
+   - Derivative of the influence function is constant     
+   
+- Influence function of median estimator is discontinuous    
+   - Influence of any observation is constant   
+   - Derivative of influence function is not defined  
+
+```{r MeanMedianInfluence, out.width = '25%', fig.cap='Influence functions for mean and median', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/MeanMedianInfluence.png"))
+```   
+
+
+*Figure from Hampel, el.al., Robust Statistics, 1986* 
+
+
+## Dealing With Outliers  
+
+Could we simply edit out the outliers?    
+
+- But what fraction of the data are outliers?    
+
+- Know as the **alpha trimmed mean** algorithm    
+   - Order the values and remove $\alpha / 2$ highest and lowest   
+   - But, alpha trimming is a bit arbitrary   
+   - Is a biased estimator, with bias increasing with $\alpha$   
+   - $\alpha = 0.5$ is the median
+
+- Alpha trimming hard to implement in higher dimensions  
+
+```{r AlphaTrimming, out.width = '25%', fig.cap='Influence functions for alpha trimmed mean', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/AlphaTrimming.png"))
+```   
+
+
+*Figure from Hampel, el.al., Robust Statistics, 1986*   
+
+
+
+## Dealing With Outliers  
+
+Are there better estimators when outliers are present    
+
+- Yes, but must accept some bias     
+
+- Idea; estimator can be unbiased near the expected value, but limit influence of outliers    
+   - Trade-off between high robustness and low bias
+
+- Many ideas have been tried      
+   - A major research focus in the 1970s and 1980s    
+   - **Huber estimator**    
+   - Family of **M-estimators**  
+
+## Dealing With Outliers  
+
+What are the properties of the Huber estimator?   
+
+- Influence function is linear near the mean but constant away from the mean   
+   - **hinge point** is at $\pm t * MAD$, where $MAD =$ **median absolute deviation**   
+   - Robustness and bias increases as $t$ decreases
+   
+- Huber estimator is low bias      
+   - Unbiased for samples near the point estimate   
+   - Constant influence away from the point estimate    
+
+
+```{r Huber, out.width = '40%', fig.cap='Influence function of the Huber estimator', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Huber.png"))
+```   
+
+
+*Figure from Hampel, el.al., Robust Statistics, 1986*
+
+
+## Dealing With Outliers  
+
+**M-estimators** tapper influence to zero     
+
+- Approximately linear influence near point estimate      
+   - So nearly unbiased near the point estimate   
+
+- Then influence tappers to 0 for extreme outliers    
+
+- An example is **Tukey's biweight**      
+   - Only a single parameter for biweight function, $r$   
+   - Robustness and bias increase with decreasing $r$
+
+
+```{r TukeysBiweight, out.width = '40%', fig.cap='Influence function of the Tukey\'s Biweight M-estimator', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/TukeysBiweight.png"))
+```   
+
+
+*Figure from Hampel, el.al., Robust Statistics, 1986*   
+
+
+
+## Dealing With Outliers 
+
+Example: regression with Huber loss function 
+
+```{python}
+## Define the robust regression model and fit it to the data
+ols_model_huber = sm_api.RLM(sim_data_ol.y, sim_data_ol.x, M=sm.robust.norms.HuberT()).fit()
+# Add predicted to pandas data frame
+sim_data_ol['predicted_huber'] = ols_model_huber.predict(sim_data_ol.x)
+```
+
+```{python, echo=FALSE}
+## Print the model coefficient
+#print('Intercept = %4.3f  Partial Slope = %4.3f' % (ols_model_huber._results.params[0], ols_model_huber._results.params[1]))
+
+## Display the results 
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ) 
+sns.lineplot(x='x', y='predicted', data=sim_data, color='black', linestyle='dotted', ax=ax, label='OLS, no outlier');
+sns.lineplot(x='x', y='predicted_huber', data=sim_data_ol, color='black', linestyle='-', ax=ax, lw=2, label='Huber w outliner');
+sns.lineplot(x='x', y='predicted_ol', data=sim_data_ol, color='red', ax=ax, label='OLS w outlier');
+sns.scatterplot(x='x', y='y', data=sim_data_ol, ax=ax);
+ax.set_title('Scatter plot of original data with linear regression line');
+plt.legend();
+plt.show();
+```
+
+Notice the different slope for the regression with Huber loss   
+
+
+## Linear Model Assumptions
+
+There are a number of assumptions in linear models that you overlook at your peril!  
+
+- The feature or predictor variables should be **independent** of one another      
+   - This is rarely true in practice   
+   - **Multi-colinearity** between features makes the model **under-determined**    
+
+- We assume that numeric features or predictors have zero mean and about the same scale    
+   - We do not want to bias the estimation of regression coefficients with predictors that do not have a 0 mean   
+   - We do not want to have predictors with a large numeric range dominate training   
+   - Example: income is in the range of 10s or 100s of thousands and age is in the range of 10s, but apriori income is no more important than age as a predictor  
+   
+- Values of each predictor or feature should be iid      
+   - If variance changes with sample, the optimal value of the coefficient could not be constant    
+   - If there **serial correlation** in the predictor values, the iid assumption is violated - but can account for this such as in time series models   
+   
+   
+## Summary    
+
+Linear models are a flexible and widely used class of models   
+
+- Fit model coefficients by **least squares** estimation   
+
+- Can use many types of predictor variables   
+
+- SGD and L-FBGS algorithms allow massive scaling of linear models   
+
+- We prefer the simplest model that does a reasonable job   
+   - The principle of **Occam's razor**  
+
+- Must consider the **bias-variance trade-off**  
+
+
+## Summary   
+
+When evaluating any machine learning model consider **all evaluation methods available**    
+
+- No one method best all of the time    
+  - Homoskedastic Normally distributed residuals   
+  - Reasonable values $R^2$, RMSE, etc
+  - Are the model coefficients all significant? 
+
+- **Different methods highlight different problems** with your model     
+
+- Don't forget to check that the **model must make sense** for your application! 
+
+
+
+
+
+
+
