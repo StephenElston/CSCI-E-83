@@ -1,0 +1,313 @@
+
+---
+title: "Introduction to Inference and Confidence Intervals"
+author: "Steve Elston"
+date: "02/08/2021"
+output:
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("/usr/bin/python3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+
+## Review  
+
+- Likelihood is a measure of how well a **parametric model** fits a data sample
+
+$$\mathcal{L}(\vec{\theta}\ |\ \mathbf{X} ) = f(\mathbf{X}\ |\ \vec{\theta})$$
+
+- In most practical cases, we work with the **log likelibood**      
+
+$$l(\vec{\theta}\ |\ \mathbf{X}) = log\big( \mathcal{L}(\vec{\theta}\ |\ \mathbf{X}) \big) = \sum_{j} log \Big( f(x_j\ |\ \vec{\theta}) \Big)$$
+
+- The maximum likelihood for the model parameters is achieved when two conditions are met:  
+
+$$
+\frac{\partial\ l(\theta)| \mathbf{X}}{\partial \theta} = 0 \\
+\frac{\partial^2\ l(\theta)| \mathbf{X} }{\partial \theta^2} < 0
+$$
+
+- Gradient of the log-likelihood is known as the score function   
+
+
+## Review   
+
+- Matrix is the **observed information matrix** of the model, $\mathcal{J}(\vec{\theta})$.   
+
+- The more negative the values of the second partial derivatives, the greater the curvature of the log-likehihood  
+
+- Fisher information or **expected information** is the expectation over the second derivative of the observed information            
+
+$$\mathcal{J}(\vec{\theta}) = -\mathbf{E}\big\{ \mathcal{I}(\vec{\theta}) \big\} = -\mathbf{E}\big\{ \frac{\partial^2\ l(\mathbf{X} | \theta)}{\partial \theta^2} \big\}$$
+
+- Fisher information relates to the score function as its variance   
+
+$$
+\frac{\partial\ l(\theta)}{ \partial \theta}\ \dot{\sim}\
+\mathcal{N} \big(0, 1/ \mathcal{I}_\theta \big)
+$$
+
+
+- For **large sample**, $n \rightarrow \infty$, take the expectation over $\mathbf{X}$:    
+
+$$\hat{\theta} \dot{\sim} \mathcal{N}\Big(\theta, \frac{1}{n\mathcal{I}(\theta)} \Big)$$
+
+
+- The maximum likelihood estimate of model parameters, $\hat{\theta}$, is Normally distributed      
+
+- The larger the Fisher information, the lower the variance of the parameter estimate    
+   - Greater curvature of the log likelihood function gives more certain the parameter estimates       
+   - The variance of the parameter estimate is inversely proportional to the number of samples, $n$   
+
+## Review  
+
+- The gradient descent method finds the maximum of the log-likelihood function by following the gradient 'uphill'    
+
+ - Given a current parameter estimate vector at step n , $\hat{\theta}_n$, the improved parameter estimate vector,  $\hat{\theta}_{n+1}$, is found:    
+
+$$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$   
+
+- The hyperparameter $\gamma$ is the **learning rate** or **step size**     
+
+- Stochastic optimization uses a Bernoulli random sample of the data to estimate the **expected update** of the model weights     
+
+$$W_{t+1} = W_t + \alpha\ E_{\hat{p}data}\Big[ \nabla_{W} J(W_t) \Big]$$ 
+
+- Where, $E_{\hat{p}data} \big[ \big]$ is the expected value of the gradient given the Bernoulli sample of the data, $\hat{p}data$.
+
+- Empirically, SGD has good convergence properties     
+
+
+## Review     
+
+- **Newton's method**, and related methods, employ a **quadratic approximation** to optimization.    
+
+- Newton's method exhibits convergence quadratic in the number of iterations     
+   - Compared to the approximate linear convergence for gradient descent methods       
+
+- The quadratic update is:  
+
+$$
+x_{n+1} = x_n + \gamma |\nabla_\theta^2 l(\vec{\theta})|^{-1} \nabla_\theta l(\vec{\theta})
+$$
+
+- $\gamma$ is a learning rate of step size
+
+- Requires computing the **inverse Hessian** matrix with practical difficulties   
+  - The inverse of the Hessian may not exist as this matrix may be singular    
+  - With large number of model parameters, the Hessian will have high dimensionality and computing inverse is computationally intensive      
+
+- For large scale problems **quasi-Newton** methods are used      
+   - Use an approximation to avoid computing the full inverse Hessian   
+   - **Limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS)** algorithm the most widely used quasi-Newton method 
+
+
+
+## Review  
+
+The maximum likelihood estimator has a number of important limitations, including   
+
+- Incorrect model and complex distributions     
+
+- Parameter near limits      
+
+- High dimensional problems     
+
+- Correlated features   
+
+
+
+## Introduction to Statistical Inference       
+
+All statistical inference has uncertainty    
+
+- Characterization of uncertainty is a goal of statistical inference  
+  - Any model using real-world data has inherent uncertainty  
+  
+- Statistical inference seeks to avoid being [**fooled by randomness**](https://www.penguinrandomhouse.com/books/176225/fooled-by-randomness-by-nassim-nicholas-taleb/); A catchy title of a book  
+
+- A very few examples where proper statistical inference is important
+
+| Hypothesis  | Fooled by Randomness |
+|:----------------------- | :----------------- |
+| How certain are you that eating fast food improves your health? | Some of my friends are doing great on this diet |   
+| How much confidence should we have that a marketing campaign increased sales? | Sales are up in the last month since the campaign started |  
+| How effective is a certain stock trading strategy for actually improving returns? | Traders using this strategy have made money recently | 
+| How good are the model parameter estimates? | The model has made accurate predictions so far | 
+   
+
+
+## Applications of Statistical Inference
+
+Confusingly, the term statistical inference is applied in many contexts
+
+Some applications of statistical inference include:
+
+**Inference on differences in distributions:** Are samples drawn from the same distribution or not?
+
+- A **null hypothesis** is the hypothesis that the distributions are the same      
+
+**Inference for model parameters and model selection:** Statistical models, including machine learning models, have unknown parameters for which the values must be estimated      
+- Compute uncertainty in model parameter estimates    
+- Compare model performance     
+
+**Inference for prediction:** In recent decades the distinction between prediction and classical inference has blurred to the point of being irrelevant     
+- A common machine learning example, classification, uses decision rules determine the most likely class for each case of input values      
+- inference also used to determine the confidence in predictions            
+
+
+## Confidence Intervals; the Key to Inference     
+
+In frequentist statistics uncertainty of an inference is expressed in terms of a **confidence interval**     
+
+- A confidence interval is defined as the expected range of a statistical **point estimate**   
+  - A point estimate is the best statistical estimate of some value    
+  - For example, the most likely value of a model parameter given the data   
+
+- Two types of of confidence intervals:   
+  - **Two-sided confidence intervals:** express confidence that a value is within some range around the point estimate 
+  - **One-sided confidence intervals:** express confidence that the point estimate is greater or less than some range of values
+
+## Confidence Intervals; the Key to Inference   
+
+Can understand confidence intervals by looking at the $\alpha$ and $1 - \alpha$ quantiles of a distribution    
+
+- Confidence interval corresponds to the span of the distribution between quantiles    
+
+- Express a confidence interval for a random variable, $\mathbf{x}$, in terms of the probability as:  
+
+$$1-2 \alpha = P \Big( Lower\ CI \le \mathbf{x} \le Upper\ CI \Big)$$
+
+- Alternatively:    
+
+$$\alpha  = P(x \ge Upper\ CI)\ \\ and \\\ 1 - \alpha = P(x \le Lower\ CI)$$
+
+
+
+## Example; confidence intervals of the Normal distribution
+
+Illustrate the concept of confidence intervals with an example
+
+- The **cumulative distribution function (CDF)** of a standard Normal distribution, $N(0,1)$  
+
+- Double ended arrows with annotation are plotted to illustrate the 95% confidence interval on the CDF  
+  - Horizontal double arrow shows the range of the confidence interval    
+  - Vertical double arrow shows the part of the distribution within the confidence intervals
+    
+
+```{python, echo=FALSE}
+## Import
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import norm, chi2
+from scipy.optimize import brentq
+
+def plot_confidence(distribution, alpha, xmin, xmax, dist_type, step=0.05):
+    ## Set the font size and compute the CI for dispaly
+    plt.rc('font', size=8)
+    percent = str(int((1.0-2*alpha)*100))
+    
+    ## first find the cummulates 
+    x = np.arange(start=xmin, stop=xmax, step=0.05)
+    cumulates = distribution(x)
+    
+    ## plot the figure
+    fig, ax = plt.subplots(figsize=(5, 4), )  
+    ax.plot(x, cumulates, linewidth=6)
+    ax.hlines(y=0.0, xmin=xmax, xmax=xmin, linewidth=2, color='black')
+    ax.set_title('Cummulative distribution of ' + dist_type + ' with ' + percent + ' confidence intevals')
+    ax.set_ylabel('Probability')
+    ax.set_xlabel('Value')
+    
+    ## Plot horizontal lines at the quantiles 
+    ax.hlines(y=alpha, xmin=xmax, xmax=xmin, linewidth=6, color='r', linestyle='dotted')
+    ax.hlines(y=1.0-alpha, xmin=xmax, xmax=xmin, linewidth=6, color='r', linestyle='dotted')
+    
+    ## Fine the probabilities at the quantiles and plot vertical lines   
+    ## To do so, find the root of a function of the distribution
+    lower_ci = brentq(lambda x: distribution(x) - alpha, xmin, xmax)
+    ax.vlines(x=lower_ci, ymin=-0.2, ymax=1.0, linewidth=4, color='r', linestyle='dashed')
+    upper_ci = brentq(lambda x: distribution(x) - 1 + alpha, xmin, xmax)
+    ax.vlines(x=upper_ci, ymin=-0.2, ymax=1.0, linewidth=4, color='r', linestyle='dashed')
+    
+    ## Display the numeric results
+    print("Confidence Interval, lower: {0:5.2f}, upper: {1:5.2f}".format(lower_ci, upper_ci))
+    
+    ## Place double headed arrows for the range and confidence interval
+    ax.arrow(xmin,alpha,0.0,1-2*alpha-0.05, head_width=0.2, head_length=0.05, linewidth=3)
+    ax.arrow(xmin,1.0-alpha,0.0,-1+2*alpha+0.05, head_width=0.2, head_length=0.05, linewidth=3)
+    ax.text(xmin+0.1, 0.5, percent + '% of\nDistribution')
+    ax.arrow(lower_ci,-0.1,upper_ci-lower_ci-0.1, 0, head_width=0.05, head_length=0.1, linewidth=3)
+    ax.arrow(upper_ci,-0.1,-upper_ci+lower_ci+0.1, 0, head_width=0.05, head_length=0.1, linewidth=3)
+    ax.text((upper_ci + lower_ci)/2-1.0, -0.15, percent + '% Confidence Interval')
+    plt.show()
+
+distribution = norm.cdf
+plot_confidence(distribution, 0.025, -3.0, 3.0, 'Normal')
+```
+
+
+## Example, Inference for the mean
+
+$$CI(mean) = CI(\bar{\mathbf{X}}) = MLE(\theta | \mathbf{X})\ \pm\ \frac{s}{\sqrt{n}} Z_\alpha$$
+
+Where,       
+- $Z_\alpha$ is the standard Normal distribution evaluated at confidence level, $\alpha$   
+- standard error is given by $s/ \sqrt{n}$    
+- $s$ is the standard deviation estimate   
+- $n$ is the number of samples.   
+
+
+## One-Sided Confidence Intervals    
+
+Many situations where a one-sided confidence interval is useful    
+
+- Characterize uncertainty of maximum or minimum value of a random variable   
+
+- For the upper tail of the distribution, the confidence interval is defined:   
+
+$$1 - \alpha = P\big( -\infty \le x \le \alpha \big)$$
+
+- For the lower tail of a random variable, the confidence interval is defined:      
+
+$$\alpha = P\big( -\alpha\le x \le \infty \big)$$
+
+
+## Interpretation of Confidence Intervals      
+
+How can we interpret the confidence interval?    
+
+- Confidence intervals are with respect to the the sampling distribution of a statistic $s(\hat{\mathcal{F}})$  
+
+- $1 - \alpha$ of the sample statistic values computed from repeated samples of the population,$\hat{\mathcal{F}}_i$    
+
+- Confidence intervals do not indicate the probability $s(\hat{\mathcal{F}})$ is in a range
+
+
+```{r Sampling, out.width = '50%', fig.cap='Sampling distribution of unknown population parameter', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
+```
+
+
+## Summary       
+
+Statistical inference seeks to characterize the uncertainty in estiamtes    
+
+- Statistics are estimates of population parameters    
+
+- Inferences using statistics must consider the uncertainty in the estimates   
+
+- Confidence intervals quantify uncertainty in statistical estimates    
+   - **Two-sided confidence intervals:** express confidence that a value is within some range around the point estimate     
+  - **One-sided confidence intervals:** express confidence that the point estimate is greater or less than some range of values     

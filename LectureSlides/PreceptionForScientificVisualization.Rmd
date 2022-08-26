@@ -1,0 +1,474 @@
+---
+title: "Perception for Scientific Visualization"
+author: "Steve Elston"
+date: "12/26/2020"
+output:
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
+  ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("/usr/bin/python3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+-----------------------------------------------------------------
+
+## Why This Course?     
+
+
+**Data science** is the science of **understanding data**   
+
+- Statistics is the science of making **principled inferences** from data    
+  - Inference leads to understanding     
+  - Inference is becoming harder with large complex data sets  
+
+- Doing rigorous data science requires understanding statistics     
+  - Statistical practice has advanced significantly to address large complex data sets    
+  - Statistical practice now dominated by computer-intensive methods
+
+
+-----------------------------------------------------------------
+
+## What We'll Cover     
+
+Our focus is on the big ideas of computer-intensive statistics and data analysis arising in the late 20th and early 21st Centuries     
+
+- **Exploratory data analysis (EDA)** to understand relationships in big complex data sets          
+- **Foundational generic algorithms** used throughout statistics and machine learning including, maximum likelihood estimation, MCMC sampleing and the EM algorithm (time permitting)
+
+- **Resampling methods** for building models and inference    
+
+- **Large scale hypothesis testing** for complex and high-dimensional data sets   
+
+- **Bayesian hierarchical models** for complex processes     
+
+- **Over-parameterized models and regularization** to model complex high-dimensional data 
+
+- **Robust staztistics** to deal with data violating model assumptions - time permitting
+
+
+----------------------------------------------------------------
+
+
+## Course Objectives
+
+This survey course will help build your statistical toolbox
+
+- Broad introduction to the theoretical and methodological basis of data science 
+  - Probability theory    
+  - Statistical theory        
+  - Understanding data relationships and inference     
+  - Sampling theory 
+  - Theory of linear and hierarchical statistical models      
+  
+- Understand the basis of core machine learning algorithms       
+  - How these methods work and when to used them     
+  - Why these methods fail    
+  - What to do when things go wrong   
+
+- Moving beyond a cookbook or blog post approach to data science      
+
+
+-------------------------------------------------------------
+
+## Grading: Undergraduate
+
+Activity | Grade weight |
+|:---:|:---:|
+|Participation (in-class and discussion board activity$^*$) | 10% |
+| Assignments and milestones | 90% |     
+
+$^*$ at least 20 posts in Piazza on discussion questions, class materials, answering other students questions. Also, responding to polls and discussion questions in class. 
+
+
+-------------------------------------------------------------
+
+## Grading: Graduate
+
+|Activity | Grade weight |
+|:---:|:---:|
+|Participation (in-class and discussion board activity$^*$) | 10% |
+| Assignments and milestones | 60% |   
+| Independent project proposal | 5% |   
+| Independent project report | 25% |
+
+$^*$ at least 20 posts in Piazza on discussion questions, class materials, answering other students questions. Also, responding to polls and discussion questions in class. 
+
+
+-----------------------------------------------------------
+
+## Instructor: Steve Elston     
+
+- Data science consultant with several decades of experience   
+
+- Lead team that commercialized Bell Labs S, now open source R   
+
+- Company co-founder and held executive positions in several industries    
+
+- Creator of multiple edX courses, author of O'Reily books and articles     
+
+- Holder of  several patents    
+
+- BS, physics and math (minor), University of New Mexico    
+
+- MS and PhD, geophysics, Princeton University – John von Neuman Supercomputing Fellow   
+
+
+-----------------------------------------------------------------
+
+## Teaching Fellow: Kyle Asano
+
+- BS, mechanical engineering and bioengineering (minor), Santa Clara University   
+
+- Undergraduate research on drug-delivery using genetic modification technology
+
+- Area of interest: Business and Healthcare   
+
+- Total audio nerd   
+
+---------------------------------------------------------------------
+
+## Communications
+
+Communicating with your instructors and other students is a significant aspect of participation in this course!     
+
+- Ask questions about the course material, homework, etc.     
+- Ask questions in the public forum so others can answer and gain from the discussion: if you have a question others do as well! 
+- Answer other students' questions    
+- Comment on weekly discussion topics       
+
+Piazza is the primary communications method and you are **required to sign up for the course Piazza forum**   
+- piazza.com/extension.harvard/spring2021/cscie83    
+- Pass code: cscie83_2021     
+
+
+**Ask for the help you need!**
+
+-----------------------------------------------
+
+## Communications
+
+For private matters, you can directly communicate with the instructional team:        
+- Grades      
+- Absences      
+- Etc       
+
+Steve Elston, Instructor, stephen.elston@quantia.com    
+Kyle Asano, TF, asano.kyle@gmail.com  
+
+**Office hours:** If you need indivitual assistance, please ask to schedule office hours. Don't be shy!   
+
+Communications by Canvas may be **significantly delayed!**
+
+-------------------------------------------------
+
+## Poll    
+
+Then, back to the lecture
+
+-----------------------------------------------------------------
+
+
+## Why Exploration and Visualization?    
+
+**Exploratory data analysis (EDA)** tools are essential to good data science
+
+- Why not just start building machine learning models?   
+
+- Understanding relationships in data saves missteps and unexplained poor model performance     
+  - Which variables are actually important?   
+  - How do these variables behave?   
+  - Are there errors and outliers in the data?  
+  - How good is a model fit? 
+
+- Communications is an important component of data science     
+  - Analytic results are only useful if they are understood and trusted     
+  - Graphical presentation greatly assists understanding by less technical colleagues    
+
+----------------------------------------------------------------
+
+## Why is Perception Important?  
+
+
+- **Goal:** Communicate information visually
+- Visualization technique maximize the information a viewer perceives
+- limits of human perception are a significant factor in understanding complex relationships
+- Can apply results of the considerable research on human perceptions for data visualization
+
+
+-----------------------------------------------------------
+
+## Use Aesthetics to Improve Perception 
+
+- Use aesthetics to improve perception
+- We take a very broad view of the term 'aesthetic' here
+- A plot aesthetics is any property of a visualization which highlight aspects of the data relationships
+- Aesthetics are used to project additional dimensions of complex data onto the 2-dimensional plot surface
+
+
+-----------------------------------------------------------
+
+## Organization of Plot Aesthetics
+
+We can organize aesthetics by their effectiveness:   
+
+1. **Easy to perceive plot aesthetics:** help most people gain understanding of data relationships    
+
+2. **Aesthetics with moderate perceptive power:** useful properties to project data relationships when used sparingly         
+
+3. **Aesthetics with limited perceptive power:** useful within strict limits     
+
+
+-----------------------------------------------------------
+
+## Properties of Common Aesthetics
+
+| Property or Aesthetic |Perception| Data Types |
+|:---------|:-----------|:------------|
+|Aspect ratio | Good | Numeric |
+|Regression lines | Good | Numeric plus categorical |
+|Marker position | Good | Numeric |
+|Bar length | Good | Counts, numeric |
+|Sequential color palette | Moderate | Numeric, ordered categorical |
+|Marker size | Moderate | Numeric, ordered categorical |
+|Line types | Limited | Categorical |
+|Qualitative color palette | Limited | Categorical|
+| Marker shape | Limited | Categorical |
+| Area | Limited | Numeric or categorical |
+| Angle | Limited | Numeric |
+
+
+```{python, echo=FALSE}
+#import sys
+#sys.path.append('./source')
+#import computationalStatisticsBook as csb
+import pandas as pd
+import numpy as np
+import statsmodels.api as sm
+from math import log, sqrt
+import seaborn as sns
+from math import log, sqrt, sin
+import matplotlib.pyplot as plt
+#%matplotlib inline
+
+auto_price = pd.read_csv('../data//AutoPricesClean.csv')
+```
+
+
+-----------------------------------------------------------
+
+## Aspect Ratio
+
+
+- **Aspect ratio** has a significant influence on how a viewer perceives a chart
+- Correct aspect ratio can help highlight important relationships in complex data sets
+- We express aspect ratio as follows:     
+
+$$aspect\ ratio = \frac{width}{height}\ : 1$$
+
+
+- **Banking angle** is key to understanding how the aspect ratio affects perception 
+
+
+-----------------------------------------------------------
+
+## Example of Changing Aspect Ratio
+
+Longest scientific time series is the sunspot count: 
+
+```{python, echo=FALSE}
+sunspots_data = sm.datasets.sunspots.load_pandas().data
+sunspots_data.head()
+```
+
+
+
+-----------------------------------------------------------
+
+## Example of Changing Aspect Ratio
+
+- Example uses data from 1700 to 1980
+- Can you perceive the asymmetry in these sunspot cycles? 
+
+
+```{python, echo=FALSE}
+fig, ax = plt.subplots(figsize=(4, 4))
+fig.subplots_adjust(bottom=0.3)
+ax = sns.lineplot(x='YEAR', y='SUNACTIVITY', data=sunspots_data, ci=None, ax=ax)
+_=ax.set_title('Sunspot time series with 1:1 aspect ratio', fontsize=8)
+_=ax.set_xlabel('Date', fontsize=8)
+_=ax.set_ylabel('Sunspots', fontsize=8)
+_=ax.tick_params(labelsize=8)
+plt.show()
+```
+
+
+-----------------------------------------------------------
+
+## Example of Changing Aspect Ratio
+
+- Notice how changing aspect ratio change perception of the asymmetry?
+
+```{python, echo=FALSE}
+fig, ax = plt.subplots(figsize=(4, 1.0))
+fig.subplots_adjust(top=0.75, bottom=0.4)
+ax = sns.lineplot(x='YEAR', y='SUNACTIVITY', data=sunspots_data, ci=None, ax=ax)
+_=ax.set_title('Sunspot time series with 1:10 aspect ratio') 
+_=ax.set_xlabel('Date')
+_=ax.set_ylabel('Sunspots', fontsize=8)
+_=ax.tick_params(labelsize=8)
+plt.show()
+```
+
+
+-----------------------------------------------------------
+
+## Sequential and Divergent Color Palettes
+
+Use of **color** as an aesthetic in visualization is a complicated subject. 
+
+- color is often used, also often abused 
+- A **qualitative palette** is a palette of individual colors  to display categorical values
+- **Sequential palettes** and **divergent palettes** are a sequence of colors used to display a quantitative variable or ordered categorical variable
+
+
+-------------------------------------------------------------
+
+## Auto Weight by Sequential Color Palette
+
+```{python, echo=FALSE}
+fig, ax = plt.subplots(figsize=(4,4))
+fig.subplots_adjust(top=0.8, bottom=0.2)
+ax = sns.scatterplot(x='city_mpg', y='curb_weight', data=auto_price, 
+                     hue = 'price', palette = 'magma', ax=ax)
+_=ax.set_title('City MPG vs. Weight \nPrice by color') #, fontsize=12)
+_=ax.set_xlabel('City MPG') # , fontsize=12)
+_=ax.set_ylabel('Vehicle Weight') #, fontsize=12) 
+plt.show()
+```
+
+
+-----------------------------------------------------------
+
+## Limits of color
+
+Regardless of the approach there are some significant limitations
+
+- A significant number of people are color blind. Red-green color blindness is most common 
+- Even the best sequential or divergent palettes show only relative value of numeric variables
+- Perception of exact numeric values is difficult, except in special cases
+
+
+-----------------------------------------------------------
+
+## Marker Size
+
+**Marker size** is moderately effective aesthetic useful for quantitative variables
+
+- Used properly, marker size can highlight important trends in complex data sets 
+- But, the viewer can generally perceive relative differences, but not actual values 
+- Small size differences are not preceptable  
+
+
+-----------------------------------------------
+
+## Engine Size by Marker Size and Price by Sequential Color Palette     
+
+```{python, echo=FALSE}
+ax = sns.scatterplot(x='city_mpg', y='curb_weight', data=auto_price,
+                     hue = 'price', palette = 'magma',
+                     size = 'engine_size', sizes = (50.0, 400.0))
+_=ax.set_title('City MPG vs. Weight \nPrice by color, engine size by size') #, fontsize=18)
+_=ax.set_xlabel('City MPG') #, fontsize=16)
+_=ax.set_ylabel('Vehicle Weight')# , fontsize=16) 
+plt.show()
+```
+
+-----------------------------------------------------------
+
+## Line Plots and Line Type
+
+**Line plots** connect discrete, ordered, data points by a line
+
+- Can use different line pattern types to differentiate data 
+- Only useful for a limited number of lines on one graph
+- Too many similar line pattern on one plot leads to viewer confusion and poor perception
+
+---------------------------------------------------------------
+
+## Limits of Line Type
+
+```{python, echo=FALSE}
+## Compute some transformed variables
+sunspot_mean = sunspots_data.loc[:,'SUNACTIVITY'].mean()
+y1 = [z/sunspot_mean for z in sunspots_data.loc[:,'SUNACTIVITY']]
+y2 = [log(z + 0.01) for z in y1]
+y3 = [1.0/(z + 0.1) for z in y1]
+y4 = [sqrt(z) for z in y1]
+## Construct the data frame
+df = pd.DataFrame({'Date':sunspots_data.loc[:,'YEAR'],'Normalized':y1, 'Log':y2, 'Inverse':y3, 'Sqrt':y4})
+## Convert the floating point year to a Pandas datetime type
+df.loc[:,'Date'] = pd.to_datetime(df.loc[:,'Date'].astype(int),format='%Y')
+
+styles = [':','-.','--','-'] # Some line styles
+fig = plt.figure(figsize=(4, 4)) # define plot area
+ax = fig.gca() # define axis   
+temp = df[(df['Date'] > '1900-01-01') & (df['Date'] <= '1919-12-01')]
+## Iterate over the time series and line styles to plot
+for col, style in zip(temp[['Normalized','Log','Inverse','Sqrt']], styles):    
+    _=ax.plot(temp.Date, temp[col], linestyle = style, color = 'b', label=(col+'(sunspots)'), linewidth=1)
+## Annotate the plot, including legend
+_=ax.set_title('Line plot of transformed sunspot data \nwith multiple line types') 
+_=ax.set_xlabel('Date') # Set text for the x axis
+_=ax.set_ylabel('Values')# Set text for y axis    
+_=ax.legend()
+plt.show()
+```
+
+-----------------------------------------------------------
+
+## Marker Shape
+
+**Marker shape** is useful for displaying categorical relationships
+
+- This aesthetic is only useful when two conditions are met:
+1. The number of categories is small
+2. Distinctive shape are chosen for the markers
+- Human perception limits the number of shapes humans can perceive well
+
+-------------------------------------------------------
+
+## Aspiration by Marker Shape    
+
+```{python, echo=FALSE}
+fig = plt.figure(figsize=(4, 4)) # define plot area
+fig.subplots_adjust(top=0.7)
+ax=sns.scatterplot(x = 'city_mpg', y = 'curb_weight', 
+                      style = 'aspiration', 
+                      hue = 'fuel_type', 
+                      data=auto_price)
+_=ax.set_title('City MPG vs. Weight \nAspiration by marker shape \nFuel type by color')
+_=ax.set_xlabel('City MPG')
+_=ax.set_ylabel('Vehicle Weight') 
+plt.show()
+```
+
+-----------------------------------------------------------
+
+## Summary
+
+We have  explored these key points       
+- Proper use of plot aesthetics enable projection of multiple dimensions of complex data onto the 2-dimensional plot surface.     
+- All plot aesthetics have limitations which must be understood to use them effectively     
+- The effectiveness of a plot aesthetic varies with the type and the application    
+
+
+
+

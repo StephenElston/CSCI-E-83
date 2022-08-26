@@ -1,0 +1,560 @@
+---
+title: "Visualization of Large Complex Data"
+author: "Steve Elston"
+date: "12/26/2020"
+output:
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("/usr/bin/python3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+
+----------------------------------------------------------------
+
+## Review: Why is Perception Important?  
+
+
+- **Goal:** Communicate information visually
+- Visualization technique maximize the information a viewer perceives
+- limits of human perception are a significant factor in understanding complex relationships
+- Can apply results of the considerable research on human perceptions for data visualization
+
+
+-----------------------------------------------------------
+
+## Use Aesthetics to Improve Perception 
+
+- Use aesthetics to improve perception
+- We take a very broad view of the term 'aesthetic' here
+- A plot aesthetics is any property of a visualization which highlight aspects of the data relationships
+- Aesthetics are used to project additional dimensions of complex data onto the 2-dimensional plot surface
+
+
+
+-----------------------------------------------------------
+
+## Properties of Common Aesthetics
+
+| Property or Aesthetic |Perception| Data Types |
+|:---------|:-----------|:------------|
+|Aspect ratio | Good | Numeric |
+|Regression lines | Good | Numeric plus categorical |
+|Marker position | Good | Numeric |
+|Bar length | Good | Counts, numeric |
+|Sequential color palette | Moderate | Numeric, ordered categorical |
+|Marker size | Moderate | Numeric, ordered categorical |
+|Line types | Limited | Categorical |
+|Qualitative color palette | Limited | Categorical|
+| Marker shape | Limited | Categorical |
+| Area | Limited | Numeric or categorical |
+| Angle | Limited | Numeric |
+
+-------------------------------------
+
+## Visualizing Large Complex Data is Difficult  
+
+
+**Problem:** Modern data sets are growing in size and complexity     
+
+- **Goal:** Understand key relationships in large complex data sets     
+
+- **Difficulty:** Large data volume   
+  - Modern computational systems have massive capacity     
+  - Example: Use map-reduce algorithms on cloud clusters
+  
+- **Difficulty:** Large numbers of variables
+  - Huge number of variables with many potential relationships   
+  - **This is the hard part!**
+
+Note: we will address use of dimensionality reduction techniques in another lesson 
+
+-------------------------------------
+
+## Limitation of Scientific Graphics  
+
+All scientific graphics are limited to a **2-dimensional projection**    
+
+- But, complex data sets have a great many dimensions     
+
+- We need methods to project large complex data onto 2-dimensions    
+
+- Generally, multiple views are required to understand complex data sets   
+  - Don't expect one view to show all important relationships   
+  - Develop understanding over many views    
+  - Try many views, don't expect most to be very useful    
+
+
+
+-------------------------------------
+
+## Scalable Chart Types
+
+Some chart types are inherently scalable.    
+
+- **Bar plots:** Counts can be computed; e.g. use map-reduce            
+- **Histograms:** Data is binned in parallel    
+- **Box plots:** Finding the quartiles is a scalable counting process   
+- **KDE and violin plots:** Similarly to the box plot, using kernel density estimation   
+
+
+-------------------------------------
+
+## Over-plotting   
+
+**Over-plotting** occurs in  plots when the markers lie one on another. 
+
+- Common, even in relatively small data sets   
+- Scatter plots can look like a blob and be completely uninterpretable     
+- Over-plotting is a significant problem in EDA and presentation graphics    
+
+
+-------------------------------------
+
+## Dealing with Over-plotting
+
+What can we do about over-plotting?      
+
+- **Marker transparency:** so one can see markers underneath; useful in cases with minimal overlap of markers   
+- **Marker size:** smaller marker size reduces over-plotting within limits        
+- **Adding jitter:** adding a bit of random **jitter** to variables with limited number of values 
+- **Random down-sampling:** for very large data sets, you may only need a representative sample to understand key data relationships
+
+-------------------------------------------
+
+## Example of Overplotting   
+
+```{python, echo=FALSE}
+from sklearn.datasets import load_diabetes
+import pandas as pd
+import numpy as np
+import numpy.random as nr
+import datetime
+from math import log
+import statsmodels.api as sm
+import seaborn as sns
+import matplotlib.pyplot as plt
+from statsmodels.graphics import mosaicplot
+import calendar
+
+housing = pd.read_csv('../data//housing.csv')
+
+## Create a datetime type column and a decimal year column
+def date_to_decimal(x,frac=1.0/12.0):
+    return x.year + frac * x.month
+housing.loc[:,'time'] = pd.to_datetime(housing.loc[:,'time'])
+housing.loc[:,'time_decimal'] = housing.loc[:,'time'].map(date_to_decimal)
+    
+## Fill the missing median sold price with listing price
+medSoldMissing = housing.loc[:,'medSoldPriceSqft'].isnull()
+housing.loc[medSoldMissing,'medSoldPriceSqft'] = housing.loc[medSoldMissing,'medListPriceSqft']
+
+## Remove the remaining rows with missing median sold price values
+medSoldNotMissing = housing.loc[:,'medSoldPriceSqft'].notnull()
+housing = housing.loc[medSoldNotMissing,:]
+
+## Filter median price sold
+housing = housing.loc[(housing.loc[:,'medSoldPriceSqft'] < 500.0) & (housing.loc[:,'medSoldPriceSqft'] > 2.0),:]
+
+## log transform price and see how this changes the plot
+housing.loc[:,'log_medSoldPriceSqft'] = np.log(housing.loc[:,'medSoldPriceSqft'])
+
+housing_reduced = housing.sample(frac=0.2, axis=0)
+fig, ax = plt.subplots(figsize=(5, 3))
+ax = sns.scatterplot(x='time_decimal', y='log_medSoldPriceSqft', data=housing_reduced, ax=ax)
+_=ax.set_xlabel('Time', fontsize=10)
+_=ax.set_ylabel('Log Median Sale Price', fontsize=10)
+_=ax.set_title('Log median sale prices vs. time', fontsize=10)
+plt.show()
+```
+
+---------------------------------------------
+
+## Use Transparency, Marker Size, Downsampling
+
+```{python, echo=FALSE}
+fig, ax = plt.subplots(figsize=(5, 3))
+ax = sns.scatterplot(x='time_decimal', y='log_medSoldPriceSqft', 
+                      data=housing_reduced, alpha=0.1, s=2, ax=ax)
+_=ax.set_xlabel('Time', fontsize=10)
+_=ax.set_ylabel('Log Median Sale Price', fontsize=10)
+_=ax.set_title('Log median sale prices vs. time', fontsize=10)
+plt.show()
+```
+
+-------------------------------------
+
+## Other Methods to Display Large Data Sets
+
+Alternatives to avoid over-plotting for truly large data sets 
+
+- **Hex bin plots:** the 2-dimensional equivalent of the histogram     
+  - Frequency of values is tabulated into 2-dimensional hexagonal bins   
+  - Displayed using a sequential color palette    
+  
+- **2-d kernel density estimation plots:** natural extension of the 1-dimensional KDE plot   
+  - Good for moderately large data    
+  
+- **Heat map:** values of one variable against another     
+  - Categorical (count) or continuous variables    
+  - Carefully choose color pallet, sequential or divergent   
+  
+- **Mosaic plots:** display multidimensional count (categorical) data   
+  - Uses tile size and color to project multiple dimensions   
+  - 2-d equivalent of a multivariate bar chart        
+  
+- **Dimensionality reduction:** we will discuss this later in the course   
+
+ 
+--------------------------------------
+
+## Hexbin Plot   
+
+```{python, echo=FALSE}
+p = plt.hexbin(x=housing.loc[:,'time_decimal'], y=housing.loc[:,'log_medSoldPriceSqft'], gridsize = 50, cmap='YlGnBu')
+cb = plt.colorbar(p)
+_=cb.set_label('Number of samples')
+_=plt.xlabel('Time')
+_=plt.ylabel('Log Median Sale Price')
+_=plt.title('Log median sale prices vs. time')
+plt.show()
+```
+ 
+---------------------------------------
+
+## Countour Plot
+
+```{python, echo=FALSE}
+#_=plt.hexbin(housing.loc[:,'time_decimal'], housing.loc[:,'log_medSoldPriceSqft'], cmap='YlGnBu')
+###### Replace above with below ############################
+_=sns.jointplot(x='time_decimal', y='log_medSoldPriceSqft', data=housing_reduced, kind='kde')
+_=plt.xlabel('Time', fontsize=10)
+_=plt.ylabel('Log Median Sale Price', fontsize=10)
+_=plt.title('Log median sale prices vs. time', fontsize=10)
+plt.show()
+```
+ 
+ 
+ 
+-------------------------------------
+
+## Other Methods to Display Large Data Sets
+
+Sometimes a **creative alternative** is best
+  
+- Often situation specific; many possibilities    
+
+- Finding a good one can require significant creativity!    
+
+- Example, choropleth for mutli-dimensional geographic data   
+
+- Example, time series of box plots      
+
+
+-------------------------------------------
+
+## Time Series of Box Plots
+
+```{python, echo=FALSE}
+bins = [2008.0 + i * 0.25 for i in range(34)]
+housing.loc[:,'time_bins'] = pd.cut(housing.loc[:,'time_decimal'], bins=bins)
+fig, ax = plt.subplots(figsize=(5, 5))  
+fig.subplots_adjust(bottom=0.4)
+_=sns.boxenplot('time_bins', 'log_medSoldPriceSqft', color='lightgray', data=housing)
+_=ax.set_xticklabels(ax.get_xticklabels(), rotation=90, fontsize=6)
+_=ax.set_xlabel('Time', fontsize=6)
+_=ax.set_ylabel('Log Median Sale Price', fontsize=8)
+```
+
+
+--------------------------------------
+
+## Mosaic Plots
+
+How can we display multidimensional count (categorical) data at scale?   
+
+- Mosaic plots displays the relative proportion of counts of a contingency table      
+
+- Plot area is divided and fully filled by a set of tiles    
+
+- The larger the count, the larger tile area
+
+
+--------------------------------------
+
+## Mosaic Plots
+
+```{python, echo=FALSE}
+bike_share_df = pd.read_csv('../data/BikeSharing.csv')
+
+## Add month column with names
+bike_share_df.loc[:,'month'] = [calendar.month_abbr[i] for i in bike_share_df.loc[:,'mnth']]
+
+## Add column with human readable weather conditions
+weather = {1:'Clear', 2:'Mist', 3:'Light precipitation', 4:'Heavy precipitation'}
+bike_share_df.loc[:,'Weather'] = [weather[i] for i in bike_share_df.loc[:,'weathersit']]
+```
+
+```{python, echo=FALSE}
+season = {1:'winter', 2:'spring', 3:'summer', 4:'fall'}
+bike_share_df.loc[:,'Season'] = [season[i] for i in bike_share_df.loc[:,'season']]
+year = {0:'2011', 1:'2012'}
+bike_share_df.loc[:,'year'] = [year[i] for i in bike_share_df.loc[:,'yr']]
+working = {0:'No_Work', 1:'Working'}
+bike_share_df.loc[:,'WorkingDay'] = [working[i] for i in bike_share_df.loc[:,'workingday']]
+
+categorical_cols = ['year','Season', 'WorkingDay', 'Weather']
+
+
+fig, ax = plt.subplots(figsize=(5, 4))
+plt.rcParams.update({'font.size': 5})
+_=mosaicplot.mosaic(bike_share_df.loc[:,categorical_cols], 
+                    index=list(categorical_cols), 
+                    title = 'Counts of weather conditions',
+                    ax=ax)
+
+plt.show()
+```
+
+
+
+-------------------------------------
+
+## Displays for Complex Data
+
+How can we understand the relationships in complex data with many variables?   
+ 
+- **Arrays of plots:** subsets show relationships in a complex data set    
+
+- **Pairwise scatter plots:** matrix of all pairwise combinations of variables    
+   - Project additional dimensions with plot aesthetics    
+   - pairwise scatter plots can be created for subsets of large and complex data sets.     
+
+-  **Faceting:** uses values of categorical or numeric variables to plot subsets    
+   - Subsets are displayed on an array of plots    
+   - Typically use axes on same scale to ensure correct perception of relationships   
+   - Faceting goes by several other monikers, **conditional plotting**, **method of small multiples**, **lattice plotting**       
+   
+- **Cognostics:** sort large number of variables to find important relationships   
+
+
+-------------------------------------
+
+## Arrays of Plots
+
+Display multiple plot views in an array or grid    
+
+- Create an array of plots which project multiple related views of data relationships    
+  - Organize axes to give multidimensional view
+
+- Example, scatterplot with kde plots on the margins       
+  - Supported by Seaborn jointplot      
+  
+
+
+-------------------------------------
+
+## Scatter Plot Matrix   
+
+Scatter plot matrix used to investigate relationships between a number of variables    
+
+- Key idea: Display a scatter plots of each variable versus all other variables    
+   - Primarily EDA tool    
+   - Conveys lots of information - requires study! 
+
+- Each pairwise relationship is displayed twice    
+  - Two possible orientations
+  - Or two different plot types   
+
+- Can place histograms and KDE plots on diagonal    
+
+--------------------------------------------
+
+## Scatter Plot Matrix    
+
+```{python, echo=FALSE}
+## Load the data arrays
+diabetes_X, diabetes_y = load_diabetes(return_X_y=True)
+## Create a data frame with the correct column names for the independent variables.
+column_names = ['Age','Sex','BodyMassIndex','AverageBloodPressure','S1','S2','S3','S4','S5','S6']
+diabetes = pd.DataFrame(diabetes_X[:,:5], columns=column_names[:5])
+## Add the dependent variable to the data frame and set it to categorical type
+diabetes.loc[:,'DiseaseProgression'] = diabetes_y
+diabetes.loc[:,'sex_categorical'] = diabetes.loc[:,'Sex'].map(lambda x: 'male' if x<0 else 'female')
+
+g = sns.PairGrid(diabetes.drop('Sex', axis=1), hue='sex_categorical', palette="Set2", height=1.0)
+_=g.map_upper(sns.regplot, order=1, truncate=True, scatter_kws={'s':0.5})
+_=g.map_lower(plt.hexbin, alpha=0.5, cmap='Blues', gridsize=15, linewidths=0)
+_=g.map_diag(plt.hist, histtype="step",linewidth=1)
+plt.show()
+```
+
+-------------------------------------
+
+## Facet Plots     
+
+**Facet plots** revolutionized statistical graphics starting about 30 years ago     
+
+- Facet plots extend the number of dimensions projected onto 2-d plot surface 
+
+- Key idea: Create array of plots of subsets of the data   
+  - Create subsets using a group-by operation on other variables    
+  - Lay out grid of plots on **same axis** by row and column grouping variables   
+  - Display same plot type for each group    
+  - Can add specific aesthetics, etc.   
+
+
+-------------------------------------
+
+## Facet Plots     
+
+Like many good ideas facet plotting was invented several times
+
+- Multiple contemporaneous inventors and names      
+  - Tufte, 1990, introduced **method of small multiples**     
+  - Cleveland, 1992, introduced **trellis plotting**    
+  - Also known as **conditioned plots**      
+
+- Most packages use term facet plot
+
+
+--------------------------------------------
+
+## Facet Plot with Weather by Season
+
+```{python, echo=FALSE}
+bike_share_df = pd.read_csv('../data/BikeSharing.csv')
+
+## Add month column with names
+bike_share_df.loc[:,'month'] = [calendar.month_abbr[i] for i in bike_share_df.loc[:,'mnth']]
+
+## Add column with human readable weather conditions
+weather = {1:'Clear', 2:'Mist', 3:'Light precipitation', 4:'Heavy precipitation'}
+bike_share_df.loc[:,'Weather'] = [weather[i] for i in bike_share_df.loc[:,'weathersit']]
+
+season = {1:'winter', 2:'spring', 3:'summer', 4:'fall'}
+bike_share_df.loc[:,'Season'] = [season[i] for i in bike_share_df.loc[:,'season']]
+year = {0:'2011', 1:'2012'}
+bike_share_df.loc[:,'year'] = [year[i] for i in bike_share_df.loc[:,'yr']]
+working = {0:'No_Work', 1:'Working'}
+bike_share_df.loc[:,'WorkingDay'] = [working[i] for i in bike_share_df.loc[:,'workingday']]
+
+with sns.plotting_context(font_scale=0.1):
+    g = sns.FacetGrid(bike_share_df, col="Weather", col_order=weather.values(), row="month", row_order=calendar.month_abbr[1:], height=1.0, aspect=1.5)
+    g = g.map(plt.scatter, "hr", "cnt", alpha=0.2, s=1)
+    plt.show()
+```
+
+-------------------------------------
+
+## Congnostics   
+
+How can we visualize very high dimensional data?           
+
+- Modern data sets have thousands to millions of variables    
+  - Cannot possibly look at all of these     
+  
+- Idea: need to find the most important relationships      
+
+- Use a **cognostic** to sort relationship    
+   - Cognostic is a statistic to sort data     
+   - Sort the variables or relationships by the cognostic     
+   - Plot relationships with most interesting cognostic  
+
+- Idea originally proposed by Tukey, 1982, 1985   
+
+
+-----------------------------------------
+
+## Cognistic: Counties With Fastest Rate of Housing Price Increase     
+
+```{python, echo=FALSE}
+## Add an intercept column to the data frame
+housing.loc[:,'intercept'] = [1.0] * housing.shape[0]
+## Demean the decimal time column
+mean_time = housing.loc[:,'time_decimal'].mean()
+housing.loc[:,'time_demean'] = housing.loc[:,'time_decimal'].subtract(mean_time)
+
+## Find the slope coefficients for each state
+def prepare_temp(df, group_value, group_variable = 'state'):
+    temp = df.loc[df.loc[:,group_variable]==group_value,:]
+    mean_price = np.mean(temp.loc[:,'log_medSoldPriceSqft'])
+    temp.loc[:,'log_medSoldPriceSqft'] = np.subtract(temp.loc[:,'log_medSoldPriceSqft'], mean_price)
+    std_price = np.std(temp.loc[:,'log_medSoldPriceSqft'])
+    temp.loc[:,'log_medSoldPriceSqft'] = np.divide(temp.loc[:,'log_medSoldPriceSqft'], std_price)
+    return(temp, mean_price, std_price)
+ 
+
+def compute_slopes(df, column, group_variable='state'):
+    slopes = []
+    entities = []
+    intercepts = []
+    for e in df.loc[:,column].unique():
+        temp, mean_price, std_price = prepare_temp(df, e, group_variable=column)
+        temp_OLS = sm.OLS(temp.loc[:,'log_medSoldPriceSqft'],temp.loc[:,['intercept','time_demean']]).fit()
+        slopes.append(temp_OLS.params.time_demean)
+        intercepts.append(temp_OLS.params.intercept)
+        entities.append(e)
+ 
+    slopes_df = pd.DataFrame({'slopes':slopes, 'intercept_coef':intercepts, 'entity_name':entities})    
+    slopes_df.sort_values(by='slopes', ascending=False, inplace=True)
+    slopes_df.reset_index(inplace=True, drop=True) 
+    return slopes_df
+
+#compute_slopes(housing, 'state')
+state_slopes = compute_slopes(housing, 'state')
+
+## PLot states with the fastest growing pricing
+def find_changes(df, slopes, start, end, col='state'):
+    increase  = slopes.loc[start:end,'entity_name']
+    increase_df = df.loc[df.loc[:,col].isin(increase),:]
+    increase_df = increase_df.merge(slopes, how='left', right_on='entity_name', left_on=col)
+    return(increase_df, increase)
+big_increase_states, increase_states = find_changes(housing, state_slopes, 0, 7)    
+
+## Display scatterplot vs time
+def plot_price_by_entity(df, order, entity='state', xlims=[2007.5, 2016.5]):
+    g = sns.FacetGrid(df, col=entity, col_wrap=4, height=2, col_order=order)
+    g = g.map(sns.regplot, 'time_decimal', 'log_medSoldPriceSqft', 
+              line_kws={'color':'red'}, scatter_kws={'alpha': 0.1, 's':0.5})
+    g.set(xlim=(xlims[0],xlims[1]))
+    plt.show()
+
+_=plot_price_by_entity(big_increase_states, increase_states)
+```
+
+-------------------------------------
+
+## Summary
+
+
+We have  explored these key points       
+
+- Proper use of plot aesthetics enable projection of multiple dimensions of complex data onto the 2-dimensional plot surface.     
+- All plot aesthetics have limitations which must be understood to use them effectively     
+- The effectiveness of a plot aesthetic varies with the type and the application    
+
+- Visualization of modern data sets, growing in size and complexity     
+  
+- Visualization limited by 2-dimensional projection      
+
+- **Goal:** Understand key relationships in large complex data sets     
+
+- **Difficulty:** Large data volume   
+  - Modern computational systems have massive capacity     
+  - Example: Use map-reduce algorithms on cloud clusters
+  
+- **Difficulty:** Large numbers of variables
+  - Huge number of variables with many potential relationships   
+  - **This is the hard part!**
+
+
+

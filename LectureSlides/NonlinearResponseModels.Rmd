@@ -1,0 +1,389 @@
+---
+title: "Models with Nonlinear Response"
+author: "Steve Elston"
+date: "03/28/2021"
+output:
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("/usr/bin/python3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+## Introduction  
+
+- Building models with nonlinear or non-Normal response   
+
+- Use generalized linear model for nonlinear response          
+
+- Link function transforms to nonlinear model to linear model       
+
+- Evaluating Binomial response models   
+
+- Compare model performance with deviance   
+
+
+## Models with Nonlinear Response    
+
+How do we deal with models that do not have nonlinear response variables?   
+
+- Example: binary response variable, $[0,1]$, $Bin(\theta)$ distributed     
+   - Probability parameter $\theta$
+   - A binary classifier      
+   
+- Example: Intensity of an arrival process, $poisson(\lambda)$ response   
+   - $\lambda$ is the average rate or **intensity** of a point process 
+   - Estimate the parameter $\lambda$    
+   
+- Example: Categorical response variable for $n$ categories, $Multi(\pi_1, \pi_2, \ldots, \pi_n)$:    
+   - $n$ category classifier
+   - Response is probability probability for each category, $\Pi = [\pi_1, \pi_2, \ldots, \pi_n]$ 
+
+
+
+## Models with Nonlinear Response    
+
+The **generalized linear model (GLM)** is a framework for nonlinear response models   
+
+- Nonlinear response is non-Normally distributed  
+   
+- For each distribution use a **link function** to transform to a linear model    
+   - Linear model has Normally distributed response   
+   - Link function transform nonlinear response to Normal distribution  
+
+- To compute the nonlinear response  
+   - Start with a linear model, OLS    
+   - Transform response with **inverse link function**    
+   - Works for all exponential family response distributions      
+   
+   
+## The Generalized Linear Model   
+
+Link functions are available for many distributions      
+
+
+- Supported in [statsmodels](https://www.statsmodels.org/stable/glm.html)        
+
+- Supported in [Scikit-Learn](https://scikit-learn.org/stable/modules/linear_model.html#generalized-linear-regression)     
+
+- Examples: 
+   - Gaussian, identity function    
+   - Inverse Gaussian   
+   - Binomial, logit function    
+   - Multinomial  
+   - Poisson    
+   - Negative Binomial   
+   - Gamma   
+   - Tweedie   
+
+## The Generalized Linear Model   
+
+Start with a regression model for binary classification - **logistic regression**   
+
+- Use Binomial distribution to model $y$ successes in $n$ trials    
+
+$$y \sim Bi(n, \theta)$$
+
+- But finding the best fit value of parameter $\theta$ directly is a nonlinear problem!   
+- Instead, define a **link function**, known as the **logit function** for parameter $\lambda$     
+
+$$\lambda = log \Bigg\{ \frac{\theta}{1-\theta} \Bigg\}$$
+
+- After a bit of algebra we find the exponential relationship with $y$
+
+$$y = n\ log(1+ e^\lambda)$$
+
+
+## The Generalized Linear Model  
+
+Formulate a linear regression problem using the link function      
+
+$$\lambda = log \Bigg\{ \frac{\theta}{1-\theta} \Bigg\} = X \vec{b}$$    
+for model matrix $X$ and coefficient vector $\vec{b}$
+
+- Given estimate of $\lambda$, compute $\theta$    
+
+$$\theta = \frac{1}{1 + e^\lambda} = \frac{1}{1 + e^{X \vec{b}}}$$
+
+The **inverse link function** for Binomial response!
+
+
+## The Generalized Linear Model  
+
+Consider the example for a single feature, $x$     
+
+- The linear model has only slope and intercept, $[ \beta_0, \beta_1]$ 
+
+$$\lambda_i = log \Bigg\{ \frac{\theta_i}{1-\theta_i} \Bigg\} = \beta_0 + \beta_1 x_i$$      
+
+and    
+
+$$\theta_i = \frac{1}{1 + e^{\beta_0 + \beta_1 x_i}}$$
+
+
+## Logistic Regression Model
+
+What does the transformation function look like?    
+
+$$y = \frac{1}{1 + e^\lambda}$$
+
+```{python, echo=FALSE}
+import pandas as pd
+import numpy as np
+import numpy.random as nr
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+import scipy.stats as ss  
+from math import atan
+
+test_scores = pd.read_csv('../data/hsb2.csv', index_col=0)
+#test_scores.head(10)
+```
+
+
+```{python, echo=FALSE}
+# Plot the logistic transformation function (f(x) above)
+x_seq = np.linspace(-7, 7, 100)
+
+def log_fun(x, center=0, scale=1):
+    e = np.exp(-scale*(x-center))
+    log_out = 1./(1. + e)
+    return log_out
+
+log_fun_vectorized = np.vectorize(log_fun)
+
+log_y = log_fun_vectorized(x_seq)
+
+fig, ax = plt.subplots(figsize=(4,3))
+ax.plot(x_seq, log_y)
+ax.set_title('Standard Logistic Function')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+plt.grid()
+plt.show()
+```
+
+- The response is bound in the range $[0,1]$
+
+- We say the logistic transformation **squashes** the linear response $\lambda =X \vec{b}$ to binary, $[0,1]$   
+
+- Can set a **decision threshold** for binary response    
+   - Default $= 0.5$
+
+
+## Evaluation of Classifiers   
+
+How can we evaluate a classifier's accuracy? 
+
+- Determine proportions of test cases which are classified as:     
+   - True Positives (TP): Are positive and should be positive      
+   - True Negatives (TN): Are negative and should be negative    
+   - False Positives (FP): Classified as positive but are actually negative; **Type I errors**   
+   - False Negatives (FN): Classified as negative but are actually positive; **Type II errors**   
+
+- Organize these metrics into a **confusion matrix**      
+
+|  | Classified Positive | Classified Negative |
+| ---- | :---: | :---: |
+|Positive | TP | FN |  
+|Negative | FP | TN |
+
+
+
+## Evaluation of Classifiers   
+
+
+The other metrics are defined as follows:
+
+- Accuracy = (TP + TN) / (TP + FP + TN + FN)      
+
+- Selectivity or Precision = TP / (TP + FP)       
+   - Precision is the fraction of the relevant class predictions are actually correct     
+   
+- Sensitivity or Recall = TP / (TP + FN)
+   - Recall is the fraction of the relevant class were we able to predict    
+
+
+- Is a trade-off between precision and recall     
+   - Consider changing the decision threshold    
+   - High threshold $\rightarrow$ higher recall, more false negatives   
+   - Low threshold $\rightarrow$ higher precision, more false positives    
+
+## Example of Logistic Regression    
+
+How well can we predict the type of school given the test scores?     
+
+```{python}
+## Prep the data
+test_scores['schtyp'] = np.subtract(test_scores['schtyp'], 1)
+for col in ['read', 'write', 'math', 'science', 'socst']:
+    test_scores[col] = np.divide(np.subtract(test_scores[col], np.mean(test_scores[col])), np.std(test_scores[col]))
+
+## Fit the model
+formula = 'schtyp ~ math'
+logistic_reg_model = smf.glm(formula=formula, data=test_scores, family=sm.families.Binomial()).fit()
+
+## score the results 
+threshold=0.18
+test_scores['predicted'] = logistic_reg_model.predict()
+test_scores['score'] = [1 if x>threshold else 0 for x in test_scores['predicted']]
+
+print(logistic_reg_model.summary())
+```
+
+
+## Example of Logistic Regression    
+
+The data frame now looks like this with the predicted probability and the binary scores:
+
+```{python}
+test_scores.head(20)
+```
+
+
+## Example of Logistic Regression    
+
+Now, evaluate the model - the classifier is almost useless - **no Kagle awards!**:   
+
+```{python}
+import sklearn.metrics as sklm  
+def print_metrics(labels, scores):
+    metrics = sklm.precision_recall_fscore_support(labels, scores)
+    conf = sklm.confusion_matrix(labels, scores)
+    print('                 Confusion matrix')
+    print('                 Score positive    Score negative')
+    print('Actual positive    %6d' % conf[0,0] + '             %5d' % conf[0,1])
+    print('Actual negative    %6d' % conf[1,0] + '             %5d' % conf[1,1])
+    print('')
+    print('Accuracy  %0.2f' % sklm.accuracy_score(labels, scores))
+    print(' ')
+    print('           Positive      Negative')
+    print('Num case   %6d' % metrics[3][0] + '        %6d' % metrics[3][1])
+    print('Precision  %6.2f' % metrics[0][0] + '        %6.2f' % metrics[0][1])
+    print('Recall     %6.2f' % metrics[1][0] + '        %6.2f' % metrics[1][1])
+    print('F1         %6.2f' % metrics[2][0] + '        %6.2f' % metrics[2][1])
+    
+print_metrics(test_scores['schtyp'], test_scores['score'])    
+```
+
+
+## Example of Logistic Regression     
+
+How can we understand the cut-off value in terms of the CDF of the positive and negative cases?    
+
+```{python, echo=FALSE}
+fig, ax = plt.subplots(figsize=(4, 3)) # define axis
+sns.ecdfplot(x='predicted', hue='schtyp', data=test_scores, ax=ax)
+ax.set_ylabel('Cummulative probability')
+ax.axvline(0.18, color='red', linestyle='dotted')
+```
+
+- Positive cases to the left of cut-off are Type II errors     
+- Negative cases to the right of cut-off are Type I errors   
+- Probability curves nearly the same = poor model   
+
+
+## What is Deviance?
+
+The significance of a GLM is expressed in terms of **deviance**     
+
+- Deviance can be challenging to understand what deviance really means      
+
+- Formally, deviance is the expected value of the ratio of one probability density function, $f_1(y)$ to a second probability density function, $f_2(y)$:
+
+$$D\big[f_1(y),f_1(y) \Big] = 2 \int_y f_1(y) log \Bigg\{ \frac{f_1(y)}{f_2(y)} \Bigg\} dy$$
+
+If $f_1(y) \rightarrow f_1(y)$, then:
+
+$$log \Bigg\{
+\frac{f_1(y)}{f_2(y)} \Bigg\} \rightarrow log(1) \rightarrow 0$$
+
+And, $D\big[f_1(y),f_1(y) \Big] \rightarrow 0$
+
+
+## What is Deviance? 
+
+Deviance is a measure of the divergence between two distributions   
+
+- Consider an easy to understand form of deviance for the Normal distribution    
+   
+- Model with Normally distributed response  
+   - The mean squared error of a model is the deviance      
+   - If two distribution are identical the deviance is 0    
+
+
+
+## What is Deviance?
+
+Deviance of a model can be evaluated using deviance with respect to a saturated model  
+
+\begin{align}
+D(y,\hat{\mu}) &= 2 \Big( log \big( p(y | \hat{\theta}_{S}) \big) - log \big( p(y | \hat{\theta}_{0}) \big) \Big) \\
+&= 2 \Big( \mathcal{l}(y | \hat{\theta}_{S})  -  \mathcal{l}(y | \hat{\theta}_{0})  \Big)
+\end{align}
+
+where,    
+- $\mathcal{l}(y | \hat{\theta}) \big)$ is the log likelihood of model with estimated parameters, $\hat{\theta}$]          
+- $\hat{\theta}_{S}$ are parameters of a **saturated** model, $M_S$, with a parameter for each observation    
+- Saturated model has the best possible fit to the training data        
+- $\hat{\theta}_{0} parameters of model, $M_0$, to evaluate.   
+
+
+
+## What is Deviance?
+
+
+Fortunately, we can use the **deviance ratio** to compare models      
+
+- Trick is to recognize that the log likelihood of the saturated model, $\mathcal{l}(y | \hat{\theta}_{0})$, is a constant:
+
+$$D(y,\hat{\mu}) = Constant + 2 \mathcal{l}(y | \hat{\theta}_{0})$$
+
+- Now the deviance ratio to compare two models, $M_1$ and $M_0$ is:   
+
+\begin{align}
+D(\hat{\theta}_1,\hat{\theta}_0) &= \frac{Constant + 2 \mathcal{l}(y | \hat{\theta}_{0})}{Constant + 2 \mathcal{l}(y | \hat{\theta}_{1})} \\ 
+&= Constant + 2 \mathcal{l}(y | \hat{\theta}_{0}) - Constant - 2 \mathcal{l}(y | \hat{\theta}_{1}) \\
+&= 2 \mathcal{l}(y | \hat{\theta}_{0}) - 2 \mathcal{l}(y | \hat{\theta}_{1})
+\end{align}
+
+
+
+## What is Deviance?
+
+Can compare with **null model** with **null deviance**     
+
+ - Unfortunately, this quantity is usually just called, deviance, but is actually null deviance  
+- For large samples null deviance is Chi Squared distributed     
+
+- Test statistical significance of the model against the null model using the Chi Squared test   
+- Depends on  Wilk's theorem, and is referred to as **Wilk's test**. 
+
+- Can comparing models with ratio of null deviance as well  
+
+
+## Summary  
+
+- Models with nonlinear response have non-Normal distributions  
+
+- The generalized linear model accommodates nonlinear response distributions          
+
+- Link function transforms to linear model       
+   - Inverse link function transforms from Normal distribution to response distribution   
+
+- Evaluating Binomial response models    
+   - Confusion matrix organizes 
+   - Compute metrics from elements of confusion matrix
+   - Use multiple evaluation criteria 
+
+- Compare model performance with deviance   
+
