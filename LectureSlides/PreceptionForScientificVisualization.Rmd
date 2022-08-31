@@ -181,7 +181,21 @@ Independent Graduate Project:
   - Example project proposals and reports     
 
 
--------------------------------------------------------------------------
+-------------------------------------------------------------
+
+## Late Assignment Policy
+
+- Timely feedback is an important part of the learning process     
+- To allow the timely release of solutions for assignments this course applied a late assignment policy:     
+  - Up to one day late - no penalty    
+  - Up to 6 days late - less 20%    
+  - More than 6 days late - no credit      
+
+**Advice:** start assignments and your project as soon as you can so you have time to address problems and ask questions!   
+
+**Note: No extension is possible for Graduate Independent Projects!**   
+
+-------------------------------------------------------------
 
 ## Class Schedule
 
