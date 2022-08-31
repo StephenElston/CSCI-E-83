@@ -25,8 +25,8 @@ matplotlib$use("Agg", force = TRUE)
 
 - **Goal:** Communicate information visually
 - Visualization technique maximize the information a viewer perceives
-- limits of human perception are a significant factor in understanding complex relationships
-- Can apply results of the considerable research on human perceptions for data visualization
+- Limits of human perception are a significant factor in understanding complex relationships
+- Apply results of research on human perceptions for data visualization
 
 
 -----------------------------------------------------------
@@ -34,11 +34,27 @@ matplotlib$use("Agg", force = TRUE)
 ## Use Aesthetics to Improve Perception 
 
 - Use aesthetics to improve perception
-- We take a very broad view of the term 'aesthetic' here
+- Take a very broad view of the term 'aesthetic'
 - A plot aesthetics is any property of a visualization which highlight aspects of the data relationships
 - Aesthetics are used to project additional dimensions of complex data onto the 2-dimensional plot surface
 
+---------------------------------------------------------------------
 
+## Regression Lines   
+
+Regression lines draw viewers attention 
+
+- Typically use a nonlinear regression line       
+  - Polynomial    
+  - Splines - piece wise model
+  - Lowess - local nonlinear regression   
+  
+- Bootstrap confidence intervals show range of probable trends    
+  - More or bootstrap resampling later   
+  
+- Ideally want strait line relationship  
+  - Nonlinear relationships often arise from non-Normal distributions  
+  - Linear relationship is more intuitive  
 
 -----------------------------------------------------------
 
@@ -46,7 +62,7 @@ matplotlib$use("Agg", force = TRUE)
 
 | Property or Aesthetic |Perception| Data Types |
 |:---------|:-----------|:------------|
-|Aspect ratio | Good | Numeric |
+|Aspect ratio | Good | Numeric |s
 |Regression lines | Good | Numeric plus categorical |
 |Marker position | Good | Numeric |
 |Bar length | Good | Counts, numeric |
@@ -75,7 +91,7 @@ matplotlib$use("Agg", force = TRUE)
   - Huge number of variables with many potential relationships   
   - **This is the hard part!**
 
-Note: we will address use of dimensionality reduction techniques in another lesson 
+Note: we will address use of dimensionality reduction techniques in another lesson, time permitting   
 
 -------------------------------------
 
@@ -168,7 +184,7 @@ housing = housing.loc[(housing.loc[:,'medSoldPriceSqft'] < 500.0) & (housing.loc
 housing.loc[:,'log_medSoldPriceSqft'] = np.log(housing.loc[:,'medSoldPriceSqft'])
 
 housing_reduced = housing.sample(frac=0.2, axis=0)
-fig, ax = plt.subplots(figsize=(5, 3))
+fig, ax = plt.subplots(figsize=(10, 6))
 ax = sns.scatterplot(x='time_decimal', y='log_medSoldPriceSqft', data=housing_reduced, ax=ax)
 _=ax.set_xlabel('Time', fontsize=10)
 _=ax.set_ylabel('Log Median Sale Price', fontsize=10)
@@ -181,7 +197,7 @@ plt.show()
 ## Use Transparency, Marker Size, Downsampling
 
 ```{python, echo=FALSE}
-fig, ax = plt.subplots(figsize=(5, 3))
+fig, ax = plt.subplots(figsize=(10, 6))
 ax = sns.scatterplot(x='time_decimal', y='log_medSoldPriceSqft', 
                       data=housing_reduced, alpha=0.1, s=2, ax=ax)
 _=ax.set_xlabel('Time', fontsize=10)
@@ -233,9 +249,9 @@ plt.show()
 ## Countour Plot
 
 ```{python, echo=FALSE}
-#_=plt.hexbin(housing.loc[:,'time_decimal'], housing.loc[:,'log_medSoldPriceSqft'], cmap='YlGnBu')
+_=plt.hexbin(housing.loc[:,'time_decimal'], housing.loc[:,'log_medSoldPriceSqft'], cmap='YlGnBu')
 ###### Replace above with below ############################
-_=sns.jointplot(x='time_decimal', y='log_medSoldPriceSqft', data=housing_reduced, kind='kde')
+#_=sns.jointplot(x='time_decimal', y='log_medSoldPriceSqft', data=housing_reduced, kind='kde')
 _=plt.xlabel('Time', fontsize=10)
 _=plt.ylabel('Log Median Sale Price', fontsize=10)
 _=plt.title('Log median sale prices vs. time', fontsize=10)
@@ -266,7 +282,7 @@ Sometimes a **creative alternative** is best
 ```{python, echo=FALSE}
 bins = [2008.0 + i * 0.25 for i in range(34)]
 housing.loc[:,'time_bins'] = pd.cut(housing.loc[:,'time_decimal'], bins=bins)
-fig, ax = plt.subplots(figsize=(5, 5))  
+fig, ax = plt.subplots(figsize=(9, 9))  
 fig.subplots_adjust(bottom=0.4)
 _=sns.boxenplot('time_bins', 'log_medSoldPriceSqft', color='lightgray', data=housing)
 _=ax.set_xticklabels(ax.get_xticklabels(), rotation=90, fontsize=6)
@@ -314,7 +330,7 @@ bike_share_df.loc[:,'WorkingDay'] = [working[i] for i in bike_share_df.loc[:,'wo
 categorical_cols = ['year','Season', 'WorkingDay', 'Weather']
 
 
-fig, ax = plt.subplots(figsize=(5, 4))
+fig, ax = plt.subplots(figsize=(10, 8))
 plt.rcParams.update({'font.size': 5})
 _=mosaicplot.mosaic(bike_share_df.loc[:,categorical_cols], 
                     index=list(categorical_cols), 
@@ -325,17 +341,30 @@ plt.show()
 ```
 
 
+-------------------------------------
+
+## Displays for Complex Data
+
+How can we understand the relationships in complex high-dimensional data with many variables?
+
+- Must confront limitations for 2-dimensional projection inherent in computer graphics   
+
+- Need methods to scale to higher dimensions   
+
+- Apply combination of arrays of plots and filtering    
+
+- **Aesthetics:** used to increase the number of projected dimenstioons    
+
 
 -------------------------------------
 
 ## Displays for Complex Data
 
-How can we understand the relationships in complex data with many variables?   
+How can we understand the relationships in complex high-dimensional data with many variables?   
  
 - **Arrays of plots:** subsets show relationships in a complex data set    
 
 - **Pairwise scatter plots:** matrix of all pairwise combinations of variables    
-   - Project additional dimensions with plot aesthetics    
    - pairwise scatter plots can be created for subsets of large and complex data sets.     
 
 -  **Faceting:** uses values of categorical or numeric variables to plot subsets    
@@ -344,6 +373,7 @@ How can we understand the relationships in complex data with many variables?
    - Faceting goes by several other monikers, **conditional plotting**, **method of small multiples**, **lattice plotting**       
    
 - **Cognostics:** sort large number of variables to find important relationships   
+
 
 
 -------------------------------------
@@ -376,6 +406,24 @@ Scatter plot matrix used to investigate relationships between a number of variab
 
 - Can place histograms and KDE plots on diagonal    
 
+
+--------------------------------------------
+
+## Scatter Plot Matrix    
+
+Scatter plot matrix create two dimensional array of plots of variable pairs            
+- Upper triangular plots     
+- Lower triangular plots      
+- Diagonal plots    
+
+```{python, eval=FALSE}
+g = sns.PairGrid(diabetes.drop('Sex', axis=1), hue='sex_categorical', palette="Set2", height=1.5)
+_=g.map_upper(sns.regplot, order=1, truncate=True, scatter_kws={'s':0.5})
+_=g.map_lower(plt.hexbin, alpha=0.5, cmap='Blues', gridsize=15, linewi dths=0)
+_=g.map_diag(plt.hist, histtype="step",linewidth=1)
+plt.show()
+```
+
 --------------------------------------------
 
 ## Scatter Plot Matrix    
@@ -390,7 +438,7 @@ diabetes = pd.DataFrame(diabetes_X[:,:5], columns=column_names[:5])
 diabetes.loc[:,'DiseaseProgression'] = diabetes_y
 diabetes.loc[:,'sex_categorical'] = diabetes.loc[:,'Sex'].map(lambda x: 'male' if x<0 else 'female')
 
-g = sns.PairGrid(diabetes.drop('Sex', axis=1), hue='sex_categorical', palette="Set2", height=1.0)
+g = sns.PairGrid(diabetes.drop('Sex', axis=1), hue='sex_categorical', palette="Set2", height=1.3)
 _=g.map_upper(sns.regplot, order=1, truncate=True, scatter_kws={'s':0.5})
 _=g.map_lower(plt.hexbin, alpha=0.5, cmap='Blues', gridsize=15, linewidths=0)
 _=g.map_diag(plt.hist, histtype="step",linewidth=1)
@@ -425,6 +473,23 @@ Like many good ideas facet plotting was invented several times
 
 - Most packages use term facet plot
 
+--------------------------------------------
+
+## Facet Plot with Weather by Season
+
+Facet plot projected on a grid
+
+- Grid defined by categorical variable for row and column    
+- Can tile or shingle numeric variables for grid      
+- Can create variables by combinations of categories from other variables   
+
+```{python, eval=FALSE}
+with sns.plotting_context(font_scale=0.1):
+    g = sns.FacetGrid(bike_share_df, col="Weather", col_order=weather.values(), row="month", row_order=calendar.month_abbr[1:], height=1.3, aspect=1.5)
+    g = g.map(plt.scatter, "hr", "cnt", alpha=0.2, s=1)
+    plt.show()
+```
+
 
 --------------------------------------------
 
@@ -448,7 +513,7 @@ working = {0:'No_Work', 1:'Working'}
 bike_share_df.loc[:,'WorkingDay'] = [working[i] for i in bike_share_df.loc[:,'workingday']]
 
 with sns.plotting_context(font_scale=0.1):
-    g = sns.FacetGrid(bike_share_df, col="Weather", col_order=weather.values(), row="month", row_order=calendar.month_abbr[1:], height=1.0, aspect=1.5)
+    g = sns.FacetGrid(bike_share_df, col="Weather", col_order=weather.values(), row="month", row_order=calendar.month_abbr[1:], height=1.3, aspect=1.5)
     g = g.map(plt.scatter, "hr", "cnt", alpha=0.2, s=1)
     plt.show()
 ```
@@ -474,7 +539,7 @@ How can we visualize very high dimensional data?
 
 -----------------------------------------
 
-## Cognistic: Counties With Fastest Rate of Housing Price Increase     
+## Cognistic: States With Fastest Rate of Housing Price Increase     
 
 ```{python, echo=FALSE}
 ## Add an intercept column to the data frame
@@ -485,7 +550,7 @@ housing.loc[:,'time_demean'] = housing.loc[:,'time_decimal'].subtract(mean_time)
 
 ## Find the slope coefficients for each state
 def prepare_temp(df, group_value, group_variable = 'state'):
-    temp = df.loc[df.loc[:,group_variable]==group_value,:]
+    temp = df.loc[df.loc[:,group_variable]==group_value,:].copy()
     mean_price = np.mean(temp.loc[:,'log_medSoldPriceSqft'])
     temp.loc[:,'log_medSoldPriceSqft'] = np.subtract(temp.loc[:,'log_medSoldPriceSqft'], mean_price)
     std_price = np.std(temp.loc[:,'log_medSoldPriceSqft'])

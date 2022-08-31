@@ -586,7 +586,7 @@ Regression lines draw viewers attention
   - More or bootstrap resampling later   
   
 - Ideally want strait line relationship  
-  - Nonlinear relationships often arrise from non-Normal distributions  
+  - Nonlinear relationships often arise from non-Normal distributions  
   - Linear relationship is more intuitive  
 
 ---------------------------------------------------------------------
