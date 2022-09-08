@@ -1,7 +1,7 @@
 ---
 title: "Visualization of Large Complex Data"
 author: "Steve Elston"
-date: "12/26/2020"
+date: "09/08/2022"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -196,6 +196,8 @@ plt.show()
 
 ## Use Transparency, Marker Size, Downsampling
 
+Down sapple to 20%, alpha = 0.1, size = 2
+
 ```{python, echo=FALSE}
 fig, ax = plt.subplots(figsize=(10, 6))
 ax = sns.scatterplot(x='time_decimal', y='log_medSoldPriceSqft', 
@@ -249,9 +251,9 @@ plt.show()
 ## Countour Plot
 
 ```{python, echo=FALSE}
-_=plt.hexbin(housing.loc[:,'time_decimal'], housing.loc[:,'log_medSoldPriceSqft'], cmap='YlGnBu')
+#_=plt.hexbin(housing.loc[:,'time_decimal'], housing.loc[:,'log_medSoldPriceSqft'], cmap='YlGnBu')
 ###### Replace above with below ############################
-#_=sns.jointplot(x='time_decimal', y='log_medSoldPriceSqft', data=housing_reduced, kind='kde')
+_=sns.jointplot(x='time_decimal', y='log_medSoldPriceSqft', data=housing_reduced, kind='kde')
 _=plt.xlabel('Time', fontsize=10)
 _=plt.ylabel('Log Median Sale Price', fontsize=10)
 _=plt.title('Log median sale prices vs. time', fontsize=10)
@@ -353,7 +355,7 @@ How can we understand the relationships in complex high-dimensional data with ma
 
 - Apply combination of arrays of plots and filtering    
 
-- **Aesthetics:** used to increase the number of projected dimenstioons    
+- **Aesthetics:** used to increase the number of projected dimensions    
 
 
 -------------------------------------
