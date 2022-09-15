@@ -132,9 +132,10 @@ All statistical methods rely on the use of **randomized unbiased samples**
 Sampling of a population is done from an unknown **population distribution**, $\mathcal{F}$      
 
 - Any statistic we compute for the generating process is based on a sample, $\hat{\mathcal{F}}$     
-- The statistic is an approximation, $s(\hat{\mathcal{F}})$ of a **population parameter**   
+- The statistic is an approximation, 
+of a **population parameter**   
    - For example, the mean of the population is $\mu$   
-   - But, sample estiamte is $\bar{x}$   
+   - But, sample estimate is $\bar{x}$   
 
 - If we continue to take random samples from the population and compute estimates of a statistic, we generate a  **sampling distribution**   
    - Hypothetical concept of the sampling distribution is a foundation of **frequentist statistics**
@@ -279,7 +280,7 @@ x = np.concatenate([
         nr.normal(loc=3, scale=.5, size=1000)])
         
 
-fig, ax = plt.subplots(figsize=(3.5, 2.5), )          
+fig, ax = plt.subplots(figsize=(10, 7), )          
 sns.kdeplot(x, ax=ax)
 ```
 
@@ -294,7 +295,7 @@ x_means = np.array([
         for i in range(500)])
 
 breaks = np.linspace(x_means.min(), x_means.max(), num=40)
-fig, ax = plt.subplots(1,2, figsize=(6, 2.5) ) 
+fig, ax = plt.subplots(1,2, figsize=(12, 5) ) 
 _ = ax[0].hist(x_means, bins=breaks)
 _ = sm.qqplot(x_means, line='s', ax=ax[1])
 ```

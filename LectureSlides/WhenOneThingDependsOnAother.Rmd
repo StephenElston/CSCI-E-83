@@ -1,7 +1,7 @@
 ---
 title: "When One Thing Depends on Another; Conditional Probability"
 author: "Steve Elston"
-date: "01/13/2021"
+date: "09/15/2022"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -256,9 +256,9 @@ Hemophilia is a serious genetic condition expressed on any X chromosome
   - Inherit X chromosome, and possibly hemophilia, from the mother    
   
 - Say a woman has a brother who exhibits hemophilia   
-  - Y chromosome expression is $\theta = 1.0$  
-  - Woman's father does not exhibit hemophilia, $\theta = 0$
-  - Our prior probability that she carries the genetic marker for hemophilia $\theta = 0.5$
+  - Y chromosome expression is $\theta = 1.0$  - brother has hemophilia with $P = 1.0$
+  - Woman's father does not exhibit hemophilia, $\theta = 0$ - father has hemophilia with $P = 0.5$  
+  - Our prior probability that she carries the genetic marker for hemophilia $\theta = 0.5$    - Woman's X chromosome has P = 0.5 that it is from mother, who carried the marker with $P = 1.0$
 
 
 ## Bayes Theorem Example  
@@ -268,7 +268,7 @@ As evidence the woman has two sons (not identical twins) with no expression of h
 - What is the likelihood for the two sons $X = (x_1,x_2)$ not having hemophilia?   
 
 - Two possible cases here
-  - Case where woman caries one X chromosome with hemophilia expression, $\theta = 1$
+  - Case where woman caries one X chromosome with hemophilia expression, $\theta = 1$, and probability of passing to son = 0.5
   - Case where woman does not carry an X chromosome with hemophilia expression, $\theta = 0$   
  
 $$
@@ -287,8 +287,14 @@ $$
 p(\theta=1 | X) = \frac{p(X|\theta=1) p(\theta=1)}{p(X|\theta=1) p(\theta=1) + p(X|\theta=0) p(\theta=0)} \\
 = \frac{0.25 * 0.5}{0.25 * 0.5 + 1.0 * 0.5} = 0.20
 $$
+Where:   
+\begin{align}
+Likelihood &= p(X|\theta=1) = 0.5 0.5 = 0.25\\
+Prior\ probability &= p(\theta=1) = 0.5\\
+Probability\ of\ hypothesis\ no\ marker &= p(\theta=0) = 1 - p(\theta=1) = 0.5 
+\end{align}
 
-The evidence of two sons without hemophilia causes us to update our **belief** that the probability of the woman carrying the disease
+The **evidence** of two sons without hemophilia causes us to update our **belief** that the probability of the woman carrying the disease
 
 
 ----------------------------------------------------------
@@ -307,7 +313,8 @@ In many cases we are interested in the **marginal distribution**
 
 $$p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)\ d\theta2, \ldots, d \theta_n$$
 
-- For discrete distribution the above is a summation    
+- For discrete distribution the above is a summation 
+$$p(\theta_1) = \sum_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)$$
 
 
 ------------------------------------------
@@ -395,7 +402,9 @@ $$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
 - Marginal distribution   
 
 
-$$p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)\ d\theta2, \ldots, d \theta_n$$
+$$
+p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)\ d\theta2, \ldots, d \theta_n\\ $$
 
-
-
+$$
+p(\theta_1) = \sum_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)
+$$

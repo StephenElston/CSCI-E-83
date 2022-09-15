@@ -2,7 +2,7 @@
 title: "Chapter 12; Why Is Inference Important?"
 author: "Steve Elston"
 date: "9/23/2020"
-bibliography: ../bibliography.bib
+bibliography: ../../bibliography.bib
 output: pdf_document
 ---
 
