@@ -335,6 +335,10 @@ import matplotlib.pyplot as plt
 
 ```{python, echo=FALSE}
 def plot_bi_variate(x, title='1000 draws from a bivariate Normal distribution'):
+    ## print the marginal mean and variance    
+    dims = ['x','y']
+    for i,dim in enumerate(dims):     
+      print(f"For {dim} mean = {np.mean(random_points[:,i])}  variance = {np.var(random_points[:,i])}")
     ## Plot bi-variable points
     g = sns.jointplot(x=random_points[:,0], y=random_points[:,1], kind="reg")
     plt.show()
@@ -355,13 +359,13 @@ plot_bi_variate(random_points)
 
 ## Example: Marginal Distribution   
 
-**Marginal distributions** of multivariate Normal with $\mu = [0,0]$ and $\sigma = \begin{bmatrix} 1.0 & 0.0 \\ 0.0 & 0.5 \end{bmatrix}$
+**Marginal distributions** of multivariate Normal with $\mu = [0,0]$ and $\sigma = \begin{bmatrix} 1.0 & 0.5 \\ 0.5 & 1.0 \end{bmatrix}$
 
 Marginal distributions **displayed on margins** of scatter plot
 
 ```{python, echo=FALSE}
 ## Define the covariance of the bivariate Normal. 
-sigma = np.array([[1,0.5], [0.5, 0.5]])
+sigma = np.array([[1,0.5], [0.5, 1.0]])
 ## Sample 500 realizations from the bivariate Normal
 random_points = nr.multivariate_normal(mean=mu, cov=sigma,  size=1000)
 
