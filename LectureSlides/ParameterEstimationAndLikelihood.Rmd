@@ -65,47 +65,68 @@ The concept of **likelihood** and **maximum likelihood estimation (MLE)** have b
 - In 21st Century, likelihood and MLE ideas continue to be foundational      
 
 -  Understanding the concept of likelihood and the use of MLE methods is key to understanding many parametric statistical methods     
-  - Likelihood is a measure of how well a model fits data     
+  - Likelihood is a measure of how like a parametric model is to generate the observed data     
   - MLE is a generic methods for parameter estimation    
 
 - MLE used widely for machine learning models, including some deep learning models      
 
 
+## Likelihood and Density Functions  
+
+Likelihood is a measure of how like a **parametric model** is to generate the observed data   
+
+- Start with a data sample, $\mathbf{X} = [x_1, x_2, \ldots, x_n]$ 
+
+- Likelihood of sample from a **generating process** with a **parametric probability distribution**, $f(\mathbf{X} | \theta)$       
+
+  - $f(\mathbf{X}\ |\ \mathbf{\theta})$ can be either a probability density function (PDF), for continuous distributions, or a probability mass function (PMF), for discrete distributions   
+
+  - The distribution parameter vector, $\mathbf{\theta}$, is fixed        
+
+- Now, for each observation, $x_i$, in $\mathbf{X} = x_1, x_2, \ldots, x_n$, the probability is just $f(x_i |\ \mathbf{\theta})$    
+
+
 ## Likelihood   
 
-Likelihood is a measure of how well a **parametric model** fits a data sample
+Likelihood is a measure of how like a **parametric model** is to generate the observed data     
 
-- For a data sample, $\mathbf{X} = x_1, x_2, \ldots, x_n$    
+- Likelihood of sample from a **generating process** with a **parametric probability distribution**, $f(\mathbf{X} | \theta)$   
 
-- Model for these data, with a parameter vector $\vec{\theta}$, is the conditional density function given the observations $\mathbf{X}$: 
+- For the set of observations, $\mathbf{X} = [x_1, x_2, \ldots, x_n]$, the likelihood is the product of these probabilities:   
 
-$$\mathcal{L}(\vec{\theta}\ |\ \mathbf{X} ) = f(\mathbf{X}\ |\ \vec{\theta})$$
+$$\mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) = \prod_{i=1}^n f(x_i | \mathbf{\theta})$$
 
-- $f(\mathbf{X}\ |\ \vec{\theta})$ can be either a PDF, for continuous distributions, or a PMF, for discrete distributions
+- In most practical cases, we work with the **log likelihood**, for observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the log likelihood is expressed:    
+
+$$l(\mathbf{X} |\ \mathbf{\theta}) = log\big( \mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) \big) = \sum_{i=1}^n log \Big( f(x_i\ |\ \mathbf{\theta}) \Big)$$   
 
 
 ## Likelihood   
 
-In most practical cases, we work with the **log likelihood**      
+Likelihood is a measure of how like a **parametric model** is to generate the observed data     
 
-- For observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the log likelihood:    
+- In most practical cases, we work with the **log likelihood**, for observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the log likelihood is expressed:    
 
-$$l(\vec{\theta}\ |\ \mathbf{X}) = log\big( \mathcal{L}(\vec{\theta}\ |\ \mathbf{X}) \big) = \sum_{j} log \Big( f(x_j\ |\ \vec{\theta}) \Big)$$
+$$l(\mathbf{X} |\ \mathbf{\theta}) = log\big( \mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) \big) = \sum_{i=1}^n log \Big( f(x_i\ |\ \mathbf{\theta}) \Big)$$   
 
-- The log likelihood summed over the sample is much easier to work with       
+- Use log-likelihood to work with the sum of log probabilities rather than the product    
+
+  - If the probabilities are small, the sum is numerically stable     
+  - The product of many small numbers is a very small number, which can lead to numerical underflow even for 64 or 128 bit floating point arithmetic  
+
 
 
 ## Example: The Normal likelihood
 
-The univariate Normal probability density function with parameter vector $(\mu,\sigma)$ for a single observation, $x$:     
+The univariate Normal probability density function with parameter vector $\mathbf{\theta} = (\mu,\sigma)$ for a single observation, $x_i$:     
 
-$$f(x,\mu,\sigma^2) = -\frac{1}{(2 \pi \sigma^2)^{1/2}} exp\Big[ - \frac{1}{2 \sigma^2}  (x - \mu)^2 \Big]$$
+$$f(x\ |\ \mu,\sigma^2) = -\frac{1}{(2 \pi \sigma^2)^{1/2}} exp\Big[ - \frac{1}{2 \sigma^2}  (x_i - \mu)^2 \Big]$$
 
 
 For n observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the log-likelihood:  
 
-$$l(\mu, \sigma\ |\ \mathbf{X}) = - \frac{n}{2} log( 2 \pi \sigma^2 ) - \frac{1}{2 \sigma^2} \sum_{j=1}^n (x_j - \mu)^2$$
-- The log-likelihood is a function of the parameters, $(\mu,\sigma)$$     
+$$l(\mathbf{X}\ |\ \mu, \sigma) = - \frac{n}{2} log( 2 \pi \sigma^2 ) - \frac{1}{2 \sigma^2} \sum_{i=1}^n (x_i - \mu)^2$$
+- The log-likelihood is a function of the parameters, $(\mu,\sigma)$     
 
 
 ## Example: The Normal likelihood
@@ -147,10 +168,9 @@ def plot_likelihood_1(sample_dist, pdf, num_samples, start, stop, linestyle):
 
     ## Add annotations to plot
     ax.vlines(0.0, ymin=min(y), ymax=0.0, linewidth=3, linestyles='dotted')
-    ax.set_ylabel('Log-likelihood', fontsize=10)
-    ax.set_xlabel('x', fontsize=10)
-    ax.set_title('Normal log-likelihood for different sample sizes', fontsize=10)
-    ax.legend(fontsize=10)
+    ax.set_ylabel('Log-likelihood')
+    ax.set_xlabel('x')
+    ax.set_title('Normal log-likelihood for different sample sizes')
 #    ax.set_xticklabels(ticks, fontsize= 10)
 #    ax.set_yticklabels(ticks, fontsize= 10)
     plt.show()         
@@ -177,12 +197,12 @@ Example of log-likelihood for the Binomial distribution
 - Binomial distribution has the following probability mass function (PMF) for $k$ successes in $n$ trials:        
 
 $$
-f(k, n, \pi) = \binom{n}{y} \pi^k (1 - \pi)^{n-k}
+f(k, n\ |\ \pi) = \binom{n}{y} \pi^k (1 - \pi)^{n-k}
 $$
 
 - Log-likelihood is easily found:    
 
-$$l(k, n | \pi) = log \binom{n}{k} + k\ log(\pi) + (n-k)\ log(1-\pi)$$
+$$l(k, n\ |\ \pi) = log \binom{n}{k} + k\ log(\pi) + (n-k)\ log(1-\pi)$$
 
 - Binomial log-likelihood has a strong dependence on both the sample size, $n$ and the number of successes, $k$         
 
@@ -286,7 +306,7 @@ $$
 or     
 
 $$
-0 = l'(\theta)_\mathbf{X} + l''(\hat{\theta})_\mathbf{X}
+0 = l'(\theta)_\mathbf{X} + l''(\hat{\theta})_\mathbf{X} (\hat{\theta} - \theta)
 $$
 
 - $l'(\theta)_\mathbf{X} =$ first partial derivative given observations $\mathbf{X}$  
@@ -398,24 +418,23 @@ $$
 ## Example of MLE for Normal distribution   
 
 
-
-$$
-\mathcal{J}(\vec{\theta}) = 
+\begin{align}
+\mathcal{J}(\vec{\theta}) &= 
 \begin{pmatrix}
 \frac{\partial^2 l}{\partial \mu^2} & \frac{\partial^2 l}{\partial \mu\ \partial \sigma^2}\\
 \frac{\partial^2 l}{\partial \mu\ \partial \sigma^2} & \frac{\partial^2 l}{\partial (\sigma^2)^2}
-\end{pmatrix} 
-= 
+\end{pmatrix} \\
+&= 
 \begin{pmatrix}
 -\frac{n}{\sigma^2} & -\frac{n}{\sigma^4}(\bar{x} - \mu) \\
 -\frac{n}{\sigma^4}(\bar{x} - \mu) & -\frac{n}{2\sigma^4} + \frac{1}{\sigma^6} \sum_j (x_j - \mu)^2
-\end{pmatrix}
-= 
+\end{pmatrix} \\
+&= 
 \begin{pmatrix}
 -\frac{n}{\sigma^2} & 0 \\
 0 & -\frac{n}{2\sigma^4} 
 \end{pmatrix}
-$$
+\end{align}
 
 The simplification results from the fact that $\bar{x} \rightarrow  \mathbf{E}(\mathbf{x_j})  = \mu$ and $s^2 \rightarrow \mathbf{E} \big\{ (x_j - \mu)^2 \big\} = \sigma^2$ in the limit of a large sample from the law of large numbers.   
 
@@ -722,7 +741,7 @@ def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle):
     '''
     ## Setup for plot
     plt.rc('font', size=6)
-    fig, ax = plt.subplots(figsize=(4, 4), ) 
+    fig, ax = plt.subplots(figsize=(8,8), ) 
     X = np.arange(start, stop, step=0.001)
 
     ## Loop over number of samples
@@ -761,6 +780,24 @@ linestyle = ['solid']
 plot_likelihood_1(sample_dist, pmf, num_samples, start, stop, p, linestyle)
 ```
 
+
+## Parameter near limits
+
+Example; Binomial likelihood with $p=0.5$ showing high Fisher information near limits, $p=0$ and $p=1$
+
+```{python, echo=FALSE}
+## Compute the information
+n=100
+pi = np.arange(0.01, 1.0, step=0.01) 
+binom_information = np.apply_along_axis(lambda x: -100/(n/(x*(1-x))), 0, pi)
+## Now make the plot
+fig, ax = plt.subplots(figsize=(10, 6), ) 
+_=ax.plot(pi, binom_information, lw=3);
+ax.set_title('Information for MLE for Binomial distribution with n=100');
+ax.set_ylabel('Information');
+ax.set_xlabel('Pi');
+plt.show();
+```
 
 ## High dimensional problems   
 
