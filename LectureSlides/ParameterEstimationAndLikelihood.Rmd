@@ -77,22 +77,22 @@ Likelihood is a measure of how like a **parametric model** is to generate the ob
 
 - Start with a data sample, $\mathbf{X} = [x_1, x_2, \ldots, x_n]$ 
 
-- Likelihood of sample from a **generating process** with a **parametric probability distribution**, $f(\mathbf{X} | \theta)$       
+- Likelihood of sample from a **generating process** with a **parametric density function**, $f(\mathbf{X} | \theta)$       
 
   - $f(\mathbf{X}\ |\ \mathbf{\theta})$ can be either a probability density function (PDF), for continuous distributions, or a probability mass function (PMF), for discrete distributions   
 
   - The distribution parameter vector, $\mathbf{\theta}$, is fixed        
 
-- Now, for each observation, $x_i$, in $\mathbf{X} = x_1, x_2, \ldots, x_n$, the probability is just $f(x_i |\ \mathbf{\theta})$    
+- Now, for each observation, $x_i$, in $\mathbf{X} = x_1, x_2, \ldots, x_n$, the density is just $f(x_i |\ \mathbf{\theta})$    
 
 
 ## Likelihood   
 
 Likelihood is a measure of how like a **parametric model** is to generate the observed data     
 
-- Likelihood of sample from a **generating process** with a **parametric probability distribution**, $f(\mathbf{X} | \theta)$   
+- Likelihood of sample from a **generating process** with a **parametric probability density**, $f(\mathbf{X} | \theta)$   
 
-- For the set of observations, $\mathbf{X} = [x_1, x_2, \ldots, x_n]$, the likelihood is the product of these probabilities:   
+- For the set of observations, $\mathbf{X} = [x_1, x_2, \ldots, x_n]$, the likelihood is the product of the densities:   
 
 $$\mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) = \prod_{i=1}^n f(x_i | \mathbf{\theta})$$
 
@@ -139,7 +139,7 @@ An example to illustrate the foregoing concepts
   - A random sample is drawn from a standard Normal distribution    
   - For the random sample the log-likelihood is computed at each location parameter value    
   
-- Notice that as the number of observations increases so does the likelihood.
+- Notice that as the number of observations increases so does the curvature of the likelihood.
 
 
 ```{python, echo=FALSE}
@@ -227,8 +227,8 @@ $$l(k, n\ |\ \pi) = log \binom{n}{k} + k\ log(\pi) + (n-k)\ log(1-\pi)$$
 The maximum likelihood for the model parameters is achieved when two conditions are met:  
 
 $$
-\frac{\partial\ l(\theta)| \mathbf{X}}{\partial \theta} = 0 \\
-\frac{\partial^2\ l(\theta)| \mathbf{X} }{\partial \theta^2} < 0
+\frac{\partial\ l(\mathbf{X}\ |\ \mathbf{\theta)})}{\partial \theta} = 0 \\
+\frac{\partial^2\ l(\mathbf{X}\ |\ \mathbf{\theta)})}{\partial \theta^2} < 0
 $$
 
 
@@ -256,19 +256,19 @@ The maximum likelihood estimator has useful and desirable properties
 $$
 \mathcal{J}(\vec{\theta}) = 
 \begin{pmatrix}
-  \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_1^2} & 
-  \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_2\ \partial \theta_1} & 
+  \frac{\partial^2 l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_1^2} & 
+  \frac{\partial^2 l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_2\ \partial \theta_1} & 
   \cdots & 
-  \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_n\ \partial \theta_1}\\
-   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_1\ \partial \theta_2} &
-   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_2^2} & 
+  \frac{\partial^2 l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_n\ \partial \theta_1}\\
+   \frac{\partial^2 l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_1\ \partial \theta_2} &
+   \frac{\partial^2 l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_2^2} & 
    \cdots &
-   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_2\ \partial \theta_n}\\
+   \frac{\partial^2 l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_2\ \partial \theta_n}\\
    \vdots & \vdots & \vdots & \vdots \\
-   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_n\ \partial \theta_1} &
-   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_n\ \partial \theta_2} & 
+   \frac{\partial^2 l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_n\ \partial \theta_1} &
+   \frac{\partial^2 l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_n\ \partial \theta_2} & 
    \cdots &
-   \frac{\partial^2 l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_n^2} 
+   \frac{\partial^2 l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_n^2} 
  \end{pmatrix}
 $$
 
@@ -282,12 +282,12 @@ Useful properties of the information matrix
 
 ## Fisher information and properties of MLE   
 
-Can one consider the information of the MLE before sampling data or performing an experiment? T
+Can one consider the information of the MLE before sampling data or performing an experiment?
 
 - Can use the **expected information** or **Fisher information**    
 
 - Fisher information is the expectation over the second derivative of the observed information            
-$$\mathcal{J}(\vec{\theta}) = -\mathbf{E}\big\{ \mathcal{I}(\vec{\theta}) \big\} = -\mathbf{E}\big\{ \frac{\partial^2\ l(\mathbf{X} | \theta)}{\partial \theta^2} \big\}$$
+$$\mathcal{J}(\vec{\theta}) = -\mathbf{E}\big\{ \mathcal{I}(\vec{\theta}) \big\} = -\mathbf{E}\big\{ \frac{\partial^2\ l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta^2} \big\}$$
 
 
 ## Fisher information and properties of MLE   
@@ -299,7 +299,7 @@ Fisher information leads to an important relationship
 - Arises from the Taylor expansion of the maximum likelihood estimator   
 
 $$
-0 = \frac{\partial\ l(\hat{\theta})_\mathbf{X}}{\partial \theta} = 
+0 = \frac{\partial\ l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta} = 
 \frac{\partial\ l(\theta)_\mathbf{X}}{\partial \theta} + 
 \frac{\partial^2\ l(\hat{\theta})_\mathbf{X}}{\partial \theta^2} (\hat{\theta} - \theta)
 $$
@@ -309,9 +309,9 @@ $$
 0 = l'(\theta)_\mathbf{X} + l''(\hat{\theta})_\mathbf{X} (\hat{\theta} - \theta)
 $$
 
-- $l'(\theta)_\mathbf{X} =$ first partial derivative given observations $\mathbf{X}$  
+- $l'(\theta)_\mathbf{X}$: first partial derivative given observations $\mathbf{X}$  
 
-- $l''(\hat{\theta})_\mathbf{X} =$ second partial derivative given observations $\mathbf{X}$ 
+- $l''(\hat{\theta})_\mathbf{X}$: second partial derivative given observations $\mathbf{X}$ 
 
 
 ## Fisher information and properties of MLE   
@@ -325,7 +325,7 @@ $$
 Fisher information relates to the score function as its variance   
 
 $$
-\frac{\partial\ l(\theta)}{ \partial \theta}\ \dot{\sim}\
+\frac{\partial\ l(\theta)_{\mathbf{X}}}{ \partial \theta}\ \dot{\sim}\
 \mathcal{N} \big(0, 1/ \mathcal{I}_\theta \big)
 $$
 
@@ -380,6 +380,7 @@ $$
 \sum_{j=1}n (x_j - \mu) = 0 
 $$
 $$
+\bar{x} \rightarrow \mu:\ at\ convergence\\
 \bar{x} = \frac{1}{n} \sum_{j=1} x_j
 $$
 
@@ -411,7 +412,8 @@ $$
 \frac{1}{s^2} \sum_{j=1} (x_j - \mu)^2 = n
 $$
 $$
-s^2 = \frac{1}{n} \sum_{j=1}^n (x_j - \bar{y})^2 
+\bar{x} \rightarrow \mu:\ at\ convergence\\
+s^2 = \frac{1}{n} \sum_{j=1}^n (x_j - \bar{x})^2 
 $$
 
 
@@ -467,20 +469,16 @@ The gradient descent method finds the maximum of the log-likelihood function by 
 
 $$
 grad(l(\vec{\theta})) =  \nabla_\theta\ l(\vec{\theta}) = \begin{pmatrix}
-  \frac{\partial l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_1} \\
-   \frac{\partial l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_2}\\
+  \frac{\partial l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_1} \\
+   \frac{\partial l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_2}\\
    \vdots \\
-   \frac{\partial l(\vec{\theta}\ |\ \mathbf{X})}{\partial \theta_n} 
+   \frac{\partial l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_n} 
  \end{pmatrix}
  $$
  
-- Algorithm converges when the norm of the gradient is approximately 0   
-  - This is the **stopping condition**  
-  - Express this condition as     
-  
-$$
-|| \nabla_\theta\ l(\vec{\theta}) ||\le tollerance
- $$
+ - Given a current parameter estimate vector at step n , $\hat{\theta}_n$, the improved parameter estimate vector,  $\hat{\theta}_{n+1}$, is found:    
+
+$$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$  
 
 
 ## Gradient descent methods
@@ -499,6 +497,14 @@ $$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$
   - The gradient changes toward the maximum point the optimal step size changes    
   - More sophisticated algorithms use an adaptive method to determine an optimal step at each step      
   - Adaptive algorithm finds step size dynamically using a **line search** procedure
+
+- Algorithm converges when the norm of the gradient is approximately 0   
+  - This is the **stopping condition**  
+  - Express this condition as     
+  
+$$
+|| \nabla_\theta\ l(\vec{\theta}) ||\le tollerance
+$$
 
 ## Gradient descent methods   
 
@@ -688,7 +694,7 @@ samples = np.concatenate((nr.normal(loc=0.0, scale=1.0, size=10000),
 samples = pd.Series(samples) #, name='Multi_Modal_Samples') 
 
 plt.rc('font', size=5)
-fig, ax = plt.subplots(2, 1, figsize=(4, 5))      
+fig, ax = plt.subplots(2, 1, figsize=(6, 8))      
 #_=plt.hist(samples, bins=100)
 sns.kdeplot(data=samples, ax=ax[0], linewidth=1)
 ax[0].set_xlabel('X')
@@ -724,7 +730,8 @@ For many distributions, parameter values have limits
 
 ## Parameter near limits
 
-Example; Binomial likelihood with $p=0.5$ showing extreme gradients near limits, $p=0$ and $p=1$
+Example; Binomial likelihood and Fisher information with $p=0.5$     
+Extreme gradients and low information near limits, $p=0$ and $p=1$
 
 ```{python, echo=FALSE}
 from scipy.stats import norm, binom
@@ -740,8 +747,8 @@ def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle):
     - linestyle are the line style used to display the likelihood functions 
     '''
     ## Setup for plot
-    plt.rc('font', size=6)
-    fig, ax = plt.subplots(figsize=(8,8), ) 
+    plt.rc('font', size=10)
+    fig, ax = plt.subplots(1,2, figsize=(12,4), ) 
     X = np.arange(start, stop, step=0.001)
 
     ## Loop over number of samples
@@ -753,14 +760,25 @@ def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle):
         for mu in X:
             y.append(df(sample, mu).sum())
         ## Plot the likelihood    
-        _=ax.plot(X, y, linewidth=1, label= str(samps) + ' samples', linestyle=linestyle[i] )
+        _=ax[0].plot(X, y, linewidth=1, label= str(samps) + ' samples', linestyle=linestyle[i])
 
     ## Add annotions to plot
-    ax.vlines(p, ymin=min(y), ymax=0.0, linewidth=1, linestyles='dotted')
-    ax.set_ylabel('Log-likelihood')
-    ax.set_xlabel('x')
-    ax.set_title('Log-likelihood for different numbers of samples')
-    ax.legend()
+    ax[0].vlines(p, ymin=min(y), ymax=0.0, linewidth=1, linestyles='dotted');
+    ax[0].set_ylabel('Log-likelihood');
+    ax[0].set_xlabel('x');
+    ax[0].set_title('Log-likelihood for different numbers of samples');
+    ax[0].legend();
+    
+    n=100
+    pi = np.arange(0.01, 1.0, step=0.01) 
+    binom_information = np.apply_along_axis(lambda x: -100/(n/(x*(1-x))), 0, pi)
+    ## Now make the plot
+    _=ax[1].plot(pi, binom_information, lw=3);
+    ax[1].set_title('Information for MLE for Binomial distribution with n=100');
+    ax[1].set_ylabel('Information');
+    ax[1].set_xlabel('Pi');
+    plt.show();
+    
     plt.show()         
 
 p=0.5
@@ -781,23 +799,6 @@ plot_likelihood_1(sample_dist, pmf, num_samples, start, stop, p, linestyle)
 ```
 
 
-## Parameter near limits
-
-Example; Binomial likelihood with $p=0.5$ showing high Fisher information near limits, $p=0$ and $p=1$
-
-```{python, echo=FALSE}
-## Compute the information
-n=100
-pi = np.arange(0.01, 1.0, step=0.01) 
-binom_information = np.apply_along_axis(lambda x: -100/(n/(x*(1-x))), 0, pi)
-## Now make the plot
-fig, ax = plt.subplots(figsize=(10, 6), ) 
-_=ax.plot(pi, binom_information, lw=3);
-ax.set_title('Information for MLE for Binomial distribution with n=100');
-ax.set_ylabel('Information');
-ax.set_xlabel('Pi');
-plt.show();
-```
 
 ## High dimensional problems   
 
@@ -834,20 +835,12 @@ Theory  assumes that the variables used for MLE are independent
 
 - Likelihood is a measure of how well a **parametric model** fits a data sample
 
-$$\mathcal{L}(\vec{\theta}\ |\ \mathbf{X} ) = f(\mathbf{X}\ |\ \vec{\theta})$$
+$$\mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) = \prod_{i=1}^n f(x_i | \mathbf{\theta})$$
 
 - In most practical cases, we work with the **log likelibood**      
 
 $$l(\vec{\theta}\ |\ \mathbf{X}) = log\big( \mathcal{L}(\vec{\theta}\ |\ \mathbf{X}) \big) = \sum_{j} log \Big( f(x_j\ |\ \vec{\theta}) \Big)$$
 
-- The maximum likelihood for the model parameters is achieved when two conditions are met:  
-
-$$
-\frac{\partial\ l(\theta)| \mathbf{X}}{\partial \theta} = 0 \\
-\frac{\partial^2\ l(\theta)| \mathbf{X} }{\partial \theta^2} < 0
-$$
-
-- Gradient of the log-likelihood is known as the score function   
 
 ## Summary   
 
@@ -878,6 +871,30 @@ $$\hat{\theta} \dot{\sim} \mathcal{N}\Big(\theta, \frac{1}{n\mathcal{I}(\theta)}
 - The larger the Fisher information, the lower the variance of the parameter estimate    
    - Greater curvature of the log likelihood function gives more certain the parameter estimates       
    - The variance of the parameter estimate is inversely proportional to the number of samples, $n$   
+
+
+
+## Summary  
+
+- The gradient descent method finds the maximum of the log-likelihood function by following the gradient 'uphill' 
+
+- The maximum likelihood for the model parameters is achieved when two conditions are met:  
+
+$$
+\frac{\partial\ l(\mathbf{X}\ |\ \mathbf{\theta)})}{\partial \theta} = 0 \\
+\frac{\partial^2\ l(\mathbf{X}\ |\ \mathbf{\theta)})}{\partial \theta^2} < 0
+$$   
+
+- Gradient of the log-likelihood is known as the score function   
+
+$$
+grad(l(\vec{\theta})) =  \nabla_\theta\ l(\vec{\theta}) = \begin{pmatrix}
+  \frac{\partial l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_1} \\
+   \frac{\partial l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_2}\\
+   \vdots \\
+   \frac{\partial l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_n} 
+ \end{pmatrix}
+ $$
 
 ## Summary  
 
