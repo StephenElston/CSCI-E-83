@@ -1,7 +1,7 @@
 ---
 title: "Sampling and Simulation"
 author: "Steve Elston"
-date: "01/13/2021"
+date: "09/22/2022"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -33,7 +33,7 @@ $$\mathrm{E}[\mathbf{X}] = \sum_{i=1}^n x_i\ p(x_i)$$
 
 ## Review     
 
-- The Categorical distribution  
+- The Categorical distribution - Discrete multi-variate distribution  
   - For outcome $i$ we **one hot encode** the results as:    
 $$\mathbf{e_i} = (0, 0, \ldots, 1, \ldots, 0)$$
   - For a single trial the probabilities of the $k$ possible outcomes are expressed:    
@@ -68,9 +68,11 @@ $$P(A|B) = P(A)$$
 $$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
 - Marginal distribution   
 
-
+- For continuous distributon
 $$p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)\ d\theta2, \ldots, d \theta_n$$
 
+- For discrete distribution 
+$$p(\theta_1) = \sum_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)$$
 
 
 
@@ -84,7 +86,7 @@ Sampling is a fundamental process in the collection and analysis of data
 
 - Sampling must be randomized to preclude biases     
 
-- As sample size increases, the standard error of a statistic computed from the sample decreases by the law of large numbers   
+- As sample size increases, the standard error decreases by the law of large numbers   
 
 - Key points to keep in mind:   
   - Understanding sampling is essential to ensure data is representative of the entire population   
@@ -131,7 +133,7 @@ All statistical methods rely on the use of **randomized unbiased samples**
 
 Sampling of a population is done from an unknown **population distribution**, $\mathcal{F}$      
 
-- Any statistic we compute for the generating process is based on a sample, $\hat{\mathcal{F}}$     
+- Any statistic, $s$, we compute for the generating process is based on a sample, $\hat{\mathcal{F}}$     
 - The statistic is an approximation, 
 of a **population parameter**   
    - For example, the mean of the population is $\mu$   
@@ -151,7 +153,7 @@ of a **population parameter**
 
 Sampling of a population is done from an unknown **population distribution**, $\mathcal{F}$      
 
-- Any statistic we compute for the generating process is an approximation for the population, $s(\hat{\mathcal{F}})$  
+- Any statistic, $s$, we compute for the generating process is an approximation for the population, $s(\hat{\mathcal{F}})$  
 
 ```{r Sampling, out.width = '60%', fig.cap='Sampling distribution of unknown population parameter', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
@@ -160,13 +162,13 @@ knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
 
 ## Sampling and the Law of Large Numbers
 
-The **law of large numbers** is a theorem that states that **statistics of independent random samples converge to the population values as more samples are used**      
+The **weak law of large numbers** is a theorem that states that **statistics of independent random samples converge to the population values as more samples are used**      
 
 - Example, for a population distribution, $\mathcal{N}(\mu,\sigma)$, the sample mean is:
 
 $$Let\ \bar{X} = \frac{1}{n}\sum_{i=1}^{n} X_i$$
 
-Then by the law of Large Numbers:
+Then by the weak law of large numbers:
 
 $$ \bar{X} \rightarrow E(X) = \mu\\
 as\\
@@ -185,14 +187,14 @@ The law of large numbers is foundational to statistics
 
 - Is foundation of sampling theory, plus modern computational methods;  simulation, bootstrap resampling, and Monte Carlo methods   
 
-- If the real world did not follow this theorem, then much of statistics (to say nothing of science and technology as a whole) would have to be rethought
+- If the real world did not follow this theorem, then much of statistics (along with much of science and technology) would have to be rethought
 
 
 -------------------------------------   
 
 ## Sampling and the Law of Large Numbers   
 
-The law of large numbers has a long history     
+The weak law of large numbers has a long history     
 
 - Jacob Bernoulli posthumously published the first proof for the Binomial distribution in 1713   
 
@@ -280,8 +282,28 @@ x = np.concatenate([
         nr.normal(loc=3, scale=.5, size=1000)])
         
 
-fig, ax = plt.subplots(figsize=(10, 7), )          
+fig, ax = plt.subplots(figsize=(8, 5), )          
 sns.kdeplot(x, ax=ax)
+```
+
+
+## Example CLT    
+
+Sample distribution of the mean of mixture of Normals is Normally distributed!    
+
+- Repetitively random sample the population, $size = 50$
+
+- Compute the mean estimate, $\bar{x}$ for each sample   
+
+```{python, eval=FALSE}
+x_means = np.array([
+        nr.choice(x, size=50, replace=True).mean()
+        for i in range(500)])
+
+breaks = np.linspace(x_means.min(), x_means.max(), num=40)
+fig, ax = plt.subplots(1,2, figsize=(12, 5) ) 
+_ = ax[0].hist(x_means, bins=breaks)
+_ = sm.qqplot(x_means, line='s', ax=ax[1])
 ```
 
 
@@ -302,13 +324,14 @@ _ = sm.qqplot(x_means, line='s', ax=ax[1])
 
 ## Standard Error and Convergence for a Normal Distribution
 
-As we sampled from a Normal distribution, the mean and standard deviation of the sample converged to the population mean    
+As we sampled from a Normal distribution, the sample means converges to the population mean    
 
 - What can we say about the expected error of the mean estimate as the number of samples increases?   
+   - Population has standard deviation $\sigma$
    - This measure is known as the **standard error** of the sample mean    
-   - As corollary of the law of large numbers the standard error is defined:
+   - By the CLT the standard error is defined:
 
-$$se = \pm \frac{sd}{\sqrt{(n)}}$$
+$$se = \pm \frac{\sigma}{\sqrt{(n)}}$$
 
 - Standard error decreases as the square root of $n$   
    - Example, if you wish to halve the error, you will need to sample four times as many values.   
@@ -321,7 +344,7 @@ $$CI_{95} =\bar{x} \pm 1.96\ se$$
 
 ## Convergence and Standard Errors for a Normal Distribution
 
-Mean estimates for realizations of standard Normal distribution with standard errors
+Mean estimates for realizations of standard Normal distribution with 95% confidence intervals
 
 
 ```{r MeanConvergenceSEs, out.width = '40%', fig.cap='Convergance of mean estimates with standard errors', fig.align='center', echo=FALSE}
@@ -354,7 +377,7 @@ There are a great number of possible sampling methods.
 
 - A **single random sample** of the population is created    
 
-- A particular value in the population is selected based on the outcome of a Bernoulli trial with fixed probability of success, $p$     
+- A particular value in the population is sampled based on the outcome of a Bernoulli trial with fixed probability of success, $p$     
 
 - Example, a company sells a product by weight     
   - To ensure the quality of a packaging process so few packages are underweight   
@@ -368,13 +391,12 @@ There are a great number of possible sampling methods.
 ## Bernoulli Sampling
 
 An example with synthetic data. 
-- Generate 2000 random samples from the standard Normal distribution    
+- Generate population of 10000 samples from the standard Normal distribution    
 - The realizations are randomly divided into 4 groups with $p = [0.1,0.3,0.4,0.2]$     
 - The probability of a sample being in a group is not uniform, and sums to 1.0.  
 
-- Head of the data frame is displayed:
 
-```{python, echo=FALSE}
+```{python}
 nr.seed(345)
 population_size = 10000
 data = pd.DataFrame({"var":nr.normal(size = population_size), 
@@ -386,18 +408,19 @@ data.head(10)
 
 ## Bernoulli Sampling
 
-The population of 2000 values was sampled from the standard Normal distribution    
+The population of 10000 samples from the standard Normal distribution    
 
 The mean of each group should be close to 0.0:    
-1. The sample is divided between 4 groups     
-2. Summary statistics are computed for each group      
+1. The sample is divided between 4 groups   
+2. Probability of sample from given group, $p=0.1$      
+3. Summary statistics are computed for each group      
 
-```{python, echo=FALSE}
-def count_mean(dat):
+```{python}
+def count_mean(dat, p=1.0):
     import numpy as np
     import pandas as pd
     groups = dat.groupby('group') # Create the groups
-    n_samples = groups.size()
+    n_samples = np.int64(p * groups.size())
     se = np.sqrt(np.divide(groups.aggregate(np.var).loc[:, 'var'], n_samples))
     means = groups.aggregate(np.mean).loc[:, 'var']
     ## Create a data frame with the counts and the means of the groups
@@ -406,7 +429,8 @@ def count_mean(dat):
                         'SE': se,
                         'Upper_CI': np.add(means, 1.96 * se),
                         'Lower_CI': np.add(means, -1.96 * se)})
-count_mean(data)
+p = 0.1
+count_mean(data, p)
 ```
 
 
@@ -437,7 +461,7 @@ What is a sampling strategy for grouped or stratified data?
 
 - The simplest version of stratified sampling creates an **equal-size Bernoulli sample** from each strata
 
-- In many cases, nested samples are required  
+- In many cases, nested samples are required      
   - For example, a top level sample can be grouped by zip code, a geographic strata     
   - Within each zip code, people are then sampled by income bracket strata    
   - Equal sized Bernoulli samples are collected at the lowest level     
@@ -449,8 +473,7 @@ What is a sampling strategy for grouped or stratified data?
 
 Bernoulli sample 100 from each group and compute summary statistics
 
-```{python, echo=FALSE}
-p = 0.01
+```{python}
 def stratify(dat, p):
     groups = dat.groupby('group') # Create the groups
     nums = min(groups.size()) # Find the size of the smallest group
@@ -463,7 +486,12 @@ def stratify(dat, p):
     else: # Oops. p is to large and our groups cannot accommodate the choice of p.
         pmax = nums / dat.shape[0]
         print('The maximum value of p = ' + str(pmax))
+
+p = 0.01
 stratified = stratify(data, p)
+```
+
+```{python}
 count_mean(stratified)
 ```
 
@@ -479,7 +507,7 @@ When sampling is expensive, a strategy is required to reduce the cost
   - Door to door survey of homeowners   
   - Sampling wildlife populations in a dispersed habitat     
 
-Population can be divided into randomly selected clusters:    
+Population can be divided into randomly selected clusters:        
   - Define the clusters for the population    
   - Randomly select the required number of clusters   
   - Sample from selected clusters    
@@ -493,7 +521,7 @@ Population can be divided into randomly selected clusters:
 As an example, select a few store locations and Bernoulli sample customers at these locations.
 
 
-```{python, echo=FALSE}
+```{python}
 ## First compute the clusters
 num_clusters = 10
 num_vals = 1000
@@ -514,13 +542,18 @@ count_mean(clusters)
 
 Randomly select 3 clusters
 
-```{python, echo=FALSE}
+```{python}
 ## Randomly sample the group numbers, making sure we sample from 
 ## unique values of the group numbers. 
 clusters_samples = nr.choice(clusters.loc[:, 'group'].unique(), 
                              size = 3, replace = False)
 ## Now sample all rows with the selected cluster numbers
 clus_samples = clusters.loc[clusters.loc[:, 'group'].isin(clusters_samples), :]
+```
+
+
+The sampled clusters   
+```{python, echo=FALSE}
 print('cluster sampled are: ')
 for x in clusters_samples:
     print(x)
@@ -538,7 +571,7 @@ count_mean(clus_samples)
 
 **Convenience and systematic sampling** are a slippery slope toward biased inferences      
 
-- Systematic methods lack randomization    
+- Systematic sampling **lacks randomization**    
 
 - Convenience sampling selects the cases that are easiest to obtain     
   - Commonly cited example known as **database sampling**      
@@ -588,16 +621,17 @@ Simulation enables data scientists to study the behavior of stochastic processes
 When creating a simulation with multiple conditionally dependent variables it is useful to draw a directed graph; a **directed acyclic graphical model or DAG**    
 
 - The graph is a communications device showing which variables are independent and which are conditionally dependent on others with the shapes used representing the type of nodes      
-- **Probability distributions** of the variables are shown as ellipses     
+- **Probability distributions** of the variables are shown as **ellipses**       
    - Distributions have parameters which must be estimated          
-- **Decision variables** are deterministic and are shown as rectangles     
+- **Decision variables** are deterministic and are shown as **rectangles**       
   - Decisions are determined by variables    
   - Setting decision variables can be performed either manually or automatically             
-- **Utility nodes**, profit in this case, are shown as diamonds    
+- **Utility nodes**, profit in this case, are shown as **diamonds**       
   - Nodes represent a **utility function** given the dependencies in the graph   
   - Utility calculations are deterministic given the input values           
 - **Directed edges** show the dependency structure of the distributions   
-  - Arrows point to **child nodes** which are dependent on **parent nodes** 
+  - Arrows point to **child nodes** which are dependent on **parent nodes**  
+  - Child node **conditional** on parent nodes    
 
 ## Sandwich Shop Simulation   
 
@@ -624,6 +658,17 @@ Interpreting the DAG
 - **Decision variables** deterministicly change the model parameters   
 
 - **Utility node** uses a fixed deterministic formula to compute the value for each realization of the simulaiton    
+
+
+## Tips on Building Simulations     
+
+Creating, testing and debugging simulation software can be tricky given the stochastic nature of simulation       
+
+- Build your simulation as a series of small, easily tested, chunks      
+- Test each small functional unit individually, including at least testing some typical cases, as well as boundary or extreme cases     
+- Test your overall simulation each time you add a new functional component - **avoid big bang integration!**    
+- Simulations are inherently stochastic, set a seed before you begin tests so they are repeatable      
+
 
 ## Summary
 
