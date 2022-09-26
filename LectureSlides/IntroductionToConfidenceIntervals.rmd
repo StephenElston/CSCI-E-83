@@ -2,7 +2,7 @@
 ---
 title: "Introduction to Inference and Confidence Intervals"
 author: "Steve Elston"
-date: "02/08/2021"
+date: "10/06/2022"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -25,17 +25,18 @@ matplotlib$use("Agg", force = TRUE)
 
 - Likelihood is a measure of how well a **parametric model** fits a data sample
 
-$$\mathcal{L}(\vec{\theta}\ |\ \mathbf{X} ) = f(\mathbf{X}\ |\ \vec{\theta})$$
+$$\mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) = \prod_{i=1}^n f(x_i | \mathbf{\theta})$$
 
 - In most practical cases, we work with the **log likelibood**      
 
-$$l(\vec{\theta}\ |\ \mathbf{X}) = log\big( \mathcal{L}(\vec{\theta}\ |\ \mathbf{X}) \big) = \sum_{j} log \Big( f(x_j\ |\ \vec{\theta}) \Big)$$
+$$l(\mathbf{X} |\ \mathbf{\theta}) = log\big( \mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) \big) = \sum_{j} log \Big( f(x_j\ |\ \vec{\theta}) \Big)$$
+
 
 - The maximum likelihood for the model parameters is achieved when two conditions are met:  
 
 $$
-\frac{\partial\ l(\theta)| \mathbf{X}}{\partial \theta} = 0 \\
-\frac{\partial^2\ l(\theta)| \mathbf{X} }{\partial \theta^2} < 0
+\frac{\partial\ l(\mathbf{X} |\ \mathbf{\theta})}{\partial \theta} = 0 \\
+\frac{\partial^2\ l(\mathbf{X} |\ \mathbf{\theta}) }{\partial \theta^2} < 0
 $$
 
 - Gradient of the log-likelihood is known as the score function   
@@ -172,7 +173,7 @@ Some applications of statistical inference include:
 In frequentist statistics uncertainty of an inference is expressed in terms of a **confidence interval**     
 
 - A confidence interval is defined as the expected range of a statistical **point estimate**   
-  - A point estimate is the best statistical estimate of some value    
+  - A **point estimate** is the best estimate of a statistic          
   - For example, the most likely value of a model parameter given the data   
 
 - Two types of of confidence intervals:   
@@ -181,17 +182,21 @@ In frequentist statistics uncertainty of an inference is expressed in terms of a
 
 ## Confidence Intervals; the Key to Inference   
 
-Can understand confidence intervals by looking at the $\alpha$ and $1 - \alpha$ quantiles of a distribution    
+Can understand **two sided** confidence interval by looking at the $\alpha/2$ and $1 - \alpha/2$ quantiles of a distribution    
 
 - Confidence interval corresponds to the span of the distribution between quantiles    
 
 - Express a confidence interval for a random variable, $\mathbf{x}$, in terms of the probability as:  
 
-$$1-2 \alpha = P \Big( Lower\ CI \le \mathbf{x} \le Upper\ CI \Big)$$
+$$1- \alpha = P \Big( Lower\ CI \le \mathbf{x} \le Upper\ CI \Big)$$
 
-- Alternatively:    
+## Confidence Intervals; the Key to Inference   
 
-$$\alpha  = P(x \ge Upper\ CI)\ \\ and \\\ 1 - \alpha = P(x \le Lower\ CI)$$
+Can understand **one sided** confidence interval by looking at either $\alpha$ or $1 - \alpha$ quantiles of a distribution    
+
+- The upper and lower CIs are:    
+
+$$\alpha  = P(x \ge Lower\ CI)\ \\ and \\\ 1 - \alpha = P(x \le Upper\ CI)$$
 
 
 
@@ -223,7 +228,7 @@ def plot_confidence(distribution, alpha, xmin, xmax, dist_type, step=0.05):
     cumulates = distribution(x)
     
     ## plot the figure
-    fig, ax = plt.subplots(figsize=(5, 4), )  
+    fig, ax = plt.subplots(figsize=(8, 7), )  
     ax.plot(x, cumulates, linewidth=6)
     ax.hlines(y=0.0, xmin=xmax, xmax=xmin, linewidth=2, color='black')
     ax.set_title('Cummulative distribution of ' + dist_type + ' with ' + percent + ' confidence intevals')
@@ -264,24 +269,27 @@ $$CI(mean) = CI(\bar{\mathbf{X}}) = MLE(\theta | \mathbf{X})\ \pm\ \frac{s}{\sqr
 
 Where,       
 - $Z_\alpha$ is the standard Normal distribution evaluated at confidence level, $\alpha$   
-- standard error is given by $s/ \sqrt{n}$    
-- $s$ is the standard deviation estimate   
-- $n$ is the number of samples.   
+- $MLE(\theta | \mathbf{X})$ is the maximum likelihood estiamte of the mean   
+- Standard error is given by $s/ \sqrt{n}$    
+- $s$ is the standard deviation estimate    
+- $n$ is the number of samples      
 
 
 ## One-Sided Confidence Intervals    
 
 Many situations where a one-sided confidence interval is useful    
 
-- Characterize uncertainty of maximum or minimum value of a random variable   
+- Characterize uncertainty of maximum or minimum value of a random variable  
 
-- For the upper tail of the distribution, the confidence interval is defined:   
+- Based on the cumulative distribution    
 
-$$1 - \alpha = P\big( -\infty \le x \le \alpha \big)$$
+- For the upper tail of the Normal distribution, the confidence interval is defined:   
+
+$$1 - \alpha = P\big( -\infty \le x \le upper\ CI \big)$$
 
 - For the lower tail of a random variable, the confidence interval is defined:      
 
-$$\alpha = P\big( -\alpha\le x \le \infty \big)$$
+$$\alpha = P\big( -\infty \le x \le lower\ CI \big)$$
 
 
 ## Interpretation of Confidence Intervals      
@@ -290,7 +298,7 @@ How can we interpret the confidence interval?
 
 - Confidence intervals are with respect to the the sampling distribution of a statistic $s(\hat{\mathcal{F}})$  
 
-- $1 - \alpha$ of the sample statistic values computed from repeated samples of the population,$\hat{\mathcal{F}}_i$    
+- With $P(1 - \alpha)$ of the sample statistic values computed from repeated samples of the population,$\hat{\mathcal{F}}_i$ are within the CI      
 
 - Confidence intervals do not indicate the probability $s(\hat{\mathcal{F}})$ is in a range
 

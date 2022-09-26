@@ -2,7 +2,7 @@
 ---
 title: "Parameter Estimation and Likelihood"
 author: "Steve Elston"
-date: "01/13/2021"
+date: "09/29/2022"
 output:
   slidy_presentation: default
   pdf_document: default
