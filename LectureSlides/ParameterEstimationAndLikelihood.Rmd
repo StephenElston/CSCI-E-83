@@ -121,7 +121,7 @@ $$l(\mathbf{X} |\ \mathbf{\theta}) = log\big( \mathcal{L}(\mathbf{X} |\ \mathbf{
 
 Likelihood is a measure of how likely a **parametric model** is to generate the observed data sample      
 
-- Binomial likelihood for sample sizes #[25, 50, 100]# with $p=0.5$    
+- Binomial likelihood for sample sizes $[25, 50, 100]$ with $p=0.5$    
 
 - Notice the variability in the likelihood curve for smaller samples   
 
@@ -138,9 +138,12 @@ knitr::include_graphics(rep("../images/BinomialLikelihood.JPG"))
 The univariate Normal probability density function with parameter vector $\mathbf{\theta} = (\mu,\sigma)$ for a single observation, $x_i$:     
 
 $$f(x\ |\ \mu,\sigma^2) = -\frac{1}{(2 \pi \sigma^2)^{1/2}} exp\Big[ - \frac{1}{2 \sigma^2}  (x_i - \mu)^2 \Big]$$
+For n observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the likelihood is the **product of the densities**:  
+
+$$f(x\ |\ \mu,\sigma^2) = -\frac{1}{(2 \pi \sigma^2)^{1/2}} \prod_{i=1}^n  exp\Big[ - \frac{1}{2 \sigma^2}  (x_i - \mu)^2 \Big]$$
 
 
-For n observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the log-likelihood:  
+The log-likelihood (log of above) is a lot easiter to deal with:  
 
 $$l(\mathbf{X}\ |\ \mu, \sigma) = - \frac{n}{2} log( 2 \pi \sigma^2 ) - \frac{1}{2 \sigma^2} \sum_{i=1}^n (x_i - \mu)^2$$
 - The log-likelihood is a function of the parameters, $(\mu,\sigma)$     
@@ -300,7 +303,7 @@ $$
 \hat{\theta} = \theta + \frac{l'(\theta)_\mathbf{X}/n}{-l''(\hat{\theta})_\mathbf{X}/n}
 $$
 
-Fisher information relates to the score function as its variance   
+Fisher information relates to the **score function**  as the inverse variance   
 
 $$
 \frac{\partial\ l(\theta)_{\mathbf{X}}}{ \partial \theta}\ \dot{\sim}\
@@ -308,7 +311,7 @@ $$
 $$
 
 
-For **large sample**, $n \rightarrow \infty$, take the expectation over $\mathbf{X}$. Assuming first and second derivatives exist and continuous, then by the Central Limit Theorem:    
+For **large sample**, $n \rightarrow \infty$, take the expectation over all samples, $\mathbf{X}$. Assuming first and second derivatives exist and continuous, then by the Central Limit Theorem:    
 
 $$\hat{\theta} \dot{\sim} \mathcal{N}\Big(\theta, \frac{1}{n\mathcal{I}(\theta)} \Big)$$
 
@@ -429,6 +432,15 @@ The simplification results from the fact that $\bar{x} \rightarrow  \mathbf{E}(\
 
 Example of Fisher Information for Normal distribution    
 
+- As sample size increases, Fisher Information decreases   
+
+- Variance of MLE decreases with decreasing Fisher Information   
+
+
+```{r NormalFisher, out.width = '60%', fig.cap='Fisher Information for Normal distribution at different sample sizes', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/NormalFisherInformation.JPG"))
+```
+
 
 
 ## Finding Solutions Without a Closed Form
@@ -466,6 +478,27 @@ grad(l(\vec{\theta})) =  \nabla_\theta\ l(\vec{\theta}) = \begin{pmatrix}
 $$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$  
 
 
+## Gradient descent methods    
+
+The gradient descent method finds the maximum of the log-likelihood function by following the gradient 'uphill'    
+
+- Example: contour plot of Normal log-likelihood    
+
+- Gradient descent following negative (minus) gradient to maximum of log-likelihood        
+
+- Maximum gradient direction is perpendicular to coutour lines - steepest uphill path     
+
+- Notice difference between gradients (and information) between locaiton and scale!  
+
+
+
+```{r LikelihoodCountours, out.width = '60%', fig.cap='Contours of Normal Log-Likelihood', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/NormalLikelihoodCountours.JPG"))
+```
+
+
+
+
 ## Gradient descent methods
 
 The gradient descent method finds the maximum of the log-likelihood function by following the gradient 'uphill'  
@@ -493,16 +526,20 @@ $$
 
 ## Gradient descent methods   
 
-Computing gradient is computed for each dimension of the model weight vector   
+**Gradient with respect to model parameters** is computed for each dimension of the model parameter vector         
 
 ```{eval=FALSE}
-proceedure compute_expected_grad(weights, cases):   
+proceedure compute_expected_grad(parameters, cases):   
   for each dimension:
-      grad[dimension] = grad(weights, cases)
+      grad[dimension] = grad(parameters, cases)
   return grad
 ```  
 
-The forgoing proceedure can be vectorized or parallelized   
+The forgoing procedure can be vectorized or parallelized   
+
+
+
+
 
 ## Gradient descent methods
 
@@ -636,7 +673,7 @@ $$
 
 The maximum likelihood estimator has a number of important limitations, including   
 
-- Incorrect model and complex distributions     
+- Incorrect model for complex distributions     
 
 - Parameter near limits      
 
