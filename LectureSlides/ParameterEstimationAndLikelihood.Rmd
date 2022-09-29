@@ -327,10 +327,6 @@ Relationship shows several important properties
   - Greater curvature of the log likelihood function gives more certain the parameter estimates       
   - The variance of the parameter estimate is inversely proportional to the number of samples, $n$.   
 
-## Fisher information and properties of MLE   
-
-Example of Fisher Information for Normal distribution    
-
 
 
 ## Example of MLE for Normal distribution   
@@ -427,6 +423,12 @@ The simplification results from the fact that $\bar{x} \rightarrow  \mathbf{E}(\
   - The curvature of the MLE for both parameters increases with the number of samples $n$   
   - The peak of the log-likelihood function becomes better defined as $n$ increases.  
   - The maximum likelihood estimates of the parameters, $\mu$ and $\sigma^2$ are independent. The off-diagonal terms are $0$.      
+
+
+## Fisher information and properties of MLE   
+
+Example of Fisher Information for Normal distribution    
+
 
 
 ## Finding Solutions Without a Closed Form
