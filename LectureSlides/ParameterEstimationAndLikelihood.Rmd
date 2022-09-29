@@ -7,6 +7,8 @@ output:
   slidy_presentation: default
   pdf_document: default
   beamer_presentation: default
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -103,7 +105,7 @@ $$l(\mathbf{X} |\ \mathbf{\theta}) = log\big( \mathcal{L}(\mathbf{X} |\ \mathbf{
 
 ## Likelihood   
 
-Likelihood is a measure of how like a **parametric model** is to generate the observed data     
+Likelihood is a measure of how likely a **parametric model** is to generate the observed data sample     
 
 - In most practical cases, we work with the **log likelihood**, for observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the log likelihood is expressed:    
 
@@ -112,8 +114,23 @@ $$l(\mathbf{X} |\ \mathbf{\theta}) = log\big( \mathcal{L}(\mathbf{X} |\ \mathbf{
 - Use log-likelihood to work with the sum of log probabilities rather than the product    
 
   - If the probabilities are small, the sum is numerically stable     
-  - The product of many small numbers is a very small number, which can lead to numerical underflow even for 64 or 128 bit floating point arithmetic  
+  - The product of many small numbers is a very small number, which can lead to numerical underflow even for 64 or 128 bit floating point arithmetic      
 
+
+## Likelihood Example    
+
+Likelihood is a measure of how likely a **parametric model** is to generate the observed data sample      
+
+- Binomial likelihood for sample sizes #[25, 50, 100]# with $p=0.5$    
+
+- Notice the variability in the likelihood curve for smaller samples   
+
+- Likelihood has **stronger curvature for larger samples** - less uncertainty for maximum    
+
+
+```{r BinomialLikelihood, out.width = '60%', fig.cap='Binomial likelihood at different sample sizes', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/BinomialLikelihood.JPG"))
+```
 
 
 ## Example: The Normal likelihood
@@ -142,47 +159,8 @@ An example to illustrate the foregoing concepts
 - Notice that as the number of observations increases so does the curvature of the likelihood.
 
 
-```{python, echo=FALSE}
-## Imports
-import matplotlib.pyplot as plt
-from scipy.stats import norm
-import numpy as np
-import numpy.random as nr
-
-def plot_likelihood_1(sample_dist, pdf, num_samples, start, stop, linestyle):
-    ## Setup for plot
-    plt.rc('font', size=24)
-    fig, ax = plt.subplots(figsize=(5, 4), ) 
-    X = np.arange(start, stop, step=0.05)
-
-    ## Loop over number of samples
-    for i,samps in enumerate(num_samples): 
-        ## Compute a sample from standard Normal
-        sample = sample_dist(samps)
-        ## Loop over the x values and compute the likelihood
-        y=[]
-        for mu in X:
-            y.append(pdf(sample, mu).sum())
-        ## Plot the likelihood    
-        _=ax.plot(X, y, linewidth=4, label= str(samps) + ' samples', linestyle=linestyle[i] )
-
-    ## Add annotations to plot
-    ax.vlines(0.0, ymin=min(y), ymax=0.0, linewidth=3, linestyles='dotted')
-    ax.set_ylabel('Log-likelihood')
-    ax.set_xlabel('x')
-    ax.set_title('Normal log-likelihood for different sample sizes')
-#    ax.set_xticklabels(ticks, fontsize= 10)
-#    ax.set_yticklabels(ticks, fontsize= 10)
-    plt.show()         
-
-
-sample_dist = lambda x: nr.normal(size=x)
-pdf = lambda x, y: norm.logpdf(x, loc=y)
-num_samples = [5, 10, 20]
-start = -10.0
-stop = 10.0
-linestyle = ['solid','dashed','dashdot']
-plot_likelihood_1(sample_dist, pdf, num_samples, start, stop, linestyle)
+```{r NormalLikelihood, out.width = '60%', fig.cap='Normal likelihood at different sample sizes', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/NormalLikelihood.JPG"))
 ```
 
 
@@ -348,6 +326,11 @@ Relationship shows several important properties
 - The larger the Fisher information, the lower the variance of the parameter estimate    
   - Greater curvature of the log likelihood function gives more certain the parameter estimates       
   - The variance of the parameter estimate is inversely proportional to the number of samples, $n$.   
+
+## Fisher information and properties of MLE   
+
+Example of Fisher Information for Normal distribution    
+
 
 
 ## Example of MLE for Normal distribution   
@@ -684,8 +667,10 @@ Example; univariate Normal maximum likelihood estimator for mixture of 3 Normal 
 
 ```{python, echo=FALSE}
 import numpy as np    
+import numpy.random as nr
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy.stats import norm, binom
 import seaborn as sns
 
 samples = np.concatenate((nr.normal(loc=0.0, scale=1.0, size=10000), 
