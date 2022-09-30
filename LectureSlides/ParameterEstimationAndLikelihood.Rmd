@@ -140,7 +140,7 @@ The univariate Normal probability density function with parameter vector $\mathb
 $$f(x\ |\ \mu,\sigma^2) = -\frac{1}{(2 \pi \sigma^2)^{1/2}} exp\Big[ - \frac{1}{2 \sigma^2}  (x_i - \mu)^2 \Big]$$
 For n observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the likelihood is the **product of the densities**:  
 
-$$f(x\ |\ \mu,\sigma^2) = -\frac{1}{(2 \pi \sigma^2)^{1/2}} \prod_{i=1}^n  exp\Big[ - \frac{1}{2 \sigma^2}  (x_i - \mu)^2 \Big]$$
+$$l(\mathbf{X} |\ \mathbf{\theta}) = -\frac{n}{(2 \pi \sigma^2)^{1/2}}  exp\Big[ - \frac{1}{2 \sigma^2}  \prod_{i=1}^n (x_i - \mu)^2 \Big]$$
 
 
 The log-likelihood (log of above) is a lot easiter to deal with:  
@@ -573,7 +573,7 @@ The simple gradient descent algorithm and Newton's method have limited scalabili
 
 The basic idea of stochastic optimization is using a Bernoulli random sample of the data to estimate the **expected update** of the model weights     
 
-$$W_{t+1} = W_t + \alpha\ E_{\hat{p}data}\Big[ \nabla_{W} J(W_t) \Big]$$ 
+$$\theta_{t+1} = \theta_t + \gamma\ E_{\hat{p}data}\Big[ \nabla_{\theta} J(\theta_t) \Big]$$ 
 
 where, $E_{\hat{p}data} \big[ \big]$ is the expected value of the gradient given the Bernoulli sample of the data $\hat{p}data$.
 
@@ -932,7 +932,7 @@ $$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$
 
 - Stochastic optimization uses a Bernoulli random sample of the data to estimate the **expected update** of the model weights     
 
-$$W_{t+1} = W_t + \alpha\ E_{\hat{p}data}\Big[ \nabla_{W} J(W_t) \Big]$$ 
+$$\theta_{t+1} = \theta_t + \gamma\ E_{\hat{p}data}\Big[ \nabla_{\theta} J(\theta_t) \Big]$$   
 
 - Where, $E_{\hat{p}data} \big[ \big]$ is the expected value of the gradient given the Bernoulli sample of the data, $\hat{p}data$.
 
