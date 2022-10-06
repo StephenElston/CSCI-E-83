@@ -144,9 +144,19 @@ Some applications of statistical inference include:
 - inference also used to determine the confidence in predictions            
 
 
+## Types of Hypothesis Tests
+
+- Different tests for **one sample**, **two samples** or more    
+- **Parametric** test uses assumptions about the distribution of the data    
+- **Non-parametric** tests make no distribution assumptions
+- Select test for **discrete or continuous**, or **numeric or categorical**, **ordinal, interval, or ratio** variables
+- Tests can compare **effect size** (averages), **variance**, **goodness of fit**, **distribution assumptions**, or **Independence** 
+
+
+
 ## Inference for Hypotheses    
 
-**Hypothesis testing** seeks to answer the question, are the differences in the distributions of certain variables **statistically significant**?      
+**Hypothesis testing** seeks to answer the question, are the differences in a statistic **statistically significant**?      
 
 - Statistical significance must not be confused importance to the problem being addressed?   
 
@@ -165,7 +175,7 @@ Examples of further investigation include:
 
 - Find other variables which might illuminate the relationship under investigation    
 
-- Consider the theoretical basis of the relationship. Can known science add understanding?   
+- Consider the theoretical basis of the relationship. E.G., can known science add understanding?   
 
 
 ## Confidence Intervals; the Key to Inference     
@@ -194,10 +204,23 @@ $$1- \alpha = P \Big( Lower\ CI \le \mathbf{x} \le Upper\ CI \Big)$$
 
 Can understand **one sided** confidence interval by looking at either $\alpha$ or $1 - \alpha$ quantiles of a distribution    
 
-- Upper and lower one-sided CIs can be expreseed:    
+- Characterize uncertainty of maximum or minimum value of a random variable  
 
-$$1 - \alpha  = P(x \le Lower\ CI)\ \\ and \\\ \alpha = P(x \le Upper\ CI)$$
+- For lower one-sided CI:    
 
+$$1 - \alpha  = P(x \le Lower\ CI)$$
+
+- For upper one-sided CI:    
+
+$$\alpha = P(x \le Upper\ CI)$$
+
+- Example: one-sided CIs of Normal distribution:   
+
+$$1 - \alpha = P\big( -\infty \le x \le lower\ CI \big)$$
+
+Or,    
+
+$$\alpha = P\big( -\infty \le x \le upper\ CI \big)$$
 
 
 ## Example; confidence intervals of the Normal distribution
@@ -275,28 +298,14 @@ Where,
 - $n$ is the number of samples      
 
 
-## One-Sided Confidence Intervals    
-
-Many situations where a one-sided confidence interval is useful    
-
-- Characterize uncertainty of maximum or minimum value of a random variable  
-
-- Based on the cumulative distribution    
-
-- For the lower tail of the Normal distribution, the confidence interval is defined:   
-
-$$1 - \alpha = P\big( -\infty \le x \le lower\ CI \big)$$
-
-- Or, for the upper tail of a random variable, the confidence interval is defined:      
-
-$$\alpha = P\big( -\infty \le x \le upper\ CI \big)$$
-
 
 ## Interpretation of Confidence Intervals      
 
 How can we interpret the confidence interval?    
 
 - Confidence intervals are with respect to the the sampling distribution of a statistic $s(\hat{\mathcal{F}})$  
+
+- CIs are a **measure of variation from sampling alone** with probability $\alpha$ - the basis of hypothesis testing! 
 
 - With probability $\alpha$ the sample statistic values computed from resamples of the population,$\hat{\mathcal{F}}_i$ are within the CI      
 
@@ -308,7 +317,7 @@ knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
 ```
 
 
-## Concepts of Hypothesis Testing    
+## Confidence and Hypothesis Testing    
 
 Purpose of a statistical test is determining if the value of a chosen test statistic exceeds a cutoff value    
 
@@ -316,13 +325,19 @@ Purpose of a statistical test is determining if the value of a chosen test stati
   - Example, by specifying a cutoff of  0.05  we are saying that the probability that the test statistic **exceeding the cutoff from random variation alone** is  0.05   
   
 - Once the cutoff value has been set and the test statistic computed, interpret the results:  
-  - If the test statistic does not exceed the cutoff value, **accept the null hypothesis**   
+  - If the test statistic does not exceed the cutoff value, **fail to reject the null hypothesis**   
   - If the test statistic exceeds the cutoff **reject the null hypothesis**   
 
 
 ## Cutoffs for Hypothesis Tests   
 
 Examples of one-sided and two-sided cut-offs    
+
+- Cutoff is probability, $\alpha$, that **variation this great or greater arises from random sampling alone**    
+
+- In other words, cutoff is the **confidence** we have in rejecting a null hypothesis. 
+
+- A p-value is the **probability of the statistic this extreme or more extreme arising from random sampling** (random variation) alone     
 
 ```{python, echo=FALSE}
 def cutoff_polygon(upper, cutoff, ax, step=0.02):
@@ -375,9 +390,59 @@ plt.show()
 ```
 
 
+## Hypothesis testing steps
+
+The steps required to perform a formal two-sample hypothesis test
+
+- State population assumptions of null hypothesis: $H_0$    
+
+- State alternative hypothesis: $H_a$    
+  - Typically stated in terms of a **treatment group** vs. **control group**    
+  - Treatment is the factor that differentiates the population     
+  
+- Decide on a significance level (probability cutoff or **Type I error threshold**): e.g. 0.1, 0.05, and 0.01    
+
+- Data is collected for the different treatments 
+  - Treatment used for comparison is the **control**
+
+- Compute the **test statistic** and evaluate based on the cutoff value    
+
+
+## Hypothesis testing steps
+
+Test statistic used a a **decision rule**
+
+- Only two possible outcomes  
+  - **Reject the null-hypothesis:** This is not the same as accepting the alternative hypothesis    
+  - **Fail to reject the null hypothesis:** This is not the same as accepting the null hypothesis  
+  
+- Failing to rejecting the null hypothesis can occur for several reasons       
+  - The alternative hypothesis was false to begin with     
+  - There is not enough evidence for the **effect size**    
+  
+- Roughly speaking, the effect size is the difference of the test statistic in populations under the different treatments   
+
+
+
+## the p-value
+
+- P-value is the probability, under $H_0$, that we get a statistic **as extreme or more extreme** than the one we got          
+
+- **Extreme** depends on whether the test is **one-tailed** or **two-tailed**      
+
+- Derive the p-value by computing the **statistic(s)** and evaluate the quantile of the null distribution, $H_0$     
+
+- Low p-value means our evidence against $H_0$ is too strong to ignore 
+  - How strong it needs to be is controlled by our choice of $\alpha$    
+  - **Smaller $\alpha$** means we need **stronger evidence** to reject $H_0$; a more **conservative** test      
+  
+- Together the p-value and the significance threshold $\alpha$ determine whether we reject or fail to reject $H_0$      
+  - The decision rule of the hypothesis test    
+  
+
 ## Summary       
 
-Statistical inference seeks to characterize the uncertainty in estiamtes    
+Statistical inference seeks to characterize the uncertainty in estimates    
 
 - Statistics are estimates of population parameters    
 
@@ -386,3 +451,5 @@ Statistical inference seeks to characterize the uncertainty in estiamtes
 - Confidence intervals quantify uncertainty in statistical estimates    
    - **Two-sided confidence intervals:** express confidence that a value is within some range around the point estimate     
   - **One-sided confidence intervals:** express confidence that the point estimate is greater or less than some range of values     
+  
+- Hypothesis tests based on the confidence we have that variation in statistic arrises from sampling variation alone     
