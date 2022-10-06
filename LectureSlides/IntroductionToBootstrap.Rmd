@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Bootstrap Methods"
+title: "Introduction to Nonparametric Bootstrap Methods"
 author: "Steve Elston"
 date: "10/06/2022"
 output:
@@ -20,8 +20,8 @@ matplotlib$use("Agg", force = TRUE)
 
 ## Introduction
 
-“There were others who had forced their way to the top from the lowest rung by the aid of their bootstraps.”
-James Joyce, ‘Ulysses’ 1922
+*“There were others who had forced their way to the top from the lowest rung by the aid of their bootstraps.”     
+James Joyce, ‘Ulysses’ 1922*
 
 Bootstrap and re-sampling methods are widely applicable statistical methods   
 
@@ -29,7 +29,7 @@ Bootstrap and re-sampling methods are widely applicable statistical methods
 
 - Use computational resources unimaginable in the early 20th Century    
 
-- Repeatedly re-sampling the data relaxes some of the assumptions of classical statistical methods
+- Repeatedly re-sampling the data with nonparametric model relaxes some assumptions of classical statistical methods
 
 - Re-sampling methods draw heavily on the law of large number and the central limit theorem      
 
@@ -40,26 +40,63 @@ Commonly used re-sampling methods include:
 
 - **Randomization or Permutation methods:** aka exact tests     
    - Have a long history; e.g. Fisher’s exact test (1922)     
-   - Became practical for larger data sets in computer era      
+   - Practical approximate algorithms for larger data sets in computer era      
    
-- **Cross validation:** re-sample into multiple folds without replacement     
+- **Cross validation:** resample into multiple folds without replacement     
    - Leave n out method      
    - Has origins in the 1950s     
    - Widely used to evaluate machine learning (ML) models      
    
 - **Jackknife:** leave one out re-sampling       
    - Leave one out method   
+
    - Early general purpose resampling method   
    - Has origins in the 1950s    
    
-- **Bootstrap:** re-sample with equivalent size and replacement - our focus here    
+- **Nonparametric Bootstrap:** resample with equivalent size and replacement - our focus here    
    - Published by Prof Brad Efron in 1979      
    
-## General Characteristics of Resampling Methods    
 
-General characteristics of resampling methods include     
+## Nonparametric vs. Parametric Statistical Model    
 
-- Allow computation of statistics from limited data samples for statistics with continuous derivatives        
+Many familiar statistic models are **parametric**, being based on a assumed **likelihood**      
+
+- Likelihood models based on a parametric distributions     
+
+- Parametric models have low variance estimates for statistics     
+  - But susceptible to poor choice of likelihood model       
+
+- Example, least-squares error model uses a Normal likelihood     
+  - Parameters which must be estimated     
+  - Location and scale in one-dimension   
+  - Betas in higher dimensions    
+
+   
+
+## Nonparametric vs. Parametric Statistical Model    
+
+**Nonparametric model** not based on a parametric likelihood      
+
+- Use an **empirical distribution** estimated from observations     
+  - No likelihood model assumptions    
+
+- Statistical properties estimated from this empirical distribution     
+  - Potentially high variance estimates    
+  - Need sufficient sample size    
+  - Example, mean and variance estimates          
+
+- Examples of nonparametric statistical estimators:     
+  - Permutation tests     
+  - Jackknife estimates    
+  - Nonparametric bootstrap   
+
+
+
+## General Characteristics of Nonparametric Resampling Methods    
+
+General characteristics of nonparametric resampling methods include     
+
+- Allow computation of statistics from data samples for statistics with continuous derivatives        
 
 - Repeatedly compute statistics from multiple resamples of dataset     
 
@@ -71,11 +108,12 @@ General characteristics of resampling methods include
 
 Re-sampling methods are general and powerful but, there is no magic involved! There are pitfalls! 
 
-- If a sample is biased, the re-sampled statistic estimate based on that sample will be biased    
+- If a sample is biased, the resampled statistic estimate based on that sample will be biased    
    - Results can be no better than the sample you start with  
    - Example; the bootstrap estimate of mean is the unbiased sample estimate, $\bar{x}$, not the population parameter, $\mu$ 
    
 - The sample variance and Cis can be no better than the sample distribution allows    
+   - Often higher variance than parametric models  
    - Be suspicious of overly optimistic confidence intervals    
    - CIs can be optimistically biased        
 
@@ -89,10 +127,9 @@ The goal of frequentist statistics is to compute a point estimate and confidence
 - Point estimate is the single most likely value for a statistic     
    - Confidence interval expresses the uncertainty of the point estimate  
 
-- Frequentist confidence interval based on the properties of some assumed probability distribution   
+- Parametric confidence interval based on the properties of some assumed probability distribution   
    - Are there alternatives to this classical frequentist approach?    
    - Here we focus on bootstrap methods which do not require explicit probability model    
-   - Bootstrap methods let a computer do the work, not the statistician with paper and pencil
    
    
 ## Bootstrap Distribution    
@@ -120,13 +157,19 @@ knitr::include_graphics(rep("../images/BootstrapDistribution.png"))
 
 The bootstrap method follows a simple algorithm. Estimates of the point estimate of a statistic are accumulated by these steps:    
 
-  1. Randomly **Bernoulli sample** sample n data **with replacement** from an original data sample of n values; The re-sample is the same size as the original data sample   
+  1. Randomly **Bernoulli sample** sample n data **with replacement** from an original data sample of n values; The resample is the same size as the original data sample   
   2. Re-compute the statistic with each resample       
   3. Repeat steps 1 and 2 to accumulate the required number of bootstrap samples  
   4. Accumulated bootstrap values form the bootstrap distribution; An estimate of the sample distribution of the statistic     
-  5. The mean of the computed statistic values is the bootstrap point estimate of the statistic       
+  5. The mean of the computed statistic values is the bootstrap point estimate of the statistic     
+  
+## Overview of the Bootstrap Algorithm    
 
+Properties of the nonparametric bootstrap  
+  
 - By law of large numbers, bootstrap point estimate converges    
+
+- Larger number of resamples lower variance of estimate
 
 - Efrom and Tibshirani (1993) and Efron and Hasti (2016) recommend using at least 200 bootstrap samples for point estimates     
 
@@ -252,6 +295,8 @@ Bootstrap confidence intervals are known to be biased!
 
 - Bias can be significant for asymmetric distributions    
 
+- In practice, bias corrections are applied   
+
 
 ## Example; One Sample Bootstrap
 
@@ -289,7 +334,7 @@ How can we apply the bootstrap algorithm for two-sample statistics?
    - There is no guarantee of a correct number of resamples for each group   
    - Imbalanced sampling leads to bias       
 
-- Must independently sample the two groups or populations     
+- Must **independently sample the two groups** or populations     
    - Use two independent bootstrap samples to compute statistic
    - Step one; compute statistic from independent resamples    
    - Step two; compute (another) statistic from the two bootstrap estimates
@@ -300,12 +345,11 @@ How can we apply the bootstrap algorithm for two-sample statistics?
 Example: algorithm to compute difference of means:    
 
    1. Independently randomly **Bernoulli sample** n data **with replacement** from each original data sample; The number of resamples for each populations is the number of samples for that population     
-   2. Compute the statistic (e.g. mean) for the two resamples   
-   3. Compute the two-sample statistic; e.g. difference of means    
-   4. Repeat steps 1, 2, and 3 to accumulate the required number of bootstrap samples
-Accumulated bootstrap values form the bootstrap distribution; an estimate of the sample distribution of the statistic    
-   5. The mean of the computed statistic values is the bootstrap point estimate of the statistic; e.g. difference of means      
-   6. Compute CIs from bootstrap distribution
+   2. Compute the two-sample statistic; e.g. difference of means    
+   3. Repeat steps 1, 2, and 3 to accumulate the required number of bootstrap samples
+Accumulated bootstrap values comprise the bootstrap distribution; an estimate of the sample distribution of the statistic    
+   4. The mean of the computed statistic values is the bootstrap point estimate of the statistic; e.g. difference of means      
+   5. Compute CIs from bootstrap distribution
 
 ## Two Sample Bootstrap   
 
@@ -426,7 +470,7 @@ There are several variations of the basi nonparametric bootstrap algorithm
 
 Re-sampling methods are general and powerful but, there is no magic involved! There are pitfalls! 
 
-- If a sample is biased, the re-sampled statistic estimate based on that sample will be biased    
+- If a sample is biased, the resampled statistic estimate based on that sample will be biased    
    - Results can be no better than the sample you start with  
    - Example; the bootstrap estimate of mean is the unbiased sample estimate, $\bar{x}$, not the population parameter, $\mu$ 
    

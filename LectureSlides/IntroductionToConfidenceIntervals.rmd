@@ -83,35 +83,12 @@ $$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$
 
 - Stochastic optimization uses a Bernoulli random sample of the data to estimate the **expected update** of the model weights     
 
-$$W_{t+1} = W_t + \alpha\ E_{\hat{p}data}\Big[ \nabla_{W} J(W_t) \Big]$$ 
+$$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ E_{\hat{p}data}\Big[ \nabla_\theta\ l(\hat{\theta}) \Big]$$ 
 
 - Where, $E_{\hat{p}data} \big[ \big]$ is the expected value of the gradient given the Bernoulli sample of the data, $\hat{p}data$.
 
 - Empirically, SGD has good convergence properties     
 
-
-## Review     
-
-- **Newton's method**, and related methods, employ a **quadratic approximation** to optimization.    
-
-- Newton's method exhibits convergence quadratic in the number of iterations     
-   - Compared to the approximate linear convergence for gradient descent methods       
-
-- The quadratic update is:  
-
-$$
-x_{n+1} = x_n + \gamma |\nabla_\theta^2 l(\vec{\theta})|^{-1} \nabla_\theta l(\vec{\theta})
-$$
-
-- $\gamma$ is a learning rate of step size
-
-- Requires computing the **inverse Hessian** matrix with practical difficulties   
-  - The inverse of the Hessian may not exist as this matrix may be singular    
-  - With large number of model parameters, the Hessian will have high dimensionality and computing inverse is computationally intensive      
-
-- For large scale problems **quasi-Newton** methods are used      
-   - Use an approximation to avoid computing the full inverse Hessian   
-   - **Limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS)** algorithm the most widely used quasi-Newton method 
 
 
 
@@ -138,7 +115,7 @@ All statistical inference has uncertainty
   
 - Statistical inference seeks to avoid being [**fooled by randomness**](https://www.penguinrandomhouse.com/books/176225/fooled-by-randomness-by-nassim-nicholas-taleb/); A catchy title of a book  
 
-- A very few examples where proper statistical inference is important
+- A very few examples of false inference from randomness     
 
 | Hypothesis  | Fooled by Randomness |
 |:----------------------- | :----------------- |
@@ -156,7 +133,6 @@ Confusingly, the term statistical inference is applied in many contexts
 Some applications of statistical inference include:
 
 **Inference on differences in distributions:** Are samples drawn from the same distribution or not?
-
 - A **null hypothesis** is the hypothesis that the distributions are the same      
 
 **Inference for model parameters and model selection:** Statistical models, including machine learning models, have unknown parameters for which the values must be estimated      
@@ -168,13 +144,37 @@ Some applications of statistical inference include:
 - inference also used to determine the confidence in predictions            
 
 
+## Inference for Hypotheses    
+
+**Hypothesis testing** seeks to answer the question, are the differences in the distributions of certain variables **statistically significant**?      
+
+- Statistical significance must not be confused importance to the problem being addressed?   
+
+In 1922, Ronald A. Fisher warned:
+
+*"I believe that no one who is familiar, either with mathematical advances in other fields, or with the range of special biological conditions to be considered, would ever conceive that everything could be summed up in a single mathematical formula, however complex."*     
+
+
+## Inference for Hypotheses    
+  
+Many statisticians would say that a statistically significant result indicates a relationship worthy of further investigation       
+
+Examples of further investigation include:   
+     
+- Gather more data, either observational or experimental     
+
+- Find other variables which might illuminate the relationship under investigation    
+
+- Consider the theoretical basis of the relationship. Can known science add understanding?   
+
+
 ## Confidence Intervals; the Key to Inference     
 
 In frequentist statistics uncertainty of an inference is expressed in terms of a **confidence interval**     
 
 - A confidence interval is defined as the expected range of a statistical **point estimate**   
   - A **point estimate** is the best estimate of a statistic          
-  - For example, the most likely value of a model parameter given the data   
+  - For example, the maximum likelihood estimate of a model parameter given the data   
 
 - Two types of of confidence intervals:   
   - **Two-sided confidence intervals:** express confidence that a value is within some range around the point estimate 
@@ -186,7 +186,7 @@ Can understand **two sided** confidence interval by looking at the $\alpha/2$ an
 
 - Confidence interval corresponds to the span of the distribution between quantiles    
 
-- Express a confidence interval for a random variable, $\mathbf{x}$, in terms of the probability as:  
+- Express a **two-sided confidence interval** for a random variable, $\mathbf{x}$, in terms of the probability as:  
 
 $$1- \alpha = P \Big( Lower\ CI \le \mathbf{x} \le Upper\ CI \Big)$$
 
@@ -194,9 +194,9 @@ $$1- \alpha = P \Big( Lower\ CI \le \mathbf{x} \le Upper\ CI \Big)$$
 
 Can understand **one sided** confidence interval by looking at either $\alpha$ or $1 - \alpha$ quantiles of a distribution    
 
-- The upper and lower CIs are:    
+- Upper and lower one-sided CIs can be expreseed:    
 
-$$\alpha  = P(x \ge Lower\ CI)\ \\ and \\\ 1 - \alpha = P(x \le Upper\ CI)$$
+$$1 - \alpha  = P(x \le Lower\ CI)\ \\ and \\\ \alpha = P(x \le Upper\ CI)$$
 
 
 
@@ -206,7 +206,7 @@ Illustrate the concept of confidence intervals with an example
 
 - The **cumulative distribution function (CDF)** of a standard Normal distribution, $N(0,1)$  
 
-- Double ended arrows with annotation are plotted to illustrate the 95% confidence interval on the CDF  
+- Double ended arrows with annotation are plotted to illustrate the **two-sided 95% confidence interval** on the CDF  
   - Horizontal double arrow shows the range of the confidence interval    
   - Vertical double arrow shows the part of the distribution within the confidence intervals
     
@@ -283,13 +283,13 @@ Many situations where a one-sided confidence interval is useful
 
 - Based on the cumulative distribution    
 
-- For the upper tail of the Normal distribution, the confidence interval is defined:   
+- For the lower tail of the Normal distribution, the confidence interval is defined:   
 
-$$1 - \alpha = P\big( -\infty \le x \le upper\ CI \big)$$
+$$1 - \alpha = P\big( -\infty \le x \le lower\ CI \big)$$
 
-- For the lower tail of a random variable, the confidence interval is defined:      
+- Or, for the upper tail of a random variable, the confidence interval is defined:      
 
-$$\alpha = P\big( -\infty \le x \le lower\ CI \big)$$
+$$\alpha = P\big( -\infty \le x \le upper\ CI \big)$$
 
 
 ## Interpretation of Confidence Intervals      
@@ -298,13 +298,80 @@ How can we interpret the confidence interval?
 
 - Confidence intervals are with respect to the the sampling distribution of a statistic $s(\hat{\mathcal{F}})$  
 
-- With $P(1 - \alpha)$ of the sample statistic values computed from repeated samples of the population,$\hat{\mathcal{F}}_i$ are within the CI      
+- With probability $\alpha$ the sample statistic values computed from resamples of the population,$\hat{\mathcal{F}}_i$ are within the CI      
 
 - Confidence intervals do not indicate the probability $s(\hat{\mathcal{F}})$ is in a range
 
 
 ```{r Sampling, out.width = '50%', fig.cap='Sampling distribution of unknown population parameter', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
+```
+
+
+## Concepts of Hypothesis Testing    
+
+Purpose of a statistical test is determining if the value of a chosen test statistic exceeds a cutoff value    
+
+- Select the cutoff value based on the confidence we wish to have in the test result     
+  - Example, by specifying a cutoff of  0.05  we are saying that the probability that the test statistic **exceeding the cutoff from random variation alone** is  0.05   
+  
+- Once the cutoff value has been set and the test statistic computed, interpret the results:  
+  - If the test statistic does not exceed the cutoff value, **accept the null hypothesis**   
+  - If the test statistic exceeds the cutoff **reject the null hypothesis**   
+
+
+## Cutoffs for Hypothesis Tests   
+
+Examples of one-sided and two-sided cut-offs    
+
+```{python, echo=FALSE}
+def cutoff_polygon(upper, cutoff, ax, step=0.02):
+    ## Plot the cuttoff area 
+    lower = norm.ppf(cutoff)
+    if(lower > upper):
+        ax.vlines(lower, 0.0, 0.15, color='red', linewidth=3);
+        ax.text(lower-1.6, 0.16, 'Cutoff value');
+        temp = upper
+        upper = lower
+        lower = temp  
+    else:
+        ax.vlines(lower, 0.0, 0.15, color='red', linewidth=3);
+        ax.text(lower, 0.16, 'Cutoff value');
+    x = list(np.arange(lower, upper, step))
+    norm_vals = list(np.apply_along_axis(lambda x: norm.pdf(x), 0, x))
+    x = x + [upper, lower]   
+    norm_vals = norm_vals + [0.0, 0.0];
+    ax.fill(x, norm_vals, 'black');
+    
+def plot_norm(start, end, ax, title, step=0.2):
+    ## Plot the Normal distribution 
+    x = np.arange(start, end, step=0.02)
+    norm_value = np.apply_along_axis(lambda x: norm.pdf(x), 0, x)
+    ax.plot(x, norm_value, linewidth=3, color='black')
+    ax.set_title(title);
+    ax.set_xlabel(' ');
+    ax.axhline(0.0, color='black');
+
+## Set up the plot grid
+fig, ax = plt.subplots(2, 2, figsize=(10, 6)) 
+alpha = 0.05
+
+## Two sided
+plot_norm(-4.0, 4.0, ax[0,0], title='Two sided, cutoff = ' + str(alpha))
+cutoff_polygon(4.0, 1.0- alpha/2.0, ax[0,0])
+cutoff_polygon(-4.0, alpha/2.0, ax[0,0])
+ax[0,1].axis('off')
+
+## Upper
+plot_norm(-4.0, 4.0, ax[1,0], title='One sided, upper, cutoff = ' + str(alpha))
+cutoff_polygon(4.0, 1.0- alpha, ax[1,0])
+
+## Lower
+plot_norm(-4.0, 4.0, ax[1,1], title='Two sided, cutoff = ' + str(alpha))
+cutoff_polygon(-4.0, alpha, ax[1,1])
+
+plt.show()
+
 ```
 
 
