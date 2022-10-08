@@ -231,11 +231,11 @@ The maximum likelihood estimator has useful and desirable properties
 
 - Start with a matrix of second partial derivatives of the log-likelihood function   
 
-- Matrix is the **observed information matrix** of the model, $\mathcal{J}(\vec{\theta})$.   
+- Matrix is the **observed information matrix** of the model, $\mathcal{I}(\vec{\theta})$.   
 
 
 $$
-\mathcal{J}(\vec{\theta}) = 
+\mathcal{I}(\vec{\theta}) = 
 \begin{pmatrix}
   \frac{\partial^2 l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_1^2} & 
   \frac{\partial^2 l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_2\ \partial \theta_1} & 
@@ -403,20 +403,20 @@ $$
 
 
 \begin{align}
-\mathcal{J}(\vec{\theta}) &= 
+\mathcal{J}(\vec{\theta}) &= - \mathbf{E}
 \begin{pmatrix}
 \frac{\partial^2 l}{\partial \mu^2} & \frac{\partial^2 l}{\partial \mu\ \partial \sigma^2}\\
 \frac{\partial^2 l}{\partial \mu\ \partial \sigma^2} & \frac{\partial^2 l}{\partial (\sigma^2)^2}
 \end{pmatrix} \\
-&= 
+&= - \mathbf{E}
 \begin{pmatrix}
 -\frac{n}{\sigma^2} & -\frac{n}{\sigma^4}(\bar{x} - \mu) \\
 -\frac{n}{\sigma^4}(\bar{x} - \mu) & -\frac{n}{2\sigma^4} + \frac{1}{\sigma^6} \sum_j (x_j - \mu)^2
 \end{pmatrix} \\
 &= 
 \begin{pmatrix}
--\frac{n}{\sigma^2} & 0 \\
-0 & -\frac{n}{2\sigma^4} 
+\frac{n}{\sigma^2} & 0 \\
+0 & \frac{n}{2\sigma^4} 
 \end{pmatrix}
 \end{align}
 
@@ -795,7 +795,7 @@ def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle):
     
     n=100
     pi = np.arange(0.01, 1.0, step=0.01) 
-    binom_information = np.apply_along_axis(lambda x: -100/(n/(x*(1-x))), 0, pi)
+    binom_information = np.apply_along_axis(lambda x: n/(x*(1-x)), 0, pi)
     ## Now make the plot
     _=ax[1].plot(pi, binom_information, lw=3);
     ax[1].set_title('Information for MLE for Binomial distribution with n=100');
