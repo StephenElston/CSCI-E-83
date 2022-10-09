@@ -1,7 +1,7 @@
 ---
 title: "Introduction to Bayesian Models"
 author: "Steve Elston"
-date: "01/13/2021"
+date: "10/13/2022"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -34,7 +34,7 @@ The concept of **likelihood** and **maximum likelihood estimation (MLE)** have b
 
 ## Review   
 
-Statistical inference seeks to characterize the uncertainty in estimates    
+Statistical inference seeks to characterize the uncertainty in statistical point estimates    
 
 - Statistics are estimates of population parameters    
 
@@ -47,7 +47,7 @@ Statistical inference seeks to characterize the uncertainty in estimates
 
 ## Review    
 
-Bootstrap estimation is widely useful and requires minimal assumption    
+Nonparametric bootstrap estimation is widely useful and requires minimal assumption    
 
 - Bootstrap distribution is comprised of values of the statistic computed from bootstrap resamples of the original observations (data sample)      
 
@@ -64,12 +64,12 @@ Bootstrap estimation is widely useful and requires minimal assumption
 There are several variations of the basic nonparametric bootstrap algorithm      
 
 - One sample bootstrap    
-   - Inference on single populations   
+   - Inference on single statistic     
 
 - Two sample bootstrap    
-   - Inference on different populations   
+   - Inference on different statistic       
 
-- Special cases   
+- Special cases    
    - Correlation coefficients - part of your assignment     
 
 
@@ -88,7 +88,7 @@ Re-sampling methods are general and powerful but, there is no magic involved! Th
 - Are computationally intensive, but often highly parallelizable     
 
 
-## Introduction   
+## Introduction Baysian Models  
 
 Despite the long history, Bayesian models have not been used extensively until recently    
 
@@ -179,7 +179,7 @@ Eliminating $P(A \cap B):$
 
 $$ P(B)P(A|B) = P(A)P(B|A)$$
 
-Or, **Bayes theorem!** 
+And finally, **Bayes theorem!** 
 
 $$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
 
@@ -293,7 +293,8 @@ Using the foregoing relations we can rewrite Bayes Theorem as:
 $$ P(A|B) = \frac{P(A)P(B|A)}{𝑃(𝐵│𝐴)𝑃(𝐴)+𝑃(𝐵│ \bar{𝐴})𝑃(\bar{𝐴})} \\ $$
 
 - Computing the denominator requires summing all cases in the subsets $A$ and $not\  A$      
-    - This is a bit of a mess!    
+    - This is a bit of a mess!   
+    - And, the siguation is worse if there are multiple alternative hypotheses! 
     - Fortunately, we can often avoid computing this denominator by force     
     
 Eewrite Bayes Theorem as:
