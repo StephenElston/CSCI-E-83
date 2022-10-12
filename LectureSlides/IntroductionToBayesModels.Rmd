@@ -116,7 +116,7 @@ Bayesian analysis is a contrast to frequentist methods
   - Selection of prior distributions can be performed in a number of ways      
 
 -	The posterior distribution is said to quantify our current **belief**     
-  - We update beliefs based on additional data or evidence    
+  - Update beliefs based on additional data or evidence    
   - A critical difference with frequentist models which must be computed from a complete sample   
   
 -	Inference can be performed on the posterior distribution by finding the maximum a postiori (MAP) value and a credible interval    
@@ -213,7 +213,7 @@ $$p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, 
 
 - Or, for discrete samples of a continuous distribution   
 
-- Example, we know posterior distribution of a parameter $\theta$ but really want marginal distribution of the parameter value   
+- Example, need to know (un-normalized) posterior distribution of parameter $\theta$, a marginal distribution:   
 
 $$
 p(\theta) = \sum_{x \in \mathbf{X}} p(\theta |\mathbf{X})\ p(\mathbf{X}) 
@@ -221,13 +221,13 @@ $$
 
 - Now we have the marginal distribution of $\theta$
 
-- Or, we need to find the denominator for Bayes theorem to normalize our posterior distribution:
+- Or, we need to find the denominator for Bayes theorem to normalize our posterior distribution, a marginal distribution:
 
 $$
 p(\mathbf{X}) = \sum_{\theta \in \Theta} p(\mathbf{X} |\theta) p(\theta) 
 $$
 
-- We can compute $p(\mathbf{X})$ from samples without ever solving the integral directly!
+- We can compute $p(\mathbf{X})$ from samples without ever directly computing the marginal  
 
 ## Interpreting Bayes Theorem
 
@@ -297,7 +297,7 @@ $$ P(A|B) = \frac{P(A)P(B|A)}{𝑃(𝐵│𝐴)𝑃(𝐴)+𝑃(𝐵│ \bar{𝐴
     - And, the siguation is worse if there are multiple alternative hypotheses! 
     - Fortunately, we can often avoid computing this denominator by force     
     
-Eewrite Bayes Theorem as:
+Write Bayes Theorem as:
 
 $$𝑃(𝐴│𝐵)=𝑘∙𝑃(𝐵|𝐴)𝑃(𝐴)$$
 
@@ -312,57 +312,8 @@ Denominator must account for all possible outcomes, or alternative hypotheses, $
 
 $$Posterior(hypothesis\ |\ evidence) =\\ \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{\sum_{ h' \in\ All\ possible\ hypotheses}Likelihood(evidence\ |\ h')\ prior(h')}$$
 
-This is a formidable problem!    
+Computing this denominator is a formidable problem!    
 
-
-## Bayes Theorem Example
-
-Hemophilia is a serious genetic condition expressed on any X chromosome    
-
-- Women have two X chromosomes and are unlikely to exhibit hemophilia   
-  - One X chromosome inherited from each parent    
-  - Must inherit hemophilia from both parents   
-
-- Men have one X chromosome and one Y chromosome   
-  - Inherit Y chromosome from the father   
-  - Inherit X chromosome, and possibly hemophilia, from the mother    
-  
-- Say a woman has a brother who exhibits hemophilia   
-  - Y chromosome expression is $\theta = 1.0$  
-  - Woman's father does not exhibit hemophilia, $\theta = 0$
-  - Our prior probability that she carries the genetic marker for hemophilia $\theta = 0.5$
-
-
-## Bayes Theorem Example  
-
-As evidence the woman has two sons (not identical twins) with no expression of hemophilia      
-
-- What is the likelihood for the two sons $X = (x_1,x_2)$ not having hemophilia?   
-
-- Two possible cases here
-  - Case where woman caries one X chromosome with hemophilia expression, $\theta = 1$
-  - Case where woman does not carry an X chromosome with hemophilia expression, $\theta = 0$   
- 
-$$
-p(x_1=0, x_2=0 | \theta = 1) = 0.5 * 0.5 = 0.25  \\
-p(x_1=0, x_2=0 | \theta = 0) = 1.0 * 1.0 = 1.0 
-$$
- 
-Note: we are neglecting the possibility of a mutations in one of the sons 
-
-
-## Bayes Theorem Example  
-
-Use Bayes theorem to compute probability woman carries an X chromosome with hemophilia expression, $\theta = 1$
-
-$$
-p(\theta=1 | X) = \frac{p(X|\theta=1) p(\theta=1)}{p(X|\theta=1) p(\theta=1) + p(X|\theta=0) p(\theta=0)} \\
-= \frac{0.25 * 0.5}{0.25 * 0.5 + 1.0 * 0.5} = 0.20
-$$
-
-The evidence of two sons without hemophilia causes us to update our **belief** that the probability of the woman carrying the disease
-
-**Note:** The denominator is the sum over all possible hypthises, the marginal distribution of the observations $\mathbf{X}$
 
 
 ## Simplified Relationship for Bayes Theorem
@@ -375,9 +326,9 @@ $$Posterior\ Distribution \propto Likelihood \bullet Prior\ Distribution \\
 Or\\
 𝑃( 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 │ 𝑑𝑎𝑡𝑎 ) \propto 𝑃( 𝑑𝑎𝑡𝑎 | 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 )𝑃( 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 ) $$
 
-- We can find an unnormalized function proportional to the posterior distribution     
+- We can find an un-normalized function proportional to the posterior distribution     
 
-- Sum over the function to find the marginal distribution $P(B)$     
+- Sum over $𝑃( 𝑑𝑎𝑡𝑎 | 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 )𝑃( 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 )$ to find the marginal distribution $P(B)$     
 
 - Approach can transform an intractable computation into a simple summation 
 
@@ -425,15 +376,15 @@ An advantage of Bayesain model is that it can be updated as new observations are
 The choice of the prior is a difficult, and potentially vexing, problem when performing Bayesian analysis     
 
 - The need to choose a prior has often been cited as a reason why Bayesian models are impractical     
-- General guidance is that a prior must be convincing to a **skeptical audience** is vague in practice       
+- General guidance is that a prior must be convincing to a **skeptical audience**, often vague in practice       
 
 - Some possible approaches include:
 
 - Use prior **empirical information**    
 - Apply **domain knowledge** to determine a reasonable distribution      
     - Use information from prior work
-    - For example, the viable range of parameter values could be computed from physical principles  
-    - For example, it could be well know that there are price range for some asset    
+    - Example, the viable range of parameter values could be computed from physical principles  
+    - Example, it could be well know that there is price range for some asset    
     
 -  If there is poor prior knowledge for the problem a **non-informative prior** can be used     
    - One possibility is a Uniform distribution. But **be careful!** since a uniform prior is informative because of limits on the values!      
@@ -447,13 +398,14 @@ How to use prior **empirical information** to estimate the parameters of the pri
    - Has become more practical with large modern data sets  
    - Method somewhere between Bayesian and frequentist  
    - Empirical Bayes approach is often applied in practice   
-   - Some Bayesian theoreticians do not consider this a Bayesian approach at all
+   - Some Bayesian theoreticians do not consider this a Bayesian approach at all!
 
 - Example, need a prior distribution of home prices per square foot by location    
     - Use **pooled** information to compute distribution of prices for all locations   
-    - Use the prior with specific observations by locations to compute posteriors by location    
+    - Use the prior with specific evidence by locations to compute posteriors by location   
+    - Is example of **hierarchical model**  
 
-- Sometimes, a less informative prior distribution is used than the actual empirical distribution so the model is not overly constrained      
+- Typically, a less informative prior distribution is used than the actual empirical distribution so the model is not overly constrained      
 
 
 ## Conjugate Prior Distributions     
@@ -467,7 +419,7 @@ An analytically and computationally simple choice for a prior distribution famil
     - The posterior is a known distribution    
 
 - But there are many practical cases where a conjugate prior is not used    
-    - We will address more gneral methods later 
+    - We will address more general methods later 
 
 
 ## Conjugate Prior Distributions  
@@ -481,7 +433,7 @@ Bernoulli|Beta
 Poisson|Gamma
 Categorical|Dirichlet
 Normal - mean| Normal
-Normal - variance | Inverse Gamma
+Normal - variance | Inverse Gamma, $\chi^2$
 Normal - inverse variance, $\tau$ | Gamma
  
 ## Example using Conjugate Distribution     
@@ -496,7 +448,10 @@ $$ P(k) = \binom{n}{k} \cdot \theta^k(1-\theta)^{n-k}$$
 
 - Binomial likelihood has one parameter we need to estimate, $\theta$, the probability of success   
 
-Our process is the: 
+
+## Working with Conjugate Distribution    
+
+Our process for example is: 
 
 1. Use the conjugate prior, the Beta distribution with parameters $\alpha$ and $\beta$   
 2. Using the data sample, compute the likelihood
