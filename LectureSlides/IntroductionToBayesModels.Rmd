@@ -139,6 +139,17 @@ knitr::include_graphics(rep("../images/AirFrance447_posterior_PDF.png"))
 ```
 
 
+## Bayesian Model Use Case
+
+[Kratzke, Stone and Frost](https://www.metsci.com/wp-content/uploads/2019/08/Search-and-Rescue-Optimal-Planning-System.pdf) developed an optimal search missing planner using Baysian model   
+
+- Search areas concentrate on high posterior probability regions    
+- Model accounts for current, wind, etc. 
+
+```{r USCG, out.width = '30%', fig.cap='Screen shot from USCG search planner', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/USCG_search_planner.JPG"))
+```
+
 ## Bayesian vs. Frequentist Views
 
 With greater computational power and general acceptance, Bayes methods are now widely used    
@@ -260,7 +271,7 @@ What do these terms actually mean?
 
 3. **Likelihood** is the conditional distribution of the data given the model parameters       
 
-4. **Data** or **evidence** is the distribution of the data and normalizes the posterior   
+4. **Probabiltiy of Data** or **evidence** is the distribution of the data and normalizes the posterior   
 
 Relationships can apply to the parameters in a model; partial slopes, intercept, error distributions, lasso constants, etc 
 
@@ -312,7 +323,8 @@ Denominator must account for all possible outcomes, or alternative hypotheses, $
 
 $$Posterior(hypothesis\ |\ evidence) =\\ \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{\sum_{ h' \in\ All\ possible\ hypotheses}Likelihood(evidence\ |\ h')\ prior(h')}$$
 
-Computing this denominator is a formidable problem!    
+- Computing this denominator is a formidable problem!    
+- Can be infinite number of alternative hypotheses; e.g. continuous random variable   
 
 
 
@@ -376,9 +388,13 @@ An advantage of Bayesain model is that it can be updated as new observations are
 The choice of the prior is a difficult, and potentially vexing, problem when performing Bayesian analysis     
 
 - The need to choose a prior has often been cited as a reason why Bayesian models are impractical     
-- General guidance is that a prior must be convincing to a **skeptical audience**, often vague in practice       
+- General guidance is that a prior must be convincing to a **skeptical audience**   
+- Often tend to use vague or less informative priors in practice       
 
-- Some possible approaches include:
+
+## How can you choose a prior?
+
+Some possible approaches to prior selection include:
 
 - Use prior **empirical information**    
 - Apply **domain knowledge** to determine a reasonable distribution      
@@ -433,7 +449,7 @@ Bernoulli|Beta
 Poisson|Gamma
 Categorical|Dirichlet
 Normal - mean| Normal
-Normal - variance | Inverse Gamma, $\chi^2$
+Normal - variance, $\chi^2$ | Inverse Gamma
 Normal - inverse variance, $\tau$ | Gamma
  
 ## Example using Conjugate Distribution     
@@ -446,6 +462,7 @@ We are interested in analyzing the incidence of distracted drivers
 
 $$ P(k) = \binom{n}{k} \cdot \theta^k(1-\theta)^{n-k}$$
 
+
 - Binomial likelihood has one parameter we need to estimate, $\theta$, the probability of success   
 
 
@@ -453,7 +470,7 @@ $$ P(k) = \binom{n}{k} \cdot \theta^k(1-\theta)^{n-k}$$
 
 Our process for example is: 
 
-1. Use the conjugate prior, the Beta distribution with parameters $\alpha$ and $\beta$   
+1. Use the conjugate prior, the Beta distribution with parameters $\alpha$ and $\beta$ (or a,b)  
 2. Using the data sample, compute the likelihood
 3. Compute the posterior distribution of distracted driving 
 4. Add more evidence (data) and update the posterior distribution.
@@ -480,15 +497,15 @@ Consider the product of a Binomial likelihood and a Beta prior
 \begin{align}
 posterior(\theta | z, n) &= \frac{likelihood(z,n | \theta)\ prior(\theta)}{data\ distribution (z,n)} \\
 p(\theta | z, n) &= \frac{Binomial(z,n | \theta)\ Beta(\theta)}{p(z,n)} \\
-&= Beta(z + a -1,\ n-z+b-1)
+&= Beta(z + a,\ n-z+b)
 \end{align}
 
 ## Example using Conjugate Distribution 
 
-There are some useful insights you can gain from this relationship:   
+There are some useful insights you can gain from this relationship for (discrete) integer counts:   
 
 $$
-posterior(\theta | z, n) = Beta(z + a -1,\ n-z+b-1)
+posterior(\theta | z, n) = Beta(z + a,\ n-z+b)
 $$
 
 - Posterior distribution is in the Beta family, as a result of conjugacy      
@@ -510,7 +527,7 @@ $$
 Consider example with:  
    - Prior pseudo counts $[1,9]$, successes $a = 1 + 1$ and failures, $b = 9 + 1$     
    - Evidence,  successes $= 10$ and failures, $= 30$    
-   - Posterior is $Beta(10 + 2 -1,\ 40 - 10 + 10 -1) = Beta(11,\ 39)$ 
+   - Posterior is $Beta(10 + 2,\ 40 - 10 + 10) = Beta(12,\ 40)$ 
 
 
 ```{r DistrtractedDrivers, out.width = '40%', fig.cap='Prior, likelihood and posterior for distracted driving', fig.align='center', echo=FALSE}
@@ -596,6 +613,11 @@ How can we specify the uncertainty for a Bayesian parameter estimate?
    - We use a concept known as the **credible interval**     
    - A credible interval is an interval on the Bayesian posterior distribution with the highest $\alpha$ proportion of posterior probability      
    
+
+## Credible Intervals
+
+How can we specify the uncertainty for a Bayesian parameter estimate?     
+   
 - Example, the $\alpha = 0.90$ credible interval encompasses the 90% of the posterior distribution with the highest density      
 
 - The credible interval is sometime called the highest density interval (HDI), or highest posterior density interval (HPDI)      
@@ -606,7 +628,7 @@ How can we specify the uncertainty for a Bayesian parameter estimate?
    
 ## Credible Intervals
 
-What are the 95% credible intervals for $Beta(11,\ 39)$? 
+What are the 95% credible intervals for $Beta(12,\ 40)$? 
 
 ```{r CredibleIntervals, out.width = '70%', fig.cap='Probability of distract drivers for next 10 cars', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/CredibleIntervals.png"))
@@ -626,8 +648,8 @@ Credible interval is an interval on a posterior distribution of the statistic
    - Credible interval is exactly what the misinterpretation of the confidence interval tries to be   
    - Credible interval is the interval with highest $\alpha$ probability for the statistic being estimated       
 
-- For symmetric posterior distributions, the credible interval will be numerically the same as the confidence interval    
-   - This need not be the case in general
+For symmetric posterior distributions, the credible interval will be numerically the same as the confidence interval     
+  - This need not be the case in general
    
 ## Credible Intervals are not Confidence Intervals    
 
@@ -655,7 +677,7 @@ What else can we do with a Bayesian posterior distribution beyond credible inter
 
 ## Simulating from the  posterior distribution: predictions
 
-Example; What are the probabilities of distracted drivers for the next 10 cars with posterior, $Beta(11,\ 39)$? 
+Example; What are the probabilities of distracted drivers for the next 10 cars with posterior, $Beta(12,\ 40)$? 
 
 ```{r DistractedNext10Cars, out.width = '40%', fig.cap='Probability of distract drivers for next 10 cars', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/DistractedNext10Cars.png"))
