@@ -1,7 +1,7 @@
 ---
 title: "Introduction to Linear Models"
 author: "Steve Elston"
-date: "03/06/2021"
+date: "10/20/2022"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -22,8 +22,8 @@ matplotlib$use("Agg", force = TRUE)
 Plan going forward:    
 
 - Week 8: Introduction to Linear Models    
-- Week 9: Linear Models Part 2 - Categorical data and regularization     
-- Week 10: Nonlinear Regression Models and Classifiers     
+- Week 9: Linear Models Part 2 - Categorical data and nonlinear response models     
+- Week 10: Linear Models Part 3 - Regularization and sparse models      
 - Week 11: Time Series Models       
 - Week 12: Bayes MCMC methods    
 - Week 13: Hierarchical models          
@@ -38,37 +38,18 @@ Let me know if you have suggestions to change this schedule
 Bayesian analysis is a contrast to frequentist methods          
 
 -	The objective of Bayesian analysis is to compute a posterior distribution    
-  - Contrasts with frequentist statistics is to compute a point estimate and confidence interval from a sample      
+  - Contrast with frequentist statistics; computing a point estimate and confidence interval from a sample      
 
 
--	Bayesian models allow expressing prior information in the form of a prior distribution       
+-	Bayesian models allows expressing prior information in the form of a prior distribution    
   - Selection of prior distributions can be performed in a number of ways      
 
 -	The posterior distribution is said to quantify our current **belief**     
-  - We update beliefs based on additional data or evidence    
-  - A critical difference with frequentist models which must be computed from a complete sample   
+   - We update beliefs based on additional data or evidence    
+   - A critical difference with frequentist models which must be computed from a complete sample   
 -	Inference can be performed on the posterior distribution by finding the maximum a postiori (MAP) value and a credible interval    
 
 - Predictions are made by simulating from the posterior distribution   a
-
-
-## Review         
-
-Bayesian analysis is in contrast to frequentist methods          
-
--	The objective of Bayesian analysis is to compute a posterior distribution    
-  - Frequentist statistics seeks to compute a point estimate and confidence interval from a sample      
-
-
--	Bayesian models allow expressing prior information in the form of a prior distribution       
-  - Selection of prior distributions can be performed in a number of ways      
-
--	The posterior distribution is said to quantify our current **belief**     
-  - We update beliefs based on additional data or evidence    
-  - A critical difference with frequentist models which must be computed from a complete sample   
-  
--	Inference can be performed on the posterior distribution by finding the maximum a posteriori (MAP) value and a credible interval    
-
 
 
 
@@ -118,6 +99,7 @@ In statistics, **regression** refers to a family of model that attempt to predic
    - Analysis of variance (ANOVA)
    - Polynomial regression
    - Logistic regression for binary classification
+   - Poisson regression    
    - Neural networks (and deep learning)
 
 
@@ -649,7 +631,7 @@ print('SSE + SSR = {0:6.2f}'.format(SSE + SSR))
 We can compare the sum of square residual to the sum of square total to evaluate how well our model explains the data    
 
 $$SST - SSR = SSE$$
-We call the ratio $\frac{SSE}{SST}$ $R2$ or the **coefficient of determination**  
+We call the ratio $\frac{SSE}{SST}$ $R^2$ or the **coefficient of determination**  
 
 $$R^2 = 1 - \frac{SSR}{SST}$$
 

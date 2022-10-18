@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Steve Elston" />
-  <meta name="date" content="2021-03-06" />
+  <meta name="date" content="2022-10-20" />
   <title>Introduction to Linear Models</title>
   <style type="text/css">
     code{white-space: pre-wrap;}
@@ -526,7 +526,7 @@ list-style-type: none;
   <p class="author">
 Steve Elston
   </p>
-  <p class="date">03/06/2021</p>
+  <p class="date">10/20/2022</p>
 </div>
 <div id="welcome-to-the-second-half-of-csci-e-83" class="slide section level2">
 <h1>Welcome to the Second Half of CSCI E-83!</h1>
@@ -534,20 +534,21 @@ Steve Elston
 <ul>
 <li>Week 8: Introduction to Linear Models<br />
 </li>
-<li>Week 9: Linear Models Part 2 - Categorical data and
-regularization<br />
+<li>Week 9: Linear Models Part 2 - Categorical data and nonlinear
+response models<br />
 </li>
-<li>Week 10: Nonlinear Regression Models and Classifiers<br />
+<li>Week 10: Linear Models Part 3 - Regularization and sparse
+models<br />
 </li>
 <li>Week 11: Time Series Models<br />
 </li>
-<li>Week 12: Clustering Models<br />
+<li>Week 12: Bayes MCMC methods<br />
 </li>
-<li>Week 13: Bayes MCMC methods<br />
+<li>Week 13: Hierarchical models<br />
 </li>
-<li>Week 14: Hierarchical models<br />
+<li>Week 14: TBD - More on time series?<br />
 </li>
-<li>Submit Graduate Independent Projects</li>
+<li>Dec 17: Submit Graduate Independent Projects</li>
 </ul>
 <p>Let me know if you have suggestions to change this schedule</p>
 </div>
@@ -558,10 +559,10 @@ regularization<br />
 <li><p>The objective of Bayesian analysis is to compute a posterior
 distribution<br />
 </p></li>
-<li><p>Contrasts with frequentist statistics is to compute a point
-estimate and confidence interval from a sample</p></li>
-<li><p>Bayesian models allow expressing prior information in the form of
-a prior distribution<br />
+<li><p>Contrast with frequentist statistics; computing a point estimate
+and confidence interval from a sample</p></li>
+<li><p>Bayesian models allows expressing prior information in the form
+of a prior distribution<br />
 </p></li>
 <li><p>Selection of prior distributions can be performed in a number of
 ways</p></li>
@@ -578,32 +579,6 @@ finding the maximum a postiori (MAP) value and a credible
 interval</p></li>
 <li><p>Predictions are made by simulating from the posterior
 distribution a</p></li>
-</ul>
-</div>
-<div id="review-1" class="slide section level2">
-<h1>Review</h1>
-<p>Bayesian analysis is in contrast to frequentist methods</p>
-<ul>
-<li><p>The objective of Bayesian analysis is to compute a posterior
-distribution<br />
-</p></li>
-<li><p>Frequentist statistics seeks to compute a point estimate and
-confidence interval from a sample</p></li>
-<li><p>Bayesian models allow expressing prior information in the form of
-a prior distribution<br />
-</p></li>
-<li><p>Selection of prior distributions can be performed in a number of
-ways</p></li>
-<li><p>The posterior distribution is said to quantify our current
-<strong>belief</strong><br />
-</p></li>
-<li><p>We update beliefs based on additional data or evidence<br />
-</p></li>
-<li><p>A critical difference with frequentist models which must be
-computed from a complete sample</p></li>
-<li><p>Inference can be performed on the posterior distribution by
-finding the maximum a posteriori (MAP) value and a credible
-interval</p></li>
 </ul>
 </div>
 <div id="introduction---why-linear-models" class="slide section level2">
@@ -669,6 +644,8 @@ methods:</p>
 <li>Analysis of variance (ANOVA)</li>
 <li>Polynomial regression</li>
 <li>Logistic regression for binary classification</li>
+<li>Poisson regression<br />
+</li>
 <li>Neural networks (and deep learning)</li>
 </ul></li>
 </ul>
@@ -1241,7 +1218,7 @@ SSR &amp;= sum\ square\ residual\ = \Sigma_i{(y_i - \hat{y_i})^2}\\
 <p>We can compare the sum of square residual to the sum of square total
 to evaluate how well our model explains the data</p>
 <p><span class="math display">\[SST - SSR = SSE\]</span> We call the
-ratio <span class="math inline">\(\frac{SSE}{SST}\)</span> <span class="math inline">\(R2\)</span> or the <strong>coefficient of
+ratio <span class="math inline">\(\frac{SSE}{SST}\)</span> <span class="math inline">\(R^2\)</span> or the <strong>coefficient of
 determination</strong></p>
 <p><span class="math display">\[R^2 = 1 - \frac{SSR}{SST}\]</span></p>
 <p>The <span class="math inline">\(R^2\)</span> for a perfect model
@@ -1297,8 +1274,8 @@ statistics</p>
 ## Dep. Variable:                      y   R-squared:                       0.682
 ## Model:                            OLS   Adj. R-squared:                  0.676
 ## Method:                 Least Squares   F-statistic:                     103.1
-## Date:                Mon, 10 Oct 2022   Prob (F-statistic):           1.52e-13
-## Time:                        10:17:40   Log-Likelihood:                -99.565
+## Date:                Mon, 17 Oct 2022   Prob (F-statistic):           1.52e-13
+## Time:                        19:12:15   Log-Likelihood:                -99.565
 ## No. Observations:                  50   AIC:                             203.1
 ## Df Residuals:                      48   BIC:                             207.0
 ## Df Model:                           1                                         
@@ -1450,8 +1427,8 @@ terms</p>
 ## Dep. Variable:                      y   R-squared:                       0.106
 ## Model:                            OLS   Adj. R-squared:                  0.087
 ## Method:                 Least Squares   F-statistic:                     5.684
-## Date:                Mon, 10 Oct 2022   Prob (F-statistic):             0.0211
-## Time:                        10:17:41   Log-Likelihood:                -191.24
+## Date:                Mon, 17 Oct 2022   Prob (F-statistic):             0.0211
+## Time:                        19:12:16   Log-Likelihood:                -191.24
 ## No. Observations:                  50   AIC:                             386.5
 ## Df Residuals:                      48   BIC:                             390.3
 ## Df Model:                           1                                         
@@ -1507,8 +1484,8 @@ x^2\]</span></p>
 ## Dep. Variable:                      y   R-squared:                       0.330
 ## Model:                            OLS   Adj. R-squared:                  0.301
 ## Method:                 Least Squares   F-statistic:                     11.55
-## Date:                Mon, 10 Oct 2022   Prob (F-statistic):           8.29e-05
-## Time:                        10:17:42   Log-Likelihood:                -184.04
+## Date:                Mon, 17 Oct 2022   Prob (F-statistic):           8.29e-05
+## Time:                        19:12:17   Log-Likelihood:                -184.04
 ## No. Observations:                  50   AIC:                             374.1
 ## Df Residuals:                      47   BIC:                             379.8
 ## Df Model:                           2                                         
