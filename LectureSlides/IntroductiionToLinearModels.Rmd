@@ -65,7 +65,8 @@ Linear models are widely used in statistics and machine learning
 
 - Can approximate fairly complex functions    
    - A basis of understanding complex models     
-   - Many non-linear models are at locally linear at convergence
+   
+- Many non-linear models are at locally linear at convergence
    - We can learn a lot about the convergence of DL and RL models from linear approximations    
 
 - In this lesson we take a **frequentist view** of the linear model    
@@ -99,7 +100,8 @@ In statistics, **regression** refers to a family of model that attempt to predic
    - Analysis of variance (ANOVA)
    - Polynomial regression
    - Logistic regression for binary classification
-   - Poisson regression    
+   - Poisson regression  
+   - Many time series models   
    - Neural networks (and deep learning)
 
 
@@ -138,18 +140,18 @@ Predicted Variable | Variables Used to Predict
 
 The general formulation of a linear model can be written:     
 
-$$y = A \vec{b} + \vec{\epsilon}$$
+$$\vec{y} = A \vec{b} + \vec{\epsilon}$$
 
-- $y$ is the vector of $n$ dependent variables or labels we seek to predict   
+- $\vec{y}$ is the vector of $n$ dependent variables or labels we seek to predict   
 
-- $A$ is the $n$ x $p$ **model matrix**      
+- $A$ is the $n$ x $p$ **model matrix** or **design matrix**        
    - Defines the structure of the model    
    - $p$ columns are values of the predictor variables or features 
    - $n$ rows of training cases   
    
 - $\vec{b}$ is the vector of $p$ model coefficients      
    - One coefficient for each predictor or feature  
-   - Model is fit by finding an *optimal** value for each coefficient  
+   - Model is fit by finding an **optimal** value for each coefficient  
 
 - $\epsilon$ is the vector representing **prediction error**   
    - The $n$ **residuals** 
@@ -178,7 +180,13 @@ $$
 
 - Given a variable predictor value $x_i$, the prediction, $\hat{y}_i$, is:
 
-$$\hat{y}_i = \beta_0 + \beta_1 x_i$$
+\begin{align}
+\hat{y}_i &= \beta_0 + \beta_1 x_i\\
+\hat{y}_i &= y - \epsilon_i\\
+\epsilon_i &\sim \mathcal{N}(0, \sigma^2)
+\end{align}    
+
+- $\epsilon_i$ is the **0 mean Normally distributed residual**; $\mathtt{E}(\epsilon_i) = 0$
 
 
 
@@ -350,7 +358,7 @@ Where $A^{-1}$ is the **matrix inverse** of $A$
 
 - This *might work*, **BUT**     
 
-- Direct matrix inverse algorithm has complexity $O(n^2)$, so inefficient   
+- Direct matrix inverse algorithm has complexity $O(n^3)$, so inefficient   
 
 - There is no guarantee the inverse exists     
    - The $p$ features can be colinear   
@@ -468,10 +476,10 @@ $$dv \sim var1 + I(var1**2)$$
 
 - Example; dependent variable (dv) is modeled by two independent variables (var1 and var2) and the **interaction term** with no intercept term:
 
-\begin{align}
-dv &\sim -1 + var1*var2\\
-dv &\sim var1 + var2 + var1:var2
-\end{align}
+$$
+dv \sim -1 + var1*var2 \longleftrightarrow
+dv \sim -1 + var1 + var2 + var1:var2
+$$ 
 
 - Example; dependent variable (dv) modeled by independent numeric variable (var1) and a categorical variable (var2):
 
@@ -515,6 +523,8 @@ plt.show();
 ```
 
 This looks like a good fit, but how good is it really? 
+
+
 
 
 ## Evaluating Regression Models    
@@ -725,6 +735,48 @@ When evaluating any machine learning model consider **all evaluation methods ava
 - Don't forget to check that the **model must make sense** for your application! 
 
 
+## Example - Fitting center Model
+
+Fit the model using statsmodels.formula.api.ols with **centered independent variable** to create a linear model object    
+
+```{python}
+## Center the independent variable   
+sim_data.loc[:,'x_centered'] = np.subtract(sim_data.x, np.mean(sim_data.x))
+## Define the regression model and fit it to the data
+ols_model_centered = smf.ols(formula = 'y ~ x_centered', data=sim_data).fit()
+
+## Print the model coefficient
+print('Intercept = %4.3f  Slope = %4.3f' % (ols_model_centered._results.params[0], ols_model_centered._results.params[1]))
+```
+
+- We can now interpret this model    
+  - Intercept is the mean of the dependent variable   
+  - Slope is the rate of change of the dependent variable for unit change in independent variable   
+  
+- Interceopt is value of independent variable where independent varaibles all $= 0$   
+  - May not even be in defined range of independent varaible    
+  - e.g. How can we interpret a negaive life expectancy   
+
+## Example - Fitting center Model 
+
+Plot the regression line against the centered independent variable    
+
+```{python, echo=FALSE}
+sim_data.loc[:,'predicted_centered'] = ols_model_centered.predict(sim_data)   
+plt.rc('font', size=12)
+fig, ax = plt.subplots(figsize=(6, 5), ); 
+sns.lineplot(x='x_centered', y='predicted_centered', data=sim_data, color='red', ax=ax);
+sns.scatterplot(x='x_centered', y='y', data=sim_data, ax=ax);
+ax.axvline(0, linestyle='dashed', color='gray');
+ax.axhline(np.mean(sim_data.y), linestyle='dashed', color='gray');
+ax.set_title('Scatter plot of centered linear regression line');
+ax.set_ylim(0,11);
+plt.show();
+#sim_data.drop(['predicted_centered'])
+```
+
+
+
 ## Extending the Linear Model
 
 We extend the linear model by adding new features or predictor variables    
@@ -900,7 +952,6 @@ sim_data_2['resids'] = np.subtract(sim_data_2.predicted, sim_data_2.y)
 residual_plot(sim_data_2)
 ```
 
-- Looks like there is a problem with this model   
 
 - These residuals are close to homoskedastic! 
 
@@ -950,7 +1001,7 @@ Example: Add a single outlier regression data set
 
 ```{python, echo=FALSE}
 ## add an outlier to the data 
-new_row = [0.0,50.0,0.0,0.0]
+new_row = [0.0,50.0,0.0,0.0,0.0,0.0]
 new_row_index = len(sim_data)
 sim_data_ol = sim_data.copy()
 sim_data_ol.loc[new_row_index] = new_row
@@ -1132,10 +1183,19 @@ Example: regression with Huber loss function
 
 ```{python}
 ## Define the robust regression model and fit it to the data
-ols_model_huber = sm_api.RLM(sim_data_ol.y, sim_data_ol.x, M=sm.robust.norms.HuberT()).fit()
+ols_model_huber = smf.rlm(formula ='y~x', data = sim_data_ol).fit()
 # Add predicted to pandas data frame
 sim_data_ol['predicted_huber'] = ols_model_huber.predict(sim_data_ol.x)
+## Display sumamry
+ols_model_huber.summary()
 ```
+
+
+
+## Dealing With Outliers 
+
+Example: regression with Huber loss function 
+
 
 ```{python, echo=FALSE}
 ## Print the model coefficient
@@ -1154,6 +1214,7 @@ plt.show();
 ```
 
 Notice the different slope for the regression with Huber loss   
+
 
 
 ## Linear Model Assumptions
