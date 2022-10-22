@@ -1,7 +1,7 @@
 ---
-title: "Models with Nonlinear Response"
+title: "Models Categorical Variables and Nonlinear Response"
 author: "Steve Elston"
-date: "03/28/2021"
+date: "10/27/2022"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -17,18 +17,268 @@ matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
 ```
 
+
+
+## Review    
+
+Linear models are a flexible and widely used class of models   
+
+- Fit model coefficients by **least squares** estimation   
+
+- Can use many types of predictor variables   
+
+- We prefer the simplest model that does a reasonable job   
+   - The principle of **Occam's razor**  
+
+- Must consider the **bias-variance trade-off**  
+
+
+## Review   
+
+When evaluating any machine learning model consider **all evaluation methods available**    
+
+- No one method best all of the time    
+  - Homoskedastic Normally distributed residuals   
+  - Reasonable values $R^2$, RMSE, etc
+  - Are the model coefficients all significant? 
+
+- **Different methods highlight different problems** with your model     
+
+- Don't forget to check that the **model must make sense** for your application! 
+
+
+## Review      
+
+ Representation of machine learning models      
+ 
+ - The key representation is the model matrix      
+    - Column of 1s for intercept      
+    - Columns of feature or predictor values   
+ 
+ $$
+A = 
+\begin{bmatrix}
+1, x_{1,1}, x_{1,2}, \ldots, x_{1,p}\\
+1, x_{2,1}, x_{2,2}, \ldots, x_{2,p}\\
+1, x_{3,1}, x_{3,2}, \ldots, x_{3,p}\\
+\vdots,\ \vdots,\ \vdots,\ \vdots,\ \vdots\\
+1, x_{n,1}, x_{n,2}, \ldots, x_{n,p}
+\end{bmatrix}
+$$
+ 
+ - There are two standards for signatures of ML functions    
+    - A model matrix $X$ (exogenous-features) and label array $Y$ (dependent-endogenous) - Scikit-learn and base Statsmodels   
+    - A data frame with all features (predictors) and label (dependent) columns plus a model formula - Statsmodels formula and R   
+
+
+
+## Review    
+
+There are a number of assumptions in linear models that you overlook at your peril! 
+
+- The feature or predictor variables should be **independent** of one another      
+   - This is rarely true in practice   
+   - **Multi-collinearity** between features makes the model **under-determined**   
+
+- We assume that numeric features or predictors have **zero mean** and about the **same scale**      
+   - We do not want to bias the estimation of regression coefficients with predictors that do not have a 0 mean   
+   - We do not want to have predictors with a large numeric range dominate training   
+   - Example: income is in the range of 10s or 100s of thousands and age is in the range of 10s, but apriori income is no more important than age as a predictor  
+   
+- Values of each predictor or feature should be iid      
+   - If variance changes with sample, the optimal value of the coefficient could not be constant    
+   - If there **serial correlation** in the predictor values, the iid assumption is violated - but can account for this such as in time series models   
+   
+
+
+## Review       
+
+Scaling of features is required for many machine learning models      
+
+- Several commonly used approaches      
+   - **Z-score** scaling results in features with zero mean and unit variance    
+   - Use Z-score scaling for features approximately normally distributed   
+   - **Min-max** scaling transforms feature values to range 0-1   
+   - Use min-max scaling for features with truncated range of values   
+
+- Effect on model coefficients   
+   - Scaling changes model coefficients by the scale factor applied   
+   - Can re-scale (unscale) model coefficients before processing unknown cases    
+   - Or use **same scaling** for unknown feature values   
+   
+- When coding categorical variables as binary dummy variables no need to scale - already in range [0-1]    
+
+
 ## Introduction  
 
+- Working with categorical variables    
+   - One-hot encoding    
+   - Working with contrasts    
+   - Effects and adjustments    
+
 - Building models with nonlinear or non-Normal response   
+  - Use generalized linear model for nonlinear response          
+  - Link function transforms to nonlinear model to linear model       
+  - Evaluating Binomial response models   
+  - Compare model performance with deviance   
+  - Poisson regression   
 
-- Use generalized linear model for nonlinear response          
 
-- Link function transforms to nonlinear model to linear model       
+## Working with Categorical Variables 
 
-- Evaluating Binomial response models   
+Linear models, like nearly all machine learning models, use numeric features    
 
-- Compare model performance with deviance   
+- How can categorical variables be used in linear models?    
 
+- Need to transform categories to numeric variables with **one hot encoding**      
+   - Each category becomes a binary **dummy variable**, encoded [0,1]  
+   - Only one dummy variable has nonzero value - encodes the category   
+   - n categories represented by n-1 dummy variables; all 0s encodes one level    
+   
+- Binary variables are an exception    
+   - Represent with a single binary variable. [0,1] values
+
+
+## Working with Categorical Variables  
+
+Example: Consider a data set with categorical variables
+
+```{python, echo=FALSE}
+import pandas as pd
+import numpy as np
+import numpy.random as nr
+import matplotlib.pyplot as plt
+import seaborn as sns
+import statsmodels.api as sm
+import scipy.stats as ss  
+from math import atan
+
+test_scores = pd.read_csv('../data/hsb2.csv')#, index_col=0)
+test_scores.head(10)
+```
+
+## Working with Categorical Variables  
+
+Example: split the data into train and test subsets    
+
+```{python}
+nr.seed(2345)
+msk = nr.choice(test_scores.index, size = 120, replace=False)
+test_scores_train = test_scores.iloc[msk,:]
+print(test_scores_train.shape)
+test_scores_test = test_scores.drop(msk, axis=0) 
+print(test_scores_test.shape)
+```
+
+
+
+
+## Working with Categorical Variables  
+
+Example: We can encode a categorical variable with the Python patsy package to get the X (model) and Y(label) arrays:     
+
+```{python}
+from patsy import dmatrices
+Y, X = dmatrices("socst ~ C(ses, levels=[1,2,3])", data=test_scores)
+print(X[:5])
+print(Y[:5])
+```
+
+
+## Working with Categorical Variables  
+
+Example: A simple linear model with one categorical variable       
+
+```{python}
+import statsmodels.formula.api as smf 
+linear_model = smf.ols("socst ~ C(ses)", data=test_scores_train).fit()
+linear_model.summary()
+```
+
+
+## Working with Categorical Variables  
+
+Wait! What happened to the coefficient for the first level of ses?  
+
+- The intercept is the **mean response** of the first level     
+
+- The other coefficients are **contrasted** with respect to the mean of the first level.       
+- Consider the following possible ways we can encode responses to a categorical variable - often called a **treatment**      
+   - For $n$ treatments, there are mean responses $[ \mu_1, \mu_2, \ldots, \mu_n ]$   
+   - The alternative encoding is a treatment with intercept, $I$, at $n - 1$ **contrasts**, $[ I, c_1, \ldots, c_{n-1}]$    
+   
+- The means and contrasts are related:    
+   
+$$\begin{bmatrix}
+I\\
+c_2\\
+\vdots\\
+c_n
+\end{bmatrix} = 
+\begin{bmatrix}
+\mu_1\\
+\mu_2 - \mu_1\\
+\vdots\\
+\mu_n - \mu_1
+\end{bmatrix}$$   
+
+## Working with Categorical Variables    
+
+In a linear model we can sometimes relate the coefficient values to an effect size    
+
+- Start with $n$ treatments $[t_1, t_2, \ldots, t_n ]$ with effect sizes, $[e_1, e_2, \ldots, e_n ]$     
+
+- With **no intercept term** the means represent the effect sizes:   
+
+$$\begin{bmatrix}
+e_1\\
+e_2\\
+\vdots\\
+e_n
+\end{bmatrix} = 
+\begin{bmatrix}
+\mu_1\\
+\mu_2\\
+\vdots\\
+\mu_n
+\end{bmatrix}$$  
+
+- With intercept term compute effect sizes using contrasts:  
+
+$$\begin{bmatrix}
+e_1\\
+e_2\\
+\vdots\\
+e_n
+\end{bmatrix} = 
+\begin{bmatrix}
+I\\
+I + c_1\\
+\vdots\\
+I + c_{n-1}
+\end{bmatrix}$$   
+ 
+ 
+## Working with Categorical Variables    
+
+In a linear model we can sometimes relate the coefficient values to an effect size    
+
+- Assumes the treatments are orthogonal    
+   - In other words, applied on at a time    
+   - e.g. a case can only be in one category     
+   
+- Assumes that the model coefficients are statistically independent    
+   - Coefficients are dependent in overfit model    
+   
+- Often need to **adjust** for other effects    
+   - Other treatments   
+   - Levels of other categorical variables    
+   - Use **partial slope** of continuous variables  
+   
+- In other words **apply** with care!    
+   - Don't over-interpret your model   
+   - Conditions in real world hard to verify, particularly for observational data   
+ 
 
 ## Models with Nonlinear Response    
 
