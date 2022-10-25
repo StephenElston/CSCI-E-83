@@ -342,27 +342,27 @@ Start with a regression model for binary classification - **logistic regression*
 $$y \sim Bi(n, \theta)$$
 
 - But finding the best fit value of parameter $\theta$ directly is a nonlinear problem!   
-- Instead, define a **link function**, known as the **logit function** for parameter $\lambda$     
+- Instead, define a **link function**, known as the **logit function** for **log likelihood ratio** $\lambda$     
 
 $$\lambda = log \Bigg\{ \frac{\theta}{1-\theta} \Bigg\}$$
 
-- After a bit of algebra we find the exponential relationship with $y$
+- After a bit of algebra we find the exponential relationship with $y$, the **Binary response**:
 
-$$y = n\ log(1+ e^\lambda)$$
+$$y = n\ log(1+ e^{-\lambda})$$
 
 
 ## The Generalized Linear Model  
 
 Formulate a linear regression problem using the link function      
 
-$$\lambda = log \Bigg\{ \frac{\theta}{1-\theta} \Bigg\} = X \vec{b}$$    
-for model matrix $X$ and coefficient vector $\vec{b}$
+$$\lambda = log \Bigg\{ \frac{\theta}{1-\theta} \Bigg\} = A \vec{b}$$    
+for model matrix $A$ and coefficient vector $\vec{b}$
 
-- Given estimate of $\lambda$, compute $\theta$    
+- Given estimate of $\lambda$, the **log likelihood ratio**, compute $\theta$    
 
-$$\theta = \frac{1}{1 + e^\lambda} = \frac{1}{1 + e^{X \vec{b}}}$$
+$$\theta = \frac{1}{(1 + e^{-\lambda})} = \frac{1}{1 + e^{-A \vec{b}}}$$
 
-The **inverse link function** for Binomial response!
+The **link function** for Binomial response!
 
 
 ## The Generalized Linear Model  
@@ -371,18 +371,18 @@ Consider the example for a single feature, $x$
 
 - The linear model has only slope and intercept, $[ \beta_0, \beta_1]$ 
 
-$$\lambda_i = log \Bigg\{ \frac{\theta_i}{1-\theta_i} \Bigg\} = \beta_0 + \beta_1 x_i$$      
+$$\lambda_i = -log \Bigg\{ \frac{\theta_i}{1-\theta_i} \Bigg\} = \beta_0 + \beta_1 x_i$$      
 
 and    
 
-$$\theta_i = \frac{1}{1 + e^{\beta_0 + \beta_1 x_i}}$$
+$$\theta_i = \frac{1}{1 + e^{-(\beta_0 + \beta_1 x_i)}}$$
 
 
 ## Logistic Regression Model
 
 What does the transformation function look like?    
 
-$$y = \frac{1}{1 + e^\lambda}$$
+$$y = \frac{1}{1 + e^{-\lambda}}$$
 
 ```{python, echo=FALSE}
 import pandas as pd
@@ -413,7 +413,7 @@ log_fun_vectorized = np.vectorize(log_fun)
 
 log_y = log_fun_vectorized(x_seq)
 
-fig, ax = plt.subplots(figsize=(4,3))
+fig, ax = plt.subplots(figsize=(6,4))
 ax.plot(x_seq, log_y)
 ax.set_title('Standard Logistic Function')
 ax.set_xlabel('x')
@@ -424,7 +424,7 @@ plt.show()
 
 - The response is bound in the range $[0,1]$
 
-- We say the logistic transformation **squashes** the linear response $\lambda =X \vec{b}$ to binary, $[0,1]$   
+- We say the logistic transformation **squashes** the linear response $\lambda =A \vec{b}$ to binary, $[0,1]$   
 
 - Can set a **decision threshold** for binary response    
    - Default $= 0.5$
