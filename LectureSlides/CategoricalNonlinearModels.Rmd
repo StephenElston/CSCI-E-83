@@ -318,7 +318,6 @@ The **generalized linear model (GLM)** is a framework for nonlinear response mod
 
 Link functions are available for many distributions      
 
-
 - Supported in [statsmodels](https://www.statsmodels.org/stable/glm.html)        
 
 - Supported in [Scikit-Learn](https://scikit-learn.org/stable/modules/linear_model.html#generalized-linear-regression)     
@@ -332,57 +331,58 @@ Link functions are available for many distributions
    - Negative Binomial   
    - Gamma   
    - Tweedie   
-
+   
+   
 ## The Generalized Linear Model   
 
-Start with a regression model for binary classification - **logistic regression**   
+Construct a generalized linear model using a **Binomial distribution**    
 
-- Use Binomial distribution to model $y$ successes in $n$ trials    
+- Commonly known as [**logistic regression**](https://en.wikipedia.org/wiki/Logistic_regression)      
 
-$$y \sim Bi(n, \theta)$$
+- Logistic regression widely used as a classification model     
 
-- But finding the best fit value of parameter $\theta$ directly is a nonlinear problem!   
-- Instead, define a **link function**, known as the **logit function** for **log likelihood ratio** $\lambda$     
+- Logistic regression is linear model, with a binary response or label values, `{False, True}` or `{0, 1}`      
 
-$$\lambda = log \Bigg\{ \frac{\theta}{1-\theta} \Bigg\}$$
-
-- After a bit of algebra we find the exponential relationship with $y$, the **Binary response**:
-
-$$y = n\ log(1+ e^{-\lambda})$$
+- Response computed as a log likelihood, leading to a Binomial distributed response     
 
 
-## The Generalized Linear Model  
+## The Generalized Linear Model    
 
-Formulate a linear regression problem using the link function      
+Construct logistic regression as a GLM       
 
-$$\lambda = log \Bigg\{ \frac{\theta}{1-\theta} \Bigg\} = A \vec{b}$$    
-for model matrix $A$ and coefficient vector $\vec{b}$
+- Start with a model for the log-odds of response $1$ vs. $0$      
+  - Probability of success, or $y_i = 1$, $p_i$      
+  - Independent variable vector $x_i$   
+  - Model parameter vector, $\mathbf{\beta}$     
+  - Binary response, $y_i = [0,1] \sim Bin(p_i)$       
+  
+- Define the link function, know as the or **logit function**:   
 
-- Given estimate of $\lambda$, the **log likelihood ratio**, compute $\theta$    
+$$logit(\mathtt{E}[y_i|x_i]) = logit(p(x_i)) = ln \Big(\frac{p(x_i)}{1-p(x_i)} \Big) =\beta_0 + \mathbf{\beta} 𝑥_i$$
 
-$$\theta = \frac{1}{(1 + e^{-\lambda})} = \frac{1}{1 + e^{-A \vec{b}}}$$
+## The Generalized Linear Model      
 
-The **link function** for Binomial response!
+Response of linear model is transformed to the binomially distributed random variable through the **inverse link function**      
 
+- Known as the **inverse logit function**, or **logistic function**       
 
-## The Generalized Linear Model  
+- After some algebra we can arrive at:   
 
-Consider the example for a single feature, $x$     
+\begin{align}
+\lambda_i &= \beta_0 + \mathbf{\beta} 𝑥_i\\
+p_i = \mathtt{E}[y_i|x_i] &= f(\lambda_i) = logit^{-1}(\lambda_i)  \\
+p_i = f(x_i) &= logit^{-1}(\lambda_i) = \frac{1}{1 + e^{-\lambda_i}} = \frac{1}{1 + e^{-(\beta_0 + \mathbf{\beta} 𝑥_i)}}
+\end{align}
 
-- The linear model has only slope and intercept, $[ \beta_0, \beta_1]$ 
-
-$$\lambda_i = -log \Bigg\{ \frac{\theta_i}{1-\theta_i} \Bigg\} = \beta_0 + \beta_1 x_i$$      
-
-and    
-
-$$\theta_i = \frac{1}{1 + e^{-(\beta_0 + \beta_1 x_i)}}$$
 
 
 ## Logistic Regression Model
 
 What does the transformation function look like?    
 
-$$y = \frac{1}{1 + e^{-\lambda}}$$
+- Consider a simple 1-dimensional case
+
+$$y_i = \frac{1}{1 + e^{-x_i}}$$
 
 ```{python, echo=FALSE}
 import pandas as pd
@@ -475,17 +475,10 @@ How well can we predict the type of school given the test scores?
 ```{python}
 ## Prep the data
 test_scores['schtyp'] = np.subtract(test_scores['schtyp'], 1)
-for col in ['read', 'write', 'math', 'science', 'socst']:
-    test_scores[col] = np.divide(np.subtract(test_scores[col], np.mean(test_scores[col])), np.std(test_scores[col]))
 
 ## Fit the model
 formula = 'schtyp ~ math'
 logistic_reg_model = smf.glm(formula=formula, data=test_scores, family=sm.families.Binomial()).fit()
-
-## score the results 
-threshold=0.18
-test_scores['predicted'] = logistic_reg_model.predict()
-test_scores['score'] = [1 if x>threshold else 0 for x in test_scores['predicted']]
 
 print(logistic_reg_model.summary())
 ```
@@ -496,6 +489,11 @@ print(logistic_reg_model.summary())
 The data frame now looks like this with the predicted probability and the binary scores:
 
 ```{python}
+## score the results 
+threshold=0.18
+test_scores['predicted'] = logistic_reg_model.predict()
+test_scores['score'] = [1 if x>threshold else 0 for x in test_scores['predicted']]
+
 test_scores.head(20)
 ```
 
@@ -544,81 +542,219 @@ ax.axvline(0.18, color='red', linestyle='dotted')
 
 ## What is Deviance?
 
-The significance of a GLM is expressed in terms of **deviance**     
+The significance of the GLM is expressed in terms of a statistic called **deviance**      
 
-- Deviance can be challenging to understand what deviance really means      
+- It can be challenging to understand what deviance really means      
 
-- Formally, deviance is the expected value of the ratio of one probability density function, $f_1(y)$ to a second probability density function, $f_2(y)$:
+- To further complicate the problem there are several commonly used forms of deviance
 
-$$D\big[f_1(y),f_1(y) \Big] = 2 \int_y f_1(y) log \Bigg\{ \frac{f_1(y)}{f_2(y)} \Bigg\} dy$$
+ - OLS regression models are often evaluated based on variance ratios, such as the $R^2$ metric, or error metrics like RMSE       
+ 
+ - Given a nonlinear mapping between the linear model and the response, these methods are not suitable      
+ 
 
-If $f_1(y) \rightarrow f_1(y)$, then:
+## What is Deviance?
+ 
+ Focus on one the simplest and easiest to understand forms, known as **null deviance**    
+ 
+ - Null deviance is 2 times the square of the log odds ratio between a model and a null model      
+ - Intuitively, the null model is informed guessing     
+ 
+ - Deviance is a measure of how much the model improves accuracy beyond guessing
+ 
+## What is Deviance? 
 
-$$log \Bigg\{
-\frac{f_1(y)}{f_2(y)} \Bigg\} \rightarrow log(1) \rightarrow 0$$
+The deviance statistic is $\chi^2$ distributed     
 
-And, $D\big[f_1(y),f_1(y) \Big] \rightarrow 0$
+- Can apply a significance test on a model    
+
+- Model with small deviance is little better that informed guessing      
+  - Small $\chi^2$     
+  - Not significant improvement
+  
+- Model with large deviance has a large $\chi^2$      
+  - Significant improvement in accuracy     
 
 
 ## What is Deviance? 
 
-Deviance is a measure of the divergence between two distributions   
+To understand binomial deviance, start with the expected value of the binomial log-likelihood:  
 
-- Consider an easy to understand form of deviance for the Normal distribution    
-   
-- Model with Normally distributed response  
-   - The mean squared error of a model is the deviance      
-   - If two distribution are identical the deviance is 0    
+$$\hat{l}(k, n | \pi) = log \binom{n}{k} + k\ log(\pi) + (n-k)\ log(1-\pi)$$
+
+- Calculate the binomial probability:  
+
+$$p_\phi = \bar{y} = \frac{k}{n}$$
+
+For the null model we set $\beta_0 = p_\phi$, so the logistic function for a null model is:    
+
+$$f_{\phi}(\hat{y}) = \frac{1}{1 + e^{-p_{\phi}}} = \frac{1}{1 + e^{-\beta_0}}$$
+
+And with expected log-likelihood:   
+
+$$\hat{l}_{phi}(k, n | p_{\phi}) = log \binom{n}{k} + k\ log(p_{\phi}) + (n-k)\ log(1-p_{\phi})$$
 
 
+## What is Deviance? 
 
-## What is Deviance?
 
-Deviance of a model can be evaluated using deviance with respect to a saturated model  
+Gain intuitive understand of the behavior of the null model by example     
+
+- Consider the case where half the values of the response, $y$, are 1s     
+
+- $p_\phi = n/2 = 0.5$       
+
+- For each value of $x_i$, model randomly selects a 1 or a 0 response with probability of 0.5     
+- This model is random guessing with accuracy of 0.5    
+
+- In other words, the null model is no better in terms of predictive power than just saying that all values of $y$ are either 0 or all values are 1.    
+
+
+## What is Deviance? 
+
+Form of null deviance of a linear model
+
+$$logit_{\phi}(p(x_i)) = \beta_0$$  
+
+- Deviance is log of the square expected likelihood ratio:    
 
 \begin{align}
-D(y,\hat{\mu}) &= 2 \Big( log \big( p(y | \hat{\theta}_{S}) \big) - log \big( p(y | \hat{\theta}_{0}) \big) \Big) \\
-&= 2 \Big( \mathcal{l}(y | \hat{\theta}_{S})  -  \mathcal{l}(y | \hat{\theta}_{0})  \Big)
+D(\beta_0 + \mathbf{\beta} 𝑥_i) &= ln \Big( \frac{\hat{L}^2}{\hat{L}_{\phi}^2} \Big) \\
+&= 2 \big( \hat{\mathcal{l}}  -  \hat{\mathcal{l}}_{\phi}  \big)
 \end{align}
 
-where,    
-- $\mathcal{l}(y | \hat{\theta}) \big)$ is the log likelihood of model with estimated parameters, $\hat{\theta}$]          
-- $\hat{\theta}_{S}$ are parameters of a **saturated** model, $M_S$, with a parameter for each observation    
-- Saturated model has the best possible fit to the training data        
-- $\hat{\theta}_{0} parameters of model, $M_0$, to evaluate.   
+- Expected null log-likelihood, $\hat{\mathcal{l}}_{\phi}$, is fixed by the observed response values     
+
+-Therefore, the better the model, and higher the likelihood, $\hat{\mathcal{l}}$    
+  - Higher deviance and therefore the value of $\chi^2$    
+  - Model with large $\chi^2$ has greater significance and accuracy of predictions    
 
 
+## What is Deviance? 
 
-## What is Deviance?
+What are some key properties of null deviance?    
+
+- Recall that log-likelihood is a negative number   
+  - Higher log-likelihood has smaller negative magnitude    
+  - Log-likelihood of null model has large negative magnitude       
+  
+- Deviance $\ge 0$ always     
+  - If model is no better than null model, $\mathcal{l} = \mathcal{l}_{\phi},\ D = 0$   
+  - For model with greater predictive power, $\mathcal{l} \gt \mathcal{l}_{\phi},\ D \gt 0$
 
 
-Fortunately, we can use the **deviance ratio** to compare models      
+## What is Deviance? 
 
-- Trick is to recognize that the log likelihood of the saturated model, $\mathcal{l}(y | \hat{\theta}_{0})$, is a constant:
 
-$$D(y,\hat{\mu}) = Constant + 2 \mathcal{l}(y | \hat{\theta}_{0})$$
+Deviance concepts discussed here can be applied to any GLM   
 
-- Now the deviance ratio to compare two models, $M_1$ and $M_0$ is:   
+- In some cases, deviance can be used directly     
+
+- In other cases, log-likelihood ratio is used directly for model evaluation and significance    
+
+
+## Solving Maximum Likelihood Problem   
+
+We have investigated methods for finding maximum likelihood solutions at large scale     
+
+- ML algorithms are employed routinely to logistic regression problems on a massive scale    
+
+- Variations of the stochastic gradient descent (SGD) algorithms     
+
+- Quasi-Newton's methods like the limited memory Broyden–Fletcher–Goldfarb–Shanno (l-BFGS) algorithm  
+
+
+## Poisson Regression as GLM     
+
+Poisson regression is example of a GLM     
+
+- Poisson regression is example of nonlinear response model   
+
+- Recall, the Poisson distribution has an exponential form with a single parameter, $\lambda$   
+- Parameter, $\lambda$, is the expected arrival rate of the process    
+
+- Predictions, $y_i$, given the observations, $x_i$ and the model parameter, $\lambda_i$:         
+
+$$log \big[ \mathtt{E}(y_i | x_i) \big] = x \lambda_i \Longleftrightarrow \mathtt{E}(y_i | x_i) = e^{x \lambda_i }$$    
+
+ - Above is the Poisson **link function** and **inverse link function**    
+ 
+
+## Poisson Regression as GLM     
+
+Extend relationship using a linear model for $\lambda$      
+
+- Expected arrival rate changes with the independent variable    
+
+- Example, linear model with intercept     
+  - $\beta_0$, and $p$ dimensional slope parameter vector, $\vec{\beta}$     
+  - Estimate of $\lambda_i$, for a $p$ dimensional observation vector $\mathbf{x}_i$
+
+$$log(\lambda_i) = \beta_0 + \mathbf{x}_i \vec{\beta} \Longleftrightarrow \lambda_i = e^{(\beta_0 + \mathbf{x}_i $\vec{\beta})}$$
+
+
+## Poisson Regression as GLM  
+
+Use formulation of the Poisson distribution     
+
+- Link function    
+
+$$log \big[ \mathtt{E}(y_i |x_i) \big] = x_i \lambda_i$$    
+
+- Link function $\Longleftrightarrow$ Inverse link function:   
 
 \begin{align}
-D(\hat{\theta}_1,\hat{\theta}_0) &= \frac{Constant + 2 \mathcal{l}(y | \hat{\theta}_{0})}{Constant + 2 \mathcal{l}(y | \hat{\theta}_{1})} \\ 
-&= Constant + 2 \mathcal{l}(y | \hat{\theta}_{0}) - Constant - 2 \mathcal{l}(y | \hat{\theta}_{1}) \\
-&= 2 \mathcal{l}(y | \hat{\theta}_{0}) - 2 \mathcal{l}(y | \hat{\theta}_{1})
+log \big[ \mathtt{E}(y_i |x_i) \big] = x_i \lambda_i &\Longleftrightarrow \mathtt{E}(y_i | x_i) = e^{x_i \lambda_i } \\
+log \big[ \mathtt{E}(y_i |x_i) \big] = \beta_0 + \mathbf{x}_i \vec{\beta} &\Longleftrightarrow \mathtt{E}(y_i | x_i) = e^{\beta_0 + \mathbf{x}_i \vec{\beta} }
 \end{align}
 
 
+## Poisson Regression Example
 
-## What is Deviance?
+Data for number of awards for students by program and math score   
 
-Can compare with **null model** with **null deviance**     
+- Count data - suitable for Poisson model       
 
- - Unfortunately, this quantity is usually just called, deviance, but is actually null deviance  
-- For large samples null deviance is Chi Squared distributed     
+- Note exponential decrease in counts with math score and program      
 
-- Test statistical significance of the model against the null model using the Chi Squared test   
-- Depends on  Wilk's theorem, and is referred to as **Wilk's test**. 
+```{python, echo=FALSE}
+program_codes = {1:'General', 2:'Academic', 3:'Vocational'}
+award_scores = pd.read_csv("https://stats.idre.ucla.edu/stat/data/poisson_sim.csv")
+award_scores.loc[:,'prog'] = award_scores.loc[:,'prog'].replace(program_codes)
 
-- Can comparing models with ratio of null deviance as well  
+fig,ax = plt.subplots(figsize=(8,6))
+sns.countplot(data=award_scores, x='num_awards',hue='prog', ax=ax);
+plt.show();
+```
+
+
+
+## Poisson Regression Example
+
+Fit a model and examine result   
+
+```{python, echo=FALSE}
+formula = 'num_awards ~ math + C(prog)'
+poisson_glm = smf.poisson(formula, data=award_scores).fit()
+poisson_glm.summary()
+```
+
+## Poisson Regression Example
+
+Maximum likelihood regression lines for counts with Poisson model       
+
+```{python, echo=FALSE}
+award_scores['predicted'] = poisson_glm.predict(award_scores)
+
+fig,ax = plt.subplots(figsize=(8,8))
+sns.scatterplot(x='math', y='num_awards', hue='prog', data=award_scores, ax=ax);
+sns.lineplot(x='math', y='predicted', hue='prog', data=award_scores, ax=ax, legend=False);
+ax.set_title('Actual vs. predicted awards by program');
+ax.set_xlabel('Math score');
+ax.set_ylabel('Number of awards');
+plt.show();
+```
+
 
 
 ## Summary  
