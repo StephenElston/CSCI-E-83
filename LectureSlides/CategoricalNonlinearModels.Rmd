@@ -335,6 +335,31 @@ Link functions are available for many distributions
    
 ## The Generalized Linear Model   
 
+General form for link function, $g()$, mapping response variable, $y$, observation vector, $x$, to linear model      
+
+- Given linear model $\hat{\lambda} = \beta_0 + \beta_1\ x$:
+
+$$g \big( \mathtt{E}[y_i|x_i] \big)  = \hat{\lambda} = \beta_0 + \beta_1\ x$$
+
+- To find the value of the response variable we apply the inverse link function:        
+
+$$\mathtt{E}[y_i|x_i]   = g^{-1} \big( \hat{\lambda} \big) = g^{-1} \big( \beta_0 + \beta_1\ x \big) $$
+
+
+## The Generalized Linear Model  
+
+OLS has Normal response    
+
+- What is the link function    
+
+- Link function for OLS is just unity, or $1$   
+
+- Output of linear model directly maps to Normally distributed response    
+
+$$\beta_0 + \beta_1\ x \sim N(\beta_0 + \beta_1\ x, \sigma)$$
+   
+## The Logistic Regression Model   
+
 Construct a generalized linear model using a **Binomial distribution**    
 
 - Commonly known as [**logistic regression**](https://en.wikipedia.org/wiki/Logistic_regression)      
@@ -346,7 +371,7 @@ Construct a generalized linear model using a **Binomial distribution**
 - Response computed as a log likelihood, leading to a Binomial distributed response     
 
 
-## The Generalized Linear Model    
+## The Logistic Regression Model    
 
 Construct logistic regression as a GLM       
 
@@ -360,7 +385,7 @@ Construct logistic regression as a GLM
 
 $$logit(\mathtt{E}[y_i|x_i]) = logit(p(x_i)) = ln \Big(\frac{p(x_i)}{1-p(x_i)} \Big) =\beta_0 + \mathbf{\beta} 𝑥_i$$
 
-## The Generalized Linear Model      
+## The Logistic Regression Model      
 
 Response of linear model is transformed to the binomially distributed random variable through the **inverse link function**      
 

@@ -772,7 +772,7 @@ package to get the X (model) and Y(label) arrays:</p>
 ## Model:                            OLS   Adj. R-squared:                  0.082
 ## Method:                 Least Squares   F-statistic:                     6.285
 ## Date:                Thu, 27 Oct 2022   Prob (F-statistic):            0.00255
-## Time:                        09:21:56   Log-Likelihood:                -446.60
+## Time:                        10:36:30   Log-Likelihood:                -446.60
 ## No. Observations:                 120   AIC:                             899.2
 ## Df Residuals:                     117   BIC:                             907.6
 ## Df Model:                           2                                         
@@ -977,6 +977,35 @@ distribution</li>
 </div>
 <div id="the-generalized-linear-model-1" class="slide section level2">
 <h1>The Generalized Linear Model</h1>
+<p>General form for link function, <span class="math inline">\(g()\)</span>, mapping response variable, <span class="math inline">\(y\)</span>, observation vector, <span class="math inline">\(x\)</span>, to linear model</p>
+<ul>
+<li>Given linear model <span class="math inline">\(\hat{\lambda} =
+\beta_0 + \beta_1\ x\)</span>:</li>
+</ul>
+<p><span class="math display">\[g \big( \mathtt{E}[y_i|x_i] \big)  =
+\hat{\lambda} = \beta_0 + \beta_1\ x\]</span></p>
+<ul>
+<li>To find the value of the response variable we apply the inverse link
+function:</li>
+</ul>
+<p><span class="math display">\[\mathtt{E}[y_i|x_i]   = g^{-1} \big(
+\hat{\lambda} \big) = g^{-1} \big( \beta_0 + \beta_1\ x \big)
+\]</span></p>
+</div>
+<div id="the-generalized-linear-model-2" class="slide section level2">
+<h1>The Generalized Linear Model</h1>
+<p>OLS has Normal response</p>
+<ul>
+<li><p>What is the link function</p></li>
+<li><p>Link function for OLS is just unity, or <span class="math inline">\(1\)</span></p></li>
+<li><p>Output of linear model directly maps to Normally distributed
+response</p></li>
+</ul>
+<p><span class="math display">\[\beta_0 + \beta_1\ x \sim N(\beta_0 +
+\beta_1\ x, \sigma)\]</span></p>
+</div>
+<div id="the-logistic-regression-model" class="slide section level2">
+<h1>The Logistic Regression Model</h1>
 <p>Construct a generalized linear model using a <strong>Binomial
 distribution</strong></p>
 <ul>
@@ -990,8 +1019,8 @@ label values, <code>{False, True}</code> or <code>{0, 1}</code></p></li>
 distributed response</p></li>
 </ul>
 </div>
-<div id="the-generalized-linear-model-2" class="slide section level2">
-<h1>The Generalized Linear Model</h1>
+<div id="the-logistic-regression-model-1" class="slide section level2">
+<h1>The Logistic Regression Model</h1>
 <p>Construct logistic regression as a GLM</p>
 <ul>
 <li>Start with a model for the log-odds of response <span class="math inline">\(1\)</span> vs. <span class="math inline">\(0\)</span>
@@ -1013,8 +1042,8 @@ function</strong>:</li>
 logit(p(x_i)) = ln \Big(\frac{p(x_i)}{1-p(x_i)} \Big) =\beta_0 +
 \mathbf{\beta} 𝑥_i\]</span></p>
 </div>
-<div id="the-generalized-linear-model-3" class="slide section level2">
-<h1>The Generalized Linear Model</h1>
+<div id="the-logistic-regression-model-2" class="slide section level2">
+<h1>The Logistic Regression Model</h1>
 <p>Response of linear model is transformed to the binomially distributed
 random variable through the <strong>inverse link function</strong></p>
 <ul>
@@ -1137,7 +1166,7 @@ higher precision, more false positives</li>
 ## Link Function:                  Logit   Scale:                          1.0000
 ## Method:                          IRLS   Log-Likelihood:                -86.978
 ## Date:                Thu, 27 Oct 2022   Deviance:                       173.96
-## Time:                        09:21:57   Pearson chi2:                     199.
+## Time:                        10:36:30   Pearson chi2:                     199.
 ## No. Iterations:                     4   Pseudo R-squ. (CS):           0.009511
 ## Covariance Type:            nonrobust                                         
 ## ==============================================================================
@@ -1464,7 +1493,7 @@ program</p></li>
 ## Model:                        Poisson   Df Residuals:                      196
 ## Method:                           MLE   Df Model:                            3
 ## Date:                Thu, 27 Oct 2022   Pseudo R-squ.:                  0.2118
-## Time:                        09:21:59   Log-Likelihood:                -182.75
+## Time:                        10:36:33   Log-Likelihood:                -182.75
 ## converged:                       True   LL-Null:                       -231.86
 ## Covariance Type:            nonrobust   LLR p-value:                 3.747e-21
 ## =========================================================================================
