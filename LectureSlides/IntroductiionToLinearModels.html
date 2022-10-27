@@ -1286,8 +1286,8 @@ statistics</p>
 ## Dep. Variable:                      y   R-squared:                       0.682
 ## Model:                            OLS   Adj. R-squared:                  0.676
 ## Method:                 Least Squares   F-statistic:                     103.1
-## Date:                Thu, 20 Oct 2022   Prob (F-statistic):           1.52e-13
-## Time:                        10:12:44   Log-Likelihood:                -99.565
+## Date:                Thu, 27 Oct 2022   Prob (F-statistic):           1.52e-13
+## Time:                        09:27:07   Log-Likelihood:                -99.565
 ## No. Observations:                  50   AIC:                             203.1
 ## Df Residuals:                      48   BIC:                             207.0
 ## Df Model:                           1                                         
@@ -1315,8 +1315,8 @@ statistics</p>
 <li>The <strong>root mean square error (RMSE)</strong> is a measure of
 the mean of the squared residuals</li>
 </ul>
-<p><span class="math display">\[RMSE =  \frac{1}{n}\sqrt{\Sigma^n_{i-1}
-(y_i - \hat{y_i})^2} = \frac{\sqrt{SSR}}{n}\]</span></p>
+<p><span class="math display">\[RMSE =  \sqrt{\frac{\Sigma^n_{i-1} (y_i
+- \hat{y_i})^2}{n}} = \sqrt{\frac{SSR}{n}}\]</span></p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&#39;RMSE = </span><span class="sc">{0:6.2}</span><span class="st">&#39;</span>.<span class="bu">format</span>(sqrt(np.<span class="bu">sum</span>(np.square(sim_data.resids)))<span class="op">/</span> <span class="bu">float</span>(sim_data.shape[<span class="dv">0</span>])))</span></code></pre></div>
 <pre><code>## RMSE =   0.25</code></pre>
 <ul>
@@ -1474,8 +1474,8 @@ terms</p>
 ## Dep. Variable:                      y   R-squared:                       0.106
 ## Model:                            OLS   Adj. R-squared:                  0.087
 ## Method:                 Least Squares   F-statistic:                     5.684
-## Date:                Thu, 20 Oct 2022   Prob (F-statistic):             0.0211
-## Time:                        10:12:46   Log-Likelihood:                -191.24
+## Date:                Thu, 27 Oct 2022   Prob (F-statistic):             0.0211
+## Time:                        09:27:09   Log-Likelihood:                -191.24
 ## No. Observations:                  50   AIC:                             386.5
 ## Df Residuals:                      48   BIC:                             390.3
 ## Df Model:                           1                                         
@@ -1530,8 +1530,8 @@ x^2\]</span></p>
 ## Dep. Variable:                      y   R-squared:                       0.330
 ## Model:                            OLS   Adj. R-squared:                  0.301
 ## Method:                 Least Squares   F-statistic:                     11.55
-## Date:                Thu, 20 Oct 2022   Prob (F-statistic):           8.29e-05
-## Time:                        10:12:47   Log-Likelihood:                -184.04
+## Date:                Thu, 27 Oct 2022   Prob (F-statistic):           8.29e-05
+## Time:                        09:27:10   Log-Likelihood:                -184.04
 ## No. Observations:                  50   AIC:                             374.1
 ## Df Residuals:                      47   BIC:                             379.8
 ## Df Model:                           2                                         
@@ -1791,8 +1791,8 @@ Influence function of the Tukey’s Biweight M-estimator
 ## Norm:                          HuberT                                         
 ## Scale Est.:                       mad                                         
 ## Cov Type:                          H1                                         
-## Date:                Thu, 20 Oct 2022                                         
-## Time:                        10:12:48                                         
+## Date:                Thu, 27 Oct 2022                                         
+## Time:                        09:27:11                                         
 ## No. Iterations:                    15                                         
 ## ==============================================================================
 ##                  coef    std err          z      P&gt;|z|      [0.025      0.975]
