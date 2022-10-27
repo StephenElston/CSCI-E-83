@@ -706,7 +706,7 @@ We also can evaluate models by error metrics
 
 - The **root mean square error (RMSE)** is a measure of the mean of the squared residuals
 
-$$RMSE =  \frac{1}{n}\sqrt{\Sigma^n_{i-1} (y_i - \hat{y_i})^2} = \frac{\sqrt{SSR}}{n}$$
+$$RMSE =  \sqrt{\frac{\Sigma^n_{i-1} (y_i - \hat{y_i})^2}{n}} = \sqrt{\frac{SSR}{n}}$$
 
 ```{python}
 print('RMSE = {0:6.2}'.format(sqrt(np.sum(np.square(sim_data.resids)))/ float(sim_data.shape[0])))
