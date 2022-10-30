@@ -255,7 +255,7 @@ e_n
 I\\
 I + c_1\\
 \vdots\\
-I + c_{n-1}
+I + c_{n}
 \end{bmatrix}$$   
  
  
@@ -383,20 +383,20 @@ Construct logistic regression as a GLM
   
 - Define the link function, know as the or **logit function**:   
 
-$$logit(\mathtt{E}[y_i|x_i]) = logit(p(x_i)) = ln \Big(\frac{p(x_i)}{1-p(x_i)} \Big) =\beta_0 + \mathbf{\beta} 𝑥_i$$
+$$logit(\mathtt{E}[y_i|x_i]) = logit(p_i(x_i)) = ln \Big(\frac{p_i(x_i)}{1-p_i(x_i)} \Big) =\beta_0 + \mathbf{\beta} 𝑥_i$$
 
 ## The Logistic Regression Model      
 
 Response of linear model is transformed to the binomially distributed random variable through the **inverse link function**      
 
-- Known as the **inverse logit function**, or **logistic function**       
+- Known as the **inverse logit function**, or **logistic function**, $f(x_i)$       
 
 - After some algebra we can arrive at:   
 
 \begin{align}
 \lambda_i &= \beta_0 + \mathbf{\beta} 𝑥_i\\
-p_i = \mathtt{E}[y_i|x_i] &= f(\lambda_i) = logit^{-1}(\lambda_i)  \\
-p_i = f(x_i) &= logit^{-1}(\lambda_i) = \frac{1}{1 + e^{-\lambda_i}} = \frac{1}{1 + e^{-(\beta_0 + \mathbf{\beta} 𝑥_i)}}
+p_i(x_i) = \mathtt{E}[y_i|x_i] &= f(\lambda_i) = logit^{-1}(\lambda_i)  \\
+p_i(x_i) = f(x_i) &= logit^{-1}(\lambda_i) = \frac{1}{1 + e^{-\lambda_i}} = \frac{1}{1 + e^{-(\beta_0 + \mathbf{\beta} 𝑥_i)}}
 \end{align}
 
 
@@ -467,10 +467,10 @@ How can we evaluate a classifier's accuracy?
 
 - Organize these metrics into a **confusion matrix**      
 
-|  | Classified Positive | Classified Negative |
+|  | Classified Negative | Classified Positive |
 | ---- | :---: | :---: |
-|Positive | TP | FN |  
-|Negative | FP | TN |
+|Negative | TN | FP |  
+|Positive | FN | TP |
 
 
 
@@ -490,8 +490,8 @@ The other metrics are defined as follows:
 
 - Is a trade-off between precision and recall     
    - Consider changing the decision threshold    
-   - High threshold $\rightarrow$ higher recall, more false negatives   
-   - Low threshold $\rightarrow$ higher precision, more false positives    
+   - High threshold $\rightarrow$ higher recall, fewer false negative    
+   - Low threshold $\rightarrow$ higher precision, fewer false positives       
 
 ## Example of Logistic Regression    
 
@@ -533,13 +533,13 @@ def print_metrics(labels, scores):
     metrics = sklm.precision_recall_fscore_support(labels, scores)
     conf = sklm.confusion_matrix(labels, scores)
     print('                 Confusion matrix')
-    print('                 Score positive    Score negative')
-    print('Actual positive    %6d' % conf[0,0] + '             %5d' % conf[0,1])
-    print('Actual negative    %6d' % conf[1,0] + '             %5d' % conf[1,1])
+    print('                 Score negative    Score positive')
+    print('Actual negative    %6d' % conf[0,0] + '             %5d' % conf[0,1])
+    print('Actual postitive    %6d' % conf[1,0] + '             %5d' % conf[1,1])
     print('')
     print('Accuracy  %0.2f' % sklm.accuracy_score(labels, scores))
     print(' ')
-    print('           Positive      Negative')
+    print('           Negative      Positive')
     print('Num case   %6d' % metrics[3][0] + '        %6d' % metrics[3][1])
     print('Precision  %6.2f' % metrics[0][0] + '        %6.2f' % metrics[0][1])
     print('Recall     %6.2f' % metrics[1][0] + '        %6.2f' % metrics[1][1])
@@ -560,9 +560,10 @@ ax.set_ylabel('Cummulative probability')
 ax.axvline(0.18, color='red', linestyle='dotted')
 ```
 
+- Both CDFs are at 1.0 by about probability = 0.25 - this is a very skewed situation!   
+- CDF curves nearly the same = poor model    
 - Positive cases to the left of cut-off are Type II errors     
 - Negative cases to the right of cut-off are Type I errors   
-- Probability curves nearly the same = poor model   
 
 
 ## What is Deviance?
@@ -605,7 +606,7 @@ The deviance statistic is $\chi^2$ distributed
 
 To understand binomial deviance, start with the expected value of the binomial log-likelihood:  
 
-$$\hat{l}(k, n | \pi) = log \binom{n}{k} + k\ log(\pi) + (n-k)\ log(1-\pi)$$
+$$\hat{l}(k, n | p) = log \binom{n}{k} + k\ log(p) + (n-k)\ log(1-p)$$
 
 - Calculate the binomial probability:  
 
@@ -627,7 +628,7 @@ Gain intuitive understand of the behavior of the null model by example
 
 - Consider the case where half the values of the response, $y$, are 1s     
 
-- $p_\phi = n/2 = 0.5$       
+- $k = n/2$, so $p_\phi = n/2 = 0.5$       
 
 - For each value of $x_i$, model randomly selects a 1 or a 0 response with probability of 0.5     
 - This model is random guessing with accuracy of 0.5    
