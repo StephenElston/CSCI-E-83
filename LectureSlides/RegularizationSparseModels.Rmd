@@ -31,7 +31,11 @@ import seaborn as sns
 import statsmodels.api as sm
 import statsmodels.formula.api as smf 
 import scipy.stats as ss  
+from sklearn.model_selection import train_test_split
 from math import atan
+
+test_scores = pd.read_csv('../data/hsb2.csv')
+test_scores_train = test_scores
 
 linear_model = smf.ols("socst ~ C(ses)*C(prog)", data=test_scores_train).fit()
 linear_model.summary()
