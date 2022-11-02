@@ -1,7 +1,7 @@
 ---
-title: "LinearModelsPart2"
+title: "Regularization and Sparse Models"
 author: "Steve Elston"
-date: "10/27/2022"
+date: "11/03/2022"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -20,9 +20,9 @@ matplotlib$use("Agg", force = TRUE)
  
 ## Dealing with Overfit Models
 
-Example: We might suspect that the terms, ses and prog are significant in predicting social science test scores:  
+Example: We suspect that the terms, ses and prog are significant in predicting social science test scores:  
 
-```{python}
+```{python, echo=FALSE}
 import pandas as pd
 import numpy as np
 import numpy.random as nr
@@ -31,14 +31,23 @@ import seaborn as sns
 import statsmodels.api as sm
 import statsmodels.formula.api as smf 
 import scipy.stats as ss  
+from patsy import dmatrices
 from sklearn.model_selection import train_test_split
 from math import atan
 
 test_scores = pd.read_csv('../data/hsb2.csv')
-test_scores_train = test_scores
+test_scores = test_scores.sample(frac=1.0)
+size = int(0.7 * test_scores.shape[0])
+test_scores_train = test_scores.iloc[:size,:].reset_index(drop=True)
+test_scores_test = test_scores.iloc[size:, :].reset_index(drop=True)
+```
 
-linear_model = smf.ols("socst ~ C(ses)*C(prog)", data=test_scores_train).fit()
-linear_model.summary()
+
+```{python}
+formula = 'socst ~ C(ses)*C(prog)'
+#linear_model = smf.ols("socst ~ C(ses)*C(prog)", data=test_scores_train).fit()
+linear_model = smf.ols(formula, data=test_scores_train).fit()
+print(linear_model.summary())
 ```
 
 
@@ -57,33 +66,50 @@ linear_model.summary()
 Let's compare the results of the unpruned and pruned models     
 
 - The metrics indicate the fit is exactly the same   
-   - Why prefer the pruned model?    
+
+- Why prefer the sparse (pruned) model?    
    
 - What are the consequences of the over-fit model?    
    - Several predictors (features) are included that are not needed     
    - Including non-significant predictors can only reduce generalization of the model    
-   - Consider the effect of an unexpected value of a non-significant predictor on the response recalling the response is linear in the coefficients    
+   - For model with linear response, consider the effect of an unexpected value of a non-significant predictor      
    
 - But manually pruning a model with a great many features is a doomed task!   
    - What if we included all the interactions with type of school, race and sex?   
    - We now have up to 5th order interaction - 45 model coefficients with none significant!!    
 
+## Dealing with Overfit Models  
+
+We want our models to be **sparse**   
+
+- A sparse model has the minimum complexity required to explain the data      
+
+- The sparse model is a manifestation of **Occam's Razor**     
+   - A scientific principle that the of competing theories is the preferred one     
+   
+- Sparse models use the minimum number of independent variables (features)       
+   - Are considered **parsimonious**      
+   - Generalize well     
+   
+- Use regularization methods to identify minimum coefficient set    
 
 
 ## Dealing with Overfit Models   
 
 **Idea!:** Try systematically pruning the model using some metric    
 
-- But hard to find a good metric    
-
-- Further, making multiple hypothesis tests is a fraught undertaking    
-   - High probability of Type 1 or Type 2 error     
-   - The multiple hypothesis problem    
-   
 - Leads to the the **step-wise regression algorithm**     
    - Forward step-wise regression adds most explanatory variable one at a time    
    - Backward step-wise regression removes lest explanatory variable one at a time    
-   - Can go both directions - see the R documentation     
+   - Can go both directions - see the R documentation  
+   - Hard to find a good metric    
+
+- Further, making multiple hypothesis tests is a fraught undertaking    
+   - $H_0$ is null or insignificant predictor
+   - High probability of Type 1 or Type 2 error     
+   - Type 1 error, $H_0$ true, $\rightarrow$ include insignificant predictor       
+   - Type 2 error, reject $H_0$, $\rightarrow$ drop significant predictor 
+  
 
 
 ## Regularization - a Better Approach      
@@ -95,14 +121,31 @@ Regularization is a systematic approach to preventing over-fitting
 - To better understand this trade-off decompose mean square error:    
 
 $$\Delta y = E \big[ Y - \hat{f}(X) \big]$$
-$y =$ the label vector     
+$Y =$ the label vector     
 $X =$ the feature matrix      
 $\hat{f}(x) =$ the trained model      
 
-- Expanding this relation gives us:    
+Expanding this relation gives us:    
 
-$$\Delta y = \big( E[ \hat{f}(X)] - \hat{f}(X) \big)^2 + E \big[ ( \hat{f}(X) - E[ \hat{f}(X)])^2 \big] + \sigma^2\\
+$$\Delta y = \Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2 + E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big] + \sigma^2\\
 \Delta y = Bias^2 + Variance + Irreducible\ Error$$
+
+
+
+## Regularization - a Better Approach      
+
+How do we interpret the bias-variance trade-off relationship:    
+$$\Delta y = \Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2 + E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big] + \sigma^2$$
+- $E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big]$, the expected squared difference between the model output and the expected model output is the **variance** of the model     
+   - For low variance model, $E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big] \rightarrow 0$    
+   - Model **generalizes** since variance is low for each prediction, $\hat{f}(X)$     
+
+- $\Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2$, the expected value of the difference between the model output and the expected model output is the **bias** of the model    
+  - For **unbiased biased** model, $E \Big[ \hat{f}(X)] - \hat{f}(X) \Big] = 0$
+  - Example: OLS model with $residuals \sim N(0, \sigma^2)$ is **unbiased**     
+  
+- $\sigma^2$ is inherent or irreducable error in data   
+
 
 
 ## Regularization - a Better Approach
@@ -118,13 +161,15 @@ knitr::include_graphics(rep("../images/BiasVariance.png"))
 
 ## Regularization - a Better Approach
 
-Decompose the $p$ x $p$ covariance matrix $cov(A) = \frac{1}{p}A^TA$ into **eigenvalues** and **eigenvectors**: 
+For OLS model need to find  $\big(A^TA \big)^{-1}A \propto Cov(A)^{-1}A$ for $n \times p$ design matrix $A$
+
+- Decompose the $p \times p$ covariance matrix $cov(A) = \frac{1}{p}A^TA$ into **eigenvalues** and **eigenvectors**: 
 
 $$cov(A) = Q \Lambda Q^{-1}$$
 
 where,   
 
-$Q$ is the $p$ x $p$ matrix of $p$ **orthonormal eigenvectors** of length $p$  
+$Q$ is the $p \times p$ matrix of $p$ **orthonormal eigenvectors**   
 
 And, the $p$ eigenvalues are represented as diagonal matrix: 
 
@@ -248,7 +293,7 @@ $$b = (A^TA + \alpha^2I)^{-1}A^Tx$$
    
 - L2 regularization is a **soft constraint** on the model coefficients    
    - Even smallest coefficients are not driven to 0   
-   - All coefficients can grow in value, but under the constraint   
+   - Coefficients can grow in value, but under the constraint   
 
 
 ## L2 Regularization   
@@ -347,8 +392,9 @@ def regularized_coefs(df_train, df_test, alphas, L1_wt=0.0, n_coefs=8,
         
     return coefs, MSE_train, MSE_test
 
-alphas = np.arange(0.0, 0.3, step = 0.003)    
-Betas, MSE_test, MSE_train = regularized_coefs(test_scores_train, test_scores_test, alphas)
+alphas = np.arange(0.0, 0.3, step = 0.003)   
+#alphas = np.arange(0.0, 100.0, step = 1.0)  
+Betas, MSE_test, MSE_train = regularized_coefs(test_scores_train, test_scores_test, alphas) #, formula=formula)
 #Betas[:5]
 ```
 
@@ -430,8 +476,8 @@ knitr::include_graphics(rep("../images/L1.jpg"))
 Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter
 
 ```{python}
-alphas = np.arange(0.0, 0.5, step = 0.005)
-Betas, MSE_train, MSE_test = regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt=1.0)
+#alphas = np.arange(0.0, 0.5, step = 0.005)
+Betas, MSE_train, MSE_test = regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt=1.0) #, formula=formula)
 Betas[:5]
 ```
 
@@ -455,6 +501,7 @@ Do we always have to choose between the soft constraint of L2 and the hard const
    - But soft constraint so poor model selection 
 
 - L1 regularization provides **good model selection** by hard constraint    
+   - Drives coefficients of non-informative variables to 0
    - But poor selection for colinear features     
    
 - The **Elastic Net** weights L1 and L2 regularization    
@@ -468,9 +515,8 @@ $$min \Big[ \parallel A \cdot x - b \parallel +\ \lambda\ \alpha \parallel b\par
 Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter
 
 ```{python}
-alphas = np.arange(0.0, 0.5, step = 0.005)
-Betas, MSE_train, MSE_test = regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt=0.5)
-Betas[:5]
+##alphas = np.arange(0.0, 0.5, step = 0.005)
+Betas, MSE_train, MSE_test = regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt=0.5) #, formula=formula)
 ```
 
 
