@@ -36,6 +36,7 @@ from sklearn.model_selection import train_test_split
 from math import atan
 
 test_scores = pd.read_csv('../data/hsb2.csv')
+np.random.seed(3344)
 test_scores = test_scores.sample(frac=1.0)
 size = int(0.7 * test_scores.shape[0])
 test_scores_train = test_scores.iloc[:size,:].reset_index(drop=True)
@@ -71,7 +72,8 @@ Let's compare the results of the unpruned and pruned models
    
 - What are the consequences of the over-fit model?    
    - Several predictors (features) are included that are not needed     
-   - Including non-significant predictors can only reduce generalization of the model    
+   - Including non-significant predictors can only increase noise and reduce generalization of a model    
+   - Colinear features confound model fiting - change of coefficient values correlated
    - For model with linear response, consider the effect of an unexpected value of a non-significant predictor      
    
 - But manually pruning a model with a great many features is a doomed task!   
@@ -85,7 +87,7 @@ We want our models to be **sparse**
 - A sparse model has the minimum complexity required to explain the data      
 
 - The sparse model is a manifestation of **Occam's Razor**     
-   - A scientific principle that the of competing theories is the preferred one     
+   - A scientific principle that the simplest of competing theories is the preferred one     
    
 - Sparse models use the minimum number of independent variables (features)       
    - Are considered **parsimonious**      
@@ -104,15 +106,15 @@ We want our models to be **sparse**
    - Can go both directions - see the R documentation  
    - Hard to find a good metric    
 
-- Further, making multiple hypothesis tests is a fraught undertaking    
+- But, making multiple hypothesis tests is a fraught undertaking    
    - $H_0$ is null or insignificant predictor
    - High probability of Type 1 or Type 2 error     
-   - Type 1 error, $H_0$ true, $\rightarrow$ include insignificant predictor       
-   - Type 2 error, reject $H_0$, $\rightarrow$ drop significant predictor 
+   - Type 1 error, fail to accept $H_0$, $\rightarrow$ include insignificant predictor       
+   - Type 2 error, fail to reject $H_0$, $\rightarrow$ drop significant predictor 
   
 
 
-## Regularization - a Better Approach      
+## Regularization - The Bias-Variance Trade-Off      
 
 Regularization is a systematic approach to preventing over-fitting     
 
@@ -120,35 +122,35 @@ Regularization is a systematic approach to preventing over-fitting
 
 - To better understand this trade-off decompose mean square error:    
 
-$$\Delta y = E \big[ Y - \hat{f}(X) \big]$$
+$$\Delta y^2 = E \Big[ \big( Y - \hat{f}(X) \big)^2 \Big]$$
 $Y =$ the label vector     
 $X =$ the feature matrix      
 $\hat{f}(x) =$ the trained model      
 
 Expanding this relation gives us:    
 
-$$\Delta y = \Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2 + E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big] + \sigma^2\\
-\Delta y = Bias^2 + Variance + Irreducible\ Error$$
+$$\Delta y^2 = \Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2 + E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big] + \sigma^2\\
+\Delta y^2 = Bias^2 + Variance + Irreducible\ Error$$
 
 
 
-## Regularization - a Better Approach      
+## Regularization - The Bias-Variance Trade-Off      
 
 How do we interpret the bias-variance trade-off relationship:    
-$$\Delta y = \Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2 + E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big] + \sigma^2$$
+$$\Delta y^2 = \Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2 + E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big] + \sigma^2$$
 - $E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big]$, the expected squared difference between the model output and the expected model output is the **variance** of the model     
    - For low variance model, $E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big] \rightarrow 0$    
    - Model **generalizes** since variance is low for each prediction, $\hat{f}(X)$     
 
 - $\Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2$, the expected value of the difference between the model output and the expected model output is the **bias** of the model    
-  - For **unbiased biased** model, $E \Big[ \hat{f}(X)] - \hat{f}(X) \Big] = 0$
+  - For **unbiased model**, $E \Big[ \hat{f}(X)] - \hat{f}(X) \Big] = 0$
   - Example: OLS model with $residuals \sim N(0, \sigma^2)$ is **unbiased**     
   
 - $\sigma^2$ is inherent or irreducable error in data   
 
 
 
-## Regularization - a Better Approach
+## Regularization - The Bias-Variance Trade-Off
 
 There is a trade-off between bias and variance      
 
@@ -159,7 +161,7 @@ knitr::include_graphics(rep("../images/BiasVariance.png"))
 ```
 
 
-## Regularization - a Better Approach
+## Eigendecomposition - Review
 
 For OLS model need to find  $\big(A^TA \big)^{-1}A \propto Cov(A)^{-1}A$ for $n \times p$ design matrix $A$
 
@@ -188,7 +190,7 @@ For real-valued $cov(A)$ the eigenvectors $Q$ are real valued so:
 $$Q^{-1} = Q^T$$
 
 
-## Regularization - a Better Approach
+##  Eigendecomposition - Review
 
 The inverse of the covariance can be computed from its eigendecomposition   
 
@@ -207,7 +209,7 @@ $$
 $$
 
 
-## Regularization - a Better Approach    
+##  Eigendecomposition - Review    
 
 At first look eigen-decomposition seems a bit mysterious
 
@@ -222,12 +224,12 @@ Ax - \lambda x &= 0 \\
 (A - I \lambda) x &= 0
 \end{align}
 
-- For $n$ x $n$ dimensional matrix there are $n$ eigenvalues and orthogonal eigenvalue    
+- For $p \times p$ dimensional matrix there are $p$ eigenvalues and orthogonal eigenvalue    
 
-- But, there is no guarantee that the $n$ values of $\lambda$ are unique     
-   - If columns of $A$ are colinear, there are $< n$ unique eigenvectors        
+- But, there is no guarantee that the $p$ values of $\lambda$ are unique     
+   - If columns of $A$ are colinear, there are $< p$ unique eigenvectors      
 
-## Regularization - a Better Approach
+## Regularization - Ill-Posed Problems 
 
 If columns of $A$ are not linearly independent, the covariance matrix is **ill-posed** and the eigenvectors are under-determined       
 
@@ -238,10 +240,13 @@ $$
 
 - The eigenvalues are ordered, $\lambda_1 \ge \lambda_2 \ge \ldots \ge \lambda_p$
 
-- For ill-posed covariance matrix    
+- For **ill-posed** covariance matrix    
    - The smallest $\lambda_i \rightarrow 0$   
    - So, $\frac{1}{\lambda_i} \rightarrow \infty$
-   - The inverse covariance matrix does not exist!    
+  
+- Uh oh! The inverse covariance matrix **does not exist!**    
+  - With colinear features $\lambda_i \rightarrow 0\ \rightarrow$ confounded fitting    
+  - With unifromative features $\lambda_i \rightarrow 0\ \rightarrow$ projecting random noise
 
 
 
@@ -270,7 +275,7 @@ L2 regularization constrains the Euclidean norm of the parameter vector, $\vec{b
 
 the **L2 or Euclidean norm** minimization problem):
 
-$$min [\parallel A \cdot x - b \parallel +\ \alpha \parallel b\parallel]\\  or \\
+$$min [\parallel A \cdot x - b \parallel +\ \alpha^2 \parallel b\parallel]\\  or \\
 b = (A^TA + \alpha^2 I)^{-1}A^Tx$$
 
 Where the L2 norm of the coefficient vector is:
@@ -284,7 +289,7 @@ How can we understand this relationship?
 $$b = (A^TA + \alpha^2I)^{-1}A^Tx$$
 
 - Adds values along the diagonal of the covariance matrix     
-   - This creates a so called ridge in the covariance, $cov_{regularized} = A^TA + \alpha^2$     
+   - This creates a so called **ridge** in the covariance, $cov_{regularized} = A^TA + \alpha^2$     
    - Leads to the term **ridge regression**   
 
 - Constrain the L2 norm values of the model coefficients using the **penalty term** $\alpha$     
@@ -341,9 +346,9 @@ cov_X = np.divide(cov_X, float(cov_X.shape[0]))
 np.real(np.linalg.eigvals(cov_X))
 ```
 
-The condition number of the covariance is $\sim 100$
+The condition number of the covariance is $\sim 90$
 
-**Add regularization** with $\alpha=0.1$ and compute the eigenvalues
+**Add regularization** with $\alpha^2=0.1$ and compute the eigenvalues
 
 ```{python}
 alpha_sqr = 0.1 
@@ -354,7 +359,7 @@ cov_X = np.add(cov_X, alpha_sqr)
 np.real(np.linalg.eigvals(cov_X))
 ```
 
-The condition number of the covariance is $\sim 10$
+The condition number of the covariance is $\sim 72$
 
 
 ## L2 Regularization    
@@ -431,7 +436,7 @@ The L1 norm provides regularization with different properties
 
 - Constrains the model parameters using the L1 norm: 
 
-$$min [\parallel A \cdot x - b \parallel +\ \alpha \parallel b\parallel^1]$$
+$$min [\parallel A \cdot x - b \parallel +\ \alpha^2 \parallel b\parallel^1]$$
 
 - This form looks a lot like the L2 regularization formulation   
 
@@ -476,7 +481,7 @@ knitr::include_graphics(rep("../images/L1.jpg"))
 Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter
 
 ```{python}
-#alphas = np.arange(0.0, 0.5, step = 0.005)
+alphas = np.arange(0.0, 0.6, step = 0.02)
 Betas, MSE_train, MSE_test = regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt=1.0) #, formula=formula)
 Betas[:5]
 ```
@@ -496,11 +501,11 @@ plot_coefs(Betas, alphas, MSE_train, MSE_test) #, ylim=(-10.0,10.0))
 
 Do we always have to choose between the soft constraint of L2 and the hard constraint of L1?   
 
-- L2 regularization works well for **colinear features**    
+- L2 regularization works well for **colinear features** as soft constraint       
    - Down-weights colinear features   
    - But soft constraint so poor model selection 
 
-- L1 regularization provides **good model selection** by hard constraint    
+- L1 regularization provides **good model selection** as hard constraint    
    - Drives coefficients of non-informative variables to 0
    - But poor selection for colinear features     
    
@@ -515,8 +520,8 @@ $$min \Big[ \parallel A \cdot x - b \parallel +\ \lambda\ \alpha \parallel b\par
 Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter
 
 ```{python}
-##alphas = np.arange(0.0, 0.5, step = 0.005)
-Betas, MSE_train, MSE_test = regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt=0.5) #, formula=formula)
+alphas = np.arange(0.0, 0.5, step = 0.02)
+Betas, MSE_train, MSE_test = regularized_coefs(test_scores_train, test_scores_test, alphas, L1_wt=0.5)
 ```
 
 
@@ -525,16 +530,16 @@ Betas, MSE_train, MSE_test = regularized_coefs(test_scores_train, test_scores_te
 Example: Increasing constraint on model coefficients with larger L1 regularization hyperparameter
 
 ```{python, echo=FALSE}
-plot_coefs(Betas, alphas, MSE_train, MSE_test) #, ylim=(-10.0,8.0))
+plot_coefs(Betas, alphas, MSE_train, MSE_test) 
 ```
 
 
 ## Elastic Net Regularization 
 
-Check the model summary for $\lambda=0.5$, $\alpha=0.06$
+Check the model summary for $\lambda=0.5$, $\alpha=0.10$
 
 ```{python}
-lm_elastic = smf.ols("socst_zero_mean ~ C(ses)*C(prog)", data=test_scores_train).fit_regularized(alpha=0.06, L1_wt=0.5)
+lm_elastic = smf.ols("socst_zero_mean ~ C(ses)*C(prog)", data=test_scores_train).fit_regularized(alpha=0.1, L1_wt=0.5)
 lm_elastic.params
 ```
 
@@ -563,17 +568,15 @@ residual_plot(test_scores_train)
 
 ## Summary  
 
-- Working with categorical variables    
-   - One-hot encoding creates binary numeric variables 
-   - Only one case = 1, or hot, at a time  
 
-- Over-fit models and regularization    
-   - Bias variance trade-off between fit to training data and generalization 
-   - L2 regularization is a soft constraint      
-   - L1 regularization is a hard constraint  
-   - Elastic Net trade-off between L1 and L2  
+Over-fit models and regularization    
 
-- Models with nonlinear response   
-   - The generalized linear model   
-   - Link function transforms to linear model  
+- **Bias variance trade-off** between fit to training data (bias) and generalization error (vaiance)   
 
+- Prefer minimal or **sparse models**    
+
+- L2 regularization is a soft constraint      
+
+- L1 regularization is a hard constraint  
+
+- ElasticNet trade-off between L1 and L2  
