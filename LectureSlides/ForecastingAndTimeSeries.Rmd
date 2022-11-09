@@ -1,7 +1,7 @@
 ---
 title: "Forecasting And Time Series Analysis"
 author: "Steve Elston"
-date: "04/14/2021"
+date: "11/10/2022"
 output: slidy_presentation
 ---
 
@@ -27,7 +27,7 @@ matplotlib$use("Agg", force = TRUE)
 
 <center> "It's tough to make predictions, especially about the future!"</center>    
 
-<center>Yogi Berra</center>   
+<center>Karl Kristian Steincke, Danish politician, ca 1937</center>   
 
 - **Demand forecasting:** Electricity production, Internet bandwidth, Traffic management, Inventory management, sales forecasting     
 - **Medicine:** Time dependent treatment effects, EKG, EEG    
@@ -37,11 +37,18 @@ matplotlib$use("Agg", force = TRUE)
 
 ## Why Are Time Series Data Different? 
 
+Models must account for time series behavior      
 
-- In most machine learning we assume data samples are **independent identically distributed** (iid)
-- But, this is not the case for time series data
-- Time series values are correlated in time
-- Exhibit **Serial correlation**
+- Most statistical and machine learning assume data samples are **independent identically distributed (iid)**             
+
+- But, this is not the case for time series data       
+
+- Time series values are correlated in time       
+
+- Time series data exhibit **Serial correlation**      
+   * Serial correlation of values      
+   * Serial correlation of errors     
+   * Violate iid assumptions of many statistical and ML Models    
 `
 
 
@@ -50,8 +57,8 @@ matplotlib$use("Agg", force = TRUE)
 
 Examples of series correlation:      
 
-- Temperature forecasts, where the future values are correlated with the current values 
--  The opening price of a stock is correlated with the price at the previous close   
+- Temperature forecasts, where the future values are correlated with the current values     
+-  The opening price of a stock is correlated with the price at the previous close    
 - The daily sales volume of a product is correlated with the previous sales volume     
 - A medical patient's blood pressure reading is correlated with the previous observations    
 
@@ -59,9 +66,9 @@ Examples of series correlation:
 
 ## History of Time Series Analysis
 
-- Time series analysis have a long history   
-- Recognized the serial dependency in time series data early on   
-- Joseph Fourier and Siemon Poisson worked on time series problems in the 19th Century    
+Time series analysis have a long history   
+- Recognized the serial dependency in time series data early on     
+- Joseph Fourier and Siemon Poisson worked on time series problems in the early 19th Century    
 
 ```{r Fourier, out.width = '20%', fig.cap='Joseph Fourier', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/Fourier.jpg"))
@@ -73,10 +80,10 @@ knitr::include_graphics(rep("../images/Fourier.jpg"))
 
 Modern history of time series analysis started with George Udny Yule (1927) and Gilbert Walker (1931)   
 
-- Yule worked on sunspot time series
-- Walker was attempting to forecast the tropical monsoon cycle
-- Developed the **autoregressive (AR)** model to account for serial correlation    
-- The AR model is foundation of modern time series models    
+- Yule worked on sunspot time series    
+- Walker was attempting to forecast the tropical monsoon cycle   
+- Developed the **autoregressive (AR)** model to account for serial correlation      
+- The AR model is foundation of modern time series models      
 
 
 ```{r George_Udny_Yule, out.width = '20%', fig.cap='George Yule, time series pioneer', echo=FALSE}
@@ -102,7 +109,8 @@ George Box and Gwilym Jenkins fully developed a statistical theory of time serie
 
 - Extended the AR model to include **moving average (MA)** terms     
 - Included the **integrative term** to create the **ARIMA** model     
-- The ARIMA model is a main focus here     
+- The ARIMA model is our focus
+
 
 
 ```{r GeorgeEPBox, out.width = '10%', fig.cap='George EP Box created general time series model', fig.align='center', echo=FALSE}
@@ -119,10 +127,10 @@ knitr::include_graphics(rep("../images/BoxJenkins.jpg"))
 21st Century time series analysis    
 
 - Considerable research continues to expand the frontiers   
-- Bayesian time series models
+- Bayesian time series models       
   * [R bsts package](https://cran.r-project.org/web/packages/bsts/bsts.pdf) and [Python PyMC3](https://docs.pymc.io/api/distributions/timeseries.html)
-- Long short term memory (LSTM) model
-- Hidden Markov Models (HMMs) widely used 
+- Long short term memory (LSTM) model        
+- Hidden Markov Models (HMMs) widely used       
   * [Python Scikit Learn HMM](https://hmmlearn.readthedocs.io/en/stable/) or [R HMM package](https://www.rdocumentation.org/packages/HMM/versions/1.0)
 
 
@@ -136,11 +144,18 @@ Most statistical packages have considerable time series modeling capability
 
 - Primary Python time series analysis package in [Statsmodels.tsa](https://www.statsmodels.org/stable/tsa.html)    
 
+- Bayesian time series models supported in [PyMC](https://www.pymc.io/welcome.html).
+
+- Many newer Python time series packages packages, including:       
+  * [Darts package](https://unit8co.github.io/darts/) includes cutting edge methods like hierarcical models         
+  * [Facebook Kats](https://facebookresearch.github.io/Kats/) package - strong in forecasting including the [PROFIT model](https://facebook.github.io/prophet/)      
+  * [GrayKite](https://linkedin.github.io/greykite/docs/0.1.0/html/index.html) Linkedin's forecasting package    
+
 
 
 ## Fundamentals of Time Series   
 
-What are the fundamental properties of time series    
+What are the fundamental properties of time series  
 
 - Representation and sampling   
 - White noise series    
@@ -157,9 +172,9 @@ What are the fundamental properties of time series
 Time series are expressed as a time ordered sequence of values $(x_1, x_2, x_3, \dots, x_n)$    
 
 - We work with **discrete samples** in time order   
-- Sample interval $\Delta t$ is fixed   
+- In **regular time series** the sample interval $\Delta t$ is fixed   
 - Time measured from start of series $(0, \Delta t, 2 \Delta t, \ldots,n \Delta t)$   
-- Or, time measured within an **interval**   
+- Or, time measured within an **interval**, multiples of $\Delta t$        
 - Even continuous time processes are sampled in practice   
   - Temperature    
   - Pressure   
@@ -175,7 +190,7 @@ Time series are expressed as a time ordered sequence of values $(x_1, x_2, x_3, 
 
 $$X(t) = (w_1, w_2, w_3, \dots, w_n)\\
 where\\
-w_t = N(0, \theta)$$
+w_t \sim N(0, \sigma^2)$$
 
 - No serial correlation between values   
   * There is no predictive information in a white noise series   
@@ -185,6 +200,7 @@ w_t = N(0, \theta)$$
 ## White Noise Series  
 
 What does a white noise series look like?  
+
 
 ```{python, echo=FALSE}
 from math import sin
@@ -197,7 +213,7 @@ import sklearn.linear_model as lm
 import statsmodels.tsa.seasonal as sts
 import scipy.stats as ss
 import statsmodels.tsa.arima_process as arima
-from statsmodels.tsa.arima_model import ARIMA, ARIMAResults
+from statsmodels.tsa.arima.model import ARIMA, ARIMAResults
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.holtwinters import Holt, ExponentialSmoothing
 import pmdarima as pm
@@ -205,7 +221,7 @@ import statsmodels.graphics.tsaplots as splt
 import matplotlib.pyplot as plt
 
 def plot_ts(ts, lab = ''):
-    fig, ax = plt.subplots(figsize=(5,3))
+    fig, ax = plt.subplots(figsize=(8,4))
     ts.plot(ax=ax)
     ax.set_title('Time series plot of ' + lab)
     ax.set_ylabel('Value')
@@ -215,6 +231,7 @@ def plot_ts(ts, lab = ''):
 nr.seed(3344)
 white = pd.Series(nr.normal(size = 730),
                  index = pd.date_range(start = '1-1-2014', end = '12-31-2015', freq = 'D'))
+
 plot_ts(white, 'white noise')
 ```
 
@@ -229,7 +246,7 @@ What does a white noise series look like?
 ```{python, echo=FALSE}
 def dist_ts(ts, lab = '', bins = 40):
     ## Setup a figure with two subplots side by side
-    f, (ax1, ax2) = plt.subplots(1, 2, figsize=(7, 3))
+    f, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
     ## Plot the histogram with labels
     ts.hist(ax = ax1, bins = bins, alpha = 0.5)
     ax1.set_xlabel('Value')
@@ -249,7 +266,7 @@ A white noise series is **stationary**
 
 - A stationary time series has statistical properties constant in time   
 - For example, a stationary time series has **constant mean and variance** over any sample interval    
-- Many time series models require stationary    
+- Many time series models require stationarity        
   * Often transform time series to make them stationary    
   * More on this shortly   
 
@@ -271,9 +288,13 @@ What tests can be used for stationarity?
 
 Can measure the correlation of a time series with itself    
 
-- The time series is correlated at different time offsets    
+- The time series is correlated at different time offsets     
+
 - Each time step of offset is called a **lag**   
-- The **autocorrelation function (ACF)** is measured between itself and the series at each lag    
+
+- The **autocorrelation function (ACF)** is measured between the series and the series lagged in time        
+
+- Always 1 at lag 0; $ACF(0) = 1.0$ 
 
 ## Autocorrelation Properties of White Noise Series    
 
@@ -290,8 +311,7 @@ k &= lag\\
 
 
 - Notice that for any series, $\rho_0 = 1$   
-- In other words, the autocorrelation of any time series at **lag zero** equals 1.0   
-- Autocorrelation at each lag has values in the range $-1 \ge \rho \ge 1$   
+- Autocorrelation at each lag has values in the range $-1.0 \ge \rho \ge 1.0$   
 
 
 ## Autocorrelation Properties of White Noise Series
@@ -301,7 +321,7 @@ The **partial autocorrelation** is another important property of time series
 - The **partial autocorrelation function (PACF)** is the residual autocorrelation once autocorrelation is accounted for   
 - To compute the partial autocorrelation to lag $k$:   
   * Compute the autocorrelation to lag $k$   
-  * Remove the linearly predictable component of the time series from the autocorrelations   
+  * Remove the linearly predictable autocorrelation component of the time series    
   * Compute the (partial) autocorrelation of the residual to lag $k$   
 - The 0 lag value of the partial autocorrelation is always 1.0   
 
@@ -314,9 +334,9 @@ What are the autocorrelation and partial autocorrelation properties of a white n
 
 ```{python, echo=FALSE}
 def acf_pacf_plot(ts):
-    fig, ax = plt.subplots(1,2,figsize=(10,2))
+    fig, ax = plt.subplots(1,2,figsize=(12,3))
     _=splt.plot_acf(ts, lags = 40, ax=ax[0])
-    _=splt.plot_pacf(ts, lags = 40, ax=ax[1])
+    _=splt.plot_pacf(ts, lags = 40, method='yw', ax=ax[1])
     plt.show()
 
 acf_pacf_plot(white)
@@ -326,14 +346,16 @@ acf_pacf_plot(white)
 ## Random Walk Time Series  
 
 Random walks are a commonly encountered properties of time series    
-shvalue of a series in one time step:    
+
+- Change in value of random walk series at one time step:    
 $$w_t = x_t - x_{t-1}$$   
-- The value of the next value in the random walk is then:   
+
+- The next value in the random walk is then:   
 $$x_t = x_{t-1} + w_t$$  
 
 Or, with a little bit of algebra:    
 
-$$x_t = w_t + \sum_{i=1}^{t-1} w_i$$
+$$x_t = w_t + \sum_{i=0}^{t-1} w_i$$
 - $w_i$ is the ith **innovation**   
 - A random walk is an **integrative process**; sum or integral of innovations     
 
@@ -365,17 +387,19 @@ plot_ts(walk, 'random walk')
 ## Random Walk Time Series    
 
 - Autocorrelation of white noise series dies slowly     
-- Partial autocorrealtion at one lag   
+- Partial autocorrealtion nonzero at one lag   
 
 ```{python, echo=FALSE}
 acf_pacf_plot(walk)
 ```
 
 
-White noise series is Normally distributed
+## Random Walk Time Series  
+
+Random walk series is not Normally distributed
 
 ```{python, echo=FALSE}
-dist_ts(white, 'white noise')    
+dist_ts(walk, 'random walk')    
 ```
 
 ## Random Walk Time Series   
@@ -398,6 +422,7 @@ Many real-world time series have a long-term **trend**
 
 - A trend is a long term change in the mean value of the time series    
 - Typically model trend as linear, polynomial, non-parametric splines, etc.   
+  - PROFIT algorithm uses **generalized additive model (GAM)**  
 - Consider an example of a white noise series with a linear trend    
 
 ```{python, echo=FALSE}
@@ -420,7 +445,7 @@ Time series with trend are non-stationary
 
 - Any time series with trend is non-stationary     
   * Mean and variance are dependent of window used to compute them     
-- The distribution of even a white noise series with trend is not-Normal   
+- The distribution of even a white noise series with trend is non-Normal   
 
 ```{python, echo=FALSE}
 dist_ts(trends, lab = '\n trend + white noise')
@@ -431,7 +456,10 @@ dist_ts(trends, lab = '\n trend + white noise')
 ACF and PACF are only properly defined for stationary series    
 
 - For non-stationary series, the ACF dies off slowly   
-- The PACF exhibits periodic behavior   
+   * Integrative innovations lead to long-term dependency    
+
+- The PACF dies off quickly with lag   
+
 - Example: ACF and PACF of the white noise series with trend   
 
 
@@ -452,6 +480,8 @@ Many (most?) real-world time series have **seasonal effect**
   * Annual holiday   
   * Option expiration date   
   * Game day, e.g. Supper Bowl   
+  * Electrical impulses in a heart - EKG      
+  * Orbits of planets     
   * $\ldots$    
 - Time series with seasonal effects are non-stationary   
   * Mean and variance depends of sample window    
@@ -484,7 +514,7 @@ Many types of time series models; we will only consider the most widely used
 - Time series decomposition    
 - Exponential models    
 - ARIMA model   
-  * Predictable components    
+  * Serially correlated components    
   * Integrative component    
 
 
@@ -508,7 +538,8 @@ The **additive decomposition model** is expressed as as the sum of the component
 $$TS(t) = S(t) + T(t) + R(t)$$     
 
 - Used when seasonal effect is constant in time   
-- Example, physical process   
+- Examples: Physical process   
+
 
 
 ## Time Series Decomposition   
@@ -528,7 +559,7 @@ $$= S^l(t) + T^l(t) + R^l(t)$$
 
 ## Time Series Decomposition
 
-Example of STL decomposition of time series with linear trend and seasonal effect   
+Example of addative STL decomposition of time series with linear trend and seasonal effect   
 
 - The original series plot is on top   
 - Notice the estimated trend is not a straight line; a result of noise   
@@ -537,7 +568,7 @@ Example of STL decomposition of time series with linear trend and seasonal effec
 ```{python, echo=FALSE}
 def decomp_ts(ts, freq = 'M', model = 'additive'):
 #    fig, ax = plt.subplot(figsize=(6,7))
-    res = sts.seasonal_decompose(ts, model = model) 
+    res = sts.seasonal_decompose(ts, model=model, period=12) 
     res.plot()
     plt.show()
     return(pd.DataFrame({'resid': res.resid, 
@@ -545,11 +576,7 @@ def decomp_ts(ts, freq = 'M', model = 'additive'):
                          'seasonal': res.seasonal},
                        index = ts.index) )
 
-decomp = decomp_ts(seasonal, model='model')
-#print(decomp[:12])
-#decomp[-12:]
-
-
+decomp = decomp_ts(seasonal) 
 ```
 
 
@@ -709,8 +736,10 @@ plt.show()
 The **ARIMA model** is composed three components:    
 
 - **Autoregressive component (AR)** accounts for partial autocorrelation   
+   * Serial correlation of observatons     
 - **Integrative component (I)** accounts random walks and trend   
 - **Moving Average (MA)** accounts for autocorrelation   
+   * Serial correlation of model error    
 - **SARIMAX** model adds:   
   * **Seasonal components (S)**   
   * **Exogenous variables (X)**   
@@ -728,7 +757,7 @@ where\\
 
 - An AR process has the following properties:   
    * $\rho_0 = 1$ always    
-   *  $p_k = \phi^k$   
+   *  $p_k = \phi_k$   
    * Number of nonzero PACF values $= p$   
    * A shock at any time will affect the result as $t \rightarrow \infty$   
 - AR model assume stationary time series       
@@ -739,7 +768,7 @@ where\\
 How can we understand the AR model?   
 
 - Consider an AR(2) model   
-- The value of $y_t$ is a weighted sum $k$ previous values plus an error term    
+- The value of $y_t$ is a weighted sum of $k$ previous values plus an error term    
 
 
 ```{r AR_Model, out.width = '75%', fig.cap='Illustration of the AR(2) model', fig.align='center', echo=FALSE}
@@ -818,7 +847,7 @@ Example model summary for AR(2) model:
 ```{python, echo=FALSE}
 def model_ARIMA(ts, order):
     model = ARIMA(ts, order = order)
-    model_fit = model.fit(disp=0, method='mle', trend='nc')
+    model_fit = model.fit()
     print(model_fit.summary())
     return(model_fit)
 ar2_model = model_ARIMA(ts_series_ar2, order = (2,0,0))
@@ -829,9 +858,9 @@ ar2_model = model_ARIMA(ts_series_ar2, order = (2,0,0))
 
 - A **moving average** model of order $q$, $MA(q)$, uses the last q error terms or shocks:    
 
-$$x_t = \mu + \epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q} \\
+$$x_t = \mu + w_t + \theta_1 w_{t-1} + \theta_2 w_{t-2} + \cdots + \theta_q w_{t-q} \\
 where\\
-\epsilon_t = white\ noise\ error\ at\ time\ t$$
+w_t = white\ noise\ error\ at\ time\ t \sim \mathtt{N}(0,\sigma^2)$$
 
 - An MA process has the following properties:   
    * For autocorrelation, $\rho_0 = 1$ always    
@@ -849,13 +878,13 @@ $$
 A = 
 \begin{bmatrix}
 x_1,\ 0,\ 0\\
-x_2,\ \epsilon_{1},\ 0\\
-x_3,\ \epsilon_{2},\ \epsilon_{1}\\
-x_4,\ \epsilon_{3},\ \epsilon_{2}\\
+x_2,\ w_{1},\ 0\\
+x_3,\ w_{2},\ w_{1}\\
+x_4,\ w_{3},\ w_{2}\\
 \vdots,\ \vdots,\ \vdots\\
-x_{t-2}, \epsilon_{t-3}, \epsilon_{t-4}\\
-x_{t-1}, \epsilon_{t-2}, \epsilon_{t-3}\\
-x_t, \epsilon_{t-1},\epsilon_{t-2}
+x_{t-2}, w_{t-3}, w_{t-4}\\
+x_{t-1}, w_{t-2}, w_{t-3}\\
+x_t, w_{t-1},w_{t-2}
 \end{bmatrix}
 $$
 
@@ -895,7 +924,7 @@ ma1_model = model_ARIMA(ts_series_ma1, order = (0,0,1))
 We can combine AR and MA terms to create the **autoregressive moving average (ARMA)** model of order $(p,q)$:     
 
 $$x_t = \epsilon_t + \phi_1 x_{t-1} + \phi_2 x_{t-2} \dots \phi_p x_{t-p} +
-\theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q}$$
+\theta_1 w_{t-1} + \theta_2 w_{t-2} + \cdots + \theta_q w_{t-q}$$
 
 - ARMA model assumes stationary time series    
 
@@ -1020,7 +1049,7 @@ x = observed\ data\\
 k = number\ of\ model\ parameters\\
 n = number\ of\ observations$$   
 
-- BIC penalizes the score function for the complexity of the model by $2\ k$    
+- BIC penalizes the score function for the complexity of the model, $k$    
 - BIC adjusts for number of samples used to learn the $k$ model parameters     
 - Model with lowest BIC is best    
 - BIC is often preferred to AIC for time series models    
@@ -1088,7 +1117,7 @@ best_model = pm.auto_arima(Log_electric, start_p=1, start_q=1,
 
 ## SARIMAX Example
 
-Example of SARIMAX model of order (0.1.1)(0,1,1,12) for monthly electric production series    
+Example of SARIMAX model of order (0.1.1)(0,1,2,12) for monthly electric production series    
 
 - Model selected by backwards step-wise method    
 - First order model integrative term and MA(1)     
