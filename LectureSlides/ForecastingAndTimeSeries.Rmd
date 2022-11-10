@@ -169,7 +169,7 @@ What are the fundamental properties of time series
 
 ## Time Series Representation
 
-Time series are expressed as a time ordered sequence of values $(x_1, x_2, x_3, \dots, x_n)$    
+Time series are expressed as a time ordered sequence of values $(x_1, x_2, x_3, \ldots, x_n)$    
 
 - We work with **discrete samples** in time order   
 - In **regular time series** the sample interval $\Delta t$ is fixed   
@@ -186,9 +186,9 @@ Time series are expressed as a time ordered sequence of values $(x_1, x_2, x_3, 
 **White noise series** are fundamental     
 
 - Values are **independent identically distributed (iid)** Normally distributed    
-- Can express values, $(w_1, w_2, w_3, \dots, w_n)$, of a white noise series as:   
+- Can express values, $(w_1, w_2, w_3, \ldots, w_n)$, of a white noise series as:   
 
-$$X(t) = (w_1, w_2, w_3, \dots, w_n)\\
+$$X(t) = (w_1, w_2, w_3, \ldots, w_n)\\
 where\\
 w_t \sim N(0, \sigma^2)$$
 
@@ -440,6 +440,20 @@ trends = trend()
 plot_ts(trends, 'white noise with trend')
 ```
 
+## Time Series With Trend
+
+Trend models are not just strait lines      
+
+- Polynomial regression     
+
+- Piece-wise polynomial regression - e.g. splines    
+  * Used in [PROFIT algorithm](https://research.facebook.com/blog/2017/2/prophet-forecasting-at-scale/)       
+  * A **generalized additive model**
+
+- [Local polynomial regression](https://en.wikipedia.org/wiki/Local_regression) - e.g. LOESS  
+  * Used in Statsmodels    
+
+
 
 ## Time Series With Trend
 
@@ -487,6 +501,18 @@ Many (most?) real-world time series have **seasonal effect**
   * $\ldots$    
 - Time series with seasonal effects are non-stationary   
   * Mean and variance depends of sample window    
+
+## Time Series With Seasonal Effects  
+
+Use regression models for seasonal effects   
+
+- Simple regression model:  
+   * Coefficient for each interval in period; e.g. 12 coefficients for monthly effects     
+   * Coefficient for specific effect - e.g. date of holiday   
+
+- Basis function regression    
+   * [PROFIT algorithm](https://research.facebook.com/blog/2017/2/prophet-forecasting-at-scale/) uses Fourier basis functions     
+  * A **generalized additive model**   
 
 ## Time Series With Seasonal Effects    
 
@@ -564,7 +590,8 @@ $$= S^l(t) + T^l(t) + R^l(t)$$
 Example of addative STL decomposition of time series with linear trend and seasonal effect   
 
 - The original series plot is on top   
-- Notice the estimated trend is not a straight line; a result of noise   
+- Notice the estimated trend is not a straight line; a result of noise    
+- Residuals are relatively small and **homoscedastic**     
 
 
 ```{python, echo=FALSE}
@@ -591,7 +618,7 @@ How do we deal with random walks?
 - **Difference operators** are useful for both cases    
 - Difference operators return the innovations   
 
-$$\Delta y_t = y_t - y_{t-1}$$
+$$\nabla y_t = y_t - y_{t-1}$$
 
 - Difference operators can be of any order in principle    
   * Typically use first order differences    
@@ -753,7 +780,7 @@ The **ARIMA model** is composed three components:
 
 - An autoregressive model of order $p$, $AR(p)$, uses the last p observations:   
 
-$$x_t = \phi_1 y_{t-1} + \phi_2 y_{t-2} \dots \phi_p y_{t-p} + w_t\\
+$$x_t = \phi_1 y_{t-1} + \phi_2 y_{t-2} ,\ldots, \phi_p y_{t-p} + w_t\\
 where\\
 \begin{align}
 \phi_k &= model\ coefficient\ at\ lag\ k\\
@@ -803,6 +830,10 @@ $$
 
 - AR model is a **linear model!**    
 
+- For coefficient vector, $\Phi = [\phi_1, \phi_2, \ldots, \phi_p]$, solve linear system:
+
+$$Y = A \Phi$$
+
 ## The Autoregressive Model   
 
 We can rewrite the AR(1) model in terms of exceptions:    
@@ -847,7 +878,7 @@ acf_pacf_plot(ts_series_ar2)
 Example model summary for AR(2) model:   
 
 - Both AR coefficients are statistically significant    
-- Notice that value of the second is wi the confidence interval    
+- Variance term is statistically significant   
   
 
 ```{python, echo=FALSE}
@@ -887,18 +918,24 @@ How can we understand the MA model?
 $$
 A = 
 \begin{bmatrix}
-y_t,\ w_{1-1},\ w_{t-2}\\
-y_{t-1},\ w_{1-2},\ w_{t-3}\\
-y_{t-2},\ w_{1-3},\ w_{t-4}\\
+y_t,\ \epsilon_{1-1},\ \epsilon_{t-2}\\
+y_{t-1},\ \epsilon_{1-2},\ \epsilon_{t-3}\\
+y_{t-2},\ \epsilon_{1-3},\ \epsilon_{t-4}\\
 \vdots,\ \ \ \ \ \vdots,\ \ \ \ \ \vdots\\
-y_{2},\ \ \ \ w_{1},\ \ \ \ w_{0}\\
-y_{1},\ \ \ \ w_{0}\ \ \ \, 0\\
+y_{2},\ \ \ \ \epsilon_{1},\ \ \ \ \epsilon_{0}\\
+y_{1},\ \ \ \ \epsilon_{0}\ \ \ \, 0\\
 y_0,\ \ \ \ 0,\ \ \ \ 0
 \end{bmatrix}
 $$
 
 
 - MA model is a **linear model!**    
+
+- But, the value of $\epsilon_t$ dependents on $[ \epsilon_{t-1}, \epsilon_{t-2}, ..., \epsilon_{t-q}]$ 
+
+- The $\epsilon_k$s are **unobservable**!  
+
+- So, fitting requires **nonlinear iteratively rewieighted least squares**
 
 
 ## The Moving Average Model   
@@ -931,10 +968,21 @@ ma1_model = model_ARIMA(ts_series_ma1, order = (0,0,1))
 
 ## Autoregressive Moving Average Model    
 
-We can combine AR and MA terms to create the **autoregressive moving average (ARMA)** model of order $(p,q)$:     
+We can combine AR and MA terms to create the **autoregressive moving average (ARMA)** model of order $(p,q)$:  
 
-$$x_t = c + \phi_1 x_{t-1} + \phi_2 x_{t-2} \dots \phi_p x_{t-p} +\\
-\theta_1 w_{t-1} + \theta_2 w_{t-2} + \cdots + \theta_q w_{t-q} + \epsilon_t$$
+$$y_t =  \phi_1 y_{t-1} + \phi_2 y_{t-2} ,\ldots, + \phi_p y_{t-p} +
+ \epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q}$$
+
+
+- Fit ARMA model by solving a nonlinear equatioin:    
+
+$$y_t - \phi_1 y_{t-1} - \phi_2 y_{t-2} ,\ldots, - \phi_p y_{t-p} = 
+\epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q}$$
+
+- Can write as polynomial equation in terms of coefficient vectors $\Phi = [1, \phi_1, \phi_2, \ldots, \phi_p y]$, $\Theta = [1, \theta_1, \theta_2, \cdots, \theta_q]$:     
+$$(1-\Phi)Y = \Theta \epsilon$$
+
+- Model is linear in coefficients      
 
 - ARMA model assumes stationary time series    
 
@@ -959,7 +1007,10 @@ The **autoregressive integrative moving average (ARIMA)** model includes AR, int
   * d is the order of differencing   
   * q is the MA order    
 - The integrative term helps transforms trend and random walks to stationary process      
-- Does not account for seasonal effect      
+- Does not account for seasonal effect     
+- For difference values, $\nabla y_t$, formulate as:    
+
+$$(1-\Phi)\nabla Y = \Theta \epsilon$$
 
 
 ## Seasonal Models   
@@ -992,30 +1043,28 @@ The SARIMAX model adds seasonal and exogenous terms
 The SARIMAX model (with no exogenous variables) is formulated    
 
 $$
-\phi_p(X) \tilde{\phi}_P(X^*) \Delta^d \Delta^D y_t =  A(t) + \theta_q(X) \tilde{\theta}_Q(X^*)
+\phi_p(Y) \tilde{\phi}_P(Y^*) \nabla^d \nabla^D y_t =  A(t) + \theta_q(Y) \tilde{\theta}_Q(Y^*)
 $$
 
 
-- $\phi_p(X)$ and $\tilde{\phi}_P(X^*)$ are the AR polynomials non-seasonal and seasonal terms   
-- $\theta_q(X)$ and $\tilde{\theta}_Q(X^*)$ are the MA polynomials non-seasonal and seasonal terms  
-- $\Delta^d$ and $\Delta^D$ are the non-seasonal and seasonal differencing operators      
+- $\phi_p(Y)$ and $\tilde{\phi}_P(Y^*)$ are the AR polynomials non-seasonal and seasonal terms   
+- $\theta_q(Y)$ and $\tilde{\theta}_Q(Y^*)$ are the MA polynomials non-seasonal and seasonal terms  
+- $\nabla^d$ and $\nabla^D$ are the non-seasonal and seasonal differencing operators      
 - $A(t)$ is the trend term    
 
 
 ## SARIMAX Model
 
 
-SARIMAX model can include exogenous variables   
+SARIMAX model can include exogenous variables, $x$, leading to a new system of equations":   
 
 $$
-y_t = \beta_t z_t + \mu_t 
-$$
-$$
-\phi_p(X) \tilde{\phi}_P(X^*) \Delta^d \Delta^D \mu_t =  A(t) + \theta_p(X) \tilde{\theta}_P(X^*)
+y_t = \beta_t x_t + \mu_t \\
+\phi_p(Y) \tilde{\phi}_P(Y^*) \nabla^d \nabla^D \mu_t =  A(t) + \theta_p(Y) \tilde{\theta}_P(Y^*)
 $$
 
 - Time series model for latent variable, $\mu_t$    
-- $\mu_t$ acts as the intercept term for the regression model for $y_t$    
+- $\mu_t$ acts as the intercept term for the regression model for $x_t$    
 - The coefficient vector, $\beta$, contains the **effect sizes** for the exogenous variables    
 
 
