@@ -300,13 +300,14 @@ Can measure the correlation of a time series with itself
 
 We compute the autocorrelation at lag $k$:  
 
-$$\rho_k = \frac{\gamma_k}{n \sigma^2} = \frac{1}{n \sigma^2} \sum_{t = 1}^N (x_{t} - \mu) \cdot (x_{t-k} - \mu)$$    
+$$\rho_k = \frac{\gamma_k}{n \sigma^2} = \frac{1}{n \sigma^2} \sum_{t = 1}^N (y_{t} - \mu) \cdot (y_{t-k} - \mu)$$    
 Where:    
 \begin{align}
 k &= lag\\
+y_t &= observaton\ at\ time\ t\\
 \gamma_k &= covariance\ lag\ k\\
 \mu &= mean\ of\ the\ series\\ 
-\sigma^2 &= variance\ of\ the\ series = \frac{1}{n-1}\Sigma_{t = 1}^N (x_{t} - \mu) \cdot (x_{t} - \mu)
+\sigma^2 &= variance\ of\ the\ series = \frac{1}{n-1}\Sigma_{t = 1}^N (y_{t} - \mu) \cdot (y_{t} - \mu)
 \end{align}
 
 
@@ -348,15 +349,16 @@ acf_pacf_plot(white)
 Random walks are a commonly encountered properties of time series    
 
 - Change in value of random walk series at one time step:    
-$$w_t = x_t - x_{t-1}$$   
+$$w_t = y_t - y_{t-1}$$   
 
 - The next value in the random walk is then:   
-$$x_t = x_{t-1} + w_t$$  
+$$y_t = y_{t-1} + y_t$$  
 
 Or, with a little bit of algebra:    
 
-$$x_t = w_t + \sum_{i=0}^{t-1} w_i$$
+$$y_t = w_t + \sum_{i=0}^{t-1} w_i$$
 - $w_i$ is the ith **innovation**   
+- $y_t=$ observarition at time $t$      
 - A random walk is an **integrative process**; sum or integral of innovations     
 
 *Note:* innovations are referred to by other names:    
@@ -408,10 +410,10 @@ Random walk time series are **non-stationary**
 
 - Consider the **covariance** of a time series at lag $k$:    
 
-$$\gamma_k = Cov(x_t, x_{t+k})$$ 
+$$\gamma_k = Cov(y_t, y_{t+k})$$ 
 
 - For a random walk, the increase in covariance is **unbounded in time**:   
-$$\gamma_k = Cov(x_t, x_{t+k}) = t \sigma^2 \rightarrow \infty\ as\ t \rightarrow \infty$$
+$$\gamma_k = Cov(y_t, y_{t+k}) = t \sigma^2 \rightarrow \infty\ as\ t \rightarrow \infty$$
 
 - Unbounded and time dependent variance make a random walk non-stationary   
 
@@ -589,7 +591,7 @@ How do we deal with random walks?
 - **Difference operators** are useful for both cases    
 - Difference operators return the innovations   
 
-$$\Delta x_t = x_t - x_{t-1}$$
+$$\Delta y_t = y_t - y_{t-1}$$
 
 - Difference operators can be of any order in principle    
   * Typically use first order differences    
@@ -641,12 +643,12 @@ dist_ts(walk_diffs, 'difference of random walk')
 - Consider the simple first order model   
 - Set initial conditions:    
 
-$$ s_0 = x_0 $$
+$$ s_0 = y_0 $$
 
 - The smoothed update is:     
 
-$$ s_t = \alpha x_t + (1-\alpha) s_{t-1}\\ 
-= s_{t-1} \alpha(x_t - s_{t-1}),\\ 
+$$ s_t = \alpha y_t + (1-\alpha) s_{t-1}\\ 
+= s_{t-1} \alpha(y_t - s_{t-1}),\\ 
 t \gt 0 $$
 
 - And, the smoothing coefficient is, $0 \le \alpha \le 1$    
@@ -673,12 +675,12 @@ Can extend exponential smoothing model to accommodate trend
 - Update smoothed values and slope at each time step   
 - Start with initial values     
 
-$$s_1 = x_1\\
-b_1 = x_2 - x_1$$
+$$s_1 = y_1\\
+b_1 = y_2 - y_1$$
 
 - Update relationships for both smoothed value and slope    
 
-$$s_t = \alpha x_t + (1-\alpha) (s_{t-1} + b_{t-1})\\
+$$s_t = \alpha y_t + (1-\alpha) (s_{t-1} + b_{t-1})\\
 b_t = \beta(s_t - s_{t-1}) + (1 - \beta)b_{t-1}$$
 
 - Additional slope smoothing hyperparameter, $0 \le \beta \le 1$    
@@ -751,9 +753,14 @@ The **ARIMA model** is composed three components:
 
 - An autoregressive model of order $p$, $AR(p)$, uses the last p observations:   
 
-$$x_t = \phi_1 x_{t-1} + \phi_2 x_{t-2} \dots \phi_p x_{t-p} + w \epsilon_t\\
+$$x_t = \phi_1 y_{t-1} + \phi_2 y_{t-2} \dots \phi_p y_{t-p} + w_t\\
 where\\
-\epsilon_t = white\ noise\ error\ at\ time\ t$$
+\begin{align}
+\phi_k &= model\ coefficient\ at\ lag\ k\\
+w_t &= white\ noise\ error\ at\ time\ t;\ \sim \mathtt{N}(0,\sigma^2)\\
+y_t &= observation\ at\ time\ t\\
+\end{align}
+$$
 
 - An AR process has the following properties:   
    * $\rho_0 = 1$ always    
@@ -784,14 +791,13 @@ How can we understand the AR model?
 $$
 A = 
 \begin{bmatrix}
-x_1,\ 0,\ 0\\
-x_2,\ x_{1},\ 0\\
-x_3,\ x_{2},\ x_{1}\\
-x_4,\ x_{3},\ x_{2}\\
-\vdots,\ \vdots,\ \vdots\\
-x_{t-2}, x_{t-3}, x_{t-4}\\
-x_{t-1}, x_{t-2}, x_{t-3}\\
-x_t, x_{t-1},x_{t-2}
+y_t,\ y_{1-1},\ y_{t-2}\\
+y_{t-1},\ y_{1-2},\ y_{t-3}\\
+y_{t-2},\ y_{1-3},\ y_{t-4}\\
+\vdots,\ \ \ \ \ \vdots,\ \ \ \ \ \vdots\\
+y_{2},\ \ \ \ y_{1},\ \ \ \ y_{0}\\
+y_{1},\ \ \ \ y_{0}\ \ \ \, 0\\
+y_0,\ \ \ \ 0,\ \ \ \ 0
 \end{bmatrix}
 $$
 
@@ -802,7 +808,7 @@ $$
 We can rewrite the AR(1) model in terms of exceptions:    
 
 $$
-\mathbb{E}(X_t) = \phi_t \mathbb{E}(X_{t-1}) + \mathbb{E}(\epsilon_t) \\
+\mathbb{E}(y_t) = \phi_t \mathbb{E}(y_{t-1}) + \mathbb{E}(\epsilon_t) \\
 or \\
 \mu = c + \phi_t \mu + 0 \\
 therefore \\
@@ -858,9 +864,13 @@ ar2_model = model_ARIMA(ts_series_ar2, order = (2,0,0))
 
 - A **moving average** model of order $q$, $MA(q)$, uses the last q error terms or shocks:    
 
-$$x_t = \mu + w_t + \theta_1 w_{t-1} + \theta_2 w_{t-2} + \cdots + \theta_q w_{t-q} \\
+$$y_t = \mu + \epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q}\\
 where\\
-w_t = white\ noise\ error\ at\ time\ t \sim \mathtt{N}(0,\sigma^2)$$
+\begin{align}
+\theta_k &= model\ coefficient\ at\ lag\ k\\
+y_t &= observation\ at\ time\ t\\
+\epsilon_t &= innovation\ or\ error\ at\ time\ t;\ \sim \mathtt{N}(0,\sigma^2)
+\end{align}$$      
 
 - An MA process has the following properties:   
    * For autocorrelation, $\rho_0 = 1$ always    
@@ -877,16 +887,16 @@ How can we understand the MA model?
 $$
 A = 
 \begin{bmatrix}
-x_1,\ 0,\ 0\\
-x_2,\ w_{1},\ 0\\
-x_3,\ w_{2},\ w_{1}\\
-x_4,\ w_{3},\ w_{2}\\
-\vdots,\ \vdots,\ \vdots\\
-x_{t-2}, w_{t-3}, w_{t-4}\\
-x_{t-1}, w_{t-2}, w_{t-3}\\
-x_t, w_{t-1},w_{t-2}
+y_t,\ w_{1-1},\ w_{t-2}\\
+y_{t-1},\ w_{1-2},\ w_{t-3}\\
+y_{t-2},\ w_{1-3},\ w_{t-4}\\
+\vdots,\ \ \ \ \ \vdots,\ \ \ \ \ \vdots\\
+y_{2},\ \ \ \ w_{1},\ \ \ \ w_{0}\\
+y_{1},\ \ \ \ w_{0}\ \ \ \, 0\\
+y_0,\ \ \ \ 0,\ \ \ \ 0
 \end{bmatrix}
 $$
+
 
 - MA model is a **linear model!**    
 
@@ -923,8 +933,8 @@ ma1_model = model_ARIMA(ts_series_ma1, order = (0,0,1))
 
 We can combine AR and MA terms to create the **autoregressive moving average (ARMA)** model of order $(p,q)$:     
 
-$$x_t = \epsilon_t + \phi_1 x_{t-1} + \phi_2 x_{t-2} \dots \phi_p x_{t-p} +
-\theta_1 w_{t-1} + \theta_2 w_{t-2} + \cdots + \theta_q w_{t-q}$$
+$$x_t = c + \phi_1 x_{t-1} + \phi_2 x_{t-2} \dots \phi_p x_{t-p} +\\
+\theta_1 w_{t-1} + \theta_2 w_{t-2} + \cdots + \theta_q w_{t-q} + \epsilon_t$$
 
 - ARMA model assumes stationary time series    
 
