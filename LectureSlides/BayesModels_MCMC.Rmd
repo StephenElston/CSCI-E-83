@@ -1,7 +1,7 @@
 ---
 title: "Bayes MCMC Models"
 author: "Steve Elston"
-date: "02/28/2021"
+date: "10/17/2022"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -52,80 +52,6 @@ Two functions must be defined to compute the posterior distribution
    - Example, for binomial likelihood, the conjugate is the $Beta(\alpha,\beta)$     
    - Example, for Normal likelihood, the normal distribution is the conjugate for the mean, $\mu$     
 
-## Review   
-
-Several solution methods; we apply two possibilities   
-
-- Use an **analytical solution**; posterior in family of conjugate prior      
-   - Update conjugate prior using evidence (observations or data)
-
-- **Grid sample** over range of model parameter values    
-   
-- In both cases, goal is to compute the posterior distribution over the plausible range of parameters     
-   - Example; for binomial likelihood, range of parameter values, $0 \le\theta \le 1.0$    
-   - Example; for Normal likelihood, range of parameter values around empirical values of $\mu$ and $\sigma > 0$    
-
-
-
-## Review  
-
-What are the properties of the Beta distribution?   
-
-```{r Beta, out.width = '70%', fig.cap='Beta distribution for different parameter values', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("../images/Beta.png"))
-```
-
-## Review    
-
-Consider the product of a Binomial likelihood and a Beta prior     
-
-- Define the evidence as $n$ trials with $z$ successes   
-   - These are the actual data or observations for your problem 
-
-- Prior is a Beta distribution with parameters $a$ and $b$, or the vector $\theta = (a,b)$     
-   - $a$ is the pseudo count of sussesses    
-   - $b$ is the pseudo count of failure     
-   - For an **uninformative prior**, $U(0,1) = Beta(1,1)$, so $a=0,\ b=0$, since we have **no prior information**  
-   - With uninformative prior, posterior distribuytion = likelihood funciton  
-
-- From Bayes Theorem the distribution of the posterior:    
-
-\begin{align}
-posterior(\theta | z, n) &= \frac{likelihood(z,n | \theta)\ prior(\theta)}{data\ distribution (z,n)} \\
-Beta(\theta | z, n, a, b) &= \frac{Binomial(z,n | \theta)\ Beta(a+1, b+1)}{p(z,n)} \\
-&= Beta(z + a -1,\ n-z+b-1)
-\end{align}
-
-## Review   
-
-Consider example with:  
-   - Prior pseudo counts $[1,9]$, successes $a = 1 + 1$ and failures, $b = 9 + 1$     
-   - Evidence,  successes $= 10$ and failures, $= 30$    
-   - Posterior is $Beta(10 + 2 -1,\ 40 - 10 + 10 -1) = Beta(11,\ 39)$ 
-
-
-```{r DistrtractedDrivers, out.width = '40%', fig.cap='Prior, likelihood and posterior for distracted driving', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("../images/DistrtractedDrivers.png"))
-```
-
-
-## Review     
-
-What are the 95% credible intervals for $Beta(11,\ 39)$? 
-
-```{r CredibleIntervals, out.width = '70%', fig.cap='Ppsterior density of probability of distract drivers', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("../images/CredibleIntervals.png"))
-```
-
-
-## Review    
-
-
-Simulate the probabilities of distracted drivers for the next 10 cars with posterior, $Beta(11,\ 39)$? 
-
-```{r DistractedNext10Cars, out.width = '40%', fig.cap='Probability of distract drivers for next 10 cars', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("../images/DistractedNext10Cars.png"))
-```
 
 
 ## Introduction       
@@ -140,14 +66,12 @@ How can we extend Bayes models to more complex problems?
 
 - We need highly efficient sampling methods for complex problems   
 
-## Problem with Grid Sampling       
+## Grid Sampling Cannot Scale!       
 
 Real-world Bayes models have large numbers of parameters, into the millions    
 
 - Naive approach is simple grid sampling     
    - Sample across dimensions of the parameter space       
-
-- Grid sampling does not scale     
 
 - Consider this thought experiment, sampling dimension 100 times:     
    - 1-parameter model: $100$ samples    
@@ -159,6 +83,19 @@ Real-world Bayes models have large numbers of parameters, into the millions
 
 - Need a better approach! 
 
+## Scaling Bayesian models
+
+How can we scale Bayesian models to 1000s of parameters?   
+
+- **Variational methods**     
+   * Based on Variational calculus    
+   * A very effective and efficient method for some problems     
+   * But, proves difficult us use as a general solution    
+   * Details beyond our scope here    
+
+- **Markov Chain Monte Carlo (MCMC)**      
+   * A simple and reliable method for Bayesian inference   
+   * Our focus here    
 
 ## Introduction to Markov Chain Monte Carlo
 
@@ -166,14 +103,17 @@ Large-scale Bayesian models need highly efficient sampling methods
 
 - **Markov chain Monte Carlo (MCMC) sampling** is efficient and scalable    
 
-- Rather than sampling on a grid MCMC methods sample distributions randomly    
+- Rather than sampling on a grid MCMC methods sample distributions efficiently   
+   * Sample higher density regions of posterior with higher probability    
 
-- Requires effort to understand how the algorithm works and what to do when things go wrong     
+- Requires effort to understand how the algorithm works   
+   * Must carefully evaluate how well algorithm converged     
+   * What to do when things go wrong     
 
 
 ## What is a Markov process?
 
-MCMC sampling uses a chain of **Markov sampling processes**     
+MCMC sampling uses a **Markov processes sampling chain**     
 
 - A Markov process is a **stochastic process** that transitions from a current state, $x_t$, to some next state, $x_{t+1}$, with probability $\Pi$      
    - **No dependency on past states**       
@@ -431,7 +371,7 @@ These marginals are similar to the original distribution
 
 ## Convergence and sampling efficiency of MCMC
 
-Hoe can we understand the onvergence properties of the M-H MCMC sampler     
+How can we understand the onvergence properties of the M-H MCMC sampler     
 
 - MCMC sampling generally convergences to the underlying distribution, but can be slow    
 
@@ -559,131 +499,56 @@ NUTS represents the state of the art in MCMC samplers
    - While NUTS works well in many common cases, it is not guaranteed to converge    
    - In some cases a Gibbs sampler works better    
 
+## Constructing an MCMC Model with PyMC
 
-## Hierarchical modeling
+Define and construct a simple linear regression model 
 
-So far, we have only worked with models having a simple flat parameter structure      
+- Simple dataset:    
+   * Dependent variable $Y$      
+   * Independent variables $x_1$, $x_2$ 
 
-- For complex models fully employing the power of Bayesian methods, we must use **hierarchical models**      
-
-- Hierarchical models allow us to compute posterior distributions     
-   - Account for dependency in the parameters     
-   
-- Build a heirarchy of parameter dependencies by factoring the joint distribution   
-
-
-## Chain rule of probability
-
-Use the **chain rule of probability** to **factor a joint distribution** into hierarchy       
-
-- Recall a basic relationship for conditional probability for two random variables, $A$ and $B$:  
-
-$$P(A,B) = P(A|B)P(B)$$
-
-- Can expand this relationship to a joint distribution of $n$ random variables, $A_1, A_2, A_3, A_4 \ldots, A_n$:
-
-$$P(A_1, A_2, A_3, A_4 \ldots, A_n) = P(A_1 | A_2, A_3, A_4, \ldots, A_n)\ P(A_2, A_3, A_4 \ldots, A_n)$$
-
-
-- Continue this factorization until we reach an end point:
-
-$$P(A_1, A_2, A_3, A_4 \ldots, A_n) =\\ P(A_1 | A_2, A_3, A_4, \ldots, A_n)\ P(A_2 | A_3, A_4 \ldots, A_n)\\ P(A_3| A_4 \ldots, A_n) \ldots P(A_n)$$
-
-
-## Chain rule of probability     
-
-The factorization is not unique. 
-
-- Factor the variables in any order      
-
-- For a joint distribution with $n$ variables, there are $n!$ unique factorizations       
-
-- Example, we can factorize the foregoing distribution as:
-
-$$P(A_1, A_2, A_3, A_4 \ldots, A_n) =\\ P(A_n | A_{n-1}, A_{n-2}, A_{n-3}, \ldots, A_1)\ P(A_{n-1}| A_{n-2}, A_{n-3}, \ldots, A_1)\\ P(A_{n-2}| A_{n-3}, \ldots, A_1) \ldots p(A_1)$$     
-
-
-## Factorization applied to hierarchical models   
-
-Apply the chain rule of probability to Bayes theorem       
-
-- Allows us to create hierarchical Bayesian models     
-
-- Consider an example of a multi-parameter model; estimating both the mean, $\mu$, and standard deviation, $\sigma$, of a Normal distribution
-
-$$p(\mu, \sigma | D) \propto p(D| \mu, \sigma) p(\mu, \sigma)$$   
-
-- Simplify this relationship by applying the chain rule of probability for the parameter of interest, $\mu$: 
-
-\begin{align}
-p(\mu, \sigma | D) &\propto p(D | \mu) p(\mu | \sigma) p(\sigma)\\
-&\propto\ Likelihood\ *\ Conditional\ Distribution\ of\ \mu\ given\ \sigma\ *\ Prior\ of\ \sigma
-\end{align}
-
-- Complex multi-parameter Bayesian model is transformed into a hierarchy    
-   - A likelihood functions, of data gien the  parameter, $$\mu$     
-   - The conditional distribution of $\mu$ given $\sigma$    
-   - The prior distibution of $\sigma$       
-
-## The Gamma distribution
-
-Use the Gamma distribution for the prior of the standard deviation    
-
-- Here, we parameterize the Gamma distribution by a shape parameter, $a$ and a scale parameter, $b$     
-   - Gamma distribution is defined on the range $0 > Gamma(a,b) > \infty$     
-   - Desirable property for a prior, since scale parameters must have values $>0$.   
-
-
-```{r GammaDistribution, out.width = '40%', fig.cap='Density of the Gamma distribution with scale-2.0', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("../images/GammaDistribution.png"))
+```{r RegressionData, out.width = '80%', fig.cap='Data for regression example', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/BayesRegressionData.jpg"))
 ```
 
 
-## Creating a MCMC hierarchical Bayes Model
+## Constructing an MCMC Model with PyMC
 
-We are now ready to create an **hierarchical Bayes model**      
+Define and construct a simple linear regression model 
 
-- It might seem some direct method of computing the posterior distribution can be easily found     
-   - Perhaps, but the form of the posterior is complicated      
-   - Find an approximate solution using MCMC methods 
+- Model has 4 parameters    
 
-- Structure of the hierarchical model has priors for mean, $\mu$, and standard deviation, $\sigma$
+- Define prior distributions for these parameters:    
 
-```{r HierarchicalModel, out.width = '70%', fig.cap='Hierarchical model for the posterior distribution', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("../images/HierarchicalModel.png"))
-```
+\begin{align}   
+\beta_0 &\sim \mathtt{N}(0, 2)\\
+\beta_1 &\sim \mathtt{N}(0, 2)\\
+\beta_2 &\sim \mathtt{N}(0, 2)\\
+\sigma &\sim |\mathtt{N}(0, 1)
+\end{align} 
 
-## Creating a MCMC hierarchical Bayes Model
+- $\beta_0$ is the intercept term    
+- $\beta_1, \beta_2$ are the partial slopes     
+- $\sigma$ is the standard deviation     
+- $|\mathtt{N}(.,.)$, indicates a **half Normal distribution**           
 
-In mathematical terms we can define the hierarchical model as follows:
- 
-1. Prior of the scale, $\sigma$, is $Gamma(2, 2)$; fairly noninformative    
+## Constructing an MCMC Model with PyMC
 
-2. Prior of the mean, $\mu$, is $N(0, 3)$, fairly dispersed and noninformative    
+Define and construct a simple linear regression model 
 
-3. The posterior distribution uses the priors for $\mu$ and $\sigma$ and a Normal likelihood   
-  
+- Model has 4 parameters  
 
+- Likelihood    
+   * Start with independent variables, $x_1, x_2$,      
+   * Realization of the values of $[\beta_0, \beta_1, \beta_2]$      
+   * Expected value of the response, $\mu$ is **computed deterministically**:   
 
-## Creating a MCMC hierarchical Bayes Model
+$$\mu = \beta_0 + \beta_1 * x_1 + \beta_2 * x_2$$
 
-Using PyMC3 to sample the posterior distribution      
+- Values of the posterior distribution of $Y$ computed as:    
 
-```{python, eval=FALSE}
-def create_model(y):
-    ## define a PyMC3 model object
-    model = pymc3.Model()
+$$Y \sim \mathtt{N}(\mu, \sigma)$$
 
-    with model:
-        # Define the prior distributions for the two model parameters, location, mu and scale
-        scale = pymc3.Gamma('scale', alpha=2,beta=2)
-        mu = pymc3.Normal('mu', mu=0, sigma=3.0)
-        
-        # The model for the posterior distribution uses the priors of the location and scale
-        # to model the observations.   
-        y_obs = pymc3.Normal('y_obs', mu=mu, sigma=scale, observed=y)
-    return model
-```    
 
 ## Evaluating the solution 
 
