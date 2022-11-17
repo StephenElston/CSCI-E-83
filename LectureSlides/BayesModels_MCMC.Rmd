@@ -468,36 +468,127 @@ The basic Gibbs sampler algorithm has the following steps:
 
 ## Hamiltonian MCMC   
 
-The Hamiltonian sampler was proposed in the early 1980s and uses a simple idea from classical mechanics    
+The Hamiltonian sampler was proposed in 1987 (Duane, et.al.) and uses a simple idea from classical mechanics    
+
+- Attempt to improve convergence of Metropolis-Hastings algorithm   
+  * M-H algorithm is slow converging **random walk**  
+  * Leads to low ESS      
+
+- Hamiltonian MCMC attempts to create a better directed sampling path   
+  * Uses an analogy with classical physics   
+  * Constrains the search to favor high-density parts of the posterior distribution   
 
 - Imagine that the posterior density is like a hilly landscape     
-   - We want to sample around the high spots, the maximum density points
+   * We want to sample around the high spots, the maximum density points   
+   * We call density **potential**     
 
 - We roll an imaginary ball around the landscape to the highest potential energy points  
-   - These high density points attract the ball - a 'field of attraction'      
+   * Ball has position and velocity in the space     
+   * These high density points attract the ball - a 'field of attraction'      
+  
 
-- Difficulty is that the ball will often simply roll back down the hill to a less interesting low-density regions     
-   - To prevent this, HMC method requires 2 hyperparameters to control stopping criteria of the ball       
-   - In practice, setting these hyperparameters proved tricky    
+## Hamiltonian MCMC   
+
+The Hamiltonian sampler uses a simple idea from classical mechanics  
+
+- Ball has **potential energy** and **kinetic energy**    
+   * **Potential energy** determined by probability density     
+   * **Kinetic energy** determined by rate of change of position, **velocity**   
+
+- **Hamiltonian** arise from the principle of **conservation of energy**        
+
+$$\mathtt{H}(q,p) = \mathtt{K}(p,q) + \mathtt{V}(q)$$
+
+- Where:      
+   * $p =$ momentum vector           
+   * $q =$ position vector       
+   * $\mathtt{K}(p,q) =$ kinetic energy    
+   * $\mathtt{V}(q) =$ potential energy   
+
+- The Hamiltonian of the system **must remain constant** over the sample space
+
+## Hamiltonian MCMC   
+
+The Hamiltonian sampler uses a simple idea from classical mechanics    
+
+- We can relate position and momentum to the density we want to sample    
+
+- The **Boltzmann distribution** of the Hamiltonian
+
+$$p(q,p) = e^{-\frac{\mathtt{H}(q,p)}{kT}}$$
+
+- Where:    
+   * $k =$ normalization or **partition coefficient**   
+   * $T =$ temperature    
+  
+## Hamiltonian MCMC   
+
+The Hamiltonian sampler uses a simple idea from classical mechanics  
+
+- **Hamiltonian** arise from the principle of **conservation of energy**        
+
+$$\mathtt{H}(q,p) = \mathtt{K}(p,q) + \mathtt{V}(q)$$
+
+- Solve for velocity and momentum as system of coupled differential equations:  
+
+\begin{align}
+\frac{d\ q}{d\ t} &= \frac{\partial \mathtt{H}}{\partial p} = \frac{\partial \mathtt{K}}{\partial p} + \frac{\partial \mathtt{V}}{\partial p}\\
+
+\frac{d\ p}{d\ t} &= \frac{\partial \mathtt{H}}{\partial q} = \frac{\partial \mathtt{K}}{\partial q} + \frac{\partial \mathtt{V}}{\partial q}
+\end{align}
+
+- Notice that HMCMC only works for distributions with finite derivatives    
+   * Works for nearly all continuous distributions   
+   * Cannot be applied to discrete distributions     
+
+- The above is rather intimidating, and we skip the details!  
+
+## Hamiltonian MCMC
+
+Hamiltonian MCMC is an extension of the M-H algorithm with steps:    
+
+1. Sample $p \sim \mathtt{N}(0,\sigma)$      
+2. Simulate $q_t$ and $p_t$ for a $L$ time steps to time $T$, using the coupled differential equations   
+3. Get $q_T$ as the new proposed state     
+4. Apply the M-H acceptance criteria to $q_T$
+
+- Must find good value of $L$ to **tune** the algorithm    
+  * $L$ too small, search is only local    
+  * $L$ too large, search makes large jumps   
+   
+- Hard to find good hyperparameter value in practice      
+
+
 
 ## No U-Turn Sampler   
 
-NUTS represents the state of the art in MCMC samplers       
+NUTS represents the state of the art in MCMC samplers: [Hoffman and Gelman](stat.columbia.edu/~gelman/research/published/nuts.pdf) 2014         
    
 - PyMC3 package uses the NUTS MCMC algorithm.    
 
 - NUTS improves on HMC     
-   - The field that guides the movement of the ball is the target probability distribution     
-   - The ball is drawn towards dense (high likelihood) regions of the space        
-   - The gradient determines direction the ball rolls   
-   
--  Ball is prevented from turning around   
-   - No U-turns!     
-   - The need for complex stopping criteria with hyperparameters is eliminated    
+  * Run time forward and backward when solving coupled differential equations   
+  * Find equilibrium at the **no U-turn point**   
+  * Equilibrium point determines $L$ automatically  
+  * Eliminates tuning    
+
 
 - Why even discuss other samplers when we have the NUTS     
-   - While NUTS works well in many common cases, it is not guaranteed to converge    
-   - In some cases a Gibbs sampler works better    
+   - NUTS works well in many common continuous distribution cases, it is not guaranteed to converge    
+   - In some cases a Gibbs sampler works better  
+   - Use M-H for discrete distributioins     
+
+## Hamiltonian MCMC   
+
+Hamiltonian MCMC is a complex algorithm - some resources for additional details
+
+- [A Conceptual Introduction to Hamiltonian Monte Carlo, Michael Betancourt](https://arxiv.org/abs/1701.02434), 2017       
+
+- [MCMC using Hamiltonian dynamics, Radford Niel](https://arxiv.org/pdf/1206.1901.pdf), 2012
+
+- [Hamiltonian Monte Carlo explained, Alex Rogozhnikov](https://arogozhnikov.github.io/2016/12/19/markov_chain_monte_carlo.html), 2016
+
+
 
 ## Key Steps for MCMC Bayes Modeling     
 
@@ -512,6 +603,8 @@ Focus of modern Bayes modeling is no evalaution
 7. Posterior predictive checks - Do the posterior predictions agree with the observed response?  
 
 Packages like [ArviZ](https://arviz-devs.github.io/arviz/index.html) are dedicated to evaluation of Bayes MCMC models.     
+
+Multiple examples diagnostics for the breakdown of MCMC sampling can be found in an online Appendix to a seminal paper [Vehtari  et.al.](https://avehtari.github.io/rhat_ess/rhat_ess.html#references), 2019
 
 
 ## Constructing an MCMC Model with PyMC
@@ -640,6 +733,18 @@ knitr::include_graphics(rep("../images/PosteriorTraces.png"))
 
 ## Sampling and Inference with Model    
 
+Evaluation the sampled posterior and perform inference   
+
+- There are a number of ways MCMC sampling can breakdown and not converge;
+
+```{r BadTraces, out.width = '70%', fig.cap='', echo=FALSE}
+knitr::include_graphics(rep("../images/BadTraces.png"))
+```
+
+Example from [Vehtari et.al.](https://arxiv.org/pdf/1903.08008.pdf), 2021, a seminal paper on evaluation of MCMC    
+
+## Sampling and Inference with Model    
+
 We must verify that the samples are representative 
 
 ```{r MCMC_table, out.width = '50%', fig.cap='Table of MCMC convergence statistics', echo=FALSE}
@@ -729,14 +834,32 @@ knitr::include_graphics(rep("../images/PosteriorHDI.png"))
 
 We must check that predictions from the model are reasonable      
 
-- Does the posterior distribution look like the distribution of the observed response?       
+- Does the posterior distribution look like the distribution of the observed response?    
 
-- Is the distribution of the differences between observed and predicted responses zero centered?      
+- Can simply compare density plots    
 
-- **Bayesian p-value** is a statistic for the distribution differences between observed and predicted responses        
-   * Want probability of positive difference equal to the probability of negative difference       
-   * Bayesian p-value $= 0.5$ is 
+- Apply a test statistic $T$   
+   * Bayesian p-value      
+   * Bayesian u-value    
+   * Others   
 
+## Posterior Predictive Checks       
+
+We must check that predictions from the model are reasonable      
+
+- Base statistic on **posterior predictive distribution**   
+
+- Approximate PPD by resampling from the posterior distribution:    
+
+$$p(y^{rep}|y)= \sum_i p(y^{rep}|\theta) p(\theta|y)$$
+
+Where:   
+$y^{rep} =$ realization drawn from the posterior distribution  
+$y =$ observation  
+$p(y^{rep}|\theta) =$ draw from posterior distribution with parameters $\theta$    
+$p(\theta|y) =$ posterior distribution of model parameters, $\theta$    
+
+- We can sample the posterior as many times as required to get better estimates of $p(y^{rep}|y)$ 
 
 ## Posterior Predictive Checks       
 
@@ -750,7 +873,22 @@ knitr::include_graphics(rep("../images/PosteriorPredictive.png"))
 
 - Agreement is generally good between posterior predictive and actual observations    
 
-- Average preditive is heavier in the tails    
+- Average predictive is heavier in the tails    
+
+
+## Posterior Predictive Checks       
+
+We must check that predictions from the model are reasonable      
+
+- **Bayesian p-value** is a test statistic, $T$, for the distribution differences between observed and predicted responses:  
+
+$$p = p(y^{rep} < y | y )$$
+  
+- Intuitively, for representative posterior, $p = 0.5$ over many draws of $y^{rep}$   
+   * $y^{rep} < y | y$ half the time    
+   * $y^{rep} > y | y$ half the time  
+   * Distribution should be symmetric   
+   
 
 
 
@@ -758,30 +896,36 @@ knitr::include_graphics(rep("../images/PosteriorPredictive.png"))
 
 We must check that predictions from the model are reasonable      
 
-- Posterior predictive Bayesian p-value.............................      
+- Posterior predictive Bayesian p-value     
 
-```{r BayesianPValue, out.width = '60%', fig.cap='Distribution of ..........................', echo=FALSE}
+```{r BayesianPValue, out.width = '60%', fig.cap='Distribution of Bayesian p-values', echo=FALSE}
 knitr::include_graphics(rep("../images/BayesianPValue.png"))
 ```
 
 - Plot is centered on 0.5     
 
-- Distibution of ...... looks promisng    
+- Distribution is symmetric   
+
 
 
 ## Posterior Predictive Checks       
 
 We must check that predictions from the model are reasonable      
 
-- Posterior predictive Bayesian p-value.............................      
+- Posterior predictive **Bayesian u-value** is also known as the **marginal p-value**:   
 
-```{r LocalPValue, out.width = '60%', fig.cap='Distribution of ..........................', echo=FALSE}
+$$p_i = p(y_i^{rep} < y_i | y )$$
+
+- U-value computed for specific (ordered) observation $y_i$    
+  * $p_i$ should be centered on 1.0    
+  * $p_i$ should be close to uniformly distributed    
+
+
+```{r LocalPValue, out.width = '60%', fig.cap='Distribution of Bayesian u-values', echo=FALSE}
 knitr::include_graphics(rep("../images/LocalPValue.png"))
 ```
 
-- The values are close to 1.0 across all values of the ....................
-
-- Result indicates ................................
+- The values are close to 1.0 across all values of the observatons    
 
 
 ## British Coal Mine Disasters   
@@ -868,6 +1012,10 @@ Analysis of change point in British coal mine disasters
 ```{python, eval=FALSE}
 with pymc3.Model() as disaster_model:
     # Uniform prior on the switch point  
+    switchpoint = pymc3.DiscreteUniform("switchpoint", lower=disaster_data.Year.min(), upper=disaster_data.Year.max())
+    # More informative prior based on domain knowledge    
+#    switchpoint = pymc3.Triangular("switchpoint", lower=disaster_data.Year.min(), upper=disaster_data.Year.max(), c=1900)
+
     switchpoint = pymc3.DiscreteUniform("switchpoint", lower=disaster_data.Year.min(), upper=disaster_data.Year.max())
 
     # Priors for pre- and post-switch rates 
