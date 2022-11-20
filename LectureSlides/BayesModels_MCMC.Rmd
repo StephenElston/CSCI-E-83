@@ -130,7 +130,7 @@ Since Markov transition process depends only on the current state a Markov proce
 
 - We can express the sequence of a Markov transition processes as:
 
-$$P(X_{t + 1}| X_t = x_t, x_{t-1}, x_{t-2}, \ldots, x_0) = p(X_{t + 1}| x_t)$$
+$$p(X_{t + 1}| X_t = x_t, x_{t-1}, x_{t-2}, \ldots, x_0) = p(X_{t + 1}| x_t)$$
 
 
 - The Markov process is memoryless   
@@ -150,7 +150,7 @@ $$\Pi =
 \pi_{N,i} & \pi_{N,2} & \cdots & \pi_{N,N}
 \end{bmatrix}\\
 where\\
-\pi_{i,j} = probability\ of\ transition\ from\ state\ i\ to\ state\ j\\
+\pi_{i,j} = probability\ of\ transition\ from\ state\ j\ to\ state\ i\\
 and\\
 \pi_{i,i} = probability\ of\ staying\ in\ state\ i\\
 further\\
