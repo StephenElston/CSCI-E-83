@@ -12,7 +12,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-use_python("/usr/bin/python3")
+use_python("C:/Users/steph/anaconda3")
 #py_install("matplotlib")
 #py_install("pandas")
 #py_install("numpy")
