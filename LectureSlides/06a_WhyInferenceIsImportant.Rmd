@@ -14,7 +14,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-use_python("/usr/bin/python3")
+use_python("C:/Users/steph/anaconda3")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
@@ -202,7 +202,8 @@ $$1- \alpha = P \Big( Lower\ CI \le \mathbf{x} \le Upper\ CI \Big)$$
 
 Example: For Normal distribution the right and left tail probabilities are $\alpha/2$:
 
-$$\alpha/2 = P(x \le Lower\ CI),\ and,\ \alpha/2 = P(upper\ CI \ge x \ge \infty)$$
+$$1 - \alpha/2 = P(-\infty \le x \le Lower\ CI),\\ and,\\ 
+1 - \alpha/2 = P(upper\ CI \ge x \ge \infty)$$
 
 ## Confidence Intervals; the Key to Inference   
 
