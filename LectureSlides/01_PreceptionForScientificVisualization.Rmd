@@ -61,17 +61,10 @@ Our focus is on the big ideas of computer-intensive statistics and data analysis
 
 - **Exploratory data analysis (EDA)** to understand relationships in big complex data sets          
 - **Foundations of algorithms** used throughout statistics and machine learning such as maximum likelihood 
-
-- **Computer intensive resampling methods** for building models and inference    
-  - Bootstrapping 
-  - MCMC Bayes   
-
-- **Large scale hypothesis testing** for complex and high-dimensional data sets   
-
+- **Computer intensive resampling methods** for building models and inference, **Bootstrapping** and **MCMC Bayes**      
+- **Large scale hypothesis testing and sparse models** for complex and high-dimensional data sets   
 - **Bayesian hierarchical models** for complex relationships     
-
-- **Sparse models** for complex high-dimensional data 
-
+- **Modern time series and forecasting algorithms** for data with serial correlation         
 - **Robust statistics** to deal with data violating model assumptions 
 
 
@@ -90,10 +83,7 @@ This fast-moving survey course helps build your toolbox for modeling complex dat
 - Understand models for complex datasets       
   - Understanding data relationships and inference             
   - How these methods work and when to used them   
-  - Theory of linear and hierarchical statistical models     
-  - Sparse models    
-  - Robust models   
-  - What to do when things go wrong   
+  - How confident should we be in our inferences?   
 
 - Moving beyond a cookbook or blog post approach to data science      
 
@@ -111,11 +101,11 @@ This fast-moving survey course helps build your toolbox for modeling complex dat
 
 - Creator of multiple edX courses, author of O'Reily books and articles     
 
-- Holder of several patents    
+- Holder of 5 issued patents    
 
 - BS, physics and math (minor), University of New Mexico    
 
-- MS and PhD, geophysics, Princeton University – John von Neuman Supercomputing Fellow   
+- MS and PhD, geophysics, Princeton University – NSF, John von Neuman Supercomputing Fellow   
 
 
 -----------------------------------------------------------------
@@ -126,6 +116,14 @@ This fast-moving survey course helps build your toolbox for modeling complex dat
 - Received PhD in computer science from University of Texas at San Antonio     
 - Worked previously at Microsoft's Advanced Threats Protection team developing ML solutions for malware detection    
 - Research mainly focused on applying machine learning solutions to cyber-security challenges    
+
+
+-----------------------------------------------------------------
+
+## Teaching Assistant: Tatyana Boland
+
+-    
+
 
 -------------------------------------------------------------
 
@@ -170,11 +168,11 @@ Independent Graduate Project:
 
 - An end-to-end project you will execute independently      
 - Pay careful attention to grading rubric in Canvas    
-- Can be great addition to your data science pr0ject portfolio   
+- Can be great addition to your data science project portfolio   
 - Pick a problem of particular interest to you!        
   - Plan to spend about 80 hours on your analysis and report    
   - Sufficient data must be available     
-  - Must use analytical methods within the scope of this course - e.g. no advanced ML or deep learning    
+  - **Must use analytical methods within the scope of this course** - e.g. no advanced ML or deep learning    
 - Start thinking about your project soon - don't put it off    
 - Resources to help you get started are under the Resources tab in Ed      
   - List of possible data sources      
@@ -199,14 +197,15 @@ Independent Graduate Project:
 
 ## Class Schedule
 
-- Class meeting Thursdays, 5:30 pm US Eastern Time:    
+- Class meeting Tuesdays, 6:00 pm US Eastern Time:    
   - Focus on theory to understand concepts   
   - Limited time for code discussions   
 
-- Section meetings on Mondays, 5:30 pm US Eastern Time:    
+- Section meetings on Wednesday or Thursday, 6:00 pm US Eastern Time:    
   - Focus on answer student questions - your questions!    
   - Discus code and coding problems   
   - Background and supplementary material as needed    
+  - Poll to find best day for class
   
 - All class meetings are recorded for on-demand viewing    
 
@@ -223,7 +222,7 @@ Communicating with your instructors and other students is a significant aspect o
 - Comment on weekly graded discussion topics       
 
 **Ed is the primary communications method**    
-  - Generally use public posts - okay to include code snipits   
+  - Generally use public posts - okay to include code snippets   
   - Option to ask instructors private questions  
 
 **Ask for the help you need!**
@@ -237,8 +236,9 @@ For private matters, you can directly communicate with the instructional team:
 - Absences      
 - Etc       
 
-Steve Elston, Instructor, stephen.elston@gmail.com    
-Moustafa Saleh, TA, msaleh83@gmail.com  
+Steve Elston, Instructor, stephen.elston  gmail.com    
+Moustafa Saleh, TA, msaleh83  gmail.com  
+Tatyana Boland, TA, tatyanaboland  gmail.com
 
 **Office hours:** If you need individual assistance, please ask to schedule office hours. Don't be shy!   
 
@@ -252,6 +252,23 @@ Then, back to the lecture
 
 -----------------------------------------------------------------
 
+## Why Exploration and Visualization?    
+
+**Exploratory data analysis (EDA)** tools are essential to good data science
+
+- Isn't the goal of data science to build machine learning models?    
+
+- Not always!    
+
+- Often we need to understand relationships found in data     
+   - Explain scientific or behavioral relationships     
+   - Determine if a relationship is important     
+   
+- Our goal is to gain deep understanding for complex problem    
+   - EDA methods   
+   - Statistical inference   
+
+----------------------------------------------------------------
 
 ## Why Exploration and Visualization?    
 
@@ -275,7 +292,9 @@ Then, back to the lecture
 
 
 - **Goal:** Communicate information visually
-- Visualization technique maximize the information a viewer perceives
+- Visualization technique maximize the information a viewer perceives    
+   - Gain insights when exploring relationships in data     
+   - Communicate insights to others    
 - limits of human perception are a significant factor in understanding complex relationships
 - Can apply results of the considerable research on human perceptions for data visualization
 
@@ -287,7 +306,9 @@ Then, back to the lecture
 - Use aesthetics to improve perception
 - We take a very broad view of the term 'aesthetic' here
 - A plot aesthetics is any property of a visualization which highlight aspects of the data relationships
-- Aesthetics are used to project additional dimensions of complex data onto the 2-dimensional plot surface
+- Aesthetics are used to project additional dimensions of complex data
+   - Plots generally restricted to 2-dimensional surface    
+   - Must projet multiple dimensions of complex data on 2-d surface   
 
 
 -----------------------------------------------------------
@@ -346,7 +367,8 @@ auto_price = pd.read_csv('../data//AutoPricesClean.csv')
 
 
 - **Aspect ratio** has a significant influence on how a viewer perceives a chart
-- Correct aspect ratio can help highlight important relationships in complex data sets
+- Correct aspect ratio can help highlight important relationships in complex data sets    
+- But, wrong aspect ratio can hide or mislead!     
 - We express aspect ratio as follows:     
 
 $$aspect\ ratio = \frac{width}{height}\ : 1$$
@@ -413,8 +435,10 @@ plt.show()
 Use of **color** as an aesthetic in visualization is a complicated subject. 
 
 - color is often used, also often abused 
-- A **qualitative palette** is a palette of individual colors  to display categorical values
-- **Sequential palettes** and **divergent palettes** are a sequence of colors used to display a quantitative variable or ordered categorical variable
+- A **qualitative palette** is a palette of individual colors for categorical values
+- **Sequential palettes** and **divergent palettes** are a sequence of colors 
+   - Numeric variables 
+   - Ordered categorical variable
 
 -------------------------------------------------------------
 
@@ -457,18 +481,22 @@ Regardless of the approach there are some significant limitations
 
 - A significant number of people are color blind. Red-green color blindness is most common 
 - Even the best sequential or divergent palettes show only relative value of numeric variables
-- Perception of exact numeric values is difficult, except in special cases
-
+- Perception of exact numeric values is difficult, except in special cases   
+- Cannot perceive large number of colors for categories   
 
 -----------------------------------------------------------
 
 ## Marker Size
 
-**Marker size** is moderately effective aesthetic useful for quantitative variables
+**Marker size** is moderately effective aesthetic 
 
-- Used properly, marker size can highlight important trends in complex data sets 
-- But, the viewer can generally perceive relative differences, but not actual values 
+- Used properly, marker size can highlight important realationships in complex data sets    
+   - Numeric values    
+   - Ordinal variables 
+- Viewers can generally perceive relative differences, but not actual values 
 - Small size differences are not preceptable  
+   - Only relative relationship in numeric variables  
+   - Limited steps of categorical variables   
 
 
 -----------------------------------------------
@@ -507,9 +535,9 @@ plt.show()
 
 **Line plots** connect discrete, ordered, data points by a line
 
-- Can use different line pattern types to differentiate data 
+- Can use different colors and line pattern types to differentiate categories   
 - Only useful for a limited number of lines on one graph
-- Too many similar line pattern on one plot leads to viewer confusion and poor perception
+- Too many similar colors and line patterns on one plot leads to viewer confusion and poor perception
 
 ---------------------------------------------------------------
 
@@ -583,7 +611,7 @@ Regression lines draw viewers attention
   - Lowess - local nonlinear regression   
   
 - Bootstrap confidence intervals show range of probable trends    
-  - More or bootstrap resampling later   
+  - More about bootstrap resampling later   
   
 - Ideally want strait line relationship  
   - Nonlinear relationships often arise from non-Normal distributions  
@@ -751,9 +779,16 @@ Second order polynomial fit
 ## Summary
 
 We have  explored these key points       
+- Visualization is a powerful EDA method     
+    - Understand relationships in data   
+    - Communicate data scince insights   
+    
 - Proper use of plot aesthetics enable projection of multiple dimensions of complex data onto the 2-dimensional plot surface.     
+
 - All plot aesthetics have limitations which must be understood to use them effectively     
+
 - The effectiveness of a plot aesthetic varies with the type and the application    
+
 - Regression lines help to focus viewer on trends        
 - Transformations to linear relationships can be informative     
 
