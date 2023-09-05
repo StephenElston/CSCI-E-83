@@ -1,7 +1,7 @@
 ---
 title: "Perception for Scientific Visualization"
 author: "Steve Elston"
-date: "08/28/2022"
+date: "09/04/2023"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -62,7 +62,8 @@ Our focus is on the big ideas of computer-intensive statistics and data analysis
 - **Exploratory data analysis (EDA)** to understand relationships in big complex data sets          
 - **Foundations of algorithms** used throughout statistics and machine learning such as maximum likelihood 
 - **Computer intensive resampling methods** for building models and inference, **Bootstrapping** and **MCMC Bayes**      
-- **Large scale hypothesis testing and sparse models** for complex and high-dimensional data sets   
+- **Large scale and sparse models** for complex and high-dimensional data sets   
+- **Non-Normal** response models   
 - **Bayesian hierarchical models** for complex relationships     
 - **Modern time series and forecasting algorithms** for data with serial correlation         
 - **Robust statistics** to deal with data violating model assumptions 
@@ -122,7 +123,10 @@ This fast-moving survey course helps build your toolbox for modeling complex dat
 
 ## Teaching Assistant: Tatyana Boland
 
--    
+-  MBA in Finance from Texas A&M
+- MLA from Harvard Extension School in Sustainability & Environmental Management  
+- BA in Political Science from University of Washington
+- Worked previously at Oracle OCI as Principal Technical Program Manager in Physical Networking team       
 
 
 -------------------------------------------------------------
@@ -131,11 +135,11 @@ This fast-moving survey course helps build your toolbox for modeling complex dat
 
 Activity | Grade weight |
 |:---:|:---:|
-|Participation (graded discussions) | 10% |
-| Assignments | 90% |     
+|Participation (graded discussions) | 10% |: 8-10 online discussions
+| Assignments | 90% |: 12 assignments of varing length     
 
 - Hands-on assignments tie theory to practice applied to data examples    
-  - Most of us only recall methods we actaully use   
+  - Most of us only recall methods we actually use   
   - Lectures provide introduction only    
   - Expect to work out some details   
   - Do not hesitate to ask for help on concepts or coding!!   
@@ -147,10 +151,10 @@ Activity | Grade weight |
 
 |Activity | Grade weight |
 |:---:|:---:|
-|Participation (graded discussions) | 10% |
-| Assignments | 60% |   
-| Independent project proposal | 5% |   
-| Independent project report | 25% |
+|Participation (graded discussions) | 10% |: 8-10 online discussions
+| Assignments | 60% |: 12 assignments of varing length     
+| Independent project proposal | 5% |: Due November 18   
+| Independent project report | 25% |: December 21, **no extension possible!**
 
 - Hands-on assignments tie theory to practice applied to data examples    
   - Most of us only recall methods we actaully use   
@@ -174,8 +178,8 @@ Independent Graduate Project:
   - Sufficient data must be available     
   - **Must use analytical methods within the scope of this course** - e.g. no advanced ML or deep learning    
 - Start thinking about your project soon - don't put it off    
-- Resources to help you get started are under the Resources tab in Ed      
-  - List of possible data sources      
+- Resources to help you get started are under the **Resources tab in Ed Discussion**        
+  - List of possible data sources: Far from comprehensive     
   - Example project proposals and reports     
 
 
@@ -201,7 +205,7 @@ Independent Graduate Project:
   - Focus on theory to understand concepts   
   - Limited time for code discussions   
 
-- Section meetings on Wednesday or Thursday, 6:00 pm US Eastern Time:    
+- Section meetings **day TBD**, 6:00 pm US Eastern Time:    
   - Focus on answer student questions - your questions!    
   - Discus code and coding problems   
   - Background and supplementary material as needed    
@@ -225,7 +229,9 @@ Communicating with your instructors and other students is a significant aspect o
   - Generally use public posts - okay to include code snippets   
   - Option to ask instructors private questions  
 
-**Ask for the help you need!**
+**Ask for the help you need!**    
+
+Any communications by Canvas will likely be delayed  
 
 -----------------------------------------------
 
@@ -295,7 +301,7 @@ Then, back to the lecture
 - Visualization technique maximize the information a viewer perceives    
    - Gain insights when exploring relationships in data     
    - Communicate insights to others    
-- limits of human perception are a significant factor in understanding complex relationships
+- Limits of human perception are a significant factor in understanding complex relationships
 - Can apply results of the considerable research on human perceptions for data visualization
 
 
@@ -374,7 +380,9 @@ auto_price = pd.read_csv('../data//AutoPricesClean.csv')
 $$aspect\ ratio = \frac{width}{height}\ : 1$$
 
 
-- **Banking angle** is key to understanding how the aspect ratio affects perception 
+- **Banking angle** is key to understanding how the aspect ratio affects perception    
+   - Humans are most sensitive to changes about 45 degrees    
+   - Optimal banking angle controlled by aspect ratio    
 
 
 -----------------------------------------------------------
@@ -414,7 +422,9 @@ plt.show()
 
 ## Example of Changing Aspect Ratio
 
-- Notice how changing aspect ratio change perception of the asymmetry?
+- Notice how changing aspect ratio change perception of the asymmetry?     
+
+- Banking angle is near optimal   
 
 ```{python, echo=FALSE}
 fig, ax = plt.subplots(figsize=(10, 1.0))
@@ -427,7 +437,7 @@ _=ax.tick_params(labelsize=8)
 plt.show()
 ```
 
-
+ 
 -----------------------------------------------------------
 
 ## Sequential and Divergent Color Palettes
