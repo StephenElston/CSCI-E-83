@@ -1,7 +1,7 @@
 ---
 title: "Visualization of Large Complex Data"
 author: "Steve Elston"
-date: "09/08/2022"
+date: "09/11/2023"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -11,7 +11,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-use_python("/usr/bin/python3")
+use_python("C:/Users/steph/anaconda3")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
@@ -196,7 +196,7 @@ plt.show()
 
 ## Use Transparency, Marker Size, Downsampling
 
-Down sapple to 20%, alpha = 0.1, size = 2
+Down sample to 20%, alpha = 0.1, size = 2
 
 ```{python, echo=FALSE}
 fig, ax = plt.subplots(figsize=(10, 6))
@@ -236,6 +236,8 @@ Alternatives to avoid over-plotting for truly large data sets
 
 ## Hexbin Plot   
 
+**Example:** Density of sale price by time    
+
 ```{python, echo=FALSE}
 p = plt.hexbin(x=housing.loc[:,'time_decimal'], y=housing.loc[:,'log_medSoldPriceSqft'], gridsize = 50, cmap='YlGnBu')
 cb = plt.colorbar(p)
@@ -250,6 +252,8 @@ plt.show()
 
 ## Countour Plot
 
+**Example:** Contour plot of 2-D KDE of sale price vs. time   
+
 ```{python, echo=FALSE}
 #_=plt.hexbin(housing.loc[:,'time_decimal'], housing.loc[:,'log_medSoldPriceSqft'], cmap='YlGnBu')
 ###### Replace above with below ############################
@@ -261,7 +265,20 @@ plt.show()
 ```
  
  
- 
+ ---------------------------------------
+
+## Heat Map
+
+**Example:** Airline passenger counts by month and year displayed by squential heat map    
+
+
+```{r HeatMap, out.width = '60%', fig.cap='Heat map of ', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/HeatMap.PNG"))
+```
+
+
+
+
 -------------------------------------
 
 ## Other Methods to Display Large Data Sets
@@ -281,12 +298,14 @@ Sometimes a **creative alternative** is best
 
 ## Time Series of Box Plots
 
+**Example:** Time ordered box plots of quarterly sales price   
+
 ```{python, echo=FALSE}
 bins = [2008.0 + i * 0.25 for i in range(34)]
 housing.loc[:,'time_bins'] = pd.cut(housing.loc[:,'time_decimal'], bins=bins)
 fig, ax = plt.subplots(figsize=(9, 9))  
 fig.subplots_adjust(bottom=0.4)
-_=sns.boxenplot('time_bins', 'log_medSoldPriceSqft', color='lightgray', data=housing)
+_=sns.boxenplot(data=housing, x='time_bins', y='log_medSoldPriceSqft', color='lightgray')
 _=ax.set_xticklabels(ax.get_xticklabels(), rotation=90, fontsize=6)
 _=ax.set_xlabel('Time', fontsize=6)
 _=ax.set_ylabel('Log Median Sale Price', fontsize=8)
@@ -310,30 +329,15 @@ How can we display multidimensional count (categorical) data at scale?
 
 ## Mosaic Plots
 
-```{python, echo=FALSE}
-bike_share_df = pd.read_csv('../data/BikeSharing.csv')
+**Example:** How do counts change with working vs. non-working day, weather and year?     
 
-## Add month column with names
-bike_share_df.loc[:,'month'] = [calendar.month_abbr[i] for i in bike_share_df.loc[:,'mnth']]
+- Mosaic plot displays tiles with size proportional to count
 
-## Add column with human readable weather conditions
-weather = {1:'Clear', 2:'Mist', 3:'Light precipitation', 4:'Heavy precipitation'}
-bike_share_df.loc[:,'Weather'] = [weather[i] for i in bike_share_df.loc[:,'weathersit']]
-```
+- Counts conditioned on variables, working day, weather, year   
 
-```{python, echo=FALSE}
-season = {1:'winter', 2:'spring', 3:'summer', 4:'fall'}
-bike_share_df.loc[:,'Season'] = [season[i] for i in bike_share_df.loc[:,'season']]
-year = {0:'2011', 1:'2012'}
-bike_share_df.loc[:,'year'] = [year[i] for i in bike_share_df.loc[:,'yr']]
-working = {0:'No_Work', 1:'Working'}
-bike_share_df.loc[:,'WorkingDay'] = [working[i] for i in bike_share_df.loc[:,'workingday']]
-
-categorical_cols = ['year','Season', 'WorkingDay', 'Weather']
-
-
-fig, ax = plt.subplots(figsize=(10, 8))
-plt.rcParams.update({'font.size': 5})
+```{python, eval=FALSE}
+fig, ax = plt.subplots(figsize=(25, 20))
+plt.rcParams.update({'font.size': 18})
 _=mosaicplot.mosaic(bike_share_df.loc[:,categorical_cols], 
                     index=list(categorical_cols), 
                     title = 'Counts of weather conditions',
@@ -341,6 +345,16 @@ _=mosaicplot.mosaic(bike_share_df.loc[:,categorical_cols],
 
 plt.show()
 ```
+
+
+--------------------------------------
+
+## Mosaic Plots
+
+```{r mosaic, out.width = '100%', fig.cap='Facet plot of wind by month', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Mosaic.PNG"))
+```
+
 
 
 -------------------------------------
@@ -414,9 +428,9 @@ Scatter plot matrix used to investigate relationships between a number of variab
 ## Scatter Plot Matrix    
 
 Scatter plot matrix create two dimensional array of plots of variable pairs            
-- Upper triangular plots     
-- Lower triangular plots      
-- Diagonal plots    
+- Upper triangular plots: Scatter plots with regression lines     
+- Lower triangular plots: Hexbin plots of density      
+- Diagonal plots: Histograms of variables     
 
 ```{python, eval=FALSE}
 g = sns.PairGrid(diabetes.drop('Sex', axis=1), hue='sex_categorical', palette="Set2", height=1.5)
@@ -426,25 +440,12 @@ _=g.map_diag(plt.hist, histtype="step",linewidth=1)
 plt.show()
 ```
 
---------------------------------------------
+------------------------------
 
 ## Scatter Plot Matrix    
 
-```{python, echo=FALSE}
-## Load the data arrays
-diabetes_X, diabetes_y = load_diabetes(return_X_y=True)
-## Create a data frame with the correct column names for the independent variables.
-column_names = ['Age','Sex','BodyMassIndex','AverageBloodPressure','S1','S2','S3','S4','S5','S6']
-diabetes = pd.DataFrame(diabetes_X[:,:5], columns=column_names[:5])
-## Add the dependent variable to the data frame and set it to categorical type
-diabetes.loc[:,'DiseaseProgression'] = diabetes_y
-diabetes.loc[:,'sex_categorical'] = diabetes.loc[:,'Sex'].map(lambda x: 'male' if x<0 else 'female')
-
-g = sns.PairGrid(diabetes.drop('Sex', axis=1), hue='sex_categorical', palette="Set2", height=1.3)
-_=g.map_upper(sns.regplot, order=1, truncate=True, scatter_kws={'s':0.5})
-_=g.map_lower(plt.hexbin, alpha=0.5, cmap='Blues', gridsize=15, linewidths=0)
-_=g.map_diag(plt.hist, histtype="step",linewidth=1)
-plt.show()
+```{r scattermat, out.width = '60%', fig.cap='Scatterplot matrix with different plot types', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/ScatterplotMatrix.png"))
 ```
 
 -------------------------------------
@@ -457,7 +458,8 @@ plt.show()
 
 - Key idea: Create array of plots of subsets of the data   
   - Create subsets using a group-by operation on other variables    
-  - Lay out grid of plots on **same axis** by row and column grouping variables   
+  - Lay out grid of plots on **axes with same scale**        
+  - Organize by row and column grouping variables    
   - Display same plot type for each group    
   - Can add specific aesthetics, etc.   
 
@@ -473,52 +475,100 @@ Like many good ideas facet plotting was invented several times
   - Cleveland, 1992, introduced **trellis plotting**    
   - Also known as **conditioned plots**      
 
-- Most packages use term facet plot
+- Nowdays, most packages use term **facet plot**   
 
 --------------------------------------------
 
-## Facet Plot with Weather by Season
+## Facet Plot with wind speed by Month
 
 Facet plot projected on a grid
 
-- Grid defined by categorical variable for row and column    
+- Grid defined by variable values for row and column    
 - Can tile or shingle numeric variables for grid      
-- Can create variables by combinations of categories from other variables   
+   - Tile categorical variables   
+   - Overlapping shingles of numeric variables   
+- Can create variables by combinations of categories from other variables 
+
+- **Example:** Histogram of wind speed conditioned on month      
+  - Plot grid has month in columns      
+  - Histogram of windspeed is created for each monthly subset    
 
 ```{python, eval=FALSE}
-with sns.plotting_context(font_scale=0.1):
-    g = sns.FacetGrid(bike_share_df, col="Weather", col_order=weather.values(), row="month", row_order=calendar.month_abbr[1:], height=1.3, aspect=1.5)
-    g = g.map(plt.scatter, "hr", "cnt", alpha=0.2, s=1)
-    plt.show()
+g = sns.FacetGrid(bike_share_df, col='month', col_order=calendar.month_abbr[1:] ,col_wrap = 4, height=5)
+g = g.map(plt.hist, "windspeed", bins=20, color="b", alpha=0.5)
 ```
 
 
 --------------------------------------------
 
-## Facet Plot with Weather by Season
+## Facet Plot with wind speed by Month
 
-```{python, echo=FALSE}
-bike_share_df = pd.read_csv('../data/BikeSharing.csv')
 
-## Add month column with names
-bike_share_df.loc[:,'month'] = [calendar.month_abbr[i] for i in bike_share_df.loc[:,'mnth']]
-
-## Add column with human readable weather conditions
-weather = {1:'Clear', 2:'Mist', 3:'Light precipitation', 4:'Heavy precipitation'}
-bike_share_df.loc[:,'Weather'] = [weather[i] for i in bike_share_df.loc[:,'weathersit']]
-
-season = {1:'winter', 2:'spring', 3:'summer', 4:'fall'}
-bike_share_df.loc[:,'Season'] = [season[i] for i in bike_share_df.loc[:,'season']]
-year = {0:'2011', 1:'2012'}
-bike_share_df.loc[:,'year'] = [year[i] for i in bike_share_df.loc[:,'yr']]
-working = {0:'No_Work', 1:'Working'}
-bike_share_df.loc[:,'WorkingDay'] = [working[i] for i in bike_share_df.loc[:,'workingday']]
-
-with sns.plotting_context(font_scale=0.1):
-    g = sns.FacetGrid(bike_share_df, col="Weather", col_order=weather.values(), row="month", row_order=calendar.month_abbr[1:], height=1.3, aspect=1.5)
-    g = g.map(plt.scatter, "hr", "cnt", alpha=0.2, s=1)
-    plt.show()
+```{r facet_hist, out.width = '60%', fig.cap='Facet plot of wind by month', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/facet_hist_monthly.PNG"))
 ```
+
+
+--------------------------------------------
+
+## Facet Plot of Hourly Counts by Weather and Season
+
+**Example:** Plot count of riders by hour, conditioned on weather and season   
+
+- Grid defined by season on the rows and weather in the columns     
+- Scatter plot of count of riders by hour of the data for each group   
+
+```{python, eval=FALSE}
+g = sns.FacetGrid(bike_share_df, col="Weather", col_order=weather.values(), row="Season", height=2, aspect=2)
+g = g.map(sns.scatterplot, "hr", "cnt", s=3, alpha=0.2)
+for ax in g.axes.flat:
+    ax.set_title(ax.get_title(), fontsize=10)
+```
+
+--------------------------------------------
+
+## Facet Plot of Hourly Counts by Weather and Season  
+
+**Example:** Plot count of riders by hour, conditioned on weather and season    
+
+```{r facet_temp_wind, out.width = '100%', fig.cap='Facet plot of count by season and weather', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/CountSeasonWeather.PNG"))
+```
+
+
+------------------------------------------------
+
+## Facet Plot of Hourly Counts by Weather and Season
+
+**Example:** Plot count of riders by hour, conditioned on weather and season   
+
+- Grid defined by season on the rows and weather in the columns     
+- Boxplots of count of riders by hour of the data for each group 
+  - Time-ordered box plots can improve perception over scatter plots     
+  - Eye tends to follow the lines   
+
+```{python, eval=FALSE}
+g = sns.FacetGrid(bike_share_df, col="Weather", col_order=weather.values(), row="Season", height=2, aspect=2)
+g = g.map(sns.boxplot, "hr", 'cnt', color='lightgray', order=None)
+for ax in g.axes.flat:
+    ax.set_title(ax.get_title(), fontsize=10)
+for i in range(4):
+    g.axes[i,0].set_ylabel('Count') 
+```
+
+
+------------------------------------------------
+
+## Facet Plot of Hourly Counts by Weather and Season
+
+**Example:** Box plot counts of riders by hour, conditioned on weather and season   
+
+
+```{r BoxplotCount, out.width = '100%', fig.cap='Facet plot of count by season and weather', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/BoxplotCount.PNG"))
+```
+
+
 
 -------------------------------------
 
@@ -543,7 +593,7 @@ How can we visualize very high dimensional data?
 
 ## Cognistic: States With Fastest Rate of Housing Price Increase     
 
-```{python, echo=FALSE}
+```{python, eval=FALSE}
 ## Add an intercept column to the data frame
 housing.loc[:,'intercept'] = [1.0] * housing.shape[0]
 ## Demean the decimal time column
@@ -598,7 +648,19 @@ def plot_price_by_entity(df, order, entity='state', xlims=[2007.5, 2016.5]):
 _=plot_price_by_entity(big_increase_states, increase_states)
 ```
 
--------------------------------------
+
+--------------------------------------------
+
+## Cognistic: States With Fastest Rate of Housing Price Increase     
+
+
+```{r cognostic_greatesthousing, out.width = '100%', fig.cap='States with greatest increase in housing price', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Cognositic_HighestPriceIncrease.PNG"))
+```
+
+
+
+------------------------------------
 
 ## Summary
 
