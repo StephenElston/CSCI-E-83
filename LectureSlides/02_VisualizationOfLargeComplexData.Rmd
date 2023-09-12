@@ -103,11 +103,30 @@ All scientific graphics are limited to a **2-dimensional projection**
 
 - We need methods to project large complex data onto 2-dimensions    
 
-- Generally, multiple views are required to understand complex data sets   
+- Generally, **multiple views are required** to understand complex data sets   
   - Don't expect one view to show all important relationships   
   - Develop understanding over many views    
   - Try many views, don't expect most to be very useful    
 
+------------------------------------------
+
+## Approaches to display of complex data relationships     
+
+Generally **combine multiple methods** to effectively display complex data    
+
+- Use **plots that inherently scale**     
+
+- **Avoid over-plotting** to ensure plot is understandable   
+
+- Choose plot types that **do not exhibit overplotting**    
+
+- Often a **creative case specific plot type** is best  
+
+- Use **multi-axis plots**     
+   - Scatter plot matricies    
+   - Facet plots   
+
+- Filter cases using **cognositics**   
 
 
 -------------------------------------
@@ -278,40 +297,6 @@ knitr::include_graphics(rep("../images/HeatMap.PNG"))
 
 
 
-
--------------------------------------
-
-## Other Methods to Display Large Data Sets
-
-Sometimes a **creative alternative** is best
-  
-- Often situation specific; many possibilities    
-
-- Finding a good one can require significant creativity!    
-
-- Example, choropleth for mutli-dimensional geographic data   
-
-- Example, time series of box plots      
-
-
--------------------------------------------
-
-## Time Series of Box Plots
-
-**Example:** Time ordered box plots of quarterly sales price   
-
-```{python, echo=FALSE}
-bins = [2008.0 + i * 0.25 for i in range(34)]
-housing.loc[:,'time_bins'] = pd.cut(housing.loc[:,'time_decimal'], bins=bins)
-fig, ax = plt.subplots(figsize=(9, 9))  
-fig.subplots_adjust(bottom=0.4)
-_=sns.boxenplot(data=housing, x='time_bins', y='log_medSoldPriceSqft', color='lightgray')
-_=ax.set_xticklabels(ax.get_xticklabels(), rotation=90, fontsize=6)
-_=ax.set_xlabel('Time', fontsize=6)
-_=ax.set_ylabel('Log Median Sale Price', fontsize=8)
-```
-
-
 --------------------------------------
 
 ## Mosaic Plots
@@ -355,6 +340,41 @@ plt.show()
 knitr::include_graphics(rep("../images/Mosaic.PNG"))
 ```
 
+
+
+
+
+-------------------------------------
+
+## Other Methods to Display Large Data Sets
+
+Sometimes a **creative alternative** is best
+  
+- Often situation specific; many possibilities    
+
+- Finding a good one can require significant creativity!    
+
+- Example, choropleth for multi-dimensional geographic data   
+
+- Example, time series of box plots      
+
+
+-------------------------------------------
+
+## Time Series of Box Plots
+
+**Example:** Time ordered box plots of quarterly sales price   
+
+```{python, echo=FALSE}
+bins = [2008.0 + i * 0.25 for i in range(34)]
+housing.loc[:,'time_bins'] = pd.cut(housing.loc[:,'time_decimal'], bins=bins)
+fig, ax = plt.subplots(figsize=(9, 9))  
+fig.subplots_adjust(bottom=0.4)
+_=sns.boxenplot(data=housing, x='time_bins', y='log_medSoldPriceSqft', color='lightgray')
+_=ax.set_xticklabels(ax.get_xticklabels(), rotation=90, fontsize=6)
+_=ax.set_xlabel('Time', fontsize=6)
+_=ax.set_ylabel('Log Median Sale Price', fontsize=8)
+```
 
 
 -------------------------------------
@@ -685,5 +705,25 @@ We have  explored these key points
   - Huge number of variables with many potential relationships   
   - **This is the hard part!**
 
+
+------------------------------------------
+
+## Summary     
+
+Generally **combine multiple methods** to effectively display complex data    
+
+- Use **plots that inherently scale**     
+
+- **Avoid over-plotting** to ensure plot is understandable   
+
+- Choose plot types that **do not exhibit overplotting**    
+
+- Often a **creative case specific plot type** is best  
+
+- Use **multi-axis plots**     
+   - Scatter plot matricies    
+   - Facet plots   
+
+- Filter cases using **cognositics**   
 
 
