@@ -11,7 +11,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-use_python("/usr/bin/python3")
+use_python("C:/Users/steph/anaconda3")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
@@ -72,11 +72,11 @@ $$X(\omega) \rightarrow \mathbb{R}$$
 
 - **Discrete**   
   - Model countable events     
-  - Examples; people making a purchase, number of patients with disease,....
+  - Examples: people making a purchase, number of patients with disease,....
   - Characterized by a **probability mass function (PMF)**  
 
 - **Continuous**    
-  - Examples; temperature, velocity, price,.......
+  - Examples: temperature, velocity, price,.......
   - Characterized by a **probability density function (PDF)**  
 
 
@@ -144,7 +144,7 @@ Useful properties of expectation
 
 2. The expectation of the sum of two random variables, $X$ and $Y$, is the sum of the expectations:
 
-$$\mathrm{E}[\mathbf{X,Y}] = \mathrm{E}[\mathbf{X}] + \mathrm{E}[\mathbf{Y}]$$
+$$\mathrm{E}[\mathbf{X + Y}] = \mathrm{E}[\mathbf{X}] + \mathrm{E}[\mathbf{Y}]$$
 
 3. The expectation of an **affine transformation** of a random variable, $X$, is an **affine transformation** of the expectation:
 
