@@ -474,7 +474,18 @@ where\\
 \Gamma(x) = Gamma\ function
 $$
 
+--------------------------------------------
 
+## Student t-distribution      
+
+Dispursion of student-t distribution determined by DOF, $\nu$    
+- Low DOF has heavy tails compared to Normal    
+- Student-t $\rightarrow$ standard Normal as $DOF \rightarrow \infty$
+
+
+```{r student_t, out.width = '70%', fig.cap='Heat map of ', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/student_t.PNG"))
+```
 ---------------------------------------------
 
 ## The Gamma and $\chi^2$ distributions
@@ -518,6 +529,66 @@ $$exp(\lambda) = \lambda e^{-\lambda x}$$
    - Used for estimates of the variance of the Normal distribution   
    - PDF of the $\chi^2_\nu$ distribution:    
 $$\chi^2_\nu=\frac{x^{\nu/2-1}\ e^{-x}}{\sigma^{\nu/2}\ \Gamma(\nu/2)}\\ for\ \nu\ degrees\ of\ freedom$$
+
+
+-----------------------------------------------------     
+
+## The $\chi^2$ Distribution      
+
+The $\chi^2$ distribution is used to construct parametric hypothesis tests of differences in counts between groups and also:       
+
+- Constructing tests for the significance of fits of observed values to probability distributions.   
+
+- The likelihood ratio test for the significance of differences between nested models.    
+
+- Computing confidence intervals for empirical (as opposed to theoretical) variance estimates of observed values. 
+
+-----------------------------------------------------     
+
+## The $\chi^2$ Distribution  
+
+The $\chi^2$ distribution is a parametric distribution with a single parameter, the degrees of freedom, k = number of possible outcomes - 1. 
+
+- For $n$ iid  Normal random variables, $Z_1, Z_2, ..., Z_n$, define a statistic, $Q$, as the sum of squares:    
+
+$$Q = \sum_{i=1}^n Z_i^2$$
+
+- $Q$ is said to be **$\chi^2_k$ distributed with $k=n-1$ degrees of freedom**   
+
+$$Q = \chi^2_k = \chi^2(k)$$
+
+-----------------------------------------------------     
+
+## The $\chi^2$ Distribution  
+
+The shape of the $\chi^2$ distribution changes character with the DoF: For $k = 1\ or\ 2$ the $\chi^2$ distribution has an exponential decay with the maximum value at $x=0$      
+
+```{r Chi2_DOF_12, out.width = '90%', fig.cap='Heat map of ', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Chi2_DOF_12.PNG"))
+```
+
+
+-----------------------------------------------------     
+
+## The $\chi^2$ Distribution  
+
+The shape of the $\chi^2$ distribution changes character with the DoF: For a middle range of DoF values the density starts at 0 and rises to a maximum or mode and then decay back toward 0         
+
+```{r Chi2_DOF_Med, out.width = '90%', fig.cap='Heat map of ', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Chi2_DOF_Med.PNG"))
+``` 
+
+
+-----------------------------------------------------     
+
+## The $\chi^2$ Distribution  
+
+The shape of the $\chi^2$ distribution changes character with the DoF: For large values of DoF the $\chi^2$ distribution converges toward a normal distribution with location parameter DoF       
+
+```{r Chi2_DOF_Lrg, out.width = '90%', fig.cap='Heat map of ', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Chi2_DOF_Lrg.PNG"))
+```
+
 
 
 ------------------------------------------------
