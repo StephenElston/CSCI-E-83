@@ -1,7 +1,7 @@
 ---
 title: "When One Thing Depends on Another; Conditional Probability"
 author: "Steve Elston"
-date: "09/15/2022"
+date: "09/18/2023"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -11,7 +11,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-use_python("/usr/bin/python3")
+use_python("C:/Users/steph/anaconda3")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
@@ -201,7 +201,7 @@ P(A|B)P(B) &= P(B|A)P(A)\\
 P(A|B) &= \frac{P(B|A)P(A)}{P(B)}
 \end{align}
 
-Which is Bayes' theorem! 
+**Which is Bayes' theorem!** 
 
 
 ----------------------------------------------------------
@@ -226,7 +226,7 @@ $$Likelihood(evidence\ |\ hypothesis)$$
 
 Now, we can think of Bayes' theorem in the following terms:
 
-$$Posterior(hypothesis\ |\ evidence) = \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{P(evidence)}$$
+$$Posterior(hypothesis\ |\ evidence) =\\ \frac{Likelihood(evidence\ |\ hypothesis)\ prior(hypothesis)}{P(evidence)}$$
 
 - We discuss selection of prior probability distributions and likelihood functions in subsequent lectures    
 
