@@ -256,9 +256,9 @@ Hemophilia is a serious genetic condition expressed on any X chromosome
   - Inherit X chromosome, and possibly hemophilia, from the mother    
   
 - Say a woman has a brother who exhibits hemophilia   
-  - X chromosome expression is $\theta = 1.0$  - brother has hemophilia with $P = 1.0$
-  - Woman's father does not exhibit hemophilia, $\theta = 0$ - father has hemophilia with $P = 0.0$  
-  - Our prior probability that she carries the genetic marker for hemophilia $\theta = 0.5$    - Woman's X chromosome has P = 0.5 that it is from mother, who carried the marker with $P = 1.0$
+  - X chromosome expression is $\theta = 1.0 \rightarrow$ brother has hemophilia with $P = 1.0$
+  - Woman's father does not exhibit hemophilia, $\theta = 0 \rightarrow$ father has hemophilia with $P = 0.0$  
+  - Our prior probability that she carries the genetic marker for hemophilia $\theta = 0.5 \rightarrow$ Woman's X chromosome has P = 0.5 that it is from mother, who carried the marker with $P = 1.0$
 
 
 ## Bayes Theorem Example  
@@ -272,8 +272,8 @@ As evidence the woman has two sons (not identical twins) with no expression of h
   - Case where woman does not carry an X chromosome with hemophilia expression, $\theta = 0$   
  
 $$
-p(x_1=0, x_2=0 | \theta = 1) = 0.5 * 0.5 = 0.25  \\
-p(x_1=0, x_2=0 | \theta = 0) = 1.0 * 1.0 = 1.0 
+p(x_1=0, x_2=0 | \theta = 1) = 0.5 \times 0.5 = 0.25  \\
+p(x_1=0, x_2=0 | \theta = 0) = 1.0 \times 1.0 = 1.0 
 $$
  
 Note: we are neglecting the possibility of a mutations in one of the sons 
