@@ -321,6 +321,25 @@ How can we display multidimensional count (categorical) data at scale?
 - Counts conditioned on variables, working day, weather, year   
 
 ```{python, eval=FALSE}
+bike_share_df = pd.read_csv('../data/BikeSharing.csv')
+
+## Add month column with names
+bike_share_df.loc[:,'month'] = [calendar.month_abbr[i] for i in bike_share_df.loc[:,'mnth']]
+
+## Add column with human readable weather conditions
+weather = {1:'Clear', 2:'Mist', 3:'Light precipitation', 4:'Heavy precipitation'}
+bike_share_df.loc[:,'Weather'] = [weather[i] for i in bike_share_df.loc[:,'weathersit']]
+
+season = {1:'winter', 2:'spring', 3:'summer', 4:'fall'}
+bike_share_df.loc[:,'Season'] = [season[i] for i in bike_share_df.loc[:,'season']]
+year = {0:'2011', 1:'2012'}
+bike_share_df.loc[:,'year'] = [year[i] for i in bike_share_df.loc[:,'yr']]
+working = {0:'No_Work', 1:'Working'}
+bike_share_df.loc[:,'WorkingDay'] = [working[i] for i in bike_share_df.loc[:,'workingday']]
+
+categorical_cols = ['year','Season', 'WorkingDay', 'Weather']
+
+
 fig, ax = plt.subplots(figsize=(25, 20))
 plt.rcParams.update({'font.size': 18})
 _=mosaicplot.mosaic(bike_share_df.loc[:,categorical_cols], 
