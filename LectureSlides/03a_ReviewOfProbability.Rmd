@@ -1,7 +1,7 @@
 ---
-title: "Review of Common Probability Distributions"
+title: "Review of Probability"
 author: "Steve Elston"
-date: "09/12/2023"
+date: "09/18/2023"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -43,7 +43,7 @@ matplotlib$use("Agg", force = TRUE)
 knitr::include_graphics(rep("../images/Ars.jpg"))
 ```
 
-- Probability theory is still an active area of research       
+- In the 21st Century, probability theory is an active area of research       
 
 
 -------------------------------------------
@@ -59,7 +59,7 @@ $$X(\omega) \rightarrow \mathbb{R}$$
 
 - **Example:** The mapping can be a count   
 
-- **Example:** A function which transforms $\omega$ to a real number, $\mathbb{R}$   
+- **Example:** The function maps $\omega$ to a real number, $\mathbb{R}$   
 
 - This concept appears abstract at first glance, but is fundamental to the theory of probability    
 - We will see many examples in this course
@@ -72,7 +72,7 @@ $$X(\omega) \rightarrow \mathbb{R}$$
 
 - **Discrete**   
   - Model countable events     
-  - Examples: people making a purchase, number of patients with disease,....
+  - Examples: count of people making a purchase, number of patients with disease,....
   - Characterized by a **probability mass function (PMF)**  
 
 - **Continuous**    
@@ -197,8 +197,8 @@ Bernoulli distributions model the results of a **single trial** or **single real
 \begin{align}
 P(x\ |\ p) &= \bigg\{ 
 \begin{matrix}
-p\ if\ x = 1\\
-(1 - p)\ if\ x = 0
+p \rightarrow x = 1\\
+(1 - p) \rightarrow x = 0
 \end{matrix}\\
 or\\
 P(x\ |\ p) &= p^x(1 - p)^{(1-x)}\ x \in {0, 1}
