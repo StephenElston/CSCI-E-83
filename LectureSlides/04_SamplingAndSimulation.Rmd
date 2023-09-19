@@ -55,8 +55,11 @@ $$f(\vec{\mathbf{x}}) = \frac{1}{{\sqrt{(2 \pi)^k |\mathbf{\Sigma}|}}}exp \big(\
   - But not commutable  
 $$P(A|B) = P(A) \nLeftrightarrow P(B|A) = P(B)$$  
 
-- Mutually exclusivity   
-$$P(A|B) = P(A) + P(B)$$
+- Mutually exclusivity 
+\begin{align}
+P(A|B) &= P(B|A) = 0\\
+P(A \cup B) &= P(A) + P(B)
+\end{align}
 
 - Independence      
 $$P(A|B) = P(A)$$
@@ -162,7 +165,7 @@ knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
 
 ## Sampling and the Law of Large Numbers
 
-The **weak law of large numbers** is a theorem that states that **statistics of independent random samples converge to the population values as more samples are used**      
+The **weak law of large numbers** is a theorem that states that **statistics of independent unbiased random samples converge to the population values as more samples are used**      
 
 - Example, for a population distribution, $\mathcal{N}(\mu,\sigma)$, the sample mean is:
 
