@@ -50,7 +50,7 @@ knitr::include_graphics(rep("../images/Prob1.png"))
 
 - Sample space is divided into several **subspaces** or **subsets**, $A$, $B$ and $C$    
 
-- **Intersection** is where the two sets overlap occur in both $A$ and $B$   
+- **Intersection** is where the two sets overlap occur in both $A$ and $B$ $\rightarrow A \cap B$  
 
 
 
@@ -64,8 +64,7 @@ Example:
 knitr::include_graphics(rep("../images/Prob1.png"))
 ```
 
-- **Intersection** is where the two sets overlap occur in both $A$ and $B$    
-  - First, find the relationship between conditional probability and the intersection between the sets, $P(A \cap B)$  
+- **Intersection**, $A \cap B$ , is where the two sets overlap   
   - The probability of the intersection is the product of two probabilities:    
   1. $P(B)$ since B must be true to be in this intersection.    
   2. $P(A|B)$ since A must also occur when B is occurring
@@ -106,7 +105,7 @@ Set operations are applied to probability problems
 
 1. **Intersection:**   
 
-$$P(A \cap B)  = P(A|B)P(B)$$
+$$P(A \cap B)  = P(A|B)P(B) = P(B|A)P(A)$$
 
 2. **Union:** is the sum of the probabilities of the sets minus the intersection between the sets:
 
@@ -146,10 +145,10 @@ The factorization of probability distributions can be simplified if events are e
 Express independence of random variables, $A \perp B$, mathematically:   
 
 \begin{align}
+P(A|B) &= P(A)\\
+P(A| \neg B) &= P(A)\\
 P(A\ \cap B) &= P(A|B)P(B) = P(A)P(B)\\ 
 P(A\ \cup B) &= P(A) + P(B) - P(A)P(B)\\
-P(A|B) &= P(A)\\
-P(A| \neg B) &= P(A)
 \end{align}
  
 But independence of A given B does not imply independence of B given A:
@@ -157,7 +156,7 @@ But independence of A given B does not imply independence of B given A:
 $$P(A|B) = P(A) \nLeftrightarrow P(B|A) = P(B)$$
 
 In other words, we need to pay attention to if A is independent of B or B is independent of A  
-- One or the other could be true
+- One or the other could be true    
 - Both could be true
 
 ---------------------------------------------
@@ -172,11 +171,12 @@ Then, events in A are **mutually exclusive** of events in B:
 
 \begin{align}
 P(A \cup B) &= P(A) + P(B)\\
-P(A|B) &= 0\\
+P(A|B) &= P(B|A) = 0\\
 P(A| \neg B) &= \frac{P(A)}{1 - P(B)}
 \end{align}
 
-And, $A$ mutually exclusive of B, implies B is mutually exclusive of A
+And,     
+$$A \perp B \iff B \perp A$$
 
 ----------------------------------------------------
 
@@ -232,7 +232,8 @@ $$Posterior(hypothesis\ |\ evidence) =\\ \frac{Likelihood(evidence\ |\ hypothesi
 
 - The denominator $P(evidence)$ or **partition function** is problematic        
 
-- Required to normalize the posterior distribution to range $0 \le Posterior(hypothesis\ |\ evidence) \le 1$  
+- Required to normalize the posterior distribution to range:     
+$$0 \le Posterior(hypothesis\ |\ evidence) \le 1$$  
 
 ## Interpreting Bayes Theorem
 
@@ -289,7 +290,7 @@ p(\theta=1 | X) = \frac{p(X|\theta=1) p(\theta=1)}{p(X|\theta=1) p(\theta=1) + p
 $$
 Where:   
 \begin{align}
-Likelihood &= p(X|\theta=1) = 0.5 0.5 = 0.25\\
+Likelihood &= p(X|\theta=1) = 0.5 \times 0.5 = 0.25\\
 Prior\ probability &= p(\theta=1) = 0.5\\
 Probability\ of\ hypothesis\ no\ marker &= p(\theta=0) = 1 - p(\theta=1) = 0.5 
 \end{align}
