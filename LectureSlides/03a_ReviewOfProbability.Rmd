@@ -201,10 +201,10 @@ p \rightarrow x = 1\\
 (1 - p) \rightarrow x = 0
 \end{matrix}\\
 or\\
-P(x\ |\ p) &= p^x(1 - p)^{(1-x)}\ x \in {0, 1}
+P(x\ |\ p) &= p^x(1 - p)^{(1-x)}\ x, \in {0, 1}
 \end{align}
 
-- Model the number of successful outcome in $N$ trials with the **Binomial distribution**  
+- Model the number of successful outcomes, $k$, in $N$ trials with the **Binomial distribution**  
 
 - Binomial distribution is product of multiple Bernoulli trials:
 
