@@ -204,6 +204,12 @@ or\\
 P(x\ |\ p) &= p^x(1 - p)^{(1-x)}\ x, \in {0, 1}
 \end{align}
 
+
+
+-------------------------------------------------------
+
+## Bernoulli and Binomial Distributions
+
 - Model the number of successful outcomes, $k$, in $N$ trials with the **Binomial distribution**  
 
 - Binomial distribution is product of multiple Bernoulli trials:
@@ -211,6 +217,10 @@ P(x\ |\ p) &= p^x(1 - p)^{(1-x)}\ x, \in {0, 1}
 $$P(k\ |\ N, p) = \binom{N}{k} p^k(1 - p)^{(N-k)}$$
 
 - Product of Bernoulli trials is normalized by the [**Binomial coefficient**](https://en.wikipedia.org/wiki/Binomial_coefficient#Factorial_formula)
+
+- The **expected number of success** $k$ in $N$ trials can be computed:    
+
+$$k = p\ N$$
   
 
 ----------------------------------------
@@ -256,11 +266,16 @@ And consequently, we can write the simple probability mass function as:
 $$f(x_i| \Pi) = \pi_i$$
 
 
-For a series $k$ of trials we can estimate each of the probabilities of the possible outcomes, $(\pi_1, \pi_2, \ldots, \pi_k)$:      
+For a series $N$ of trials we can estimate each of the probabilities of the possible outcomes, $(\pi_1, \pi_2, \ldots, \pi_k)$:      
 
-$$\pi_i = \frac{\#\ e_i}{k}$$   
+$$\pi_i = \frac{\#\ e_i}{N}$$   
 
 Where $\#\ e_i$ is the count of outcome $e_i$.   
+
+- The **expected number of outcome i**, $\#\ e_i$, in $N$ trials can be computed:    
+
+$$\#\ e_i = \pi_i\ N$$
+
 
 --------------------------------------------------------
 
@@ -277,6 +292,89 @@ For the case of $k=3$ you can visualize the possible outcomes of a single Catego
 ```{r Simplex, out.width = '40%', fig.cap='Simplex for $Mult_3$', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/Simplex.png"))
 ```
+
+
+
+------------------------------------------------
+
+## Poisson distribution
+
+Poisson distribution models the probability, $P$, of x **arrivals** within the time period     
+
+- Poisson process is an example of a **point process**   
+
+- The average number of arrivals of the Poisson process is referred to as the **intensity of the process**     
+  
+- Write the Poisson distribution in terms of the average arrival rate, $\lambda$ as:
+
+$$ 
+P(x\ |\ \lambda) = \frac{\lambda^x}{x!} \exp^{-\lambda}
+$$
+
+The mean and variance of the Poisson distribution are both equal to the parameter $\lambda$, or:
+
+\begin{align}
+Mean &= \lambda\\
+Variance &= \lambda
+\end{align}
+
+
+
+------------------------------------------------
+
+## Poisson distribution
+
+Poisson distribution models the probability, $P$, of x **arrivals** within the time period     
+
+
+```{r PoissonExample, out.width = '60%', fig.cap='Poisson distribution for several arrival rates', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/PoissonExample.PNG"))
+```
+
+
+------------------------------------------------------------
+
+## Uniform distribution
+
+Uniform distribution has flat PDF between limits $\{ a, b \}$    
+
+- Uniform distributions are fundamental to random sampling of data and in simulation     
+
+- Transformations of the Uniform distribution are typically used to generate realizations of other distributions in computational statistics. 
+
+Write the probability of the Uniform distribution as:
+
+$$
+P(x\ | \{a,b \}) = \Bigg\{ 
+\begin{matrix}
+\frac{1}{(b - a)}\ if\ a \le x \le b \\
+else\ 0
+\end{matrix}
+$$
+
+Uniform distribution has the following properties:  
+
+\begin{align}
+Mean &= \frac{(a + b)}{2}\\
+Variance &= \frac{1}{12}(b - a)^2
+\end{align}
+
+
+------------------------------------------------------------
+
+## Uniform distribution
+
+
+The expectation of a uniform distribution on the interval $\{ a,b \}$ is easy to work out:   
+
+\begin{align}
+\mathrm{E}_{a,b}(\mathbf{X}) &= \int_a^b x\ p(x)\ dx \\
+&= \int_a^b x\ dx \\
+&= \frac{x^2}{2}\ \big\rvert_a^b \\
+&= \frac{a+b}{2}
+\end{align}
+
+Which is just the mean. 
 
 
 ------------------------------------------------
@@ -307,6 +405,17 @@ The parameters can be interpreted as:
 \sigma &= scale = standard\ deviation \\
 \sigma^2 &= Variance 
 \end{align}
+
+
+------------------------------------------------
+
+## Normal distribution    
+
+
+```{r NormalExample, out.width = '60%', fig.cap='Normal density for several paramter values', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/NormalExample.PNG"))
+```
+
 
 ------------------------------------------------
 
@@ -447,6 +556,7 @@ random_points = nr.multivariate_normal(mean=mu, cov=sigma,  size=1000)
 plot_bi_variate(random_points)
 ```
 
+
 --------------------------------------------------
 
 ## Log-Normal distribution
@@ -457,6 +567,17 @@ Log Normal distribution is defined for continuous random variables in the range 
 - The Log-Normal distribution is based on a log-transformation of the random variable:    
 
 $$P(x) = \frac{1}{x} \frac{1}{\sigma \sqrt{2 \pi}} \exp{\frac{-(log(x) - \mu)^2}{2 \sigma^2}}$$
+
+
+--------------------------------------------------
+
+## Log-Normal distribution
+
+
+```{r LogNormalExample, out.width = '60%', fig.cap='Log Normal and log transformed example', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/LogNormalExample.PNG"))
+```
+
 
 --------------------------------------------
 
