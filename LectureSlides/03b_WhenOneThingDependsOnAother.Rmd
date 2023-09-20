@@ -142,7 +142,7 @@ The factorization of probability distributions can be simplified if events are e
 
 ## Independence
 
-Express independence of random variables, $A \perp B$, mathematically:   
+Express independence of random variables mathematically:   
 
 \begin{align}
 P(A|B) &= P(A)\\
@@ -312,7 +312,7 @@ In many cases we are interested in the **marginal distribution**
   - **Marginal distribution** is the distribution of one variable with the others integrated out.  
   - Integrate over all other variables $\{ \theta_2, \ldots, \theta_n \}$ the result is the marginal distribution, $p(\theta_1)$:       
 
-$$p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)\ d\theta2, \ldots, d \theta_n$$
+$$p(\theta_1) = \int_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)\ d\theta_2, \ldots, d \theta_n$$
 
 - For discrete distribution the above is a summation 
 $$p(\theta_1) = \sum_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, \theta_n)$$
