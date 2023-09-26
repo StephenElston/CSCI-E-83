@@ -85,18 +85,18 @@ $$p(\theta_1) = \sum_{\theta_2, \ldots, \theta_n} p(\theta_1, \theta_2, \ldots, 
 
 Sampling is a fundamental process in the collection and analysis of data    
 
-- Sampling is important because we almost never have data on a whole population   
+- Sampling is important because we almost never have data on an entire population   
 
-- Sampling must be randomized to preclude biases     
+- **Sampling must be randomized** to preclude biases     
 
-- As sample size increases, the standard error decreases by the law of large numbers   
+- As sample size increases, the standard error decreases by the **law of large numbers**   
 
 - Key points to keep in mind:   
   - Understanding sampling is essential to ensure data is representative of the entire population   
-  - Use inferences on the sample to say something about the population   
+  - Inferences on the sample say something about the population   
   - The sample must be randomly drawn from the population  
 
-- Sampling from distribution is the building block of simulation     
+- Sampling from distributions is the building block of simulation     
 
 - We will take up the topic of resampling later    
 
@@ -139,15 +139,15 @@ Sampling of a population is done from an unknown **population distribution**, $\
 - Any statistic, $s$, we compute for the generating process is based on a sample, $\hat{\mathcal{F}}$     
 - The statistic is an approximation, 
 of a **population parameter**   
-   - For example, the mean of the population is $\mu$   
-   - But, sample estimate is $\bar{x}$   
+   - For example, the **population mean** is $\mu$   
+   - Whereas, the **sample estimate** is $\bar{x}$   
 
 - If we continue to take random samples from the population and compute estimates of a statistic, we generate a  **sampling distribution**   
    - Hypothetical concept of the sampling distribution is a foundation of **frequentist statistics**
-   - Example, if we continue generating samples and computing the sample means, $\bar{x}_i$ for the ith sample   
+   - Example, we could continue to sample the population and compute sample means, $[\bar{x}_1, \bar{x}_2, \ldots, \bar{x}_n]$        
 
 - **Frequentist statistics** built on the idea of randomly resampling the population distribution and recomputing a statistic         
-   - In the frequentist world, statistical inferences are performed on the sampling distribution    
+   - In the frequentest world, statistical inferences are performed on the sampling distribution    
    - Sampling process must not bias the estimates of the statistic
 
  
@@ -223,6 +223,7 @@ import pandas as pd
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 import seaborn as sns
+import sys
 
 import math
 ```
@@ -237,7 +238,7 @@ pop = pd.DataFrame({'var':nr.binomial(n, p, size)})
 # Sample the population for different sizes and compute the mean
 sample_size = [5, 50, 500, 5000]
 out = [pop.sample(n = x).mean(axis = 0) for x in sample_size] 
-for n,x in zip(sample_size,out): print("%.0f  %.2f" %(n, x))
+#for n,x in zip(sample_size,out): print('For sample size = ' + str(n) + ' mean = ' + str(round(x, 3))) #print("%.0i  %.2f" %(n, x))
 ```
 
 ## Sampling and the Law of Large Numbers
@@ -252,7 +253,7 @@ knitr::include_graphics(rep("../images/LLN_Bernoulli.png"))
 
 ## the Central Limit Theorem (CLT)
 
-- Law of large number is almost too obvious, but the CLT is more tricky!     
+- Law of large number is almost too obvious, but the CLT is tricky!     
 
 - Law of large number applied to any statistic, but the CLT applies only to the **mean**     
 
@@ -385,7 +386,7 @@ There are a great number of possible sampling methods.
 - Example, a company sells a product by weight     
   - To ensure the quality of a packaging process so few packages are underweight   
   - Impractical to empty and weight the contents of every package   
-  - Bernoulli randomly sampled packages from the production line and weigh contents   
+  - Random Bernoulli sample packages from the production line and weigh contents with say p=0.0001, or 1 out of 10,000      
   - Statistical inferences are made from sample 
 
 
@@ -427,13 +428,15 @@ def count_mean(dat, p=1.0):
     se = np.sqrt(np.divide(groups.aggregate(np.var).loc[:, 'var'], n_samples))
     means = groups.aggregate(np.mean).loc[:, 'var']
     ## Create a data frame with the counts and the means of the groups
-    return pd.DataFrame({'Count': n_samples, 
+    out = pd.DataFrame({'Count': n_samples, 
                         'Mean': means,
                         'SE': se,
                         'Upper_CI': np.add(means, 1.96 * se),
                         'Lower_CI': np.add(means, -1.96 * se)})
+    print(out)
+    return out
 p = 0.1
-count_mean(data, p)
+print(count_mean(data, p))
 ```
 
 
