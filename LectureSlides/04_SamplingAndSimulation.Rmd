@@ -241,6 +241,11 @@ out = [pop.sample(n = x).mean(axis = 0) for x in sample_size]
 #for n,x in zip(sample_size,out): print('For sample size = ' + str(n) + ' mean = ' + str(round(x, 3))) #print("%.0i  %.2f" %(n, x))
 ```
 
+
+```{r BrenoulliSample, out.width = '30%', fig.cap='', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/BrenoulliSample.png"))
+```
+
 ## Sampling and the Law of Large Numbers
 
 A simple example; mean of fair coin flips (0,1) = (T,H) converges to the expected value with more flips      
@@ -338,10 +343,17 @@ As we sampled from a Normal distribution, the sample means converges to the popu
 $$se = \pm \frac{\sigma}{\sqrt{(n)}}$$
 
 - Standard error decreases as the square root of $n$   
-   - Example, if you wish to halve the error, you will need to sample four times as many values.   
+   
+- Example, if you wish to halve the error, you will need to sample four times as many values.   
+
+
+## Standard Error and Convergence for a Normal Distribution
+
+As we sampled from a Normal distribution, the sample means converges to the population mean    
 
 - For the mean estimate, $\bar{x}$, define the uncertainty in terms of **confidence intervals**    
-   - For 95% confidence interval:
+
+- For 95% confidence interval:
 
 $$CI_{95} =\bar{x} \pm 1.96\ se$$ 
 
@@ -400,13 +412,20 @@ An example with synthetic data.
 - The probability of a sample being in a group is not uniform, and sums to 1.0.  
 
 
-```{python}
+```{python, eval=FALSE}
 nr.seed(345)
 population_size = 10000
 data = pd.DataFrame({"var":nr.normal(size = population_size), 
                      "group":nr.choice(range(4), size= population_size, p = [0.1,0.3,0.4,0.2])})
 data.head(10)
 ```
+
+
+
+```{r StratifiedSample, out.width = '20%', fig.cap='', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/StratifiedSample.png"))
+```
+
 
 --------------------------------------------------
 
@@ -419,7 +438,7 @@ The mean of each group should be close to 0.0:
 2. Probability of sample from given group, $p=0.1$      
 3. Summary statistics are computed for each group      
 
-```{python}
+```{python, eval=FALSE}
 def count_mean(dat, p=1.0):
     import numpy as np
     import pandas as pd
@@ -436,7 +455,21 @@ def count_mean(dat, p=1.0):
     print(out)
     return out
 p = 0.1
-print(count_mean(data, p))
+count_mean(data, p)
+```
+
+
+## Bernoulli Sampling
+
+The population of 10000 samples from the standard Normal distribution    
+
+The mean of each group should be close to 0.0:    
+1. The sample is divided between 4 groups   
+2. Probability of sample from given group, $p=0.1$      
+3. Summary statistics are computed for each group      
+
+```{r BernoulliMean, out.width = '60%', fig.cap='', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/BernoulliMean.png"))
 ```
 
 
@@ -453,6 +486,8 @@ A few examples include:
 2. Testing a drug which may have different effectiveness by sex and ethnic group    
 
 3. Spectral characteristics of stars by type  
+
+
 
 
 -----------------------------------------------
@@ -479,7 +514,7 @@ What is a sampling strategy for grouped or stratified data?
 
 Bernoulli sample 100 from each group and compute summary statistics
 
-```{python}
+```{python, eval=FALSE}
 def stratify(dat, p):
     groups = dat.groupby('group') # Create the groups
     nums = min(groups.size()) # Find the size of the smallest group
@@ -495,11 +530,19 @@ def stratify(dat, p):
 
 p = 0.01
 stratified = stratify(data, p)
-```
-
-```{python}
 count_mean(stratified)
 ```
+
+-----------------------------------------------------
+
+## Example    
+
+Bernoulli sample 100 from each group and compute summary statistics
+
+```{r StratifiedMean, out.width = '60%', fig.cap='', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/StratifiedMean.png"))
+```
+
 
 
 --------------------------------------
@@ -527,7 +570,7 @@ Population can be divided into randomly selected clusters:
 As an example, select a few store locations and Bernoulli sample customers at these locations.
 
 
-```{python}
+```{python, eval=FALSE}
 ## First compute the clusters
 num_clusters = 10
 num_vals = 1000
@@ -535,11 +578,14 @@ num_vals = 1000
 clusters = pd.DataFrame({'group': range(num_clusters)}).sample(n = num_vals, replace = True)
 ## Add a column to the data frame with Normally distributed values
 clusters.loc[:, 'var'] = nr.normal(size = num_vals)
-```
-
-```{python, echo=FALSE}
 count_mean(clusters)
 ```
+
+
+```{r ClusterMean, out.width = '60%', fig.cap='', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/ClusterMean.png"))
+```
+
 
 
 --------------------------------------
@@ -548,7 +594,7 @@ count_mean(clusters)
 
 Randomly select 3 clusters
 
-```{python}
+```{python, eval=FALSE}
 ## Randomly sample the group numbers, making sure we sample from 
 ## unique values of the group numbers. 
 clusters_samples = nr.choice(clusters.loc[:, 'group'].unique(), 
@@ -557,19 +603,23 @@ clusters_samples = nr.choice(clusters.loc[:, 'group'].unique(),
 clus_samples = clusters.loc[clusters.loc[:, 'group'].isin(clusters_samples), :]
 ```
 
-
-The sampled clusters   
-```{python, echo=FALSE}
+```{python, echo=FALSE, eval=FALSE}
 print('cluster sampled are: ')
 for x in clusters_samples:
     print(x)
 ```
 
-Display summary statistics 
 
-```{python, echo=FALSE}
+```{python, echo=FALSE, eval=FALSE}
 count_mean(clus_samples)
 ```
+
+
+```{r ClusterSamples, out.width = '60%', fig.cap='', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/ClusterSamples.png"))
+```
+
+
 
 ------------------------------
 
@@ -626,7 +676,15 @@ Simulation enables data scientists to study the behavior of stochastic processes
 
 When creating a simulation with multiple conditionally dependent variables it is useful to draw a directed graph; a **directed acyclic graphical model or DAG**    
 
-- The graph is a communications device showing which variables are independent and which are conditionally dependent on others with the shapes used representing the type of nodes      
+- The graph is a communications device showing which variables are independent and which are conditionally dependent on others with the shapes used representing the type of nodes  
+- **Directed edges** show the dependency structure of the distributions   
+  - Arrows point to **child nodes** which are dependent on **parent nodes**  
+  - Child node is **conditional** on parent nodes      
+
+## Representation as a Directed Acyclic Graphical Model
+
+When creating a simulation with multiple conditionally dependent variables it is useful to draw a directed graph; a **directed acyclic graphical model or DAG**   
+
 - **Probability distributions** of the variables are shown as **ellipses**       
    - Distributions have parameters which must be estimated          
 - **Decision variables** are deterministic and are shown as **rectangles**       
@@ -635,9 +693,7 @@ When creating a simulation with multiple conditionally dependent variables it is
 - **Utility nodes**, profit in this case, are shown as **diamonds**       
   - Nodes represent a **utility function** given the dependencies in the graph   
   - Utility calculations are deterministic given the input values           
-- **Directed edges** show the dependency structure of the distributions   
-  - Arrows point to **child nodes** which are dependent on **parent nodes**  
-  - Child node **conditional** on parent nodes    
+
 
 ## Sandwich Shop Simulation   
 
@@ -653,7 +709,7 @@ Interpreting the DAG
 
 - The DAG is a shorthand description of the simulation model   
 
-- Leaves of the DAG are independent distributions   
+- Nodes with no dependency are independent distributions   
    - Parameters must be known or estimated     
    - Can be useful to vary the parameters       
 
