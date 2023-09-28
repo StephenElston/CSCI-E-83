@@ -700,7 +700,7 @@ When creating a simulation with multiple conditionally dependent variables it is
 The sandwich shop simulation can be represented by a DAG
 
 ```{r DAG, out.width = '60%', fig.cap='Directed graph of the distributions for profit simulation', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("../images/Simulation_Directed_Graph.jpg"))
+knitr::include_graphics(rep("../images/Simulation_Directed_Graph.JPG"))
 ```
 
 ## Sandwich Shop Simulation   
