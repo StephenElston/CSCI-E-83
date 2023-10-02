@@ -2,7 +2,7 @@
 ---
 title: "Parameter Estimation and Likelihood"
 author: "Steve Elston"
-date: "09/29/2022"
+date: 10/02/2023"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -14,7 +14,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-use_python("/usr/bin/python3")
+use_python("C:/Users/steph/anaconda3")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
@@ -67,7 +67,7 @@ The concept of **likelihood** and **maximum likelihood estimation (MLE)** have b
 - In 21st Century, likelihood and MLE ideas continue to be foundational      
 
 -  Understanding the concept of likelihood and the use of MLE methods is key to understanding many parametric statistical methods     
-  - Likelihood is a measure of how like a parametric model is to generate the observed data     
+  - Likelihood is a measure of how likely a parametric model is to generate the observed data     
   - MLE is a generic methods for parameter estimation    
 
 - MLE used widely for machine learning models, including some deep learning models      
@@ -75,11 +75,11 @@ The concept of **likelihood** and **maximum likelihood estimation (MLE)** have b
 
 ## Likelihood and Density Functions  
 
-Likelihood is a measure of how like a **parametric model** is to generate the observed data   
+Likelihood is a measure of how likely a **parametric model** is to generate the observed data   
 
 - Start with a data sample, $\mathbf{X} = [x_1, x_2, \ldots, x_n]$ 
 
-- Likelihood of sample from a **generating process** with a **parametric density function**, $f(\mathbf{X} | \theta)$       
+- Likelihood of sample from a **data generating process** with a **parametric density function**, $f(\mathbf{X} | \theta)$       
 
   - $f(\mathbf{X}\ |\ \mathbf{\theta})$ can be either a probability density function (PDF), for continuous distributions, or a probability mass function (PMF), for discrete distributions   
 
@@ -90,9 +90,9 @@ Likelihood is a measure of how like a **parametric model** is to generate the ob
 
 ## Likelihood   
 
-Likelihood is a measure of how like a **parametric model** is to generate the observed data     
+Likelihood is a measure of how likely a **parametric model** is to generate the observed data     
 
-- Likelihood of sample from a **generating process** with a **parametric probability density**, $f(\mathbf{X} | \theta)$   
+- Likelihood of sample from a **data generating process** with a **parametric probability density**, $f(\mathbf{X} | \theta)$   
 
 - For the set of observations, $\mathbf{X} = [x_1, x_2, \ldots, x_n]$, the likelihood is the product of the densities:   
 
@@ -137,10 +137,10 @@ knitr::include_graphics(rep("../images/BinomialLikelihood.JPG"))
 
 The univariate Normal probability density function with parameter vector $\mathbf{\theta} = (\mu,\sigma)$ for a single observation, $x_i$:     
 
-$$f(x\ |\ \mu,\sigma^2) = -\frac{1}{(2 \pi \sigma^2)^{1/2}} exp\Big[ - \frac{1}{2 \sigma^2}  (x_i - \mu)^2 \Big]$$
+$$f(x_i\ |\ \mu,\sigma^2) = -\frac{1}{(2 \pi \sigma^2)^{1/2}} exp\Big[ - \frac{1}{2 \sigma^2}  (x_i - \mu)^2 \Big]$$
 For n observations, $\mathbf{X} = x_1, x_2, \ldots, x_n$, the likelihood is the **product of the densities**:  
 
-$$l(\mathbf{X} |\ \mathbf{\theta}) = -\frac{n}{(2 \pi \sigma^2)^{1/2}}  exp\Big[ - \frac{1}{2 \sigma^2}  \prod_{i=1}^n (x_i - \mu)^2 \Big]$$
+$$\mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) = -\frac{n}{(2 \pi \sigma^2)^{1/2}}  exp\Big[ - \frac{1}{2 \sigma^2}  \prod_{i=1}^n (x_i - \mu)^2 \Big]$$
 
 
 The log-likelihood (log of above) is a lot easiter to deal with:  
@@ -157,7 +157,7 @@ An example to illustrate the foregoing concepts
 
 - Vary the parameter $\mu$, and assume the parameter $\sigma$ is fixed and known. The steps are:     
   - A random sample is drawn from a standard Normal distribution    
-  - For the random sample the log-likelihood is computed at each location parameter value    
+  - For the random sample the log-likelihood is computed at each parameter value    
   
 - Notice that as the number of observations increases so does the curvature of the likelihood.
 
@@ -196,7 +196,7 @@ $$l(k, n\ |\ \pi) = log \binom{n}{k} + k\ log(\pi) + (n-k)\ log(1-\pi)$$
 
 - Further, knowing the distribution allows us to quantify the uncertainty of the MLE parameter estimates   
 
-- The model parameter estimates found by MLE is Normal for large samples, a remarkable property 
+- The model parameter estimates found by MLE are Normal for large samples, a remarkable property 
 
 - The MLE is a **point estimator**    
 
@@ -215,12 +215,12 @@ $$
 
 Interpret these two conditions:     
 
-- First derivative of log-likelihood function, or slope, is 0 at either maximum or minimum points    
+- First derivative of log-likelihood function, or slope, is **0 at either maximum or minimum points**:    
   - In general, $\vec{\theta}$ is a vector of model parameters   
-  - Partial derivatives of log-likelihood are a vector - the gradient with respect to the model parameters   
+  - Partial derivatives of log-likelihood are a vector - the **gradient with respect to the model parameters**    
   - Gradient of the log-likelihood are known as the **score function**   
   
-- The second derivatives of the log-likelihood indicates the curvature      
+- The second derivatives of the log-likelihood indicates the **curvature**      
   - Maximum has negative curvature   
   - Minimum has positive curvature
 
