@@ -19,6 +19,9 @@ matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
 ```
+  
+
+-----------------------------------
 
 ## Review   
 
@@ -37,6 +40,9 @@ Sampling is a fundamental process in the collection and analysis of data
 
 - Sampling from distribution is the building block of simulation    
 
+  
+
+-----------------------------------
 
 ## Review   
 
@@ -47,7 +53,11 @@ Sampling of a population is done from an unknown **population distribution**, $\
 ```{r Sampling, out.width = '60%', fig.cap='Sampling distribution of unknown population parameter', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
 ```
- 
+
+  
+
+-----------------------------------
+
 ## Review   
 
 
@@ -58,6 +68,9 @@ The **law of large numbers** is a theorem that states that **statistics of indep
 - Assume that **larger samples are more representatives of the population we are sampling**     
 
 - If the real world did not follow this theorem much of statistics, to say nothing of science and technology, would fail badly. 
+  
+
+-----------------------------------
 
 
 ## Introduction   
@@ -71,6 +84,10 @@ The concept of **likelihood** and **maximum likelihood estimation (MLE)** have b
   - MLE is a generic methods for parameter estimation    
 
 - MLE used widely for machine learning models, including some deep learning models      
+
+  
+
+-----------------------------------
 
 
 ## Likelihood and Density Functions  
@@ -87,6 +104,9 @@ Likelihood is a measure of how likely a **parametric model** is to generate the 
 
 - Now, for each observation, $x_i$, in $\mathbf{X} = x_1, x_2, \ldots, x_n$, the density is just $f(x_i |\ \mathbf{\theta})$    
 
+  
+
+-----------------------------------
 
 ## Likelihood   
 
@@ -102,6 +122,9 @@ $$\mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) = \prod_{i=1}^n f(x_i | \mathbf{\th
 
 $$l(\mathbf{X} |\ \mathbf{\theta}) = log\big( \mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) \big) = \sum_{i=1}^n log \Big( f(x_i\ |\ \mathbf{\theta}) \Big)$$   
 
+  
+
+-----------------------------------
 
 ## Likelihood   
 
@@ -116,6 +139,9 @@ $$l(\mathbf{X} |\ \mathbf{\theta}) = log\big( \mathcal{L}(\mathbf{X} |\ \mathbf{
   - If the probabilities are small, the sum is numerically stable     
   - The product of many small numbers is a very small number, which can lead to numerical underflow even for 64 or 128 bit floating point arithmetic      
 
+  
+
+-----------------------------------
 
 ## Likelihood Example    
 
@@ -132,6 +158,10 @@ Likelihood is a measure of how likely a **parametric model** is to generate the 
 knitr::include_graphics(rep("../images/BinomialLikelihood.JPG"))
 ```
 
+  
+
+-----------------------------------
+
 
 ## Example: The Normal likelihood
 
@@ -147,6 +177,9 @@ The log-likelihood (log of above) is a lot easiter to deal with:
 
 $$l(\mathbf{X}\ |\ \mu, \sigma) = - \frac{n}{2} log( 2 \pi \sigma^2 ) - \frac{1}{2 \sigma^2} \sum_{i=1}^n (x_i - \mu)^2$$
 - The log-likelihood is a function of the parameters, $(\mu,\sigma)$     
+  
+
+-----------------------------------
 
 
 ## Example: The Normal likelihood
@@ -165,6 +198,9 @@ An example to illustrate the foregoing concepts
 ```{r NormalLikelihood, out.width = '60%', fig.cap='Normal likelihood at different sample sizes', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/NormalLikelihood.JPG"))
 ```
+  
+
+-----------------------------------
 
 
 ## Example: Binomial Likelihood   
@@ -186,6 +222,9 @@ $$
 $$l(k, n\ |\ \pi) = log \binom{n}{k} + k\ log(\pi) + (n-k)\ log(1-\pi)$$
 
 - Binomial log-likelihood has a strong dependence on both the sample size, $n$ and the number of successes, $k$         
+  
+
+-----------------------------------
 
 
 ## The Maximum Likehihood Estimator    
@@ -202,6 +241,9 @@ $$l(k, n\ |\ \pi) = log \binom{n}{k} + k\ log(\pi) + (n-k)\ log(1-\pi)$$
 
 - An estimate of a single parameter value, or point value, with the highest likelihood  
 
+  
+
+-----------------------------------
 
 ## The Maximum Likehihood Estimator  
 
@@ -223,6 +265,9 @@ Interpret these two conditions:
 - The second derivatives of the log-likelihood indicates the **curvature**      
   - Maximum has negative curvature   
   - Minimum has positive curvature
+  
+
+-----------------------------------
 
 
 ## Fisher information and properties of MLE     
@@ -256,10 +301,12 @@ $$
 Useful properties of the information matrix   
 
 - The more negative the values of the second partial derivatives, the greater the curvature of the log-likelihood    
-   - log-likelihood likelihood function with more negative values has limbs    
    - Narrow peak implies that the information on parameter values is high    
    - The matrix is symmetric, or information is symmetric around the maximum likelihood point
 
+  
+
+-----------------------------------
 
 ## Fisher information and properties of MLE   
 
@@ -269,6 +316,9 @@ Can one consider the information of the MLE before sampling data or performing a
 
 - Fisher information is the expectation over the second derivative of the observed information            
 $$\mathcal{J}(\vec{\theta}) = -\mathbf{E}\big\{ \mathcal{I}(\vec{\theta}) \big\} = -\mathbf{E}\big\{ \frac{\partial^2\ l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta^2} \big\}$$
+  
+
+-----------------------------------
 
 
 ## Fisher information and properties of MLE   
@@ -293,6 +343,9 @@ $$
 - $l'(\theta)_\mathbf{X}$: first partial derivative given observations $\mathbf{X}$  
 
 - $l''(\hat{\theta})_\mathbf{X}$: second partial derivative given observations $\mathbf{X}$ 
+  
+
+-----------------------------------
 
 
 ## Fisher information and properties of MLE   
@@ -311,10 +364,13 @@ $$
 $$
 
 
-For **large sample**, $n \rightarrow \infty$, take the expectation over all samples, $\mathbf{X}$. Assuming first and second derivatives exist and continuous, then by the Central Limit Theorem:    
+For **large sample**, $n \rightarrow \infty$, take the expectation over all samples, $\mathbf{X}$.  Assuming first and second derivatives exist and continuous, then by the Central Limit Theorem:    
 
 $$\hat{\theta} \dot{\sim} \mathcal{N}\Big(\theta, \frac{1}{n\mathcal{I}(\theta)} \Big)$$
 
+  
+
+-----------------------------------
 
 ## Fisher information and properties of MLE   
 
@@ -331,6 +387,9 @@ Relationship shows several important properties
   - The variance of the parameter estimate is inversely proportional to the number of samples, $n$.   
 
 
+  
+
+-----------------------------------
 
 ## Example of MLE for Normal distribution   
 
@@ -365,6 +424,9 @@ $$
 \bar{x} \rightarrow \mu:\ at\ convergence\\
 \bar{x} = \frac{1}{n} \sum_{j=1} x_j
 $$
+  
+
+-----------------------------------
 
 
 ## Example of MLE for Normal distribution   
@@ -397,7 +459,17 @@ $$
 \bar{x} \rightarrow \mu:\ at\ convergence\\
 s^2 = \frac{1}{n} \sum_{j=1}^n (x_j - \bar{x})^2 
 $$
+Adding the bias correction of the 1 DoF used to compute $\bar{x}$, we finally get:    
 
+$$
+\bar{x} \rightarrow \mu:\ at\ convergence\\
+s^2 = \frac{1}{n-1} \sum_{j=1}^n (x_j - \bar{x})^2 
+$$
+
+
+  
+
+-----------------------------------
 
 ## Example of MLE for Normal distribution   
 
@@ -420,13 +492,34 @@ $$
 \end{pmatrix}
 \end{align}
 
-The simplification results from the fact that $\bar{x} \rightarrow  \mathbf{E}(\mathbf{x_j})  = \mu$ and $s^2 \rightarrow \mathbf{E} \big\{ (x_j - \mu)^2 \big\} = \sigma^2$ in the limit of a large sample from the law of large numbers.   
+The simplification results from the facts that in the limit of a large sample by the law of large numbers:     
 
-- There are some aspects of these relationships which make the MLE method attractive: 
-  - The curvature of the MLE for both parameters increases with the number of samples $n$   
-  - The peak of the log-likelihood function becomes better defined as $n$ increases.  
-  - The maximum likelihood estimates of the parameters, $\mu$ and $\sigma^2$ are independent. The off-diagonal terms are $0$.      
+\begin{align}
+\bar{x} &\rightarrow  \mathbf{E}(\mathbf{x_j})  = \mu\\ 
+$s^2 &\rightarrow \mathbf{E} \big\{ (x_j - \mu)^2 \big\} = \sigma^2
+\end{align}
 
+
+--------------------------------------
+
+# Example of MLE for Normal distribution   
+
+
+$$
+\mathcal{J}(\vec{\theta}) = \begin{pmatrix}
+\frac{n}{\sigma^2} & 0 \\
+0 & \frac{n}{2\sigma^4} 
+\end{pmatrix}
+$$
+
+There are some aspects of these relationships which make the MLE method attractive:   
+
+- The curvature of the MLE for both parameters increases with the number of samples $n$   
+- The peak of the log-likelihood function becomes better defined as $n$ increases.  
+- The maximum likelihood estimates of the parameters, $\mu$ and $\sigma^2$ are independent. The off-diagonal terms are $0$.     
+
+
+----------------------------------------------------
 
 ## Fisher information and properties of MLE   
 
@@ -437,11 +530,12 @@ Example of Fisher Information for Normal distribution
 - Variance of MLE decreases with decreasing Fisher Information   
 
 
-```{r NormalFisher, out.width = '60%', fig.cap='Fisher Information for Normal distribution at different sample sizes', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("../images/NormalFisherInformation.JPG"))
+```{r NormalFisher, out.width = '50%', fig.cap='Fisher Information for Normal distribution at different sample sizes', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/NormalFisherInformation.PNG"))
 ```
 
 
+--------------------------------------------------
 
 ## Finding Solutions Without a Closed Form
 
@@ -455,7 +549,9 @@ How do we generalize the MLE method beyond cases with a closed form solution
   - Gradient descent, a first-order method     
   - Newton's method, quadratic approximation    
   
-  
+
+-----------------------------------
+
 ## Gradient descent methods
 
 The gradient descent method finds the maximum of the log-likelihood function by following the gradient 'uphill'    
@@ -476,7 +572,9 @@ grad(l(\vec{\theta})) =  \nabla_\theta\ l(\vec{\theta}) = \begin{pmatrix}
  - Given a current parameter estimate vector at step n , $\hat{\theta}_n$, the improved parameter estimate vector,  $\hat{\theta}_{n+1}$, is found:    
 
 $$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$  
+  
 
+-----------------------------------
 
 ## Gradient descent methods    
 
@@ -498,6 +596,9 @@ knitr::include_graphics(rep("../images/NormalLikelihoodCountours.JPG"))
 
 
 
+ 
+
+-----------------------------------
 
 ## Gradient descent methods
 
@@ -516,13 +617,30 @@ $$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$
   - More sophisticated algorithms use an adaptive method to determine an optimal step at each step      
   - Adaptive algorithm finds step size dynamically using a **line search** procedure
 
+ 
+
+-----------------------------------
+
+## Gradient descent methods
+
+The gradient descent method finds the maximum of the log-likelihood function by following the gradient 'uphill'  
+
+ - Given a current parameter estimate vector at step n , $\hat{\theta}_n$, the improved parameter estimate vector,  $\hat{\theta}_{n+1}$, is found:    
+
+$$\hat{\theta}_{n+1} = \hat{\theta}_n + \gamma\ \nabla_\theta\ l(\hat{\theta})$$   
+
+
 - Algorithm converges when the norm of the gradient is approximately 0   
-  - This is the **stopping condition**  
-  - Express this condition as     
+- This is the **stopping condition**  
+- Express stopping condition as:     
   
 $$
 || \nabla_\theta\ l(\vec{\theta}) ||\le tollerance
 $$
+
+  
+
+-----------------------------------
 
 ## Gradient descent methods   
 
@@ -539,6 +657,9 @@ The forgoing procedure can be vectorized or parallelized
 
 
 
+  
+
+-----------------------------------
 
 
 ## Gradient descent methods
@@ -550,7 +671,11 @@ The gradient descent method finds the maximum of the log-likelihood function by 
 ```{r GradientDescent, out.width = '60%', fig.cap='Gradient descent on countour plot of log-likelihood', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/GradientDescent.png"))
 ```
- 
+
+  
+
+-----------------------------------
+
 ## Stochastic gadient descent (SGD)
 
 The simple gradient descent algorithm and Newton's method have limited scalability   
@@ -568,6 +693,9 @@ The simple gradient descent algorithm and Newton's method have limited scalabili
    - SGD is highly scalable and the workhorse of many large-scale statistical methods  
    - Mini-batch optimization is often referred to as **online optimization** since updates as cases arrive. 
 
+  
+
+-----------------------------------
 
 ## Stochastic gadient descent (SGD)
 
@@ -585,11 +713,15 @@ where, $E_{\hat{p}data} \big[ \big]$ is the expected value of the gradient given
    - This behavior arises since stochastic gradient samples provide a better exploration of the loss function space    
    - For very large data sets, the SGD algorithm often converges before the first pass through the data is completed 
 
+  
+
+-----------------------------------
+
 ## Stochastic gadient descent (SGD)     
 
 The pseudo code for the SGD algorithm is:       
 
-```{eval=FALSE)`
+```{eval=FALSE}
 define learning_rate
 proceedure update_weights(weights, grad):  
    weights = weights + learning_rate * grad
@@ -600,11 +732,15 @@ while(grad > stopping_criteria):
     mini-batch = sample_next_n(cases)     
     grad = compute_expected_grad(weights, mini_batch)      
     weights = update_weights(weights, grad)`   
-```    
+```   
     
 - If the sampling continues for more than one cycle through the cases, the samples are biased    
 - In practice, this small bias does not seem to mater much      
+ 
 
+
+ 
+-----------------------------------
 
 ## Newton's method
 
@@ -629,6 +765,10 @@ $$
 \delta\theta = \frac{l'(\theta_k)}{l''(\theta_k)}
 $$
 
+  
+
+-----------------------------------
+
 ## Newton's method  
 
 At each step in the iteration, the update $x_{n+1}$ is given by the following relationship:
@@ -645,6 +785,10 @@ At each step in the iteration, the update $x_{n+1}$ is given by the following re
    - Newton's method exhibits convergence quadratic in the number of iterations     
    - Compared to the approximate linear convergence for gradient descent methods       
 
+  
+
+-----------------------------------
+
 ## Newton's method   
 
 Newton's method in higher dimensions  
@@ -660,14 +804,31 @@ x_{n+1} = x_n + \gamma |\nabla_\theta^2 l(\vec{\theta})|^{-1} \nabla_\theta l(\v
 $$
 
 - Requires computing the **inverse Hessian** matrix with practical difficulties   
-  - The inverse of the Hessian may not exist as this matrix may be singular    
-  - With large number of model parameters, the Hessian will have high dimensionality and computing inverse is computationally intensive      
+- The inverse of the Hessian may not exist as this matrix may be singular    
+- With large number of model parameters, the Hessian will have high dimensionality and computing inverse is computationally intensive      
   - Computing the full gradient and Hessian requires summing over all observations   
 
-- For large scale problems **quasi-Newton** methods are used      
-   - Use an approximation to avoid computing the full inverse Hessian   
-   - **Limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS)** algorithm the most widely used quasi-Newton method 
 
+-----------------------------------
+
+## Newton's method   
+
+Newton's method in higher dimensions  
+
+- The quadratic update is:  
+
+$$
+x_{n+1} = x_n + \gamma |\nabla_\theta^2 l(\vec{\theta})|^{-1} \nabla_\theta l(\vec{\theta})
+$$
+
+
+- For large scale problems **quasi-Newton** methods are used      
+- Use an approximation to avoid computing the full inverse Hessian   
+- **Limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS)** algorithm the most widely used quasi-Newton method 
+
+  
+
+-----------------------------------
 
 ## Limitations of MLE   
 
@@ -680,6 +841,9 @@ The maximum likelihood estimator has a number of important limitations, includin
 - High dimensional problems     
 
 - Correlated features     
+  
+
+-----------------------------------
 
 
 ## Incorrect model and complex distributions   
@@ -699,6 +863,9 @@ In many real-world problems the distribution are not simple
 - Mode found by any gradient-based algorithm is dependent on the starting point    
    - MLE algorithm will find the nearest **local maximum**     
    - No guarantee of finding the actual maximum likelihood point      
+  
+
+-----------------------------------
 
 ## Incorrect model and complex distributions  
 
@@ -739,6 +906,10 @@ ax[1].set_xlabel('X')
 ax[1].set_ylabel('Log-likelihood')
 ```
 
+  
+
+-----------------------------------
+
 
 ## Parameter near limits
 
@@ -751,6 +922,10 @@ For many distributions, parameter values have limits
 - Examples:     
    - Variance estiamtes near 0; variables with low variance  
    - Binomial parameter estimates near $p=0$ and $p=1$; case with either very few successes or failure    
+   
+
+
+------------------------------------
 
 ## Parameter near limits
 
@@ -760,7 +935,7 @@ Extreme gradients and low information near limits, $p=0$ and $p=1$
 ```{python, echo=FALSE}
 from scipy.stats import norm, binom
 
-def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle):
+def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle, lw=3):
     '''
     Function to plot log-likelihood for distributions with a single parameter density functions
     - sample_dist is a function to sample from the known distribution
@@ -784,10 +959,10 @@ def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle):
         for mu in X:
             y.append(df(sample, mu).sum())
         ## Plot the likelihood    
-        _=ax[0].plot(X, y, linewidth=1, label= str(samps) + ' samples', linestyle=linestyle[i])
+        _=ax[0].plot(X, y, linewidth=lw, label= str(samps) + ' samples', linestyle=linestyle[i])
 
     ## Add annotions to plot
-    ax[0].vlines(p, ymin=min(y), ymax=0.0, linewidth=1, linestyles='dotted');
+    ax[0].vlines(p, ymin=min(y), ymax=0.0, linewidth=lw, linestyles='dotted');
     ax[0].set_ylabel('Log-likelihood');
     ax[0].set_xlabel('x');
     ax[0].set_title('Log-likelihood for different numbers of samples');
@@ -797,8 +972,8 @@ def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle):
     pi = np.arange(0.01, 1.0, step=0.01) 
     binom_information = np.apply_along_axis(lambda x: n/(x*(1-x)), 0, pi)
     ## Now make the plot
-    _=ax[1].plot(pi, binom_information, lw=3);
-    ax[1].set_title('Information for MLE for Binomial distribution with n=100');
+    _=ax[1].plot(pi, binom_information, lw=lw);
+    ax[1].set_title('Information for MLE for Binomial distribution\n n=100');
     ax[1].set_ylabel('Information');
     ax[1].set_xlabel('Pi');
     plt.show();
@@ -806,22 +981,24 @@ def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle):
     plt.show()         
 
 p=0.5
-sample_dist = lambda x: nr.binomial(n=1, p=p, size=1000)
+num_samples = [100]
+sample_dist = lambda x: nr.binomial(n=1, p=p, size=num_samples)
 def pmf(x, p):
     ## FIrst compute 
     n = len(x)
     k = np.sum(x)
     ## Return the log likelihood
     return binom.logpmf(k, n, p)
-num_samples = [1000]
-#start = 0.05
-#stop = 0.95
+
 start = 0.0005
 stop = 0.999999
 linestyle = ['solid']
 plot_likelihood_1(sample_dist, pmf, num_samples, start, stop, p, linestyle)
 ```
 
+  
+
+-----------------------------------
 
 
 ## High dimensional problems   
@@ -840,6 +1017,10 @@ The MLE method often finds poor solutions to problems in high dimensions
 
 - We will discuss this problem later in the course
 
+  
+
+-----------------------------------
+
 
 ## Correlated features  
 
@@ -852,6 +1033,9 @@ Theory  assumes that the variables used for MLE are independent
 - MLE algorithm can breakdown since gradients will not be well determined
 
 - We will discuss this problem later in the course
+  
+
+-----------------------------------
 
 
 ## Summary      
@@ -865,6 +1049,9 @@ $$\mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) = \prod_{i=1}^n f(x_i | \mathbf{\th
 
 $$l(\vec{\theta}\ |\ \mathbf{X}) = log\big( \mathcal{L}(\vec{\theta}\ |\ \mathbf{X}) \big) = \sum_{j} log \Big( f(x_j\ |\ \vec{\theta}) \Big)$$
 
+  
+
+-----------------------------------
 
 ## Summary   
 
@@ -896,6 +1083,9 @@ $$\hat{\theta} \dot{\sim} \mathcal{N}\Big(\theta, \frac{1}{n\mathcal{I}(\theta)}
    - Greater curvature of the log likelihood function gives more certain the parameter estimates       
    - The variance of the parameter estimate is inversely proportional to the number of samples, $n$   
 
+  
+
+-----------------------------------
 
 
 ## Summary  
@@ -918,7 +1108,10 @@ grad(l(\vec{\theta})) =  \nabla_\theta\ l(\vec{\theta}) = \begin{pmatrix}
    \vdots \\
    \frac{\partial l(\mathbf{X}\ |\ \mathbf{\theta})}{\partial \theta_n} 
  \end{pmatrix}
- $$
+$$
+  
+
+-----------------------------------
 
 ## Summary  
 
@@ -937,6 +1130,10 @@ $$\theta_{t+1} = \theta_t + \gamma\ E_{\hat{p}data}\Big[ \nabla_{\theta} J(\thet
 - Where, $E_{\hat{p}data} \big[ \big]$ is the expected value of the gradient given the Bernoulli sample of the data, $\hat{p}data$.
 
 - Empirically, SGD has good convergence properties     
+
+  
+
+-----------------------------------
 
 
 ## Summary    
@@ -962,6 +1159,9 @@ $$
    - Use an approximation to avoid computing the full inverse Hessian   
    - **Limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS)** algorithm the most widely used quasi-Newton method 
 
+  
+
+-----------------------------------
 
 
 ## Summary   
