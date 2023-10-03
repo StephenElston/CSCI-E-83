@@ -954,23 +954,20 @@ def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle, l
     fig, ax = plt.subplots(1,2, figsize=(12,4), ) 
     X = np.arange(start, stop, step=0.001)
 
-    ## Loop over number of samples
-    for i,samps in enumerate(num_samples): 
-        ## Compute a sample from standard Normal
-        sample = sample_dist(samps)
-        ## Loop over the x values and compute the likelihood
-        y=[]
-        for mu in X:
-            y.append(df(sample, mu).sum())
-        ## Plot the likelihood    
-        _=ax[0].plot(X, y, linewidth=lw, label= str(samps) + ' samples', linestyle=linestyle[i])
-
+   ## Compute the likelihood from a sample
+    sample = sample_dist(num_samples)
+    ## Loop over the x values and compute the likelihood
+    y=[]
+    for mu in X:
+        y.append(df(sample, mu).sum())
+    
+    ## Plot the likelihood    
+    _=ax[0].plot(X, y, linewidth=lw)
     ## Add annotions to plot
     ax[0].vlines(p, ymin=min(y), ymax=0.0, linewidth=lw-1, linestyles='dotted');
     ax[0].set_ylabel('Log-likelihood');
-    ax[0].set_xlabel('x');
-    ax[0].set_title('Log-likelihood for different numbers of samples');
-    ax[0].legend();
+    ax[0].set_xlabel('p');
+    ax[0].set_title('Log-likelihood vs. parameter value\n n = ' + str(num_samples[0]));
     
     n=100
     pi = np.arange(0.01, 1.0, step=0.01) 
@@ -978,12 +975,12 @@ def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle, l
     ## Now make the plot
     _=ax[1].plot(pi, binom_information, lw=lw);
     ax[1].vlines(p, ymin=min(binom_information), ymax=0.0, linewidth=lw-1, linestyles='dotted');
-    ax[1].set_title('Information for MLE for Binomial distribution\n n=100');
+    ax[1].set_title('Information for MLE for Binomial distribution\n n = ' + str(num_samples[0]));
     ax[1].set_ylabel('Information');
-    ax[1].set_xlabel('Pi');
+    ax[1].set_xlabel('p');
     plt.show();
     
-    plt.show()         
+      
 
 p=0.5
 num_samples = [100]
