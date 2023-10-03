@@ -155,7 +155,7 @@ Likelihood is a measure of how likely a **parametric model** is to generate the 
 
 
 ```{r BinomialLikelihood, out.width = '60%', fig.cap='Binomial likelihood at different sample sizes', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("../images/BinomialLikelihood.JPG"))
+knitr::include_graphics(rep("../images/BinomialLikelihood.PNG"))
 ```
 
   
@@ -496,7 +496,7 @@ The simplification results from the facts that in the limit of a large sample by
 
 \begin{align}
 \bar{x} &\rightarrow  \mathbf{E}(\mathbf{x_j})  = \mu\\ 
-$s^2 &\rightarrow \mathbf{E} \big\{ (x_j - \mu)^2 \big\} = \sigma^2
+s^2 &\rightarrow \mathbf{E} \big\{ (x_j - \mu)^2 \big\} = \sigma^2
 \end{align}
 
 
@@ -884,10 +884,13 @@ samples = np.concatenate((nr.normal(loc=0.0, scale=1.0, size=10000),
                           nr.normal(loc=-4.0, scale=1.5, size=5000)))
 samples = pd.Series(samples) #, name='Multi_Modal_Samples') 
 
+xlims = [-10,10]
+
 plt.rc('font', size=5)
 fig, ax = plt.subplots(2, 1, figsize=(6, 8))      
 #_=plt.hist(samples, bins=100)
-sns.kdeplot(data=samples, ax=ax[0], linewidth=1)
+sns.kdeplot(data=samples, ax=ax[0], linewidth=2)
+ax[0].set_xlim(left=xlims[0], right=xlims[1]);
 ax[0].set_xlabel('X')
 ax[0].set_ylabel('Probability Density')
 ax[0].set_title('Multi-Modal Probability Density')
@@ -899,7 +902,8 @@ log_likelihood = []
 for mu in mu_values:
     log_likelihood.append(logpdf(samples,mu).sum())
 max_LL = mu_values[np.argmax(log_likelihood)]    
-ax[1].plot(mu_values,log_likelihood, linewidth=1)
+ax[1].plot(mu_values,log_likelihood, linewidth=2)
+ax[1].set_xlim(left=xlims[0], right=xlims[1]);
 ax[1].axvline(max_LL, linewidth=1, linestyle='--', color='black')
 ax[1].set_title('Log-likelihood vs. location value')
 ax[1].set_xlabel('X')
@@ -962,7 +966,7 @@ def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle, l
         _=ax[0].plot(X, y, linewidth=lw, label= str(samps) + ' samples', linestyle=linestyle[i])
 
     ## Add annotions to plot
-    ax[0].vlines(p, ymin=min(y), ymax=0.0, linewidth=lw, linestyles='dotted');
+    ax[0].vlines(p, ymin=min(y), ymax=0.0, linewidth=lw-1, linestyles='dotted');
     ax[0].set_ylabel('Log-likelihood');
     ax[0].set_xlabel('x');
     ax[0].set_title('Log-likelihood for different numbers of samples');
@@ -970,9 +974,10 @@ def plot_likelihood_1(sample_dist, df, num_samples, start, stop, p, linestyle, l
     
     n=100
     pi = np.arange(0.01, 1.0, step=0.01) 
-    binom_information = np.apply_along_axis(lambda x: n/(x*(1-x)), 0, pi)
+    binom_information = np.apply_along_axis(lambda x: -n/(x*(1-x)), 0, pi)
     ## Now make the plot
     _=ax[1].plot(pi, binom_information, lw=lw);
+    ax[1].vlines(p, ymin=min(binom_information), ymax=0.0, linewidth=lw-1, linestyles='dotted');
     ax[1].set_title('Information for MLE for Binomial distribution\n n=100');
     ax[1].set_ylabel('Information');
     ax[1].set_xlabel('Pi');
