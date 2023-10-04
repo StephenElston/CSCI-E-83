@@ -647,10 +647,15 @@ $$
 **Gradient with respect to model parameters** is computed for each dimension of the model parameter vector         
 
 ```{eval=FALSE}
-proceedure compute_expected_grad(parameters, cases):   
-  for each dimension:
-      grad[dimension] = grad(parameters, cases)
+proceedure compute_grad(theta, observations):   
+  for each parameter:
+      grad[theta_i] = grad(theta_i, observations)
   return grad
+  
+define learning_rate
+proceedure update_weights(theta, grad):  
+   theta = theta + learning_rate * compute_grad(theta)
+   return weights  
 ```  
 
 The forgoing procedure can be vectorized or parallelized   
@@ -723,15 +728,20 @@ The pseudo code for the SGD algorithm is:
 
 ```{eval=FALSE}
 define learning_rate
-proceedure update_weights(weights, grad):  
-   weights = weights + learning_rate * grad
-   return weights
+proceedure compute_expected_grad(theta, observations):   
+  for each parameter:
+      grad[theta_i] = grad(theta_i, observations)
+  return grad
 
+proceedure update_weights(theta, grad):  
+   theta = theta + learning_rate * grad(theta)
+   return weights  
+  
 Random_sort(cases)          
-while(grad > stopping_criteria):      
+while(|grad| > stopping_criteria):      
     mini-batch = sample_next_n(cases)     
-    grad = compute_expected_grad(weights, mini_batch)      
-    weights = update_weights(weights, grad)`   
+    grad = compute_expected_grad(theta, mini_batch)      
+    weights = update_weights(theta, grad)`   
 ```   
     
 - If the sampling continues for more than one cycle through the cases, the samples are biased    
@@ -774,11 +784,10 @@ $$
 At each step in the iteration, the update $x_{n+1}$ is given by the following relationship:
 
 \begin{align}
-\theta_{n+1} &= \theta_n + \gamma \frac{l'(\theta_k)}{l''(\theta_k)}\\ 
-&= \theta_n + \gamma\ \delta\theta
+\theta_{n+1} &= \theta_n +  \frac{l'(\theta_k)}{l''(\theta_k)}\\ 
+&= \theta_n +  \delta\theta
 \end{align}
 
-- $\gamma$ is a learning rate of step size. 
 
 - Newton's method has a quadratic form     
    - The quadratic form is not just a mathematical curiosity   
@@ -1049,7 +1058,7 @@ $$\mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) = \prod_{i=1}^n f(x_i | \mathbf{\th
 
 - In most practical cases, we work with the **log likelibood**      
 
-$$l(\vec{\theta}\ |\ \mathbf{X}) = log\big( \mathcal{L}(\vec{\theta}\ |\ \mathbf{X}) \big) = \sum_{j} log \Big( f(x_j\ |\ \vec{\theta}) \Big)$$
+$$l(\mathbf{X} |\ \mathbf{\theta}) = log\big( \mathcal{L}(\mathbf{X} |\ \mathbf{\theta}) \big) = \sum_{j} log \Big( f(x_j\ |\ \theta) \Big)$$
 
   
 
@@ -1058,7 +1067,7 @@ $$l(\vec{\theta}\ |\ \mathbf{X}) = log\big( \mathcal{L}(\vec{\theta}\ |\ \mathbf
 ## Summary   
 
 
-- Matrix is the **observed information matrix** of the model, $\mathcal{J}(\vec{\theta})$.   
+- Matrix is the **observed information matrix** of the model, $\mathcal{I}(\vec{\theta})$.   
 
 - The more negative the values of the second partial derivatives, the greater the curvature of the log-likehihood  
 
