@@ -2,7 +2,7 @@
 ---
 title: "Introduction to Inference and Confidence Intervals"
 author: "Steve Elston"
-date: "10/06/2022"
+date: "10/09/2023"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -115,6 +115,11 @@ All statistical inference has uncertainty
   
 - Statistical inference seeks to avoid being [**fooled by randomness**](https://www.penguinrandomhouse.com/books/176225/fooled-by-randomness-by-nassim-nicholas-taleb/); A catchy title of a book  
 
+
+## Introduction to Statistical Inference       
+
+All statistical inference has uncertainty   
+
 - A very few examples of false inference from randomness     
 
 | Hypothesis  | Fooled by Randomness |
@@ -132,10 +137,10 @@ Confusingly, the term statistical inference is applied in many contexts
 
 Some applications of statistical inference include:
 
-**Inference on differences in distributions:** Are samples drawn from the same distribution or not?
+**Inference on differences in distributions:** Are samples drawn from the same distribution or not?     
 - A **null hypothesis** is the hypothesis that the distributions are the same      
 
-**Inference for model parameters and model selection:** Statistical models, including machine learning models, have unknown parameters for which the values must be estimated      
+**Inference for model parameters and model selection:** Statistical models, including machine learning models, have unknown parameters for which the values must be estimated        
 - Compute uncertainty in model parameter estimates    
 - Compare model performance     
 
@@ -146,11 +151,11 @@ Some applications of statistical inference include:
 
 ## Types of Hypothesis Tests
 
-- Different tests for **one sample**, **two samples** or more    
-- **Parametric** test uses assumptions about the distribution of the data    
-- **Non-parametric** tests make no distribution assumptions
-- Select test for **discrete or continuous**, or **numeric or categorical**, **ordinal, interval, or ratio** variables
-- Tests can compare **effect size** (averages), **variance**, **goodness of fit**, **distribution assumptions**, or **Independence** 
+Different tests for **one sample**, **two samples** or more    
+- **Parametric** test uses assumptions about the distribution of the data     
+- **Non-parametric** tests make no distribution assumptions    
+- Select test for **discrete or continuous**, or **numeric or categorical**, **ordinal, interval, or ratio** variables    
+- Tests can compare **effect size** (averages), **variance**, **goodness of fit**, **distribution assumptions**, or **Independence**     
 
 
 
@@ -175,7 +180,7 @@ Examples of further investigation include:
 
 - Find other variables which might illuminate the relationship under investigation    
 
-- Consider the theoretical basis of the relationship. E.G., can known science add understanding?   
+- Consider the theoretical basis of the relationship. e.g., can known science add understanding?   
 
 
 ## Confidence Intervals; the Key to Inference     
@@ -202,8 +207,8 @@ $$1- \alpha = P \Big( Lower\ CI \le \mathbf{x} \le Upper\ CI \Big)$$
 
 Example: For Normal distribution the right and left tail probabilities are $\alpha/2$:
 
-$$1 - \alpha/2 = P(-\infty \le x \le Lower\ CI),\\ and,\\ 
-1 - \alpha/2 = P(upper\ CI \ge x \ge \infty)$$
+$$\alpha/2 = P(-\infty \ge x \le Lower\ CI),\\ and,\\ 
+\alpha/2 = P(upper\ CI \ge x \le \infty)$$
 
 ## Confidence Intervals; the Key to Inference   
 
@@ -217,15 +222,15 @@ $$\alpha  = P(x \le Lower\ CI)$$
 
 - For upper one-sided CI:    
 
-$$1-\alpha = P(x \le Upper\ CI)$$
+$$\alpha = P(x \ge Upper\ CI)$$
 
 - Example: one-sided CIs of Normal distribution, starting with the lower CI:   
 
-$$\alpha = P\big( -\infty \le x \le lower\ CI \big)$$
+$$\alpha = P\big( -\infty \ge x \le lower\ CI \big)$$
 
 Or for the upper confidence interval,    
 
-$$1- \alpha = P\big( -\infty \le x \le upper\ CI \big)$$
+$$\alpha = P\big(upper\ CI \ge x \le  \infty \big)$$
 
 Or,   
 
@@ -296,13 +301,13 @@ plot_confidence(distribution, 0.025, -3.0, 3.0, 'Normal')
 
 ## Example, Inference for the mean
 
-$$CI(mean) = CI(\bar{\mathbf{X}}) = MLE(\theta | \mathbf{X})\ \pm\ \frac{s}{\sqrt{n}} Z_\alpha$$
+$$CI(mean) = CI(\bar{\mathbf{X}}) = MLE(\theta | \mathbf{X})\ \pm\ \frac{MLE(s|\mathbf{X})}{\sqrt{n}} Z_\alpha$$
 
 Where,       
 - $Z_\alpha$ is the standard Normal distribution evaluated at confidence level, $\alpha$   
 - $MLE(\theta | \mathbf{X})$ is the maximum likelihood estiamte of the mean   
 - Standard error is given by $s/ \sqrt{n}$    
-- $s$ is the standard deviation estimate    
+- $MLE(s | \mathbf{X})$ is the standard deviation estimate    
 - $n$ is the number of samples      
 
 
@@ -370,28 +375,28 @@ def plot_norm(start, end, ax, title, step=0.2):
     ## Plot the Normal distribution 
     x = np.arange(start, end, step=0.02)
     norm_value = np.apply_along_axis(lambda x: norm.pdf(x), 0, x)
-    ax.plot(x, norm_value, linewidth=3, color='black')
+    ax.plot(x, norm_value, linewidth=3, color='black');
     ax.set_title(title);
     ax.set_xlabel(' ');
     ax.axhline(0.0, color='black');
 
 ## Set up the plot grid
-fig, ax = plt.subplots(2, 2, figsize=(10, 6)) 
+fig, ax = plt.subplots(2, 2, figsize=(10, 6)); 
 alpha = 0.05
 
 ## Two sided
 plot_norm(-4.0, 4.0, ax[0,0], title='Two sided, cutoff = ' + str(alpha))
-cutoff_polygon(4.0, 1.0- alpha/2.0, ax[0,0])
-cutoff_polygon(-4.0, alpha/2.0, ax[0,0])
+cutoff_polygon(4.0, 1.0- alpha/2.0, ax[0,0]);
+cutoff_polygon(-4.0, alpha/2.0, ax[0,0]);
 ax[0,1].axis('off')
 
 ## Upper
 plot_norm(-4.0, 4.0, ax[1,0], title='One sided, upper, cutoff = ' + str(alpha))
-cutoff_polygon(4.0, 1.0- alpha, ax[1,0])
+cutoff_polygon(4.0, 1.0- alpha, ax[1,0]);
 
 ## Lower
 plot_norm(-4.0, 4.0, ax[1,1], title='Two sided, cutoff = ' + str(alpha))
-cutoff_polygon(-4.0, alpha, ax[1,1])
+cutoff_polygon(-4.0, alpha, ax[1,1]);
 
 plt.show()
 
@@ -403,15 +408,15 @@ plt.show()
 The steps required to perform a formal two-sample hypothesis test
 
 - State population assumptions of null hypothesis: $H_0$    
+  - Typically stated in terms of a **control group**    
 
 - State alternative hypothesis: $H_a$    
-  - Typically stated in terms of a **treatment group** vs. **control group**    
+  - Typically stated in terms of a **treatment group**        
   - Treatment is the factor that differentiates the population     
   
-- Decide on a significance level (probability cutoff or **Type I error threshold**): e.g. 0.1, 0.05, and 0.01    
+- Decide on a significance level (probability cutoff or **Type I error threshold**): e.g. 0.1, 0.05, 0.01, ...    
 
-- Data is collected for the different treatments 
-  - Treatment used for comparison is the **control**
+- Data is collected for the different treatments    
 
 - Compute the **test statistic** and evaluate based on the cutoff value    
 
@@ -432,7 +437,7 @@ Test statistic used a a **decision rule**
 
 
 
-## the p-value
+## The P-Value
 
 - P-value is the probability, under $H_0$, that we get a statistic **as extreme or more extreme** than the one we got          
 
