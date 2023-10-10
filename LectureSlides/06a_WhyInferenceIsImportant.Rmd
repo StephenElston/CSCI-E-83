@@ -335,7 +335,7 @@ knitr::include_graphics(rep("../images/SamplingDistribuion.png"))
 
 ## Confidence and Hypothesis Testing    
 
-Purpose of a statistical test is determining if the value of a chosen test statistic exceeds a cutoff value    
+Purpose of a statistical test is determining if the value of a chosen test statistic exceeds a cutoff value      
 
 - Select the cutoff value based on the confidence we wish to have in the test result     
   - Example, by specifying a cutoff of  0.05  we are saying that the probability that the test statistic **exceeding the cutoff from random variation alone** is  0.05   
