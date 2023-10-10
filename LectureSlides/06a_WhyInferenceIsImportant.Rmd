@@ -154,8 +154,14 @@ Some applications of statistical inference include:
 Different tests for **one sample**, **two samples** or more    
 - **Parametric** test uses assumptions about the distribution of the data     
 - **Non-parametric** tests make no distribution assumptions    
-- Select test for **discrete or continuous**, or **numeric or categorical**, **ordinal, interval, or ratio** variables    
-- Tests can compare **effect size** (averages), **variance**, **goodness of fit**, **distribution assumptions**, or **Independence**     
+- Select test for **discrete or continuous**, or **numeric or categorical**, **ordinal, interval**, or **ratio** variables    
+- Tests can compare:   
+  - **effect size** (e.g. means), 
+  - **variance**, 
+  - **goodness of fit**, 
+  - **correlation** and **heteroskedasticityy**,
+  - **distribution assumptions**, or 
+  - **Independence**     
 
 
 
@@ -163,7 +169,7 @@ Different tests for **one sample**, **two samples** or more
 
 **Hypothesis testing** seeks to answer the question, are the differences in a statistic **statistically significant**?      
 
-- Statistical significance must not be confused importance to the problem being addressed?   
+- Statistical significance must not be confused importance to the problem being addressed!   
 
 In 1922, Ronald A. Fisher warned:
 
@@ -232,9 +238,6 @@ Or for the upper confidence interval,
 
 $$\alpha = P\big(upper\ CI \ge x \le  \infty \big)$$
 
-Or,   
-
-$$\alpha = P(upper\ CI \ge x \ge \infty)$$
 
 ## Example; confidence intervals of the Normal distribution
 
@@ -322,7 +325,7 @@ How can we interpret the confidence interval?
 
 - With probability $\alpha$ the sample statistic values computed from resamples of the population,$\hat{\mathcal{F}}_i$ are within the CI      
 
-- Confidence intervals do not indicate the probability $s(\hat{\mathcal{F}})$ is in a range
+- Confidence intervals **do not indicate the probability the population statistic is within a range!** 
 
 
 ```{r Sampling, out.width = '50%', fig.cap='Sampling distribution of unknown population parameter', fig.align='center', echo=FALSE}
