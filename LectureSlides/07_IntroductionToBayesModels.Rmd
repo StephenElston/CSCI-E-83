@@ -11,7 +11,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-use_python("/usr/bin/python3")
+use_python("C:/Users/steph/anaconda3")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
@@ -451,6 +451,8 @@ Categorical|Dirichlet
 Normal - mean| Normal
 Normal - variance, $\chi^2$ | Inverse Gamma
 Normal - inverse variance, $\tau$ | Gamma
+
+
  
 ## Example using Conjugate Distribution     
 
@@ -460,8 +462,11 @@ We are interested in analyzing the incidence of distracted drivers
 
 - Data are Binomially distributed, a driver is distracted or not, with likelihood: 
 
-$$ P(k) = \binom{n}{k} \cdot \theta^k(1-\theta)^{n-k}$$
-
+$$ P(k) = \binom{n}{k} \cdot \theta^k(1-\theta)^{z}$$
+   
+   - $n =$ number of trials    
+   - $k =$ number of successes    
+   - $z = n-k =$ number of failures  
 
 - Binomial likelihood has one parameter we need to estimate, $\theta$, the probability of success   
 
@@ -495,9 +500,9 @@ Consider the product of a Binomial likelihood and a Beta prior
 - From Bayes Theorem the distribution of the posterior:    
 
 \begin{align}
-posterior(\theta | z, n) &= \frac{likelihood(z,n | \theta)\ prior(\theta)}{data\ distribution (z,n)} \\
-p(\theta | z, n) &= \frac{Binomial(z,n | \theta)\ Beta(\theta)}{p(z,n)} \\
-&= Beta(z + a,\ n-z+b)
+posterior(\theta | k, n) &= \frac{likelihood(k,n | \theta)\ prior(\theta)}{data\ distribution (k,n)} \\
+p(\theta | k, n) &= \frac{Binomial(k,n | \theta)\ Beta(\theta)}{p(k,n)} \\
+&= Beta(k + a,\ z+b)
 \end{align}
 
 ## Example using Conjugate Distribution 
@@ -505,7 +510,7 @@ p(\theta | z, n) &= \frac{Binomial(z,n | \theta)\ Beta(\theta)}{p(z,n)} \\
 There are some useful insights you can gain from this relationship for (discrete) integer counts:   
 
 $$
-posterior(\theta | z, n) = Beta(z + a,\ n-z+b)
+posterior(\theta | k, n) = Beta(k + a,\ z+b)
 $$
 
 - Posterior distribution is in the Beta family, as a result of conjugacy      
@@ -513,21 +518,23 @@ $$
 - Parameters $a$ and $b$ are determined by the prior and the evidence    
 
 - Parameters of the prior can be interpreted as **pseudo counts** of successes, $a = pseudo\ success + 1$ and failures, $b = pseudo\ failure + 1$     
+
    - Be careful when creating a prior to **add 1** to the successes and failures     
    - The larger the total pseudo counts, $a + b$, the **stronger the prior information**     
  
--Evidence is also in the form (actual) counts of successes, $z$ and failure, $n-z$      
-    - The more evidence the greater the influence on the posterior distribution   
-    - Large amount of evidence will overwhelm the prior    
-    - With large amount of evidence, posterior converges to frequentist model
+-Evidence is also in the form (actual) counts of successes, $k$ and failure, $z$   
+
+   - The more evidence the greater the influence on the posterior distribution   
+   - Large amount of evidence will overwhelm the prior    
+   - With large amount of evidence, posterior converges to frequentist model
 
 
 ## Example using Conjugate Distribution 
 
 Consider example with:  
-   - Prior pseudo counts $[1,9]$, successes $a = 1 + 1$ and failures, $b = 9 + 1$     
+   - Prior pseudo counts $[1,9]$, successes $a = 1 + 1 = 2$ and failures, $b = 9 + 1 = 10$     
    - Evidence,  successes $= 10$ and failures, $= 30$    
-   - Posterior is $Beta(10 + 2,\ 40 - 10 + 10) = Beta(12,\ 40)$ 
+   - Posterior is $Beta(10 + 2,\ 30 + 10) = Beta(12,\ 40)$ 
 
 
 ```{r DistrtractedDrivers, out.width = '40%', fig.cap='Prior, likelihood and posterior for distracted driving', fig.align='center', echo=FALSE}
@@ -660,7 +667,7 @@ Compare confidence interval and credible interval for the case of 10 observation
 - Confidence intervals have the same CDF in the tails beyond the interval       
 
 ```{r CredibleConfidenceIntervals, out.width = '70%', fig.cap='Difference between credible and confidence intervals', fig.align='center', echo=FALSE}
-knitr::include_graphics(rep("../images/CredibleConfidenceIntervals.png"))
+knitr::include_graphics(rep("../images/CredibleConfidenceIntervals.PNG"))
 ```
 
 ## Simulating from the  posterior distribution: predictions
