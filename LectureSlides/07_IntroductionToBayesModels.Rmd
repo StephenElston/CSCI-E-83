@@ -17,19 +17,6 @@ matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
 ```
 
-## Review   
-
-The concept of **likelihood** and **maximum likelihood estimation (MLE)** have been at the core of much of statistical modeling for about 100 years   
-
-- In 21st Century, likelihood and MLE ideas continue to be foundational      
-  - The principles we can easily visualize in a few dimensions apply in high dimenstions    
-  - An understanding of these principles helps you understand modern large scale methods  
-
--  Understanding the concept of likelihood and the use of MLE methods is key to understanding many parametric statistical methods     
-  - Likelihood is a measure of how well a model fits data     
-  - MLE is a generic methods for parameter estimation    
-
-- MLE used widely for machine learning models, including some deep learning models      
 
 
 ## Review   
@@ -64,10 +51,12 @@ Nonparametric bootstrap estimation is widely useful and requires minimal assumpt
 There are several variations of the basic nonparametric bootstrap algorithm      
 
 - One sample bootstrap    
-   - Inference on single statistic     
+   - Inference on single statistic, 
+   - e.g. inference on mean or variance      
 
 - Two sample bootstrap    
-   - Inference on different statistic       
+   - Inference two sample statistic    
+   - e.g. difference of means   
 
 - Special cases    
    - Correlation coefficients - part of your assignment     
@@ -119,7 +108,7 @@ Bayesian analysis is a contrast to frequentist methods
   - Update beliefs based on additional data or evidence    
   - A critical difference with frequentist models which must be computed from a complete sample   
   
--	Inference can be performed on the posterior distribution by finding the maximum a postiori (MAP) value and a credible interval    
+-	Inference can be performed on the posterior distribution by finding the **maximum a postiori (MAP)** value and a **credible interval**        
 
 
 
@@ -184,9 +173,9 @@ $$P(A \cap B) = P(A|B) P(B) $$
 
 We can also write: 
 
-$$P(A \cap B) = P(B|A) P(A) $$
+$$P(B \cap A) = P(B|A) P(A) $$
 
-Eliminating $P(A \cap B):$
+Since $P(A \cap B) = P(B \cap A)$:    
 
 $$ P(B)P(A|B) = P(A)P(B|A)$$
 
@@ -340,7 +329,7 @@ Or\\
 
 - We can find an un-normalized function proportional to the posterior distribution     
 
-- Sum over $𝑃( 𝑑𝑎𝑡𝑎 | 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 )𝑃( 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 )$ to find the marginal distribution $P(B)$     
+- Sum over $𝑃( 𝑑𝑎𝑡𝑎 | 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 )𝑃( 𝑝𝑎𝑟𝑎𝑚𝑒𝑡𝑒𝑟𝑠 )$ to find the marginal distribution $P(data)$     
 
 - Approach can transform an intractable computation into a simple summation 
 
@@ -397,6 +386,7 @@ The choice of the prior is a difficult, and potentially vexing, problem when per
 Some possible approaches to prior selection include:
 
 - Use prior **empirical information**    
+     - **Empirical Bayes estimate** of prior from sample of observations   
 - Apply **domain knowledge** to determine a reasonable distribution      
     - Use information from prior work
     - Example, the viable range of parameter values could be computed from physical principles  
@@ -515,7 +505,8 @@ $$
 
 - Posterior distribution is in the Beta family, as a result of conjugacy      
 
-- Parameters $a$ and $b$ are determined by the prior and the evidence    
+- $a$ and $b$ define the **prior**       
+- $k$ and $z$ are the **evidence**    
 
 - Parameters of the prior can be interpreted as **pseudo counts** of successes, $a = pseudo\ success + 1$ and failures, $b = pseudo\ failure + 1$     
 
@@ -582,7 +573,7 @@ Procedure CreateGrid(variables, lower_limits, upper_limits):
     return sampling_grid   
     
 Procedure SampleLikelihood(sampling_value, observation_values):    
-    return likelihood_function(sampling_value, observation_values)
+    return likelihood_function(observation_values, sampling_value)
     
 Procedure Prior(sampling_values, prior_parameter_value):    
     return prior_density_function(sampling_value, prior_parameter_values)    
@@ -620,6 +611,7 @@ How can we specify the uncertainty for a Bayesian parameter estimate?
    - We use a concept known as the **credible interval**     
    - A credible interval is an interval on the Bayesian posterior distribution with the highest $\alpha$ proportion of posterior probability      
    
+   
 
 ## Credible Intervals
 
@@ -627,7 +619,7 @@ How can we specify the uncertainty for a Bayesian parameter estimate?
    
 - Example, the $\alpha = 0.90$ credible interval encompasses the 90% of the posterior distribution with the highest density      
 
-- The credible interval is sometime called the highest density interval (HDI), or highest posterior density interval (HPDI)      
+- The credible interval is sometime called the **highest density interval (HDI)**, or **highest posterior density interval (HPDI)**         
    - These names make sense, since we seek the the densest posterior interval containing $\alpha$ probability        
 
 - For symmetric distributions the credible interval can be numerically the same as the confidence interval      
