@@ -77,7 +77,7 @@ Re-sampling methods are general and powerful but, there is no magic involved! Th
 - Are computationally intensive, but often highly parallelizable     
 
 
-## Introduction Baysian Models  
+## Introduction Bayesian Models  
 
 Despite the long history, Bayesian models have not been used extensively until recently    
 
@@ -448,7 +448,7 @@ Normal - inverse variance, $\tau$ | Gamma
 
 We are interested in analyzing the incidence of distracted drivers    
 
-- Randomly sample the behavior of 10 drivers at an intersection and determine if they exhibit distracted driving or not     
+- Randomly sample the behavior of 40 drivers at an intersection and determine if they exhibit distracted driving or not     
 
 - Data are Binomially distributed, a driver is distracted or not, with likelihood: 
 
@@ -483,7 +483,7 @@ knitr::include_graphics(rep("../images/Beta.png"))
 
 Consider the product of a Binomial likelihood and a Beta prior     
 
-- Define the evidence as $n$ trials with $z$ successes   
+- Define the evidence as $n$ trials with $k$ successes   
 
 - Prior is a Beta distribution with parameters $a$ and $b$, or the vector $\theta = (a,b)$     
 
@@ -699,26 +699,6 @@ Bayesian analysis is a contrast to frequentist methods
 -	Inference can be performed on the posterior distribution by finding the maximum a postiori (MAP) value and a credible interval    
 
 - Predictions are made by simulating from the posterior distribution   a
-
-
-## Summary      
-
-Bayesian analysis is in contrast to frequentist methods          
-
--	The objective of Bayesian analysis is to compute a posterior distribution    
-  - Frequentist statistics seeks to compute a point estimate and confidence interval from a sample      
-
-
--	Bayesian models allow expressing prior information in the form of a prior distribution       
-  - Selection of prior distributions can be performed in a number of ways      
-
--	The posterior distribution is said to quantify our current **belief**     
-  - We update beliefs based on additional data or evidence    
-  - A critical difference with frequentist models which must be computed from a complete sample   
-  
--	Inference can be performed on the posterior distribution by finding the maximum a postiori (MAP) value and a credible interval    
-
-
 
 
 
