@@ -1,7 +1,7 @@
 ---
 title: "Introduction to Linear Models"
 author: "Steve Elston"
-date: "10/20/2022"
+date: "10/23/2023"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -11,7 +11,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-use_python("/usr/bin/python3")
+use_python("C:/Users/steph/anaconda3")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
@@ -24,11 +24,12 @@ Plan going forward:
 - Week 8: Introduction to Linear Models    
 - Week 9: Linear Models Part 2 - Categorical data and nonlinear response models     
 - Week 10: Linear Models Part 3 - Regularization and sparse models      
-- Week 11: Time Series Models       
+- Week 11: Time Series Models    
+- Nov 18: Project proposal due
 - Week 12: Bayes MCMC methods    
-- Week 13: Hierarchical models          
+- Week 13: Hierarchical models?        
 - Week 14: TBD - More on time series?      
-- Dec 17: Submit Graduate Independent Projects  
+- Dec 21: Submit Graduate Independent Projects  
 
 Let me know if you have suggestions to change this schedule  
 
@@ -76,7 +77,7 @@ Linear models are widely used in statistics and machine learning
 
 Linear models are **readily interpretable!**       
 
-- Human interpretability is of critical importance for models used for critical decisions    
+- Human interpretability is of great importance for models used for critical decisions    
    - Health care   
    - Safe operation of autonomous systems     
    - Social justice for applications with human impact     
@@ -192,7 +193,7 @@ $$
 
 ## Example      
 
-Let's start with a simulated data set with one predictor and one response variable 0
+Let's start with a simulated data set with one predictor and one response variable   
 
 - The response variable, $y$ is linear in $x$ with additive random noise $\sim \mathcal{N}(0,2)$
 
@@ -377,9 +378,13 @@ $$A^TA \vec{b} = A^T \hat{y}$$
 
 - Taking the inverse of $A^T A$ we arrive at the normal equations  
 
+## Estimating the Model Parameters   
+
+We can use the **Normal equations**   
+
 $$\vec{b} = (A^TA)^{-1}A^T \hat{y}$$
 
-- $A^TA$ is the **covariance matrix** for the data set     
+- $\frac{1}{p} A^TA$ is the **covariance matrix** for the data set     
    - Is dimension only $p$ x $p$
    - For single predictor model this is just dimension 2x2
    - Much easier to take inverse   
