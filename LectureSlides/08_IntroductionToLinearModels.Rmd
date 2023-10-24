@@ -27,11 +27,11 @@ Plan going forward:
 - Week 11: Time Series Models    
 - Nov 18: Project proposal due
 - Week 12: Bayes MCMC methods    
-- Week 13: Hierarchical models?        
+- Week 13: Hierarchical Bayesian models        
 - Week 14: TBD - More on time series?      
 - Dec 21: Submit Graduate Independent Projects  
 
-Let me know if you have suggestions to change this schedule  
+Let me know if you have suggestions to update this schedule  
 
 
 ## Review      
@@ -87,8 +87,23 @@ Linear models are **readily interpretable!**
    - Low chance of *unexpected output*   
    - Complex and nonlinear model result in poor human intuition about expected response    
    - Complex and nonlinear models vulnerable to *unexpected output*    
-   
-   
+
+
+
+## Why Linear Models     
+
+What are the alternatives?    
+
+- Linear models are scaleable and interpretable     
+    - Idea if goal is inference and exploration    
+    - May have lower prediction accuracy on some problems     
+
+- AdaBoost algorithms are go-to models for prediction on tabular data   
+    - Known to give superior predicitons     
+    - Interpretability is nearly impossible   
+    - Limits inference and exploration opportunities    
+
+
 
 ## What is regression?
 
@@ -154,6 +169,13 @@ $$\vec{y} = A \vec{b} + \vec{\epsilon}$$
    - One coefficient for each predictor or feature  
    - Model is fit by finding an **optimal** value for each coefficient  
 
+
+## Formulating the Linear Model      
+
+The general formulation of a linear model can be written:     
+
+$$\vec{y} = A \vec{b} + \vec{\epsilon}$$
+
 - $\epsilon$ is the vector representing **prediction error**   
    - The $n$ **residuals** 
    - Is **iid Normally distributed**; $\epsilon \sim \mathcal{N}(0, \sigma^2)$
@@ -178,6 +200,11 @@ $$
 
 - $\beta_1 =$ model **coefficient** for the predictor variable     
    - The **slope coefficient**    
+
+
+## Single Predictor Regression
+
+Consider a simple case of regression with a single predictor   
 
 - Given a variable predictor value $x_i$, the prediction, $\hat{y}_i$, is:
 
@@ -331,7 +358,7 @@ Or, in matrix notation:
 
 $$\hat{y} = A \vec{b} + \vec{\epsilon}$$
 
-We are assuming that the **error, $\epsilon$, is all attributable to the dependent variable**, $y$         
+We are assuming that the **error, $\epsilon$, is only attributable to the dependent variable**, $y$         
 
 
 ## Estimating the Model Parameters      
@@ -364,6 +391,7 @@ Where $A^{-1}$ is the **matrix inverse** of $A$
 - There is no guarantee the inverse exists     
    - The $p$ features can be colinear   
 
+
 ## Estimating the Model Parameters   
 
 We can use the **Normal equations**   
@@ -377,6 +405,10 @@ $$y - A \vec{b} = \vec{\epsilon} \rightarrow 0$$
 $$A^TA \vec{b} = A^T \hat{y}$$
 
 - Taking the inverse of $A^T A$ we arrive at the normal equations  
+
+$$\vec{b} = (A^TA)^{-1}A^T \hat{y}$$
+
+
 
 ## Estimating the Model Parameters   
 
@@ -478,6 +510,11 @@ $$dv \sim var1 + var2$$
 - Example; dependent variable (dv) modeled by independent variables (var1) and its square, uses the $I()$ operator to wrap a function:
 
 $$dv \sim var1 + I(var1**2)$$
+
+
+## Example - Specifying the Model    
+
+How do we specify the model formula with statsmodels?   
 
 - Example; dependent variable (dv) is modeled by two independent variables (var1 and var2) and the **interaction term** with no intercept term:
 
@@ -638,7 +675,7 @@ print('SSR = {0:6.2f}'.format(SSR))
 print('SSE + SSR = {0:6.2f}'.format(SSE + SSR))
 ```
 
-- The model has explained most of the TSS   
+- The model has explained most of the SST   
 
 
 ## Evaluating Regression Models    
@@ -690,6 +727,19 @@ n &= number\ of\ data\ samples\\
 k &= number\ of\ model\ coefficients
 \end{align}
 
+## Evaluating Regression Models  
+
+As the number of model parameters increases the model will fit the data better 
+
+We can expression $R^2_{adj}$:   
+
+\begin{align}
+R^2_{adj} &= 1 - (1 - R^2) \frac{n - 1}{n - k}\\ 
+where\\
+n &= number\ of\ data\ samples\\
+k &= number\ of\ model\ coefficients
+\end{align}
+
 Or, we can rewrite $R^2_{adj}$ as:
 
 $$R^2_{adj} =  1.0 - \frac{SSR}{SST}  \frac{n - 1}{n - 1 - k}$$
@@ -703,6 +753,27 @@ The summary table for the OLS model provides a number of summary statistics
 ```{python}
 ols_model.summary()
 ```
+
+
+## Evaluating Regression Models  
+
+The summary table for the OLS model provides a number of summary statistics
+
+- **Model coefficients**, with an hypothesis test on the statistical significance  
+
+- **F-statistic** and **Prob (F-statistic)** are a measure of the significance of the model against a **null model that does not explain the data**.     
+
+- [**Omnibus**](https://en.wikipedia.org/wiki/Omnibus_test), which is a test on the likelihood ratio between the model and a null model     
+
+- The $R^2$ and **adjusted $R^2$** indicate the sum of squares explained:   
+  - The **number of observations**, the $df_{SST}$    
+  - The **degrees of freedom residuals**, $df_{SSR}$    
+  -  $df_{SST} - df_{SSR} =$ number of model coefficients     
+  
+- [**Jarque-Bera**](https://en.wikipedia.org/wiki/Jarque%E2%80%93Bera_test) statistic is a test on the skewness and krutosis of the residuals    
+
+- The **Condition number** a measure of how well defined the solution is to the system of linear is      
+  
 
 
 ## Evaluating Regression Models   
@@ -740,7 +811,7 @@ When evaluating any machine learning model consider **all evaluation methods ava
 - Don't forget to check that the **model must make sense** for your application! 
 
 
-## Example - Fitting center Model
+## Example - Fitting Centered Model
 
 Fit the model using statsmodels.formula.api.ols with **centered independent variable** to create a linear model object    
 
@@ -990,7 +1061,7 @@ Outliers are a persistent problem with statistical and machine learning models
    - Result of improper stratification    
 
 - But, may be of interest    
-   - Depending on the application can be the **most interesting values**!!    
+   - Depending on the application, outliers can be the **most interesting values**!!    
    - May need to explicitly model 
    - Example: Fraud detection   
    - Example: Scientific discovery  
@@ -1067,7 +1138,7 @@ _=influence_plot(ols_model_ol)
 
 Why are linear models sensitive to outliers    
 
-- Ordinary linear regression use **squared error loss** function    
+- Ordinary linear regression uses **squared error loss** function    
    - Optimal if the errors are iid Normal   
    - Is an **unbiased estimator**   
    
@@ -1166,7 +1237,7 @@ knitr::include_graphics(rep("../images/Huber.png"))
 - Approximately linear influence near point estimate      
    - So nearly unbiased near the point estimate   
 
-- Then influence tappers to 0 for extreme outliers    
+- Influence tappers to 0 for extreme outliers    
 
 - An example is **Tukey's biweight**      
    - Only a single parameter for biweight function, $r$   
@@ -1253,7 +1324,9 @@ Linear models are a flexible and widely used class of models
 - We prefer the simplest model that does a reasonable job   
    - The principle of **Occam's razor**  
 
-- Must consider the **bias-variance trade-off**  
+- Must consider the **bias-variance trade-off**   
+
+- Use robust methods if outliers are present   
 
 
 ## Summary   

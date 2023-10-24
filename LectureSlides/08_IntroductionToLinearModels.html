@@ -545,13 +545,13 @@ models<br />
 <li>Nov 18: Project proposal due</li>
 <li>Week 12: Bayes MCMC methods<br />
 </li>
-<li>Week 13: Hierarchical models?<br />
+<li>Week 13: Hierarchical Bayesian models<br />
 </li>
 <li>Week 14: TBD - More on time series?<br />
 </li>
 <li>Dec 21: Submit Graduate Independent Projects</li>
 </ul>
-<p>Let me know if you have suggestions to change this schedule</p>
+<p>Let me know if you have suggestions to update this schedule</p>
 </div>
 <div id="review" class="slide section level2">
 <h1>Review</h1>
@@ -630,6 +630,26 @@ expected response<br />
 </li>
 <li>Complex and nonlinear models vulnerable to <em>unexpected
 output</em></li>
+</ul></li>
+</ul>
+</div>
+<div id="why-linear-models" class="slide section level2">
+<h1>Why Linear Models</h1>
+<p>What are the alternatives?</p>
+<ul>
+<li>Linear models are scaleable and interpretable
+<ul>
+<li>Idea if goal is inference and exploration<br />
+</li>
+<li>May have lower prediction accuracy on some problems</li>
+</ul></li>
+<li>AdaBoost algorithms are go-to models for prediction on tabular data
+<ul>
+<li>Known to give superior predicitons<br />
+</li>
+<li>Interpretability is nearly impossible<br />
+</li>
+<li>Limits inference and exploration opportunities</li>
 </ul></li>
 </ul>
 </div>
@@ -770,8 +790,16 @@ predictor variables or features</li>
 <li>Model is fit by finding an <strong>optimal</strong> value for each
 coefficient</li>
 </ul></li>
-<li><p><span class="math inline">\(\epsilon\)</span> is the vector
-representing <strong>prediction error</strong></p>
+</ul>
+</div>
+<div id="formulating-the-linear-model-1" class="slide section level2">
+<h1>Formulating the Linear Model</h1>
+<p>The general formulation of a linear model can be written:</p>
+<p><span class="math display">\[\vec{y} = A \vec{b} +
+\vec{\epsilon}\]</span></p>
+<ul>
+<li><span class="math inline">\(\epsilon\)</span> is the vector
+representing <strong>prediction error</strong>
 <ul>
 <li>The <span class="math inline">\(n\)</span>
 <strong>residuals</strong></li>
@@ -806,6 +834,12 @@ term</strong>
 <ul>
 <li>The <strong>slope coefficient</strong></li>
 </ul></li>
+</ul>
+</div>
+<div id="single-predictor-regression-1" class="slide section level2">
+<h1>Single Predictor Regression</h1>
+<p>Consider a simple case of regression with a single predictor</p>
+<ul>
 <li>Given a variable predictor value <span class="math inline">\(x_i\)</span>, the prediction, <span class="math inline">\(\hat{y}_i\)</span>, is:</li>
 </ul>
 <p><span class="math display">\[\begin{align}
@@ -925,7 +959,7 @@ y_n
 <p>Or, in matrix notation:</p>
 <p><span class="math display">\[\hat{y} = A \vec{b} +
 \vec{\epsilon}\]</span></p>
-<p>We are assuming that the <strong>error, <span class="math inline">\(\epsilon\)</span>, is all attributable to the
+<p>We are assuming that the <strong>error, <span class="math inline">\(\epsilon\)</span>, is only attributable to the
 dependent variable</strong>, <span class="math inline">\(y\)</span></p>
 </div>
 <div id="estimating-the-model-parameters" class="slide section level2">
@@ -977,6 +1011,8 @@ colinear</li>
 <li>Taking the inverse of <span class="math inline">\(A^T A\)</span> we
 arrive at the normal equations</li>
 </ul>
+<p><span class="math display">\[\vec{b} = (A^TA)^{-1}A^T
+\hat{y}\]</span></p>
 </div>
 <div id="estimating-the-model-parameters-3" class="slide section level2">
 <h1>Estimating the Model Parameters</h1>
@@ -1106,6 +1142,10 @@ variables (var1 and var2):</li>
 operator to wrap a function:</li>
 </ul>
 <p><span class="math display">\[dv \sim var1 + I(var1**2)\]</span></p>
+</div>
+<div id="example---specifying-the-model-1" class="slide section level2">
+<h1>Example - Specifying the Model</h1>
+<p>How do we specify the model formula with statsmodels?</p>
 <ul>
 <li>Example; dependent variable (dv) is modeled by two independent
 variables (var1 and var2) and the <strong>interaction term</strong> with
@@ -1227,7 +1267,7 @@ SSR &amp;= sum\ square\ residual\ = \Sigma_i{(y_i - \hat{y_i})^2}\\
 <div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&#39;SSE + SSR = </span><span class="sc">{0:6.2f}</span><span class="st">&#39;</span>.<span class="bu">format</span>(SSE <span class="op">+</span> SSR))</span></code></pre></div>
 <pre><code>## SSE + SSR = 494.61</code></pre>
 <ul>
-<li>The model has explained most of the TSS</li>
+<li>The model has explained most of the SST</li>
 </ul>
 </div>
 <div id="evaluating-regression-models-5" class="slide section level2">
@@ -1274,12 +1314,24 @@ where\\
 n &amp;= number\ of\ data\ samples\\
 k &amp;= number\ of\ model\ coefficients
 \end{align}\]</span></p>
+</div>
+<div id="evaluating-regression-models-7" class="slide section level2">
+<h1>Evaluating Regression Models</h1>
+<p>As the number of model parameters increases the model will fit the
+data better</p>
+<p>We can expression <span class="math inline">\(R^2_{adj}\)</span>:</p>
+<p><span class="math display">\[\begin{align}
+R^2_{adj} &amp;= 1 - (1 - R^2) \frac{n - 1}{n - k}\\
+where\\
+n &amp;= number\ of\ data\ samples\\
+k &amp;= number\ of\ model\ coefficients
+\end{align}\]</span></p>
 <p>Or, we can rewrite <span class="math inline">\(R^2_{adj}\)</span>
 as:</p>
 <p><span class="math display">\[R^2_{adj} =  1.0 -
 \frac{SSR}{SST}  \frac{n - 1}{n - 1 - k}\]</span></p>
 </div>
-<div id="evaluating-regression-models-7" class="slide section level2">
+<div id="evaluating-regression-models-8" class="slide section level2">
 <h1>Evaluating Regression Models</h1>
 <p>The summary table for the OLS model provides a number of summary
 statistics</p>
@@ -1296,10 +1348,10 @@ statistics</p>
   <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th> <td>   103.1</td>
 </tr>
 <tr>
-  <th>Date:</th>             <td>Fri, 20 Oct 2023</td> <th>  Prob (F-statistic):</th> <td>1.52e-13</td>
+  <th>Date:</th>             <td>Tue, 24 Oct 2023</td> <th>  Prob (F-statistic):</th> <td>1.52e-13</td>
 </tr>
 <tr>
-  <th>Time:</th>                 <td>18:47:57</td>     <th>  Log-Likelihood:    </th> <td> -99.565</td>
+  <th>Time:</th>                 <td>10:31:09</td>     <th>  Log-Likelihood:    </th> <td> -99.565</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td>    50</td>      <th>  AIC:               </th> <td>   203.1</td>
@@ -1340,7 +1392,39 @@ statistics</p>
 </tr>
 </table><br /><br />Notes:<br />[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
 </div>
-<div id="evaluating-regression-models-8" class="slide section level2">
+<div id="evaluating-regression-models-9" class="slide section level2">
+<h1>Evaluating Regression Models</h1>
+<p>The summary table for the OLS model provides a number of summary
+statistics</p>
+<ul>
+<li><p><strong>Model coefficients</strong>, with an hypothesis test on
+the statistical significance</p></li>
+<li><p><strong>F-statistic</strong> and <strong>Prob
+(F-statistic)</strong> are a measure of the significance of the model
+against a <strong>null model that does not explain the
+data</strong>.</p></li>
+<li><p><a href="https://en.wikipedia.org/wiki/Omnibus_test"><strong>Omnibus</strong></a>,
+which is a test on the likelihood ratio between the model and a null
+model</p></li>
+<li><p>The <span class="math inline">\(R^2\)</span> and <strong>adjusted
+<span class="math inline">\(R^2\)</span></strong> indicate the sum of
+squares explained:</p>
+<ul>
+<li>The <strong>number of observations</strong>, the <span class="math inline">\(df_{SST}\)</span><br />
+</li>
+<li>The <strong>degrees of freedom residuals</strong>, <span class="math inline">\(df_{SSR}\)</span><br />
+</li>
+<li><span class="math inline">\(df_{SST} - df_{SSR} =\)</span> number of
+model coefficients</li>
+</ul></li>
+<li><p><a href="https://en.wikipedia.org/wiki/Jarque%E2%80%93Bera_test"><strong>Jarque-Bera</strong></a>
+statistic is a test on the skewness and krutosis of the
+residuals</p></li>
+<li><p>The <strong>Condition number</strong> a measure of how well
+defined the solution is to the system of linear is</p></li>
+</ul>
+</div>
+<div id="evaluating-regression-models-10" class="slide section level2">
 <h1>Evaluating Regression Models</h1>
 <p>We also can evaluate models by error metrics</p>
 <ul>
@@ -1363,7 +1447,7 @@ of mean residuals</li>
 <li>And many more possibilities…</li>
 </ul>
 </div>
-<div id="evaluating-regression-models-9" class="slide section level2">
+<div id="evaluating-regression-models-11" class="slide section level2">
 <h1>Evaluating Regression Models</h1>
 <p>When evaluating any machine learning model consider <strong>all
 evaluation methods available</strong></p>
@@ -1375,8 +1459,8 @@ with your model</p></li>
 sense</strong> for your application!</p></li>
 </ul>
 </div>
-<div id="example---fitting-center-model" class="slide section level2">
-<h1>Example - Fitting center Model</h1>
+<div id="example---fitting-centered-model" class="slide section level2">
+<h1>Example - Fitting Centered Model</h1>
 <p>Fit the model using statsmodels.formula.api.ols with <strong>centered
 independent variable</strong> to create a linear model object</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co">## Center the independent variable   </span></span>
@@ -1404,7 +1488,7 @@ varaibles all <span class="math inline">\(= 0\)</span>
 </ul></li>
 </ul>
 </div>
-<div id="example---fitting-center-model-1" class="slide section level2">
+<div id="example---fitting-center-model" class="slide section level2">
 <h1>Example - Fitting center Model</h1>
 <p>Plot the regression line against the centered independent
 variable</p>
@@ -1511,10 +1595,10 @@ terms</p>
   <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th> <td>   5.684</td>
 </tr>
 <tr>
-  <th>Date:</th>             <td>Fri, 20 Oct 2023</td> <th>  Prob (F-statistic):</th>  <td>0.0211</td> 
+  <th>Date:</th>             <td>Tue, 24 Oct 2023</td> <th>  Prob (F-statistic):</th>  <td>0.0211</td> 
 </tr>
 <tr>
-  <th>Time:</th>                 <td>18:48:01</td>     <th>  Log-Likelihood:    </th> <td> -191.24</td>
+  <th>Time:</th>                 <td>10:31:14</td>     <th>  Log-Likelihood:    </th> <td> -191.24</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td>    50</td>      <th>  AIC:               </th> <td>   386.5</td>
@@ -1594,10 +1678,10 @@ x^2\]</span></p>
   <th>Method:</th>             <td>Least Squares</td>  <th>  F-statistic:       </th> <td>   11.55</td>
 </tr>
 <tr>
-  <th>Date:</th>             <td>Fri, 20 Oct 2023</td> <th>  Prob (F-statistic):</th> <td>8.29e-05</td>
+  <th>Date:</th>             <td>Tue, 24 Oct 2023</td> <th>  Prob (F-statistic):</th> <td>8.29e-05</td>
 </tr>
 <tr>
-  <th>Time:</th>                 <td>18:48:03</td>     <th>  Log-Likelihood:    </th> <td> -184.04</td>
+  <th>Time:</th>                 <td>10:31:16</td>     <th>  Log-Likelihood:    </th> <td> -184.04</td>
 </tr>
 <tr>
   <th>No. Observations:</th>      <td>    50</td>      <th>  AIC:               </th> <td>   374.1</td>
@@ -1654,8 +1738,8 @@ learning models</p>
 </ul></li>
 <li>But, may be of interest
 <ul>
-<li>Depending on the application can be the <strong>most interesting
-values</strong>!!<br />
+<li>Depending on the application, outliers can be the <strong>most
+interesting values</strong>!!<br />
 </li>
 <li>May need to explicitly model</li>
 <li>Example: Fraud detection<br />
@@ -1718,7 +1802,7 @@ size</p>
 <h1>Dealing With Outliers</h1>
 <p>Why are linear models sensitive to outliers</p>
 <ul>
-<li>Ordinary linear regression use <strong>squared error loss</strong>
+<li>Ordinary linear regression uses <strong>squared error loss</strong>
 function
 <ul>
 <li>Optimal if the errors are iid Normal<br />
@@ -1844,7 +1928,7 @@ Influence function of the Huber estimator
 <ul>
 <li>So nearly unbiased near the point estimate</li>
 </ul></li>
-<li><p>Then influence tappers to 0 for extreme outliers</p></li>
+<li><p>Influence tappers to 0 for extreme outliers</p></li>
 <li><p>An example is <strong>Tukey’s biweight</strong></p>
 <ul>
 <li>Only a single parameter for biweight function, <span class="math inline">\(r\)</span><br />
@@ -1929,6 +2013,7 @@ models</p></li>
 </ul></li>
 <li><p>Must consider the <strong>bias-variance
 trade-off</strong></p></li>
+<li><p>Use robust methods if outliers are present</p></li>
 </ul>
 </div>
 <div id="summary-1" class="slide section level2">
