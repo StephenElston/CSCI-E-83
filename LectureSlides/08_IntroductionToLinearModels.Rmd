@@ -21,14 +21,14 @@ matplotlib$use("Agg", force = TRUE)
 
 Plan going forward:    
 
-- Week 8: Introduction to Linear Models    
-- Week 9: Linear Models Part 2 - Categorical data and nonlinear response models     
-- Week 10: Linear Models Part 3 - Regularization and sparse models      
-- Week 11: Time Series Models    
+- Week 8, Oct 24: Introduction to Linear Models    
+- Week 9, Oct 31: Linear Models Part 2 - Categorical data and nonlinear response models     
+- Week 10, Nov 7: Linear Models Part 3 - Regularization and sparse models      
+- Week 11, Nov14: Time Series Models    
 - Nov 18: Project proposal due
-- Week 12: Bayes MCMC methods    
-- Week 13: Hierarchical Bayesian models        
-- Week 14: TBD - More on time series?      
+- Week12, Nov 23: Bayes MCMC methods       
+- Week 13, Nov 28:  Hierarchical Bayesian models        
+- Week 14, Dec 5: - More on time series? - No assignment       
 - Dec 21: Submit Graduate Independent Projects  
 
 Let me know if you have suggestions to update this schedule  
@@ -95,11 +95,12 @@ Linear models are **readily interpretable!**
 What are the alternatives?    
 
 - Linear models are scaleable and interpretable     
-    - Idea if goal is inference and exploration    
+    - Idea if **goal is inference and exploration**    
+    - Can **identify data problems** more easily  
     - May have lower prediction accuracy on some problems     
 
 - AdaBoost algorithms are go-to models for prediction on tabular data   
-    - Known to give superior predicitons     
+    - Known to give superior predicitons, **but clean data matter more!**     
     - Interpretability is nearly impossible   
     - Limits inference and exploration opportunities    
 
@@ -1052,6 +1053,25 @@ ols_model_3.summary()
 ```
 
 
+## Linear Model Assumptions
+
+There are a number of assumptions in linear models that you overlook at your peril!  
+
+- The feature or predictor variables should be **independent** of one another      
+   - This is rarely true in practice   
+   - **Multi-colinearity** between features makes the model **under-determined**    
+
+- We assume that numeric features or predictors have zero mean and about the same scale    
+   - We do not want to bias the estimation of regression coefficients with predictors that do not have a 0 mean   
+   - We do not want to have predictors with a large numeric range dominate training   
+   - Example: income is in the range of 10s or 100s of thousands and age is in the range of 10s, but apriori income is no more important than age as a predictor  
+   
+- Values of each predictor or feature should be iid      
+   - If variance changes with sample, the optimal value of the coefficient could not be constant    
+   - If there **serial correlation** in the predictor values, the iid assumption is violated - but can account for this such as in time series models   
+
+
+
 ## Dealing With Outliers  
 
 Outliers are a persistent problem with statistical and machine learning models   
@@ -1292,24 +1312,6 @@ plt.show();
 Notice the different slope for the regression with Huber loss   
 
 
-
-## Linear Model Assumptions
-
-There are a number of assumptions in linear models that you overlook at your peril!  
-
-- The feature or predictor variables should be **independent** of one another      
-   - This is rarely true in practice   
-   - **Multi-colinearity** between features makes the model **under-determined**    
-
-- We assume that numeric features or predictors have zero mean and about the same scale    
-   - We do not want to bias the estimation of regression coefficients with predictors that do not have a 0 mean   
-   - We do not want to have predictors with a large numeric range dominate training   
-   - Example: income is in the range of 10s or 100s of thousands and age is in the range of 10s, but apriori income is no more important than age as a predictor  
-   
-- Values of each predictor or feature should be iid      
-   - If variance changes with sample, the optimal value of the coefficient could not be constant    
-   - If there **serial correlation** in the predictor values, the iid assumption is violated - but can account for this such as in time series models   
-   
    
 ## Summary    
 
