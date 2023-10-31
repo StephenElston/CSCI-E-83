@@ -1,9 +1,10 @@
 ---
 title: "Models Categorical Variables and Nonlinear Response"
 author: "Steve Elston"
-date: "10/27/2022"
+date: "10/30/2023"
 output:
   slidy_presentation: default
+  
   pdf_document: default
   beamer_presentation: default
 ---
@@ -11,7 +12,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-use_python("/usr/bin/python3")
+use_python("C:/Users/steph/anaconda3")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
@@ -25,6 +26,8 @@ Linear models are a flexible and widely used class of models
 
 - Fit model coefficients by **least squares** estimation   
 
+- Least squares is a maximum likelihood estimate, given Normally distributed residuals   
+
 - Can use many types of predictor variables   
 
 - We prefer the simplest model that does a reasonable job   
@@ -32,15 +35,27 @@ Linear models are a flexible and widely used class of models
 
 - Must consider the **bias-variance trade-off**  
 
+- Outliers can have significant effect on linear model parameter estimates   
+
 
 ## Review   
 
 When evaluating any machine learning model consider **all evaluation methods available**    
 
 - No one method best all of the time    
-  - Homoskedastic Normally distributed residuals   
-  - Reasonable values $R^2$, RMSE, etc
-  - Are the model coefficients all significant? 
+
+- Homoskedastic Normally distributed residuals   
+
+\begin{align}
+\epsilon_i &\sim \mathbb{N}(0, \sigma^2)\\
+\mathbb{E}(\epsilon_i) &= 0
+\end{align}
+
+- Want reasonable values $R^2_{adj}$, RMSE, etc
+
+- Is model and its coefficients significant? 
+   - F test and Omnibus test on model    
+   - t-test on model parameter estimates   
 
 - **Different methods highlight different problems** with your model     
 
@@ -81,13 +96,12 @@ There are a number of assumptions in linear models that you overlook at your per
    - **Multi-collinearity** between features makes the model **under-determined**   
 
 - We assume that numeric features or predictors have **zero mean** and about the **same scale**      
-   - We do not want to bias the estimation of regression coefficients with predictors that do not have a 0 mean   
-   - We do not want to have predictors with a large numeric range dominate training   
-   - Example: income is in the range of 10s or 100s of thousands and age is in the range of 10s, but apriori income is no more important than age as a predictor  
+   - Do not want to bias the estimation of regression coefficients with predictors that do not have a 0 mean   
+   - Do not want to have predictors with a large numeric range dominate training   
    
 - Values of each predictor or feature should be iid      
-   - If variance changes with sample, the optimal value of the coefficient could not be constant    
-   - If there **serial correlation** in the predictor values, the iid assumption is violated - but can account for this such as in time series models   
+   - If variance changes with sample, the optimal value of the coefficient is not constant    
+   - If there **serial correlation** in the predictor values, the iid assumption is violated - use time series models   
    
 
 
@@ -98,13 +112,13 @@ Scaling of features is required for many machine learning models
 - Several commonly used approaches      
    - **Z-score** scaling results in features with zero mean and unit variance    
    - Use Z-score scaling for features approximately normally distributed   
-   - **Min-max** scaling transforms feature values to range 0-1   
+   - **Min-max** scaling transforms feature values to range $\{0,1\}$ or $\{-1,1\}$    
    - Use min-max scaling for features with truncated range of values   
 
 - Effect on model coefficients   
    - Scaling changes model coefficients by the scale factor applied   
    - Can re-scale (unscale) model coefficients before processing unknown cases    
-   - Or use **same scaling** for unknown feature values   
+   - Or use **same scaling** for unknown feature values and scale response    
    
 - When coding categorical variables as binary dummy variables no need to scale - already in range [0-1]    
 
@@ -112,15 +126,15 @@ Scaling of features is required for many machine learning models
 ## Introduction  
 
 - Working with categorical variables    
-   - One-hot encoding    
-   - Working with contrasts    
-   - Effects and adjustments    
+   - **One-hot encoding**    
+   - Working with **contrasts**    
+   - **Effects** and **adjustments**    
 
 - Building models with nonlinear or non-Normal response   
-  - Use generalized linear model for nonlinear response          
-  - Link function transforms to nonlinear model to linear model       
+  - Use **generalized linear model (GLM)** for nonlinear response          
+  - **Link function** transforms nonlinear model to linear model       
   - Evaluating Binomial response models   
-  - Compare model performance with deviance   
+  - Compare model performance with **deviance**   
   - Poisson regression   
 
 
@@ -175,7 +189,7 @@ print(test_scores_test.shape)
 
 ## Working with Categorical Variables  
 
-Example: We can encode a categorical variable with the Python patsy package to get the X (model) and Y(label) arrays:     
+Example: We can encode a categorical variable with the Python Patsy package to get the X (model) and Y(label) arrays:     
 
 ```{python}
 from patsy import dmatrices
@@ -202,10 +216,10 @@ Wait! What happened to the coefficient for the first level of ses?
 
 - The intercept is the **mean response** of the first level     
 
-- The other coefficients are **contrasted** with respect to the mean of the first level.       
+- The other coefficients are **contrasts** with respect to the mean of the first level.       
 - Consider the following possible ways we can encode responses to a categorical variable - often called a **treatment**      
    - For $n$ treatments, there are mean responses $[ \mu_1, \mu_2, \ldots, \mu_n ]$   
-   - The alternative encoding is a treatment with intercept, $I$, at $n - 1$ **contrasts**, $[ I, c_1, \ldots, c_{n-1}]$    
+   - The alternative encoding is a treatment with intercept, $I$, and $n-1$ **contrasts**, $[1, c_2, \ldots, c_{n-1}]$    
    
 - The means and contrasts are related:    
    
@@ -243,7 +257,7 @@ e_n
 \mu_n
 \end{bmatrix}$$  
 
-- With intercept term compute effect sizes using contrasts:  
+- With intercept term compute effect sizes using contrasts, $[1, c_2, c_3, \ldots, c_n ]$:  
 
 $$\begin{bmatrix}
 e_1\\
@@ -253,7 +267,7 @@ e_n
 \end{bmatrix} = 
 \begin{bmatrix}
 I\\
-I + c_1\\
+I + c_2\\
 \vdots\\
 I + c_{n}
 \end{bmatrix}$$   
@@ -264,7 +278,7 @@ I + c_{n}
 In a linear model we can sometimes relate the coefficient values to an effect size    
 
 - Assumes the treatments are orthogonal    
-   - In other words, applied on at a time    
+   - In other words, applied one at a time    
    - e.g. a case can only be in one category     
    
 - Assumes that the model coefficients are statistically independent    
@@ -356,7 +370,9 @@ OLS has Normal response
 
 - Output of linear model directly maps to Normally distributed response    
 
-$$\beta_0 + \beta_1\ x \sim N(\beta_0 + \beta_1\ x, \sigma)$$
+$$\beta_0 + \beta_1\ x \sim N(\beta_0 + \beta_1\ x, \sigma)$$     
+
+
    
 ## The Logistic Regression Model   
 
@@ -369,6 +385,10 @@ Construct a generalized linear model using a **Binomial distribution**
 - Logistic regression is linear model, with a binary response or label values, `{False, True}` or `{0, 1}`      
 
 - Response computed as a log likelihood, leading to a Binomial distributed response     
+
+- Categorical response is simple extension to categorical distribution     
+    - One Binomial to many     
+    - Many Binomial to many    
 
 
 ## The Logistic Regression Model    
@@ -389,7 +409,7 @@ $$logit(\mathtt{E}[y_i|x_i]) = logit(p_i(x_i)) = ln \Big(\frac{p_i(x_i)}{1-p_i(x
 
 Response of linear model is transformed to the binomially distributed random variable through the **inverse link function**      
 
-- Known as the **inverse logit function**, or **logistic function**, $f(x_i)$       
+- Known as the **inverse logit function**, or **logistic function**, $f(x_i) = g^{-1}(x_i)$       
 
 - After some algebra we can arrive at:   
 
@@ -482,7 +502,7 @@ The other metrics are defined as follows:
 - Accuracy = (TP + TN) / (TP + FP + TN + FN)      
 
 - Selectivity or Precision = TP / (TP + FP)       
-   - Precision is the fraction of the relevant class predictions are actually correct     
+   - Precision is the fraction of the relevant class predictions which are correct     
    
 - Sensitivity or Recall = TP / (TP + FN)
    - Recall is the fraction of the relevant class were we able to predict    
@@ -490,8 +510,8 @@ The other metrics are defined as follows:
 
 - Is a trade-off between precision and recall     
    - Consider changing the decision threshold    
-   - High threshold $\rightarrow$ higher recall, fewer false negative    
-   - Low threshold $\rightarrow$ higher precision, fewer false positives       
+   - High threshold $\rightarrow$ lower recall, more false negative    
+   - Low threshold $\rightarrow$ lower precision, more false positives       
 
 ## Example of Logistic Regression    
 
@@ -519,7 +539,7 @@ threshold=0.18
 test_scores['predicted'] = logistic_reg_model.predict()
 test_scores['score'] = [1 if x>threshold else 0 for x in test_scores['predicted']]
 
-test_scores.head(20)
+test_scores.loc[:,['schtyp','math','predicted','score']].head(20)
 ```
 
 
@@ -579,32 +599,139 @@ The significance of the GLM is expressed in terms of a statistic called **devian
  - Given a nonlinear mapping between the linear model and the response, these methods are not suitable      
  
 
-## What is Deviance?
+## What is Deviance?     
+
+The significance of the GLM is expressed in terms of a statistic called **deviance**   
+
+- It can be a bit of a challenge to wrap your head around what deviance really means    
+
+- Deviance is the difference between the log likelihood of a reference model and some other model
+    - For model with parameters $\phi$, $f(\phi)$
+    - Reference model with parameters $\phi_R$, $f(\phi_R)$,
+    
+$$D \big( f(\mathbf{X},\phi) \big) = 2 \big( l(f(\mathbf{X}, \phi_R)) - l( f(\mathbf{X}, \phi)\big))$$   
+
+- Where:   
+    - $\mathbf{X} =$ the array of observations    
+    - $l \big( f(\mathbf{X}, \phi) \big) =$ the log-likelihood of the model   
+
+
+## What is Deviance?     
+
+There are several commonly used forms of deviance:     
+
+- **Residual deviance** uses a **saturated model** as a reference   
+   - Saturated model has a degree of freedom (parameter) for each observation used to fit    
+   - Model has a perfect fit to training data   
+   - But poor **generalization** or accuracy for new observations 
+   
+- **Residual deviance** uses a **null model** as a reference    
+    - Null model explains none of the variance of the data     
+    - Is just an informed guess  
+    - Example, for Normally distributed response null model is the mean 
+    - Example, for Binomially distributed response null model random guesses $[0,1]$ based on mean of observations  
+
+
+## What is Deviance? 
+
+The deviance statistic is $\chi^2$ distributed    
+
+- Can apply a significance test on a model  
+
+- A model with small deviance is little better that informed guessing    
+    - Has small $\chi^2$ and is not considered significant     
+    
+- A model with large deviance has a large $\chi^2$   
+    - Exhibits a significant improvement in accuracy  
+    - Improves on reference model   
  
- Focus on one the simplest and easiest to understand forms, known as **null deviance**    
+
+## Residual Deviance   
+
+**Residual deviance** is 2 times the difference between the log likelihood of a staturated model, $f(\mathbf{X}, \phi_S)$, and some other model:      
+
+$$D_R \big( f(\mathbf{X},\phi) \big) = 2 \Big( l \big(f(\mathbf{X}, \phi_S) \big) - l \big( f(\mathbf{X}, \phi) \big) \Big)$$    
+
+Residual deviance has several important properties.    
+
+- Log likelihood of saturated model is 0 for some some common distributions    
+     - Example, Normal distribution   
+     - Example, Binomial distribution    
+     - In these cases deviance $2\ l \big( f(\mathbf{X}, \phi)\big)$
+
+- In other cases log likelihood of staturated model is not 0:     
+    - Example, Poisson distribution 
+
+## Residual Deviance  
+
+**Normal saturated model:**
+
+We can construct a saturated model for normally distributed values by having a free mean parameter, $u_i$ for each observation, $x_i$.
+
+$$
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+\vdots\\
+x_n
+\end{bmatrix} = 
+\begin{bmatrix}
+1, 0, 0, \ldots, 0\\
+0, 1, 0, \ldots, 0\\
+0, 0, 1, \ldots, 0\\
+\vdots,\ \vdots,\ \vdots,\ \ddots,\ \vdots\\
+0, 0, 0, \ldots, 1
+\end{bmatrix}
+\begin{bmatrix}
+\mu_1\\
+\mu_2\\
+\mu_3\\
+\vdots\\
+\mu_n
+\end{bmatrix}
+$$
+
+Now, the normal likelihood for this models is   
+
+$$\mathcal{L}(\mathbf{X} |\ \mathbf{\mu}) = -\frac{1}{(2 \pi \sigma^2)^{n/2}} exp\Big[ - \frac{1}{2 \sigma^2}  \sum_{i=1}^n(x_i - \mu_i)^2 \Big]$$
+
+Since $\mu_i = x_i$, the Normal likelihood is $1.0$ and the log likelihood is $0.0$.     
+
+## Residual Deviance  
+
+**Binomial staturated model:**
+
+A saturated Binomial model can be constructed if for each outcome, $y_i$, the probability parameter is:  
+
+$$ 
+\pi_i = 
+\begin{cases}
+  1 & \text{if $y_i=1$} \\
+  0 & \text{if $y_i=0$}
+\end{cases}
+$$   
+
+The likelihood can be writen:     
+
+$$\prod_{i=1}^{n} \hat{\pi}_i^{y_i} (1 - \hat{\pi}_i)^{1-y_i} = 1^n = 1$$
+
+Since $log(1) = 0$, the log likelihood of the staturated model.     
+
+
+
+## Null Deviance
  
- - Null deviance is 2 times the square of the log odds ratio between a model and a null model      
+ **Null deviance** is measured with respect to a null model          
+      
  - Intuitively, the null model is informed guessing     
  
- - Deviance is a measure of how much the model improves accuracy beyond guessing
+ - Null deviance is a measure of how much the model improves accuracy beyond guessing
  
-## What is Deviance? 
 
-The deviance statistic is $\chi^2$ distributed     
+## Null Deviance 
 
-- Can apply a significance test on a model    
-
-- Model with small deviance is little better that informed guessing      
-  - Small $\chi^2$     
-  - Not significant improvement
-  
-- Model with large deviance has a large $\chi^2$      
-  - Significant improvement in accuracy     
-
-
-## What is Deviance? 
-
-To understand binomial deviance, start with the expected value of the binomial log-likelihood:  
+To understand binomial null deviance, start with the expected value of the binomial log-likelihood:  
 
 $$\hat{l}(k, n | p) = log \binom{n}{k} + k\ log(p) + (n-k)\ log(1-p)$$
 
@@ -621,7 +748,7 @@ And with expected log-likelihood:
 $$\hat{l}_{phi}(k, n | p_{\phi}) = log \binom{n}{k} + k\ log(p_{\phi}) + (n-k)\ log(1-p_{\phi})$$
 
 
-## What is Deviance? 
+## Null Deviance 
 
 
 Gain intuitive understand of the behavior of the null model by example     
@@ -636,7 +763,7 @@ Gain intuitive understand of the behavior of the null model by example
 - In other words, the null model is no better in terms of predictive power than just saying that all values of $y$ are either 0 or all values are 1.    
 
 
-## What is Deviance? 
+## Null Deviance 
 
 Form of null deviance of a linear model
 
@@ -656,27 +783,28 @@ D(\beta_0 + \mathbf{\beta} 𝑥_i) &= ln \Big( \frac{\hat{L}^2}{\hat{L}_{\phi}^2
   - Model with large $\chi^2$ has greater significance and accuracy of predictions    
 
 
-## What is Deviance? 
+## Properties of Deviance 
 
-What are some key properties of null deviance?    
+What are some key properties of deviance?    
 
 - Recall that log-likelihood is a negative number   
   - Higher log-likelihood has smaller negative magnitude    
-  - Log-likelihood of null model has large negative magnitude       
+  - Log-likelihood of reference model has large negative magnitude       
   
 - Deviance $\ge 0$ always     
-  - If model is no better than null model, $\mathcal{l} = \mathcal{l}_{\phi},\ D = 0$   
+  - If model is no better than the reference model, $\mathcal{l}_R = \mathcal{l}_{\phi} \rightarrow D = 0$   
   - For model with greater predictive power, $\mathcal{l} \gt \mathcal{l}_{\phi},\ D \gt 0$
 
 
-## What is Deviance? 
-
+## Applying Deviance 
 
 Deviance concepts discussed here can be applied to any GLM   
 
-- In some cases, deviance can be used directly     
+- In some cases, deviance can be used directly   
+    - Is explained variance significant?    
 
-- In other cases, log-likelihood ratio is used directly for model evaluation and significance    
+- In other cases, log-likelihood ratio is used directly for model evaluation       
+    - Compare performance of different models      
 
 
 ## Solving Maximum Likelihood Problem   
@@ -697,13 +825,16 @@ Poisson regression is example of a GLM
 - Poisson regression is example of nonlinear response model   
 
 - Recall, the Poisson distribution has an exponential form with a single parameter, $\lambda$   
+
 - Parameter, $\lambda$, is the expected arrival rate of the process    
 
-- Predictions, $y_i$, given the observations, $x_i$ and the model parameter, $\lambda_i$:         
+- Predictions, $y_i$, given the observations, $x_i$ and the model parameter, $\lambda_i$
 
-$$log \big[ \mathtt{E}(y_i | x_i) \big] = x \lambda_i \Longleftrightarrow \mathtt{E}(y_i | x_i) = e^{x \lambda_i }$$    
+- Link function $\Longleftrightarrow$ Inverse link function:   
 
- - Above is the Poisson **link function** and **inverse link function**    
+$$log \big[ \mathtt{E}(y_i |x_i) \big] = x_i \lambda_i \Longleftrightarrow \mathtt{E}(y_i | x_i) = e^{x_i \lambda_i }$$
+
+
  
 
 ## Poisson Regression as GLM     
@@ -716,23 +847,8 @@ Extend relationship using a linear model for $\lambda$
   - $\beta_0$, and $p$ dimensional slope parameter vector, $\vec{\beta}$     
   - Estimate of $\lambda_i$, for a $p$ dimensional observation vector $\mathbf{x}_i$
 
-$$log(\lambda_i) = \beta_0 + \mathbf{x}_i \vec{\beta} \Longleftrightarrow \lambda_i = e^{(\beta_0 + \mathbf{x}_i $\vec{\beta})}$$
+$$log(\lambda_i) = \beta_0 + \mathbf{x}_i \vec{\beta} \Longleftrightarrow \lambda_i = e^{(\beta_0 + \mathbf{x}_i \vec{\beta})}$$
 
-
-## Poisson Regression as GLM  
-
-Use formulation of the Poisson distribution     
-
-- Link function    
-
-$$log \big[ \mathtt{E}(y_i |x_i) \big] = x_i \lambda_i$$    
-
-- Link function $\Longleftrightarrow$ Inverse link function:   
-
-\begin{align}
-log \big[ \mathtt{E}(y_i |x_i) \big] = x_i \lambda_i &\Longleftrightarrow \mathtt{E}(y_i | x_i) = e^{x_i \lambda_i } \\
-log \big[ \mathtt{E}(y_i |x_i) \big] = \beta_0 + \mathbf{x}_i \vec{\beta} &\Longleftrightarrow \mathtt{E}(y_i | x_i) = e^{\beta_0 + \mathbf{x}_i \vec{\beta} }
-\end{align}
 
 
 ## Poisson Regression Example
