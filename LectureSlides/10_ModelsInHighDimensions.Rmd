@@ -1,7 +1,7 @@
 ---
 title: "Regularization and Sparse Models"
 author: "Steve Elston"
-date: "11/03/2022"
+date: "11/07/2023"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -11,11 +11,70 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-use_python("/usr/bin/python3")
+use_python("C:/Users/steph/anaconda3")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
 ```
+
+
+## Review    
+
+There are a number of assumptions in linear models that you overlook at your peril! 
+
+- The feature or predictor variables should be **independent** of one another      
+   - This is rarely true in practice   
+   - **Multi-collinearity** between features makes the model **under-determined**   
+
+- We assume that numeric features or predictors have **zero mean** and about the **same scale**      
+   - Do not want to bias the estimation of regression coefficients with predictors that do not have a 0 mean   
+   - Do not want to have predictors with a large numeric range dominate training   
+   
+- Values of each predictor or feature should be iid      
+   - If variance changes with sample, the optimal value of the coefficient is not constant    
+   - If there **serial correlation** in the predictor values, the iid assumption is violated - use time series models   
+   
+
+## Review      
+
+ Representation of machine learning models      
+ 
+ - The key representation is the model matrix      
+    - Column of 1s for intercept      
+    - Columns of feature or predictor values   
+ 
+$$
+A = 
+\begin{bmatrix}
+1, x_{1,1}, x_{1,2}, \ldots, x_{1,p}\\
+1, x_{2,1}, x_{2,2}, \ldots, x_{2,p}\\
+1, x_{3,1}, x_{3,2}, \ldots, x_{3,p}\\
+\vdots,\ \vdots,\ \vdots,\ \vdots,\ \vdots\\
+1, x_{n,1}, x_{n,2}, \ldots, x_{n,p}
+\end{bmatrix}
+$$
+ 
+ - There are two standards for signatures of ML functions    
+    - A model matrix $X$ (exogenous-features) and label array $Y$ (dependent-endogenous) - Scikit-learn and base Statsmodels   
+    - A data frame with all features (predictors) and label (dependent) columns plus a model formula - Statsmodels formula and R   
+
+   
+## Review  
+
+- Models with nonlinear response have non-Normal distributions  
+
+- The generalized linear model accommodates nonlinear response distributions          
+
+- Link function transforms to linear model       
+   - Inverse link function transforms from Normal distribution to response distribution   
+
+- Evaluating Binomial response models    
+   - Confusion matrix organizes 
+   - Compute metrics from elements of confusion matrix
+   - Use multiple evaluation criteria 
+
+- Compare model performance with deviance  
+
 
  
 ## Dealing with Overfit Models
@@ -48,7 +107,7 @@ test_scores_test = test_scores.iloc[size:, :].reset_index(drop=True)
 formula = 'socst ~ C(ses)*C(prog)'
 #linear_model = smf.ols("socst ~ C(ses)*C(prog)", data=test_scores_train).fit()
 linear_model = smf.ols(formula, data=test_scores_train).fit()
-print(linear_model.summary())
+linear_model.summary()
 ```
 
 
@@ -102,7 +161,7 @@ We want our models to be **sparse**
 
 - Leads to the the **step-wise regression algorithm**     
    - Forward step-wise regression adds most explanatory variable one at a time    
-   - Backward step-wise regression removes lest explanatory variable one at a time    
+   - Backward step-wise regression removes least explanatory variable one at a time    
    - Can go both directions - see the R documentation  
    - Hard to find a good metric    
 
@@ -122,28 +181,30 @@ Regularization is a systematic approach to preventing over-fitting
 
 - To better understand this trade-off decompose mean square error:    
 
-$$\Delta y^2 = E \Big[ \big( Y - \hat{f}(X) \big)^2 \Big]$$
+$$\Delta Y^2 = \mathbb{E} \Big[ \big( Y - \hat{f}(X) \big)^2 \Big]$$
 $Y =$ the label vector     
 $X =$ the feature matrix      
-$\hat{f}(x) =$ the trained model      
+$\hat{f}(X) = \hat{Y}$ estimate from fitted model      
 
 Expanding this relation gives us:    
 
-$$\Delta y^2 = \Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2 + E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big] + \sigma^2\\
-\Delta y^2 = Bias^2 + Variance + Irreducible\ Error$$
+\begin{align}
+\Delta Y^2 &= \Big( \mathbb{E} [ \hat{f}(X)] - \hat{f}(X) \Big)^2 + \mathbb{E} \Big[ \big( \hat{f}(X) - \mathbb{E} [ \hat{f}(X)] \big)^2 \Big] + \sigma^2\\
+&= Bias^2 + Variance + Irreducible\ Error
+\end{align}
 
 
 
 ## Regularization - The Bias-Variance Trade-Off      
 
 How do we interpret the bias-variance trade-off relationship:    
-$$\Delta y^2 = \Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2 + E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big] + \sigma^2$$
-- $E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big]$, the expected squared difference between the model output and the expected model output is the **variance** of the model     
-   - For low variance model, $E \Big[ \big( \hat{f}(X) - E[ \hat{f}(X)] \big)^2 \Big] \rightarrow 0$    
+$$\Delta Y^2 = \Big( \mathbb{E} [ \hat{f}(X)] - \hat{f}(X) \Big)^2 + \mathbb{E} \Big[ \big( \hat{f}(X) - \mathbb{E}[ \hat{f}(X)] \big)^2 \Big] + \sigma^2$$
+- $\mathbb{E}  \Big[ \big( \hat{f}(X) - \mathbb{E} [ \hat{f}(X)] \big)^2 \Big]$, the expected squared difference between the model output and the expected model output is the **variance** of the model     
+   - For low variance model, $\mathbb{E}  \Big[ \big( \hat{f}(X) - \mathbb{E} [ \hat{f}(X)] \big)^2 \Big] \rightarrow 0$    
    - Model **generalizes** since variance is low for each prediction, $\hat{f}(X)$     
 
-- $\Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2$, the expected value of the difference between the model output and the expected model output is the **bias** of the model    
-  - For **unbiased model**, $E \Big[ \hat{f}(X)] - \hat{f}(X) \Big] = 0$
+- $\Big( \mathbb{E}[ \hat{f}(X)] - \hat{f}(X) \Big)^2$, the expected value of the difference between the model output and the expected model output is the **bias** of the model    
+  - For **unbiased model**, $\mathbb{E}\Big[ \hat{f}(X)] - \hat{f}(X) \Big] = 0$
   - Example: OLS model with $residuals \sim N(0, \sigma^2)$ is **unbiased**     
   
 - $\sigma^2$ is inherent or irreducable error in data   
@@ -154,7 +215,7 @@ $$\Delta y^2 = \Big( E[ \hat{f}(X)] - \hat{f}(X) \Big)^2 + E \Big[ \big( \hat{f}
 
 There is a trade-off between bias and variance      
 
-- Need to find the trade-off point  
+- Need to find the optimal trade-off point  
 
 ```{r BiasVariance, out.width = '50%', fig.cap='The trade-off between bias and variance', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/BiasVariance.png"))
@@ -163,15 +224,24 @@ knitr::include_graphics(rep("../images/BiasVariance.png"))
 
 ## Eigendecomposition - Review
 
-For OLS model need to find  $\big(A^TA \big)^{-1}A \propto Cov(A)^{-1}A$ for $n \times p$ design matrix $A$
+For OLS model need to find  $\big(A^TA \big)^{-1}A \propto Cov(A)^{-1}A$ for $p \times p$ design matrix $A$
 
 - Decompose the $p \times p$ covariance matrix $cov(A) = \frac{1}{p}A^TA$ into **eigenvalues** and **eigenvectors**: 
 
 $$cov(A) = Q \Lambda Q^{-1}$$
 
-where,   
+- $Q$ is the $p \times p$ matrix of $p$ **orthonormal eigenvectors**   
 
-$Q$ is the $p \times p$ matrix of $p$ **orthonormal eigenvectors**   
+- For real-valued $cov(A)$ the eigenvectors $Q$ are real valued so:   
+
+$$Q^{-1} = Q^T$$
+
+## Eigendecomposition - Review
+
+Decompose the $p \times p$ covariance matrix $cov(A) = \frac{1}{p}A^TA$ into **eigenvalues** and **eigenvectors**: 
+
+$$cov(A) = Q \Lambda Q^{-1}$$
+
 
 And, the $p$ eigenvalues are represented as diagonal matrix: 
 
@@ -179,15 +249,13 @@ $$
 \Lambda = 
 \begin{bmatrix}
 \lambda_1, 0, \ldots, 0\\
-0, \lambda_2, \ldots \\
-\vdots,\ \vdots,\ \vdots,\  \vdots\\
-0, 0, \ldots, \lambda_p
+0, \lambda_2, \ldots, 0 \\
+\vdots,\ \vdots,\ \ddots,\  \vdots\\
+0, 0, \ldots, \lambda_{p}
 \end{bmatrix}
 $$
 
-For real-valued $cov(A)$ the eigenvectors $Q$ are real valued so:   
 
-$$Q^{-1} = Q^T$$
 
 
 ##  Eigendecomposition - Review
@@ -196,14 +264,14 @@ The inverse of the covariance can be computed from its eigendecomposition
 
 $$cov(A)^{-1} = Q^T \Lambda^{-1} Q$$
 
-Where $Q^{-1}$ is written:       
+Where $\Lambda^{-1}$ is:       
 
 $$
 \Lambda^{-1} = 
 \begin{bmatrix}
 \frac{1}{\lambda_1}, 0, \ldots, 0\\
-0, \frac{1}{\lambda_2}, \ldots \\
-\vdots,\ \vdots,\ \vdots,\  \vdots\\
+0, \frac{1}{\lambda_2}, \ldots, 0 \\
+\vdots,\ \vdots,\ \ddots,\  \vdots\\
 0, 0, \ldots, \frac{1}{\lambda_p}
 \end{bmatrix}
 $$
@@ -216,7 +284,7 @@ At first look eigen-decomposition seems a bit mysterious
 - The eigenvalues are the **roots** of the covariance matrix    
    - Similar to the familiar roots of a polynomial  
 
-- For square matrix, $A$, and some norm 1 vector, $x$, we can find a root, $\lambda$: 
+- For square matrix, $A$, and some Euclidean norm 1 vector, $x$, we can find a root, $\lambda$: 
 
 \begin{align}
 Ax &=  \lambda x \\
@@ -224,14 +292,15 @@ Ax - \lambda x &= 0 \\
 (A - I \lambda) x &= 0
 \end{align}
 
-- For $p \times p$ dimensional matrix there are $p$ eigenvalues and orthogonal eigenvalue    
+- For $p \times p$ dimensional matrix there are $p$ eigenvalues and orthogonal eigenvectors    
 
 - But, there is no guarantee that the $p$ values of $\lambda$ are unique     
-   - If columns of $A$ are colinear, there are $< p$ unique eigenvectors      
+   - If columns of $A$ are colinear, there are $< p$ unique eigenvalues        
+   - With colinear independent variables some $\lambda_i \approx 0$
 
 ## Regularization - Ill-Posed Problems 
 
-If columns of $A$ are not linearly independent, the covariance matrix is **ill-posed** and the eigenvectors are under-determined       
+If columns of $A$ are not linearly independent, the inverse of the covariance matrix is **ill-posed**       
 
 $$
 cov(A) = Q \Lambda Q^T\\
@@ -263,7 +332,7 @@ $$x = A b + \epsilon$$
 $$b = (A^TA)^{-1}A^Tx$$
 
 - This solution requires finding the inverse of the covariance matrix, $(A^TA)^{-1}$       
-   - But this inverse may be unstable   
+   - But this inverse may be unstable since $\lambda_p \approx 0$   
    - In mathematical terminology we say the problem is **ill-posed**     
    
    
@@ -279,7 +348,7 @@ $$min [\parallel A \cdot x - b \parallel +\ \alpha^2 \parallel b\parallel]\\  or
 b = (A^TA + \alpha^2 I)^{-1}A^Tx$$
 
 Where the L2 norm of the coefficient vector is:
-$$||b|| = \big( \beta_1^2 + \beta_2^2 + \ldots + \beta_m^2 \big)^{\frac{1}{2}} = \Big( \sum_{i=1}^m \beta_i^2 \Big)^{\frac{1}{2}}$$
+$$||b|| = \big( \beta_0^2 + \beta_1^2 + \ldots + \beta_p^2 \big)^{\frac{1}{2}} = \Big( \sum_{i=0}^p \beta_i^2 \Big)^{\frac{1}{2}}$$
 
 
 ## L2 Regularization    
@@ -308,19 +377,22 @@ Eigen-decomposition of the regularized covariance matrix:
 $$A^TA + \alpha^2I = Q 
 \begin{bmatrix}
 \lambda_1 + \alpha^2, 0, \ldots, 0\\
-0, \lambda_2 + \alpha^2, \ldots \\
-\vdots,\ \vdots,\ \vdots,\  \vdots\\
+0, \lambda_2 + \alpha^2, \ldots, 0 \\
+\vdots,\ \vdots,\ \ddots,\  \vdots\\
 0, 0, \ldots, \lambda_p + \alpha^2
 \end{bmatrix}
 Q^T$$
 
-The inverse covariance matrix is then: 
+
+## L2 Regularization   
+
+The inverse regularized covariance matrix is: 
 
 $$\Big( A^TA + \alpha^2I \Big)^{-1} = Q^T 
 \begin{bmatrix}
 \frac{1}{\lambda_1 + \alpha^2}, 0, \ldots, 0\\
 0, \frac{1}{\lambda_2 + \alpha^2}, \ldots \\
-\vdots,\ \vdots,\ \vdots,\  \vdots\\
+\vdots,\ \vdots,\ \ddots,\  \vdots\\
 0, 0, \ldots, \frac{1}{\lambda_p + \alpha^2}
 \end{bmatrix}
 Q$$
@@ -359,7 +431,11 @@ cov_X = np.add(cov_X, alpha_sqr)
 np.real(np.linalg.eigvals(cov_X))
 ```
 
-The condition number of the covariance is $\sim 72$
+The condition number of the covariance is $\sim 74$    
+
+- Notice that the largest and most influential eigenvalues hardly change    
+
+- Limited bias in this case   
 
 
 ## L2 Regularization    
@@ -372,6 +448,8 @@ L2 regularization constrains the Euclidean norm of the parameter vector, $\vec{b
 ```{r L2, out.width = '60%', fig.cap='L2 norm constraint of model coefficients', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/L2.jpg"))
 ```   
+
+- Notice that L2 regularization is a **soft constraint** on parameter values  
 
 ## L2 Regularization   
 
@@ -398,9 +476,7 @@ def regularized_coefs(df_train, df_test, alphas, L1_wt=0.0, n_coefs=8,
     return coefs, MSE_train, MSE_test
 
 alphas = np.arange(0.0, 0.3, step = 0.003)   
-#alphas = np.arange(0.0, 100.0, step = 1.0)  
-Betas, MSE_test, MSE_train = regularized_coefs(test_scores_train, test_scores_test, alphas) #, formula=formula)
-#Betas[:5]
+Betas, MSE_test, MSE_train = regularized_coefs(test_scores_train, test_scores_test, alphas) 
 ```
 
 ## L2 Regularization   
@@ -442,11 +518,11 @@ $$min [\parallel A \cdot x - b \parallel +\ \alpha^2 \parallel b\parallel^1]$$
 
 - $\parallel b\parallel^1$ is the L1 norm       
 
-- Compute the l1 norm of the $m$ model parameters:
+- Compute the L1 norm of the $p$ model parameters:
 
-$$||b||^1 = \big( |b_1| + |b_2| + \ldots + |b_m| \big) = \Big( \sum_{i=1}^m |b_i| \Big)^1$$
+$$||b||^1 = \big( |\beta_0| + |\beta_1| + \ldots + |\beta_p| \big) = \Big( \sum_{i=0}^m |\beta_i| \Big)^1$$
 
-$|b_i|$ is the absolute value of $b_i$. 
+$|\beta_i|$ is the absolute value of $\beta_i$. 
 
 
 ## L1 Regularization 
