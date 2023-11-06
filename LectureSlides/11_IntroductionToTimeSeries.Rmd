@@ -1,0 +1,795 @@
+---
+title: "Properties of Time Series"
+author: "Steve Elston"
+date: "11/13/2023"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("C:/Users/steph/anaconda3")
+py_install("pmdarima")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+
+## Why Are Time Series Useful?
+
+- Data are often time-ordered 
+- Estimates 30% of data science problems include time series data
+- Must use specific time series models
+
+
+## Why Are Time Series Useful?
+
+
+<center> "It's tough to make predictions, especially about the future!"</center>    
+
+<center>Karl Kristian Steincke, Danish politician, ca 1937</center>   
+
+- **Demand forecasting:** Electricity production, Internet bandwidth, Traffic management, Inventory management, sales forecasting     
+- **Medicine:** Time dependent treatment effects, EKG, EEG    
+- **Engineering and Science:** Signal analysis, Analysis of physical processes   
+- **Capital markets and economics:** Seasonal unemployment, Price/return series, Risk analysis 
+
+
+## Why Are Time Series Data Different? 
+
+Models must account for time series behavior      
+
+- Most statistical and machine learning assume data samples are **independent identically distributed (iid)**             
+
+- But, this is not the case for time series data       
+
+- Time series values are correlated in time       
+
+- Time series data exhibit **Serial correlation**      
+   * Serial correlation of values      
+   * Serial correlation of errors     
+   * Violate iid assumptions of many statistical and ML Models    
+`
+
+
+## Why Are Time Series Data Different
+
+
+Examples of series correlation:      
+
+- Temperature forecasts, where the future values are correlated with the current values     
+-  The opening price of a stock is correlated with the price at the previous close    
+- The daily sales volume of a product is correlated with the previous sales volume     
+- A medical patient's blood pressure reading is correlated with the previous observations    
+
+
+
+## History of Time Series Analysis
+
+Time series analysis have a long history   
+- Recognized the serial dependency in time series data early on     
+- Joseph Fourier and Siemon Poisson worked on time series problems in the early 19th Century    
+
+```{r Fourier, out.width = '20%', fig.cap='Joseph Fourier', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Fourier.jpg"))
+``` 
+
+
+
+## History of Time Series Analysis
+
+Modern history of time series analysis started with George Udny Yule (1927) and Gilbert Walker (1931)   
+
+- Yule worked on sunspot time series    
+- Walker was attempting to forecast the tropical monsoon cycle   
+- Developed the **autoregressive (AR)** model to account for serial correlation of values      
+- The AR model is foundation of modern time series models      
+
+
+```{r George_Udny_Yule, out.width = '20%', fig.cap='George Yule, time series pioneer', echo=FALSE}
+knitr::include_graphics(rep("../images/George_Udny_Yule.jpg"))
+``` 
+
+
+## History of Time Series Analysis
+
+Mathematical prodigy, Norbert Weiner, invented filters for stochastic time series processes, starting in the 1920s
+
+- Weiner's filter theory is the basis of many time series filter methods
+- Predictive filters for noisy signals; not discussed here
+- Weiner process model for random walks is widely used
+
+```{r Norbert_wiener, out.width = '20%', fig.cap='Norbert Weiner: Invented time series filters', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Norbert_wiener.jpg"))
+``` 
+
+## History of Time Series Analysis
+
+George Box and Gwilym Jenkins fully developed a statistical theory of time series by extending the work of Yule and Walker in the 1950s and 1960s    
+
+- Extended the AR model to include **moving average (MA)** terms     
+- Included the **integrative term** to create the **ARIMA** model     
+- The ARIMA model is our focus
+
+
+
+```{r GeorgeEPBox, out.width = '10%', fig.cap='George EP Box created general time series model', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/GeorgeEPBox.jpg"))
+``` 
+
+```{r BoxJenkins, out.width = '10%', fig.cap='Seminal time series analysis book', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/BoxJenkins.jpg"))
+``` 
+
+
+## History of Time Series Analysis
+
+21st Century time series analysis    
+
+- Considerable research continues to expand the frontiers   
+- Bayesian time series models       
+  * [R bsts package](https://cran.r-project.org/web/packages/bsts/bsts.pdf) and [Python PyMC3](https://docs.pymc.io/api/distributions/timeseries.html)
+- Long short term memory (LSTM) model        
+- Hidden Markov Models (HMMs) widely used       
+  * [Python Scikit Learn HMM](https://hmmlearn.readthedocs.io/en/stable/) or [R HMM package](https://www.rdocumentation.org/packages/HMM/versions/1.0)
+
+
+## Software for Time Series Analysis   
+
+Most statistical packages have considerable time series modeling capability    
+
+- R time series analysis packages are wide and deep   
+  * Much leading edge research appears first in R packages    
+  * [CRAN Time Series Task View](https://cran.r-project.org/web/views/TimeSeries.html), maintained by Rob Hyndman, contains curated index to R time series packages 
+
+- Primary Python time series analysis package in [Statsmodels.tsa](https://www.statsmodels.org/stable/tsa.html)    
+
+- Bayesian time series models supported in [PyMC](https://www.pymc.io/welcome.html).
+
+- Many newer Python time series packages packages, including:       
+  * [Darts package](https://unit8co.github.io/darts/) includes cutting edge methods like hierarcical models         
+  * [Facebook Kats](https://facebookresearch.github.io/Kats/) package - strong in forecasting including the [PROFIT model](https://facebook.github.io/prophet/)      
+  * [GrayKite](https://linkedin.github.io/greykite/docs/0.1.0/html/index.html) Linkedin's forecasting package    
+
+
+
+## Fundamentals of Time Series   
+
+What are the fundamental properties of time series  
+
+- Representation and sampling   
+- White noise series    
+- Stationary time series    
+- Autocorrelation and partial autocorrelation    
+- Random walk series    
+- Trend      
+- Seasonal effects    
+
+
+
+## Time Series Representation
+
+Time series are expressed as a time ordered sequence of values $(x_1, x_2, x_3, \ldots, x_n)$    
+
+- We work with **discrete samples** in time order   
+- In **regular time series** the sample interval $\Delta t$ is fixed   
+- Time measured from start of series $(0, \Delta t, 2 \Delta t, \ldots,n \Delta t)$   
+- Or, time measured within an **interval**, multiples of $\Delta t$        
+- Even continuous time processes are sampled in practice   
+  - Temperature    
+  - Pressure   
+  - Home price  
+
+
+## White Noise Series   
+
+**White noise series** are fundamental     
+
+- Values are **independent identically distributed (iid)** Normally distributed    
+- Can express values, $(w_1, w_2, w_3, \ldots, w_n)$, of a white noise series as:   
+
+$$X(t) = (w_1, w_2, w_3, \ldots, w_n)\\
+where\\
+w_t \sim N(0, \sigma^2)$$
+
+- No serial correlation between values   
+  * There is no predictive information in a white noise series   
+  * We want the **residuals** of time series models to be white noise series   
+
+
+## White Noise Series  
+
+What does a white noise series look like?  
+
+
+```{python, echo=FALSE}
+from math import sin
+import pandas as pd
+import numpy as np
+import numpy.random as nr
+from math import pi
+from scipy.stats import zscore
+import sklearn.linear_model as lm
+import statsmodels.tsa.seasonal as sts
+import scipy.stats as ss
+import statsmodels.tsa.arima_process as arima
+from statsmodels.tsa.arima.model import ARIMA, ARIMAResults
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.tsa.holtwinters import Holt, ExponentialSmoothing
+import pmdarima as pm
+import statsmodels.graphics.tsaplots as splt
+import matplotlib.pyplot as plt
+
+def plot_ts(ts, lab = ''):
+    fig, ax = plt.subplots(figsize=(8,4))
+    ts.plot(ax=ax)
+    ax.set_title('Time series plot of ' + lab)
+    ax.set_ylabel('Value')
+    ax.set_xlabel('Date')
+    plt.show()
+
+nr.seed(3344)
+white = pd.Series(nr.normal(size = 730),
+                 index = pd.date_range(start = '1-1-2014', end = '12-31-2015', freq = 'D'))
+
+plot_ts(white, 'white noise')
+```
+
+
+## White Noise Series  
+
+What does a white noise series look like?  
+
+- Each value is a sample is iid Normally distributed   
+- No trend   
+
+```{python, echo=FALSE}
+def dist_ts(ts, lab = '', bins = 40):
+    ## Setup a figure with two subplots side by side
+    f, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+    ## Plot the histogram with labels
+    ts.hist(ax = ax1, bins = bins, alpha = 0.5)
+    ax1.set_xlabel('Value')
+    ax1.set_ylabel('Frequency')
+    ax1.set_title('Histogram of ' + lab)
+    ## Plot the q-q plot on the other axes
+    ss.probplot(ts, plot = ax2)
+    plt.show()
+    
+dist_ts(white, 'white noise')    
+```
+
+
+## Introduction to Stationary Time Series   
+
+A white noise series is **stationary**    
+
+- A stationary time series has statistical properties constant in time   
+- For example, a stationary time series has **constant mean and variance** over any sample interval    
+- Many time series models require stationarity        
+  * Often transform time series to make them stationary    
+  * More on this shortly   
+
+
+## Stationary Time Series    
+
+What tests can be used for stationarity?    
+
+- Plots    
+  * Qualitative      
+  * Nonstationarity from seasonality and trend are usually visible     
+- Hypothesis tests    
+
+
+
+## Autocorrelation Properties of White Noise Series
+
+Can measure the correlation of a time series with itself    
+
+- The time series is correlated at different time offsets     
+
+- Each time step of offset is called a **lag**   
+
+- The **autocorrelation function (ACF)** is measured between the series and the series lagged in time        
+
+
+## Autocorrelation Properties of White Noise Series    
+
+We compute the autocorrelation at lag $k$:  
+
+$$\rho_k = \frac{\gamma_k}{n \sigma^2} = \frac{1}{n \sigma^2} \sum_{t = 1}^N (y_{t} - \mu) \cdot (y_{t-k} - \mu)$$    
+Where:    
+\begin{align}
+k &= lag\\
+y_t &= observaton\ at\ time\ t\\
+\gamma_k &= covariance\ lag\ k\\
+\mu &= mean\ of\ the\ series\\ 
+\sigma^2 &= variance\ of\ the\ series = \frac{1}{n-1}\Sigma_{t = 1}^N (y_{t} - \mu) \cdot (y_{t} - \mu)
+\end{align}
+
+
+- Notice that for any series, $\rho_0 = 1$   
+- Autocorrelation at each lag has values in the range $-1.0 \ge \rho \ge 1.0$   
+
+
+## Autocorrelation Properties of White Noise Series
+
+The **partial autocorrelation** is another important property of time series  
+
+- The **partial autocorrelation function (PACF)** is the residual autocorrelation once autocorrelation is accounted for   
+- To compute the partial autocorrelation to lag $k$:   
+  * Compute the autocorrelation to lag $k$   
+  * Remove the linearly predictable autocorrelation component of the time series    
+  * Compute the (partial) autocorrelation of the residual to lag $k$   
+- The 0 lag value of the partial autocorrelation is always 1.0   
+
+## Autocorrelation Properties of White Noise Series   
+
+What are the autocorrelation and partial autocorrelation properties of a white noise series?   
+
+- The autocorrelation and partial autocorrelation are 0 for all $k \gt 0$   
+- Autocorrelation plot shows value at each lag selected   
+
+```{python, echo=FALSE}
+def acf_pacf_plot(ts):
+    fig, ax = plt.subplots(1,2,figsize=(12,3))
+    _=splt.plot_acf(ts, lags = 40, ax=ax[0])
+    _=splt.plot_pacf(ts, lags = 40, method='yw', ax=ax[1])
+    plt.show()
+
+acf_pacf_plot(white)
+```
+
+
+## Random Walk Time Series  
+
+Random walks are a commonly encountered properties of time series    
+
+- Change in value of random walk series at one time step:    
+$$w_t = y_t - y_{t-1}$$   
+
+- The next value in the random walk is then:   
+$$y_t = y_{t-1} + y_t$$  
+
+Or, with a little bit of algebra:    
+
+$$y_t = w_t + \sum_{i=0}^{t-1} w_i$$
+
+
+## Random Walk Time Series  
+
+Random walk is the sum of innovations:     
+
+$$y_t = w_t + \sum_{i=0}^{t-1} w_i$$
+
+- $w_i = $ the $i^{th}$ **innovation**   
+- $y_t=$ observation at time $t$      
+- A random walk is an **integrative process**; sum or integral of innovations     
+
+*Note:* innovations are referred to by other names:    
+- **Shocks** in the stochastic process literature    
+- **Returns** in financial analytics     
+
+
+## Random Walk Time Series   
+
+What does a random walk time series look like?    
+
+- Integrating innovations leads to a 'drift-like' behavior   
+- No actual trend; but can be considerable **drift**   
+- Random walk will eventually change apparent slope    
+
+Example with iid Normal innovations:
+
+```{python, echo=FALSE}
+nr.seed(3344)
+def ran_walk(start = '1-1990', end = '1-2015', freq = 'M', sd = 1.0, mean = 0):
+    dates = pd.date_range(start = start, end = end, freq = freq)
+    walk = pd.Series(nr.normal(loc = mean, scale = sd, size = len(dates)),
+                    index = dates)
+    return(walk.cumsum())
+walk = ran_walk()   
+plot_ts(walk, 'random walk')
+```
+
+## Random Walk Time Series    
+
+- Autocorrelation of white noise series dies slowly     
+- Partial autocorrelation $=1$ at lag one   
+
+```{python, echo=FALSE}
+acf_pacf_plot(walk)
+```
+
+
+## Random Walk Time Series  
+
+Random walk series is not Normally distributed
+
+```{python, echo=FALSE}
+dist_ts(walk, 'random walk')    
+```
+
+## Random Walk Time Series   
+
+Random walk time series are **non-stationary**     
+
+- Consider the **covariance** of a time series at lag $k$:    
+
+$$\gamma_k = Cov(y_t, y_{t+k})$$ 
+
+- For a random walk, the increase in covariance is **unbounded in time**:   
+$$\gamma_k = Cov(y_t, y_{t+k}) = t \sigma^2 \rightarrow \infty\ as\ t \rightarrow \infty$$
+
+- Unbounded and time dependent variance make a random walk non-stationary   
+
+
+## Time Series With Trend   
+
+Many real-world time series have a long-term **trend**    
+
+- A trend is a long term change in the mean value of the time series    
+- Typically model trend as linear, polynomial, non-parametric splines, etc.   
+  - PROFIT algorithm uses **generalized additive model (GAM)**  
+- Consider an example of a white noise series with a linear trend    
+
+```{python, echo=FALSE}
+nr.seed(6677)
+def trend(start = '1-1990', end = '1-2015', freq = 'M', slope = 0.02, sd = 0.5, mean = 0):
+    dates = pd.date_range(start = start, end = end, freq = freq)
+    trend = pd.Series([slope*x for x in range(len(dates))],
+                    index = dates)
+    trend = trend + nr.normal(loc = mean, scale = sd, size = len(dates))
+    return(trend)
+                              
+trends = trend()   
+plot_ts(trends, 'white noise with trend')
+```
+
+## Time Series With Trend
+
+Trend models are not just strait lines      
+
+- Polynomial regression     
+
+- Piece-wise polynomial regression - e.g. splines    
+  * Used in [PROFIT algorithm](https://research.facebook.com/blog/2017/2/prophet-forecasting-at-scale/)       
+  * A **generalized additive model**
+
+- [Local polynomial regression](https://en.wikipedia.org/wiki/Local_regression) - e.g. LOESS  
+  * Used in Statsmodels    
+
+
+
+## Time Series With Trend
+
+Time series with trend are non-stationary   
+
+- Any time series with trend is non-stationary     
+  * Mean and variance are dependent of window used to compute them     
+- The distribution of even a white noise series with trend is non-Normal   
+
+```{python, echo=FALSE}
+dist_ts(trends, lab = '\n trend + white noise')
+```
+
+## Time Series With Trend
+
+ACF and PACF are only properly defined for stationary series    
+
+- For non-stationary series, the ACF dies off slowly   
+   * Integrative innovations lead to long-term dependency    
+
+- The PACF dies off quickly with lag   
+
+- Example: ACF and PACF of the white noise series with trend   
+
+
+```{python, echo=FALSE}
+acf_pacf_plot(trends)
+```
+
+
+## Time Series With Seasonal Effects
+
+Many (most?) real-world time series have **seasonal effect**    
+
+- A seasonal effect has a measurable effect that occurs periodically    
+- Examples of seasonal events include:    
+  * Day of the week    
+  * Last day of the month   
+  * Month of the year   
+  * Annual holiday   
+  * Option expiration date   
+  * Game day, e.g. Supper Bowl   
+  * Electrical impulses in a heart - EKG      
+  * Orbits of planets     
+  * $\ldots$    
+- Time series with seasonal effects are non-stationary   
+  * Mean and variance depends of sample window    
+
+## Time Series With Seasonal Effects  
+
+Use regression models for seasonal effects   
+
+- Simple regression model:  
+   * Coefficient for each interval in period; e.g. 12 coefficients for monthly effects     
+      * But simple approach leads to high variance estimates of coefficients for periodic behavior  
+   * Coefficient for specific effect - e.g. date of holiday   
+   * Good option for specific date behavior    
+
+- Basis function regression    
+   * [PROFIT algorithm](https://research.facebook.com/blog/2017/2/prophet-forecasting-at-scale/) uses Fourier basis functions     
+  * A **generalized additive model**   
+
+## Time Series With Seasonal Effects    
+
+Example of a time series with a seasonal effect    
+
+- A white noise series with trend and seasonal behavior   
+- The seasonal behavior is periodic   
+
+```{python, echo=FALSE}
+nr.seed(5544)
+def seasonal_ts(start = '1-1990', end = '1-2015', freq = 'M', slope = 0.02, sd = 0.5, mean = 0):
+    dates = pd.date_range(start = start, end = end, freq = freq)
+    seasonal = pd.Series([slope*x for x in range(len(dates))],
+                    index = dates)
+    seasonal = seasonal + nr.normal(loc = mean, scale = sd, size = len(dates))
+    seasonal = seasonal + [2.0*sin(pi*x/6) for x in range(len(dates))] + 5.0
+    return(seasonal)
+
+seasonal = seasonal_ts()
+plot_ts(seasonal, 'seasonal data')
+```  
+
+
+## Time Series Decomposition    
+
+Two possible models for seasonal effects    
+
+- Goal, decompose the time series into its components    
+- The [**Seasonal Trend decomonsition model using Loess (STL)**](https://otexts.com/fpp2/stl.html) model   
+  * Uses a nonparametric and nonlinear local regression model, LOESS, to decompose trend component    
+  * Components are **seasonal (S)**, **trend (T)**, and the **residual (R)**  
+  * Additive decomposition model    
+  * Multiplicative decomposition model  
+  * MSTL adds modeling of multiple seasonal components   
+- Differencing model   
+
+
+## Time Series Decomposition
+
+The **additive decomposition model** is expressed as as the sum of the components:   
+
+$$TS(t) = S(t) + T(t) + R(t)$$     
+
+- Used when seasonal effect is constant in time   
+- Examples: Physical process   
+
+
+## Time Series Decomposition   
+
+The **Multiplicative decomposition model** is expressed as as the product of the components:   
+
+$$TS(t) = S(t) * T(t) * R(t)$$     
+
+The multiplicative form is can be hard to work with, so log transform to additive model    
+
+$$log(TS(t)) = log(S(t)) + log(T(t)) + log(R(t))$$   
+$$= S^l(t) + T^l(t) + R^l(t)$$   
+
+- Use when seasonal effect changes in time     
+- Example, economic time series    
+
+
+## Time Series Decomposition
+
+Example of addative STL decomposition of time series with linear trend and seasonal effect   
+
+- The original series plot is on top   
+- Notice the estimated trend is not a straight line; a result of noise    
+- Residuals are relatively small and **homoscedastic**     
+
+
+```{python, echo=FALSE}
+def decomp_ts(ts, freq = 'M', model = 'additive'):
+    res = sts.seasonal_decompose(ts, model=model, period=12) 
+    res.plot()
+    plt.show()
+    return(pd.DataFrame({'resid': res.resid, 
+                         'trend': res.trend, 
+                         'seasonal': res.seasonal},
+                       index = ts.index) )
+
+decomp = decomp_ts(seasonal) 
+```
+
+
+## Time Series Difference Operators   
+
+Is there an alternative for dealing with trend?    
+
+How do we deal with random walks?     
+
+- **Difference operators** are useful for both cases    
+- Difference operators return the innovations   
+
+$$\nabla y_t = y_t - y_{t-\delta}$$
+Where $\delta =$ the time difference    
+
+
+
+## Time Series Difference Operators   
+
+Difference operators return the innovations   
+
+$$\nabla y_t = y_t - y_{t-\delta}$$
+
+- Difference operators can be of any order in principle    
+   * Typically use first order differences    
+
+- Differences can be non-seasonal or seasonal   
+   * Non-seasonal first order difference; $\delta = 1$
+   * Seasonal first order difference; $\delta = p$, $p =$ period of seasonality 
+
+- Difference operator with $\delta = n$ computes a series $n$ shorter than original     
+
+
+## Time Series Difference Operators   
+
+Example of a first order difference operator applied to random walk    
+
+- The innovations look random    
+- Need to verify statistical properties    
+
+
+```{python, echo=FALSE}
+walk_diffs = walk.diff()[1:]
+_=plot_ts(walk_diffs, 'Differences of random walk')
+plt.show()
+```
+
+
+## Time Series Difference Operators    
+
+Statistical properties of the difference series       
+
+- Compute the ACF and PACF    
+- The plots indicate the difference series is white noise    
+
+
+```{python, echo=FALSE}
+acf_pacf_plot(walk_diffs)
+dist_ts(walk_diffs, 'difference of random walk')
+```
+
+
+
+
+## Stationarity       
+
+A **Stationary time series has statistical properties that are invariant in time**     
+
+Conversely, a time series is not stationary if it has any of the following properties:     
+1. Random walk.    
+2. Trend.   
+3. Seasonality.   
+4. Non-constant variance.   
+
+Note, a stationary series does not preclude the presence of serial correlations     
+- Do not confuse these points!    
+- Many time series models for serial correlation properties require stationarity   
+
+
+## Stationarity    
+
+A simple model for a time series process with white noise can be written:   
+
+\begin{align}
+y_t &= \phi y_{t-1} + w_t\\
+w_t &\sim \mathbb{N}(0,\sigma)
+\end{align}
+
+- Example of an **autoregressive model**, where thevalue at the next time step depends on the current value  
+
+- The change from time $t-1$ to time $t$ can easily be worked out by taking the differences:   
+
+$$\Delta y_t = (1- \phi) y_{t-1} + w_t$$
+
+
+## Stationarity    
+
+The change from time $t-1$ to time $t$ can easily be worked out by taking the differences:   
+
+$$\Delta y_t = (1- \phi) y_{t-1} + w_t$$
+
+- Foregoing has a root at $\phi = 1$, know as the **unit root**   
+
+- At the root the difference between $y_t$ and $y_{t-1}$ is just $w_t$      
+
+- Gives rise to a random walk, which is stochastic and **not stationary**:   
+
+$$y_t = \sum_{i=1}^t w_i$$ 
+
+
+
+## Stationarity    
+
+A random walk is stochastic and **not stationary**:   
+
+$$y_t = \sum_{i=1}^t w_i$$ 
+
+- Provides a basis for hypothesis tests of stationarity     
+
+- Test the hypothesis that there is a unit root to determine is a time series is stationary    
+
+
+
+## Stationarity    
+
+There are several ways to define a model for a stationary process:    
+
+1. A **unit root test** as discussed
+
+$$y_t = \phi y_{t-1} + w_t$$
+
+2. A **unit root test with a constant**     
+    - Often constant is initial value, $c=y_0$     
+    - Or a mean value 
+
+$$y_t = c + \phi y_{t-1} + w_t$$
+
+3. **Trend stationary process**, with or without a constant     
+    - Used to test if a process is **stationary about a deterministic trend**, $\beta$. 
+
+$$y_t = c + \beta t + \phi y_{t-1} + w_t$$
+
+
+
+## Stationarity  
+
+There are a number of ways to determine if a time series is stationary. 
+
+We will work with two of the many possible tests here:            
+
+1. [**Augmented Dicky-Fuller test**](https://en.wikipedia.org/wiki/Augmented_Dickey%E2%80%93Fuller_test) or **ADF** test     
+    - ADF tests are unit root tests of the significance a linear time series model   
+    - Coefficients represent components of the time series, e.g. trend and lagged differences   
+    - Null distribution is that the series is non-stationary       
+
+2. [**Kwiatkowski–Phillips–Schmidt–Shin (KPSS) test**](https://en.wikipedia.org/wiki/KPSS_test) is a unit root test for stationarity about a trend of time series    
+    - Null hypothesis is that the time series is trend stationary    
+
+
+## Stationarity  
+
+There is often a small difference between a time series with a unit root, which is non-stationary, and a time series with a root close to unit     
+
+- Therefore, unit root tests are said to **lack power**    
+- Lack of power means a hypothesis test may not be able to reject a hypothesis of non-stationary    
+- In other cases, the opposite might be true    
+- It is best to perform a visual inspection of the properties of the time series as well  
+
+
+
+
+
+## Summary
+
+Fundamental elements of time series  
+
+- Fundamental components which cannot be predicted   
+  * White noise    
+  * Random walks    
+- Autocorrelation and partial autocorrelation
+- Trend    
+- Seasonal components    
+- Differencing to transform to stationarity     
+    - Seasonal differencing    
+    - Non-seasonal differencing  
+- Stationarity properties
+    - augmented Dicky-Fuller test
+    - KPSS test    
+
