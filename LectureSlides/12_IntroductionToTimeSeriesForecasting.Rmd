@@ -471,7 +471,8 @@ Several possible seasonal models
 - Linear regression model to find effect for each time step in period    
 - STL decomposition    
 - Fourier decomposition    
-    - Flexible and accomodates multiple periods of seasonality    
+    - Flexible  
+    - Accommodates multiple periods of seasonality    
     - Used by PROFIT model, [Statsmodels](https://www.statsmodels.org/dev/examples/notebooks/generated/statespace_seasonal.html) and others 
 - SARIMAX, the S term   
 - Each model requires:    
@@ -495,17 +496,16 @@ The SARIMAX model adds seasonal and exogenous terms
 
 SARIMA model can be formulated as an additive or a multiplicative model of the components of a non-seasonal ARIMA model and the seasonal ARIMA model    
 
-- Additive model can be expressed: $SARIMA \big[ (p,d,q) + (P,D,Q)_M \big]$    
+- Additive model can be expressed: $SARIMA \big[ (p,d,q) + (P,D,Q,S) \big]$    
 
-- Multiplicative model can be expressed: $SARIMA \big[ (p,d,q)(P,D,Q)_M \big]$   
+- Multiplicative model can be expressed: $SARIMA \big[ (p,d,q)(P,D,Q,S) \big]$   
 
-- Example, a multiplicative $SARIMA(1,1,1)(1,1,1)_M$ model:   
+- Example, a multiplicative $SARIMA(1,1,1)(1,1,1,S)$ model:   
 
-$$(y_t - \phi_1 y_{t-1})(y_t - \Phi_1 y_{t-M})(1-y_{t-1})(y_t - y_{t-M}) = (\epsilon_t - \theta_1 \epsilon_{t-1})(\epsilon_t - \Theta_1 \epsilon_{t-M})$$    
+$$(y_t - \phi_1 y_{t-1})(y_t - \Phi_1 y_{t-S})(1-y_{t-1})(y_t - y_{t-S}) = (\epsilon_t - \theta_1 \epsilon_{t-1})(\epsilon_t - \Theta_1 \epsilon_{t-S})$$    
 
-- Continuesame algebra to find the polynomial of any $(p,d,q)(P,D,Q)$ order    
+- Continue same algebra to find the polynomial of any $(p,d,q)(P,D,Q,S)$ order    
 
-- Create a recurssion to forecast future values as shown before       
 
 
 ## SARIMAX Model
@@ -591,15 +591,52 @@ $$\hat{y}_{t+3}= \hat{y}_{t+2} - \phi_1( \hat{y}_{t+2} - y_{t+1}) - \phi_1( y_{t
 
 How can we evaluate time series models?      
 
+- **Confidence intervals**    
+    - Fit to observations   
+    - Forecasts  
 - RMSE; compare forecast to actual values    
+    - Fit to observations  
+    - Forecasts  
 - Could use log-likelihood; $log \big(p(X|\theta) \big)$     
   * $\theta = model\ parameters$    
   * Use **score function** $= -2\ log(likelihood) = -2\ log \big(p(X|\theta) \big)$   
-- But, score will decrease with model complexity    
+  * But, score decreases with model complexity    
 - Need to adjust for number of model parameters   
   * We always prefer simpler models; fewer parameters to learn    
   * **Akaki Information Criteria (AIC)**     
   * **Bayes Information Criteria (BIC)**   
+
+## Forecast Confidence Intervals    
+
+When presented with any forecast, the first question should be 'what are the errors'?      
+
+- Forecast are a **extrapolations** of the model into the future    
+
+- Cannot use the residuals, $\epsilon_i$      
+    - Errors themselves must reflect the uncertainty beyond the range of available observations     
+
+- The forecast is a **point estimate**, which has a **confidence interval**. There are several ways which are commoinly used to compute confidence intervals:   
+
+## Forecast Confidence Intervals   
+
+Several ways which are commonly used to compute confidence intervals:     
+
+- **Theoretical sampling distribution:** 
+   - Compute confidence intervals from a theoretical sampling distribution     
+   - Deriving a suitable distribution can be difficult    
+   - Actual sampling distribution is invariably different 
+   
+- **Bootstrap resampling:**     
+    - Use bootstrap resampling to compute a non-parametric sampling distribution  
+    - Bootstrap resampling of time series requires specific sampling methods    
+    - Confidence intervals are computed from emperical sampling distribution   
+    
+- **Back-testing:**    
+    - Time series model is trained on a training portion of the data    
+    - Forecasts are made some time steps ahead, and errors calculated    
+    - Move the training and forecast windows    
+    - Sampling distribution and the confidence intervals are computed    
+    - Compute RMSE, MAE, etc. from the back test         
 
 
 ## Evaluating and Comparing Time Series Models   

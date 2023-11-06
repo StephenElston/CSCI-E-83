@@ -853,7 +853,7 @@ therefore \\
 ## Dep. Variable:                      y   No. Observations:                  120
 ## Model:                 ARIMA(2, 0, 0)   Log Likelihood                -152.398
 ## Date:                Mon, 06 Nov 2023   AIC                            312.795
-## Time:                        08:56:31   BIC                            323.945
+## Time:                        14:44:38   BIC                            323.945
 ## Sample:                    01-31-2005   HQIC                           317.323
 ##                          - 12-31-2014                                         
 ## Covariance Type:                  opg                                         
@@ -975,7 +975,7 @@ least squares</strong></p></li>
 ## Dep. Variable:                      y   No. Observations:                  120
 ## Model:                 ARIMA(0, 0, 1)   Log Likelihood                -162.751
 ## Date:                Mon, 06 Nov 2023   AIC                            331.502
-## Time:                        08:56:32   BIC                            339.864
+## Time:                        14:44:39   BIC                            339.864
 ## Sample:                    01-31-2005   HQIC                           334.898
 ##                          - 12-31-2014                                         
 ## Covariance Type:                  opg                                         
@@ -1096,7 +1096,9 @@ period<br />
 </li>
 <li>Fourier decomposition
 <ul>
-<li>Flexible and accomodates multiple periods of seasonality<br />
+<li>Flexible<br />
+</li>
+<li>Accommodates multiple periods of seasonality<br />
 </li>
 <li>Used by PROFIT model, <a href="https://www.statsmodels.org/dev/examples/notebooks/generated/statespace_seasonal.html">Statsmodels</a>
 and others</li>
@@ -1136,19 +1138,17 @@ State Space User Guide</a> for more details and examples</li>
 model of the components of a non-seasonal ARIMA model and the seasonal
 ARIMA model</p>
 <ul>
-<li><p>Additive model can be expressed: <span class="math inline">\(SARIMA \big[ (p,d,q) + (P,D,Q)_M
+<li><p>Additive model can be expressed: <span class="math inline">\(SARIMA \big[ (p,d,q) + (P,D,Q,S)
 \big]\)</span></p></li>
-<li><p>Multiplicative model can be expressed: <span class="math inline">\(SARIMA \big[ (p,d,q)(P,D,Q)_M
+<li><p>Multiplicative model can be expressed: <span class="math inline">\(SARIMA \big[ (p,d,q)(P,D,Q,S)
 \big]\)</span></p></li>
-<li><p>Example, a multiplicative <span class="math inline">\(SARIMA(1,1,1)(1,1,1)_M\)</span> model:</p></li>
+<li><p>Example, a multiplicative <span class="math inline">\(SARIMA(1,1,1)(1,1,1,S)\)</span> model:</p></li>
 </ul>
 <p><span class="math display">\[(y_t - \phi_1 y_{t-1})(y_t - \Phi_1
-y_{t-M})(1-y_{t-1})(y_t - y_{t-M}) = (\epsilon_t - \theta_1
-\epsilon_{t-1})(\epsilon_t - \Theta_1 \epsilon_{t-M})\]</span></p>
+y_{t-S})(1-y_{t-1})(y_t - y_{t-S}) = (\epsilon_t - \theta_1
+\epsilon_{t-1})(\epsilon_t - \Theta_1 \epsilon_{t-S})\]</span></p>
 <ul>
-<li><p>Continuesame algebra to find the polynomial of any <span class="math inline">\((p,d,q)(P,D,Q)\)</span> order</p></li>
-<li><p>Create a recurssion to forecast future values as shown
-before</p></li>
+<li>Continue same algebra to find the polynomial of any <span class="math inline">\((p,d,q)(P,D,Q,S)\)</span> order</li>
 </ul>
 </div>
 <div id="sarimax-model-2" class="slide section level2">
@@ -1257,8 +1257,20 @@ higher order ARIMA model</p></li>
 <h1>Evaluating and Comparing Time Series Models</h1>
 <p>How can we evaluate time series models?</p>
 <ul>
-<li>RMSE; compare forecast to actual values<br />
+<li><strong>Confidence intervals</strong>
+<ul>
+<li>Fit to observations<br />
 </li>
+<li>Forecasts<br />
+</li>
+</ul></li>
+<li>RMSE; compare forecast to actual values
+<ul>
+<li>Fit to observations<br />
+</li>
+<li>Forecasts<br />
+</li>
+</ul></li>
 <li>Could use log-likelihood; <span class="math inline">\(log
 \big(p(X|\theta) \big)\)</span>
 <ul>
@@ -1268,9 +1280,9 @@ parameters\)</span><br />
 <li>Use <strong>score function</strong> <span class="math inline">\(=
 -2\ log(likelihood) = -2\ log \big(p(X|\theta) \big)\)</span><br />
 </li>
-</ul></li>
-<li>But, score will decrease with model complexity<br />
+<li>But, score decreases with model complexity<br />
 </li>
+</ul></li>
 <li>Need to adjust for number of model parameters
 <ul>
 <li>We always prefer simpler models; fewer parameters to learn<br />
@@ -1278,6 +1290,64 @@ parameters\)</span><br />
 <li><strong>Akaki Information Criteria (AIC)</strong><br />
 </li>
 <li><strong>Bayes Information Criteria (BIC)</strong></li>
+</ul></li>
+</ul>
+</div>
+<div id="forecast-confidence-intervals" class="slide section level2">
+<h1>Forecast Confidence Intervals</h1>
+<p>When presented with any forecast, the first question should be ‘what
+are the errors’?</p>
+<ul>
+<li><p>Forecast are a <strong>extrapolations</strong> of the model into
+the future</p></li>
+<li><p>Cannot use the residuals, <span class="math inline">\(\epsilon_i\)</span></p>
+<ul>
+<li>Errors themselves must reflect the uncertainty beyond the range of
+available observations</li>
+</ul></li>
+<li><p>The forecast is a <strong>point estimate</strong>, which has a
+<strong>confidence interval</strong>. There are several ways which are
+commoinly used to compute confidence intervals:</p></li>
+</ul>
+</div>
+<div id="forecast-confidence-intervals-1" class="slide section level2">
+<h1>Forecast Confidence Intervals</h1>
+<p>Several ways which are commonly used to compute confidence
+intervals:</p>
+<ul>
+<li><strong>Theoretical sampling distribution:</strong>
+<ul>
+<li>Compute confidence intervals from a theoretical sampling
+distribution<br />
+</li>
+<li>Deriving a suitable distribution can be difficult<br />
+</li>
+<li>Actual sampling distribution is invariably different</li>
+</ul></li>
+<li><strong>Bootstrap resampling:</strong>
+<ul>
+<li>Use bootstrap resampling to compute a non-parametric sampling
+distribution<br />
+</li>
+<li>Bootstrap resampling of time series requires specific sampling
+methods<br />
+</li>
+<li>Confidence intervals are computed from emperical sampling
+distribution</li>
+</ul></li>
+<li><strong>Back-testing:</strong>
+<ul>
+<li>Time series model is trained on a training portion of the data<br />
+</li>
+<li>Forecasts are made some time steps ahead, and errors
+calculated<br />
+</li>
+<li>Move the training and forecast windows<br />
+</li>
+<li>Sampling distribution and the confidence intervals are
+computed<br />
+</li>
+<li>Compute RMSE, MAE, etc. from the back test</li>
 </ul></li>
 </ul>
 </div>
@@ -1371,25 +1441,25 @@ production)</p>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>                             suppress_warnings<span class="op">=</span><span class="va">True</span>,  <span class="co"># don&#39;t want convergence warnings</span></span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>                             stepwise<span class="op">=</span><span class="va">True</span>)  <span class="co"># set to stepwise</span></span></code></pre></div>
 <pre><code>## Performing stepwise search to minimize bic
-##  ARIMA(1,1,1)(0,1,1)[12]             : BIC=-1794.344, Time=0.88 sec
+##  ARIMA(1,1,1)(0,1,1)[12]             : BIC=-1794.344, Time=0.87 sec
 ##  ARIMA(0,1,0)(0,1,0)[12]             : BIC=-1572.064, Time=0.16 sec
-##  ARIMA(1,1,0)(1,1,0)[12]             : BIC=-1696.328, Time=0.68 sec
-##  ARIMA(0,1,1)(0,1,1)[12]             : BIC=-1800.249, Time=0.52 sec
+##  ARIMA(1,1,0)(1,1,0)[12]             : BIC=-1696.328, Time=0.66 sec
+##  ARIMA(0,1,1)(0,1,1)[12]             : BIC=-1800.249, Time=0.50 sec
 ##  ARIMA(0,1,1)(0,1,0)[12]             : BIC=-1699.081, Time=0.11 sec
-##  ARIMA(0,1,1)(1,1,1)[12]             : BIC=-1800.515, Time=0.88 sec
-##  ARIMA(0,1,1)(1,1,0)[12]             : BIC=-1742.451, Time=0.29 sec
-##  ARIMA(0,1,1)(2,1,1)[12]             : BIC=-1797.600, Time=2.16 sec
-##  ARIMA(0,1,1)(1,1,2)[12]             : BIC=-1796.438, Time=2.49 sec
-##  ARIMA(0,1,1)(0,1,2)[12]             : BIC=-1802.021, Time=2.02 sec
-##  ARIMA(0,1,0)(0,1,2)[12]             : BIC=inf, Time=0.76 sec
-##  ARIMA(1,1,1)(0,1,2)[12]             : BIC=-1796.168, Time=2.87 sec
-##  ARIMA(0,1,2)(0,1,2)[12]             : BIC=-1795.957, Time=3.14 sec
-##  ARIMA(1,1,0)(0,1,2)[12]             : BIC=-1770.768, Time=2.73 sec
-##  ARIMA(1,1,2)(0,1,2)[12]             : BIC=-1790.196, Time=3.27 sec
-##  ARIMA(0,1,1)(0,1,2)[12] intercept   : BIC=inf, Time=1.06 sec
+##  ARIMA(0,1,1)(1,1,1)[12]             : BIC=-1800.515, Time=0.86 sec
+##  ARIMA(0,1,1)(1,1,0)[12]             : BIC=-1742.451, Time=0.27 sec
+##  ARIMA(0,1,1)(2,1,1)[12]             : BIC=-1797.600, Time=2.02 sec
+##  ARIMA(0,1,1)(1,1,2)[12]             : BIC=-1796.438, Time=2.50 sec
+##  ARIMA(0,1,1)(0,1,2)[12]             : BIC=-1802.021, Time=1.94 sec
+##  ARIMA(0,1,0)(0,1,2)[12]             : BIC=inf, Time=0.70 sec
+##  ARIMA(1,1,1)(0,1,2)[12]             : BIC=-1796.168, Time=2.76 sec
+##  ARIMA(0,1,2)(0,1,2)[12]             : BIC=-1795.957, Time=2.95 sec
+##  ARIMA(1,1,0)(0,1,2)[12]             : BIC=-1770.768, Time=2.45 sec
+##  ARIMA(1,1,2)(0,1,2)[12]             : BIC=-1790.196, Time=3.17 sec
+##  ARIMA(0,1,1)(0,1,2)[12] intercept   : BIC=inf, Time=1.02 sec
 ## 
 ## Best model:  ARIMA(0,1,1)(0,1,2)[12]          
-## Total fit time: 24.016 seconds</code></pre>
+## Total fit time: 22.926 seconds</code></pre>
 </div>
 <div id="sarimax-example-2" class="slide section level2">
 <h1>SARIMAX Example</h1>
@@ -1415,7 +1485,7 @@ seasonality</li>
   <th>Date:</th>                     <td>Mon, 06 Nov 2023</td>           <th>  AIC                </th> <td>-1817.686</td>
 </tr>
 <tr>
-  <th>Time:</th>                         <td>08:56:59</td>               <th>  BIC                </th> <td>-1802.021</td>
+  <th>Time:</th>                         <td>14:45:05</td>               <th>  BIC                </th> <td>-1802.021</td>
 </tr>
 <tr>
   <th>Sample:</th>                      <td>01-31-1958</td>              <th>  HQIC               </th> <td>-1811.464</td>
