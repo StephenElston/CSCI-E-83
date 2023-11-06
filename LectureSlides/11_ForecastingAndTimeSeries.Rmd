@@ -1,7 +1,7 @@
 ---
 title: "Forecasting And Time Series Analysis"
 author: "Steve Elston"
-date: "11/10/2022"
+date: "11/13/2022"
 output: slidy_presentation
 ---
 
@@ -83,7 +83,7 @@ Modern history of time series analysis started with George Udny Yule (1927) and 
 
 - Yule worked on sunspot time series    
 - Walker was attempting to forecast the tropical monsoon cycle   
-- Developed the **autoregressive (AR)** model to account for serial correlation      
+- Developed the **autoregressive (AR)** model to account for serial correlation of values      
 - The AR model is foundation of modern time series models      
 
 
@@ -261,7 +261,7 @@ dist_ts(white, 'white noise')
 ```
 
 
-## Stationary Time Series   
+## Introduction to Stationary Time Series   
 
 A white noise series is **stationary**    
 
@@ -279,10 +279,8 @@ What tests can be used for stationarity?
 - Plots    
   * Qualitative      
   * Nonstationarity from seasonality and trend are usually visible     
-- The [Dicky Fuller test](https://en.wikipedia.org/wiki/Dickey%E2%80%93Fuller_test)      
-  * Hypothesis test for stationarity    
-  * Null hypothesis is stationarity   
-  * Based on roots of AR(1) model; to be discussed shortly   
+- Hypothesis tests    
+
 
 
 ## Autocorrelation Properties of White Noise Series
@@ -295,7 +293,6 @@ Can measure the correlation of a time series with itself
 
 - The **autocorrelation function (ACF)** is measured between the series and the series lagged in time        
 
-- Always 1 at lag 0; $ACF(0) = 1.0$ 
 
 ## Autocorrelation Properties of White Noise Series    
 
@@ -358,7 +355,15 @@ $$y_t = y_{t-1} + y_t$$
 Or, with a little bit of algebra:    
 
 $$y_t = w_t + \sum_{i=0}^{t-1} w_i$$
-- $w_i$ is the ith **innovation**   
+
+
+## Random Walk Time Series  
+
+Random walk is the sum of innovations:     
+
+$$y_t = w_t + \sum_{i=0}^{t-1} w_i$$
+
+- $w_i = $ the ith **innovation**   
 - $y_t=$ observarition at time $t$      
 - A random walk is an **integrative process**; sum or integral of innovations     
 
@@ -372,7 +377,8 @@ $$y_t = w_t + \sum_{i=0}^{t-1} w_i$$
 What does a random walk time series look like?    
 
 - Integrating innovations leads to a 'drift-like' behavior   
-- No actual trend; random walk will eventually change apparent slope    
+- No actual trend; but can be considerable **drift**   
+- Random walk will eventually change apparent slope    
 
 Example with iid Normal innovations:
 
@@ -390,7 +396,7 @@ plot_ts(walk, 'random walk')
 ## Random Walk Time Series    
 
 - Autocorrelation of white noise series dies slowly     
-- Partial autocorrealtion nonzero at one lag   
+- Partial autocorrelation $=1$ at lag one   
 
 ```{python, echo=FALSE}
 acf_pacf_plot(walk)
@@ -509,7 +515,9 @@ Use regression models for seasonal effects
 
 - Simple regression model:  
    * Coefficient for each interval in period; e.g. 12 coefficients for monthly effects     
+      * But simple approach leads to high variance estimates of coefficients for periodic behavior  
    * Coefficient for specific effect - e.g. date of holiday   
+   * Good option for specific date behavior    
 
 - Basis function regression    
    * [PROFIT algorithm](https://research.facebook.com/blog/2017/2/prophet-forecasting-at-scale/) uses Fourier basis functions     
@@ -538,13 +546,33 @@ plot_ts(seasonal, 'seasonal data')
 
 ## Time Series Models
 
-Many types of time series models; we will only consider the most widely used    
+Many types of time series models; we only consider a few       
 
-- Time series decomposition    
-- Exponential models    
-- ARIMA model   
-  * Serially correlated components    
-  * Integrative component    
+- **Time series decomposition** into components   
+   * **STL** or [**seasonal-trend decomposition with LOESS**](https://www.statsmodels.org/dev/examples/notebooks/generated/stl_decomposition.html)      
+   * **MSTL** or [**multiple seasonal-trend decomposition with LOESS**](https://www.statsmodels.org/dev/examples/notebooks/generated/mstl_decomposition.html)   
+- **Exponential models**    
+   * Beyond the scope of our course   
+   * See [Chapter 8](https://otexts.com/fpp3/expsmooth.html) of Forecasting: Principles and Practice, Hyndman and Athanasopoulos, third edition, O Texts, 2021, for a in-depth discussion         
+- **ARIMA**: autoregressive integrative moving average     
+  * **AR** or **autoregressive component** accounts for serial correlation of values      
+  * **I** or **integrative component** component accounts for random walk and trend components     
+  * **MA** or **moving average component** accounts for serial correlation of errors  
+
+## Time Series Models
+
+Many types of time series models   
+
+
+- **SARIMA**: seasonal autoregressive integrative moving average, adds seasonal components     
+  * **seasonal AR** accounts for serial correlation of seasonal values      
+  * **seasonal I** component accounts for random walk and trend of seasonal components     
+  * **seasonal MA** accounts for seasonal serial correlation of errors    
+
+- **SARIMAX: seasonal autoregressive integrative moving average with **exogenous variables**       
+   * Add effect of external factors    
+   * Example; effect of specific holiday    
+   * Example; effect arising from factors not incorporated in endogenous variable   
 
 
 ## Time Series Decomposition    
@@ -553,10 +581,11 @@ Two possible models for seasonal effects
 
 - Goal, decompose the time series into its components    
 - The [**Seasonal Trend decomonsition model using Loess (STL)**](https://otexts.com/fpp2/stl.html) model   
-  * Uses a nonparametric regression model to decompose time series into components    
+  * Uses a nonparametric and nonlinear local regression model, LOESS, to decompose trend component    
   * Components are **seasonal (S)**, **trend (T)**, and the **residual (R)**  
   * Additive decomposition model    
   * Multiplicative decomposition model  
+  * MSTL adds modeling of multiple seasonal components   
 - Differencing model   
 
 
@@ -568,7 +597,6 @@ $$TS(t) = S(t) + T(t) + R(t)$$
 
 - Used when seasonal effect is constant in time   
 - Examples: Physical process   
-
 
 
 ## Time Series Decomposition   
@@ -619,11 +647,25 @@ How do we deal with random walks?
 - **Difference operators** are useful for both cases    
 - Difference operators return the innovations   
 
-$$\nabla y_t = y_t - y_{t-1}$$
+$$\nabla y_t = y_t - y_{t-\delta}$$
+Where $\delta =$ the time difference    
+
+
+
+## Time Series Difference Operators   
+
+Difference operators return the innovations   
+
+$$\nabla y_t = y_t - y_{t-\delta}$$
 
 - Difference operators can be of any order in principle    
-  * Typically use first order differences    
-- Difference operator of order n computes a series n shorter than original     
+   * Typically use first order differences    
+
+- Differences can be non-seasonal or seasonal   
+   * Non-seasonal first order difference; $\delta = 1$
+   * Seasonal first order difference; $\delta = p$, $p =$ period of seasonality 
+
+- Difference operator with $\delta = n$ computes a series $n$ shorter than original     
 
 
 ## Time Series Difference Operators   
@@ -640,6 +682,7 @@ _=plot_ts(walk_diffs, 'Differences of random walk')
 plt.show()
 ```
 
+
 ## Time Series Difference Operators    
 
 Statistical properties of the difference series       
@@ -654,6 +697,113 @@ dist_ts(walk_diffs, 'difference of random walk')
 ```
 
 
+
+
+## Stationarity       
+
+A **Stationary time series has statistical properties that are invariant in time**     
+
+Conversely, a time series is not stationary if it has any of the following properties:     
+1. Random walk.    
+2. Trend.   
+3. Seasonality.   
+4. Non-constant variance.   
+
+Note, a stationary series does not preclude the presence of serial correlations     
+- Do not confuse these points!    
+- Many time series models for serial correlation properties require stationarity   
+
+
+## Stationarity    
+
+A simple model for a time series process with white noise can be written:   
+
+\begin{align}
+y_t &= \phi y_{t-1} + w_t\\
+w_t &\sim \mathbb{N}(0,\sigma)
+\end{align}
+
+- Example of an **autoregressive model**, where thevalue at the next time step depends on the current value  
+
+- The change from time $t-1$ to time $t$ can easily be worked out by taking the differences:   
+
+$$\Delta y_t = (1- \phi) y_{t-1} + w_t$$
+
+
+## Stationarity    
+
+The change from time $t-1$ to time $t$ can easily be worked out by taking the differences:   
+
+$$\Delta y_t = (1- \phi) y_{t-1} + w_t$$
+
+- Foregoing has a root at $\phi = 1$, know as the **unit root**   
+
+- At the root the difference between $y_t$ and $y_{t-1}$ is just $w_t$      
+
+- Gives rise to a random walk, which is stochastic and **not stationary**:   
+
+$$y_t = \sum_{i=1}^t w_i$$ 
+
+
+
+## Stationarity    
+
+A random walk is stochastic and **not stationary**:   
+
+$$y_t = \sum_{i=1}^t w_i$$ 
+
+- Provides a basis for hypothesis tests of stationarity     
+
+- Test the hypothesis that there is a unit root to determine is a time series is stationary    
+
+
+
+## Stationarity    
+
+There are several ways to define a model for a stationary process:    
+
+1. A **unit root test** as discussed
+
+$$y_t = \phi y_{t-1} + w_t$$
+
+2. A **unit root test with a constant**     
+    - Often constant is initial value, $c=y_0$     
+    - Or a mean value 
+
+$$y_t = c + \phi y_{t-1} + w_t$$
+
+3. **Trend stationary process**, with or without a constant     
+    - Used to test if a process is **stationary about a deterministic trend**, $\beta$. 
+
+$$y_t = c + \beta t + \phi y_{t-1} + w_t$$
+
+
+
+## Stationarity  
+
+There are a number of ways to determine if a time series is stationary. 
+
+We will work with two of the many possible tests here:            
+
+1. [**Augmented Dicky-Fuller test**](https://en.wikipedia.org/wiki/Augmented_Dickey%E2%80%93Fuller_test) or **ADF** test     
+    - ADF tests are unit root tests of the significance a linear time series model   
+    - Coefficients represent components of the time series, e.g. trend and lagged differences   
+    - Null distribution is that the series is non-stationary       
+
+2. [**Kwiatkowski–Phillips–Schmidt–Shin (KPSS) test**](https://en.wikipedia.org/wiki/KPSS_test) is a unit root test for stationarity about a trend of time series    
+    - Null hypothesis is that the time series is trend stationary    
+
+
+## Stationarity  
+
+There is often a small difference between a time series with a unit root, which is non-stationary, and a time series with a root close to unit     
+
+- Therefore, unit root tests are said to **lack power**    
+- Lack of power means a hypothesis test may not be able to reject a hypothesis of non-stationary    
+- In other cases, the opposite might be true    
+- It is best to perform a visual inspection of the properties of the time series as well  
+
+
 ## Time Series Forecasting Models    
 
 **Forecasting** is the goal of much of time series analysis    
@@ -662,103 +812,6 @@ dist_ts(walk_diffs, 'difference of random walk')
 - ARIMA and SARIMAX models; time series linear models    
 - For comprehensive introduction see [Forecasting: Principles and Practice, Hyndman and Athanaosopoulos, 3rd edition, 2018](https://otexts.com/fpp2/), available as book or free online    
 - [Rob Hyndman's blog](https://robjhyndman.com/hyndsight/) is a source of many interesting ideas and example in time series analysis    
-
-
-## Exponential Smoothing Models    
-
-[Exponential smoothing models](https://en.wikipedia.org/wiki/Exponential_smoothing) are simple and widely used    
-
-- Consider the simple first order model   
-- Set initial conditions:    
-
-$$ s_0 = y_0 $$
-
-- The smoothed update is:     
-
-$$ s_t = \alpha y_t + (1-\alpha) s_{t-1}\\ 
-= s_{t-1} \alpha(y_t - s_{t-1}),\\ 
-t \gt 0 $$
-
-- And, the smoothing coefficient is, $0 \le \alpha \le 1$    
-- But, model only works if no trend     
-
-
-## Exponential Smoothing Models   
-
-Decay and exponential smoothing    
-
-- We can understand the smoothing parameter $\alpha$ in terms of a **decay constant**, $\tau$     
-
-$$\alpha = 1 - e^{\big( \frac{\Delta T}{\tau} \big)}$$
-
-- An innovation or shock has an effect for all future time   
-- Effect decays exponentially with time, $\Delta T$   
-
-
-## Exponential Smoothing Models   
-
-Can extend exponential smoothing model to accommodate trend     
-
-- Algorithm known as **double exponential smoothing** or **Holt-Winters double exponential smoothing**      
-- Update smoothed values and slope at each time step   
-- Start with initial values     
-
-$$s_1 = y_1\\
-b_1 = y_2 - y_1$$
-
-- Update relationships for both smoothed value and slope    
-
-$$s_t = \alpha y_t + (1-\alpha) (s_{t-1} + b_{t-1})\\
-b_t = \beta(s_t - s_{t-1}) + (1 - \beta)b_{t-1}$$
-
-- Additional slope smoothing hyperparameter, $0 \le \beta \le 1$    
-- Use **third order** update includes seasonality in **Holt-Winters smoother**   
-
-
-## Exponential Smoothing Models   
-
-Exponential smoothing models are useful for forecasting    
-
-- Forecast dependent on the choice of smoothing parameters     
-- Can forecast with first, second, third order models    
-- For second order model (with trend) the forecast $m$ steps ahead is:   
-
-
-$$F_{t+m} = s_t + m b_t $$
-
-- Third order update include seasonal terms   
-
-- Holt-Winters smoother is a **linear model!**  
-
-
-## Exponential Smoothing Models   
-
-Example of smoothing trend plus white noise series    
-
-- Decreasing the smoothing parameter, $\alpha$, increases smoothing     
-- Additionally, smooth trend    
-- Additional examples in [Statsmodels user documentation](https://www.statsmodels.org/stable/examples/notebooks/generated/exponential_smoothing.html)   
-
-
-```{python, echo=FALSE}
-import warnings
-fig, ax = plt.subplots(figsize=(7,4))
-_=ax.plot(trends, label='original', linewidth=2)
-
-Holt_model = ExponentialSmoothing(trends, trend='add', seasonal=None)
-
-for smoothing in [0.5,0.2,0.05]:
-    warnings.filterwarnings("ignore")
-    Holt_model_fit = Holt_model.fit(smoothing_level=smoothing, smoothing_slope=0.05)
-    _=label = 'smoothing = ' + str(smoothing)
-    _=ax.plot(Holt_model_fit.fittedvalues, label = label, linewidth=1)
-_=ax.set_xlabel('Date')
-_=ax.set_ylabel('Value')
-_=ax.set_title('Smoothing of trend series with white noise')
-_=plt.legend()    
-plt.show()
-```
-
 
 
 ## The ARIMA and SARIMAX Model   
@@ -781,14 +834,13 @@ The **ARIMA model** is composed three components:
 
 - An autoregressive model of order $p$, $AR(p)$, uses the last p observations:   
 
-$$x_t = \phi_1 y_{t-1} + \phi_2 y_{t-2} ,\ldots, \phi_p y_{t-p} + w_t\\
-where\\
 \begin{align}
+x_t &= \phi_1 y_{t-1} + \phi_2 y_{t-2} ,\ldots, \phi_p y_{t-p} + w_t\\
+&where\\
 \phi_k &= model\ coefficient\ at\ lag\ k\\
 w_t &= white\ noise\ error\ at\ time\ t;\ \sim \mathtt{N}(0,\sigma^2)\\
 y_t &= observation\ at\ time\ t\\
 \end{align}
-$$
 
 - An AR process has the following properties:   
    * $\rho_0 = 1$ always    
@@ -840,16 +892,19 @@ $$Y = A \Phi$$
 We can rewrite the AR(1) model in terms of exceptions:    
 
 $$
-\mathbb{E}(y_t) = \phi_t \mathbb{E}(y_{t-1}) + \mathbb{E}(\epsilon_t) \\
+\mathbb{E}(y_t) = \phi \mathbb{E}(y_{t-1}) + \mathbb{E}(\epsilon_t) \\
 or \\
-\mu = c + \phi_t \mu + 0 \\
+\mu = c + \phi \mu + 0 \\
 therefore \\
-\mu = \frac{c}{1 - \phi_t^2 }
+\mu = \frac{c}{1 - \phi^2 }
 $$
 
-- The AR model is unstable for the roots of the polynomial $1 - \phi_t^2$   
-- To be a stable AR process, $\phi_t^2 \le 1$    
-- Violation of this condition leads to unstable model!    
+- The AR model is unstable for the roots of the polynomial $1 - \phi^2$   
+- To be a stable AR process, $\phi^2 \lt 1$    
+- Violation of this condition leads to an unstable model!    
+- AR(1) model with unit root is a random walk with the $\phi_1=0$:    
+
+$$y_t = \sum_{i=1}^t w_i$$    
 
 ## The Autoregressive Model
 
@@ -874,6 +929,7 @@ plot_ts(ts_series_ar2, lab = 'AR(2) process')
 acf_pacf_plot(ts_series_ar2)
 ```
 
+
 ## The Autoregressive Model   
 
 Example model summary for AR(2) model:   
@@ -894,21 +950,37 @@ ar2_model = model_ARIMA(ts_series_ar2, order = (2,0,0))
 
 ## The Moving Average Model    
 
-- A **moving average** model of order $q$, $MA(q)$, uses the last q error terms or shocks:    
+A **moving average** model of order $q$, $MA(q)$, uses the last q error terms or shocks:    
 
-$$y_t = \mu + \epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q}\\
-where\\
 \begin{align}
+y_t &= \mu + \epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q}\\
+&where\\
 \theta_k &= model\ coefficient\ at\ lag\ k\\
 y_t &= observation\ at\ time\ t\\
 \epsilon_t &= innovation\ or\ error\ at\ time\ t;\ \sim \mathtt{N}(0,\sigma^2)
-\end{align}$$      
+\end{align}     
 
 - An MA process has the following properties:   
    * For autocorrelation, $\rho_0 = 1$ always    
    * Number of $\rho_k \ne 0$, $= q$, $k \gt 0$   
    * Shocks die off quickly in MA processes    
 - MA model assumes stationary time series    
+
+
+## The Moving Average Model    
+
+A **moving average** model of order $q$, $MA(q)$, uses the last q error terms or shocks:  
+
+$$y_t = \mu + \epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q}$$
+
+We can also write the MA model in terms of estimated value, $\hat{y}_t$: 
+
+\begin{align}
+\hat{y}_t &= c + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q}\\
+& Therefore,\\
+\epsilon_t &= y_t - \hat{y}_t \sim \mathtt{N}(0,\sigma^2);\ error\ at\ time\ t \\
+\end{align}
+
 
 ## The Moving Average Model  
 
@@ -930,9 +1002,9 @@ y_0,\ \ \ \ 0,\ \ \ \ 0
 $$
 
 
-- MA model is a **linear model!**    
+- MA model is a **nonlinear model!**; must compute $\epsilon_{t}$ at each time step   
 
-- But, the value of $\epsilon_t$ dependents on $[ \epsilon_{t-1}, \epsilon_{t-2}, ..., \epsilon_{t-q}]$ 
+- The value of $\epsilon_t$ dependents on $[ \epsilon_{t-1}, \epsilon_{t-2}, ..., \epsilon_{t-q}]$ 
 
 - The $\epsilon_k$s are **unobservable**!  
 
@@ -983,8 +1055,6 @@ $$y_t - \phi_1 y_{t-1} - \phi_2 y_{t-2} ,\ldots, - \phi_p y_{t-p} =
 - Can write as polynomial equation in terms of coefficient vectors $\Phi = [1, \phi_1, \phi_2, \ldots, \phi_p y]$, $\Theta = [1, \theta_1, \theta_2, \cdots, \theta_q]$:     
 $$(1-\Phi)Y = \Theta \epsilon$$
 
-- Model is linear in coefficients      
-
 - ARMA model assumes stationary time series    
 
 ## The ARIMA Model
@@ -995,8 +1065,9 @@ The integrative model addresses certain non-stationary components of a time seri
 - Trends   
 - Based on difference operator   
   * Typically first order difference   
-  * Can be higher order    
+  * Seasonal and non-seasonal differences      
   * Is deterministic, no model coefficient to estimate      
+
 
 
 ## The ARIMA Model   
@@ -1009,9 +1080,23 @@ The **autoregressive integrative moving average (ARIMA)** model includes AR, int
   * q is the MA order    
 - The integrative term helps transforms trend and random walks to stationary process      
 - Does not account for seasonal effect     
-- For difference values, $\nabla y_t$, formulate as:    
 
-$$(1-\Phi)\nabla Y = \Theta \epsilon$$
+
+## The ARIMA Model   
+
+The **autoregressive integrative moving average (ARIMA)** model includes AR, integrative and MA terms  
+
+- Formulate an $ARIMA(1,1,1)$ model     
+- Start with $ARMA(1,1) = ARIMA(1,0,1)$ model:
+
+$$y_t -  c - \phi_1 y_{t-1} =  \epsilon_t + \theta_1 \epsilon_{t-1}$$
+ 
+- Take the first difference of the observations, $y_i$, to find the formulation of the $ARIMA(1,1,1)$ model.
+
+$$y_t -  y_{t-1} - \phi_1( y_{t-1} - y_{t-2}) =  \epsilon_t + \theta_1 \epsilon_{t-1}$$
+ 
+ 
+- Applied same algebra to finding polynomial formulations for higher order ARIMA models.
 
 
 ## Seasonal Models   
@@ -1021,6 +1106,9 @@ Several possible seasonal models
 - Seasonal effects can be periodic or single event (e.g. holiday, game day, etc.)   
 - Linear regression model to find effect for each time step in period    
 - STL decomposition    
+- Fourier decomposition    
+    - Flexible and accomodates multiple periods of seasonality    
+    - Used by PROFIT model, [Statsmodels](https://www.statsmodels.org/dev/examples/notebooks/generated/statespace_seasonal.html) and others 
 - SARIMAX, the S term   
 - Each model requires:    
    * Known period of the cycle or time of seasonal event   
@@ -1037,6 +1125,23 @@ The SARIMAX model adds seasonal and exogenous terms
    * Must specify period, S  
 - Order of SARIMAX model is specified as (p,d,q)(P,D,Q,S)   
 - See [Statsmodels State Space User Guide](https://www.statsmodels.org/dev/examples/notebooks/generated/statespace_sarimax_stata.html) for more details and examples    
+
+
+## SARIMAX Model       
+
+SARIMA model can be formulated as an additive or a multiplicative model of the components of a non-seasonal ARIMA model and the seasonal ARIMA model    
+
+- Additive model can be expressed: $SARIMA \big[ (p,d,q) + (P,D,Q)_M \big]$    
+
+- Multiplicative model can be expressed: $SARIMA \big[ (p,d,q)(P,D,Q)_M \big]$   
+
+- Example, a multiplicative $SARIMA(1,1,1)(1,1,1)_M$ model:   
+
+$$(y_t - \phi_1 y_{t-1})(y_t - \Phi_1 y_{t-M})(1-y_{t-1})(y_t - y_{t-M}) = (\epsilon_t - \theta_1 \epsilon_{t-1})(\epsilon_t - \Theta_1 \epsilon_{t-M})$$    
+
+- Continuesame algebra to find the polynomial of any $(p,d,q)(P,D,Q)$ order    
+
+- Create a recurssion to forecast future values as shown before       
 
 
 ## SARIMAX Model
@@ -1067,6 +1172,55 @@ $$
 - Time series model for latent variable, $\mu_t$    
 - $\mu_t$ acts as the intercept term for the regression model for $x_t$    
 - The coefficient vector, $\beta$, contains the **effect sizes** for the exogenous variables    
+
+
+## Forecasting with the ARIMA model
+
+Goal of forecasting is to compute a point estimates, $\hat{y}_{t+H}$, $H$ time steps in the future     
+
+- Use the time series history, $[y_t, y_{t-1}, y_{t-2}, \ldots]$    
+
+- Example, compute a forecast for a stationary time series with an $ARIMA(p,d,q)$ model    
+- Recursively apply a one step ahead forecast     
+
+- For the forecasted value $\hat{y}_{t+H}$ we have no estimated error:   
+
+$$\epsilon_{t+H} = y_{t+H} - \hat{y}_{t+H}$$    
+
+
+## Forecasting with the ARIMA model
+
+Goal of forecasting is to compute a point estimates, $\hat{y}_{t+H}$, $H$ time steps in the future     
+ 
+- Example, make a forecast with an ARIMA(2,1,1) model:    
+
+$$y_t -  y_{t-1} - \phi_1( y_{t-1} - y_{t-2}) - \phi_2 ( y_{t-2} - y_{t-3}) =  \epsilon_t + \theta_1 \epsilon_{t-1}$$
+
+- Model the one step ahead forecast as:     
+
+$$\hat{y}_{t+1}= y_{t} - \phi_1( y_{t} - y_{t-1}) - \phi_1( y_{t-1} - y_{t-2}) + \theta_1 \epsilon_{t} + \epsilon_{t+1}$$
+
+- Two step ahead forecast is computed using a recursive relationship    
+
+
+
+## Forecasting with the ARIMA model     
+
+Two step ahead forecast is computed using a recursive relationship   
+
+- But, no way to compute the error terms beyond the current observation at time $t$    
+
+- Replace $\epsilon_{t+1}$ with the last known residual as $e_{t+2} = e_t$:    
+
+$$\hat{y}_{t+2}= \hat{y}_{t+1} - \phi_1( \hat{y}_{t+1} - y_{t}) - \phi_1( y_{t} - y_{t-1}) + \theta_1 e_{t}$$
+
+- Take recursion one more step, set error terms, $\epsilon_i = 0$:    
+
+$$\hat{y}_{t+3}= \hat{y}_{t+2} - \phi_1( \hat{y}_{t+2} - y_{t+1}) - \phi_1( y_{t+1} - y_{t})$$
+
+- Continue this recursion for as many time steps as desired   
+
+- Same algebra used to work out the forecasting axolynomial of higher order ARIMA model  
 
 
 ## Evaluating and Comparing Time Series Models   
@@ -1268,7 +1422,102 @@ Evaluation and model comparison
 - Use BIC (or AIC) to perform backwards step-wise model selection    
 
 
-  
+ ## Exponential Smoothing Models    
+
+[Exponential smoothing models](https://en.wikipedia.org/wiki/Exponential_smoothing) are simple and widely used    
+
+- Consider the simple first order model   
+- Set initial conditions:    
+
+$$ s_0 = y_0 $$
+
+- The smoothed update is:     
+
+$$ s_t = \alpha y_t + (1-\alpha) s_{t-1}\\ 
+= s_{t-1} \alpha(y_t - s_{t-1}),\\ 
+t \gt 0 $$
+
+- And, the smoothing coefficient is, $0 \le \alpha \le 1$    
+- But, model only works if no trend     
+
+
+## Exponential Smoothing Models   
+
+Decay and exponential smoothing    
+
+- We can understand the smoothing parameter $\alpha$ in terms of a **decay constant**, $\tau$     
+
+$$\alpha = 1 - e^{\big( \frac{\Delta T}{\tau} \big)}$$
+
+- An innovation or shock has an effect for all future time   
+- Effect decays exponentially with time, $\Delta T$   
+
+
+## Exponential Smoothing Models   
+
+Can extend exponential smoothing model to accommodate trend     
+
+- Algorithm known as **double exponential smoothing** or **Holt-Winters double exponential smoothing**      
+- Update smoothed values and slope at each time step   
+- Start with initial values     
+
+$$s_1 = y_1\\
+b_1 = y_2 - y_1$$
+
+- Update relationships for both smoothed value and slope    
+
+$$s_t = \alpha y_t + (1-\alpha) (s_{t-1} + b_{t-1})\\
+b_t = \beta(s_t - s_{t-1}) + (1 - \beta)b_{t-1}$$
+
+- Additional slope smoothing hyperparameter, $0 \le \beta \le 1$    
+- Use **third order** update includes seasonality in **Holt-Winters smoother**   
+
+
+## Exponential Smoothing Models   
+
+Exponential smoothing models are useful for forecasting    
+
+- Forecast dependent on the choice of smoothing parameters     
+- Can forecast with first, second, third order models    
+- For second order model (with trend) the forecast $m$ steps ahead is:   
+
+
+$$F_{t+m} = s_t + m b_t $$
+
+- Third order update include seasonal terms   
+
+- Holt-Winters smoother is a **linear model!**  
+
+
+## Exponential Smoothing Models   
+
+Example of smoothing trend plus white noise series    
+
+- Decreasing the smoothing parameter, $\alpha$, increases smoothing     
+- Additionally, smooth trend    
+- Additional examples in [Statsmodels user documentation](https://www.statsmodels.org/stable/examples/notebooks/generated/exponential_smoothing.html)   
+
+
+```{python, echo=FALSE}
+import warnings
+fig, ax = plt.subplots(figsize=(7,4))
+_=ax.plot(trends, label='original', linewidth=2)
+
+Holt_model = ExponentialSmoothing(trends, trend='add', seasonal=None)
+
+for smoothing in [0.5,0.2,0.05]:
+    warnings.filterwarnings("ignore")
+    Holt_model_fit = Holt_model.fit(smoothing_level=smoothing, smoothing_slope=0.05)
+    _=label = 'smoothing = ' + str(smoothing)
+    _=ax.plot(Holt_model_fit.fittedvalues, label = label, linewidth=1)
+_=ax.set_xlabel('Date')
+_=ax.set_ylabel('Value')
+_=ax.set_title('Smoothing of trend series with white noise')
+_=plt.legend()    
+plt.show()
+```
+
+ 
 
 
 
