@@ -363,8 +363,8 @@ Random walk is the sum of innovations:
 
 $$y_t = w_t + \sum_{i=0}^{t-1} w_i$$
 
-- $w_i = $ the ith **innovation**   
-- $y_t=$ observarition at time $t$      
+- $w_i = $ the $i^{th}$ **innovation**   
+- $y_t=$ observation at time $t$      
 - A random walk is an **integrative process**; sum or integral of innovations     
 
 *Note:* innovations are referred to by other names:    
@@ -1242,11 +1242,13 @@ How can we evaluate time series models?
 
 Akaki Information criteria, AIC    
 
-$$AIC = 2\ k - 2\ ln(\hat{L})\\
-where\\
-\hat{L} = the\ likelihood\ given\ the\ fitted\ model\ parmaters\ \hat\theta = p(x| \hat\theta)\\
-x = observed\ data\\
-k = number\ of\ model\ parameters$$
+\begin{align}
+AIC &= 2\ k - 2\ ln(\hat{L})\\
+&where\\
+\hat{L} &= the\ likelihood\ given\ the\ fitted\ model\ parmaters\ \hat\theta = p(x| \hat\theta)\\
+x &= observed\ data\\
+k &= number\ of\ model\ parameters
+\end{align}
 
 - AIC penalizes the score function for the complexity of the model by $2\ k$    
 - Model with lowest AIC is best    
@@ -1256,12 +1258,14 @@ k = number\ of\ model\ parameters$$
 
 Bayes Information criteria, BIC    
 
-$$BIC = ln(n)\ k- 2\ ln(\hat{L})\\
-where\\
-\hat{L} = the\ likelihood\ given\ the\ fitted\ model\ parmaters\ \hat\theta = p(x| \hat\theta)\\
-x = observed\ data\\
-k = number\ of\ model\ parameters\\
-n = number\ of\ observations$$   
+\begin{align}
+BIC &= ln(n)\ k- 2\ ln(\hat{L})\\
+&where\\
+\hat{L} &= the\ likelihood\ given\ the\ fitted\ model\ parmaters\ \hat\theta = p(x| \hat\theta)\\
+x &= observed\ data\\
+k &= number\ of\ model\ parameters\\
+n &= number\ of\ observations   
+\end{align}
 
 - BIC penalizes the score function for the complexity of the model, $k$    
 - BIC adjusts for number of samples used to learn the $k$ model parameters     
