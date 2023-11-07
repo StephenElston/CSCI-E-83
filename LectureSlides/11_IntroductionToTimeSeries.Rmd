@@ -149,7 +149,7 @@ Most statistical packages have considerable time series modeling capability
 
 - Many newer Python time series packages packages, including:       
   * [Darts package](https://unit8co.github.io/darts/) includes cutting edge methods like hierarcical models         
-  * [Facebook Kats](https://facebookresearch.github.io/Kats/) package - strong in forecasting including the [PROFIT model](https://facebook.github.io/prophet/)      
+  * [Meta Kats](https://facebookresearch.github.io/Kats/) package - strong in forecasting including the [PROFIT model](https://facebook.github.io/prophet/)      
   * [GrayKite](https://linkedin.github.io/greykite/docs/0.1.0/html/index.html) Linkedin's forecasting package    
 
 
@@ -431,7 +431,6 @@ Many real-world time series have a long-term **trend**
 
 - A trend is a long term change in the mean value of the time series    
 - Typically model trend as linear, polynomial, non-parametric splines, etc.   
-  - PROFIT algorithm uses **generalized additive model (GAM)**  
 - Consider an example of a white noise series with a linear trend    
 
 ```{python, echo=FALSE}
@@ -522,6 +521,9 @@ Use regression models for seasonal effects
 - Basis function regression    
    * [PROFIT algorithm](https://research.facebook.com/blog/2017/2/prophet-forecasting-at-scale/) uses Fourier basis functions     
   * A **generalized additive model**   
+  
+- Take **seasonal differences**    
+
 
 ## Time Series With Seasonal Effects    
 
@@ -547,7 +549,7 @@ plot_ts(seasonal, 'seasonal data')
 
 ## Time Series Decomposition    
 
-Two possible models for seasonal effects    
+Simple model for seasonal effects    
 
 - Goal, decompose the time series into its components    
 - The [**Seasonal Trend decomonsition model using Loess (STL)**](https://otexts.com/fpp2/stl.html) model   
@@ -575,10 +577,12 @@ The **Multiplicative decomposition model** is expressed as as the product of the
 
 $$TS(t) = S(t) * T(t) * R(t)$$     
 
-The multiplicative form is can be hard to work with, so log transform to additive model    
+- The multiplicative form is can be hard to work with, so log transform to additive model    
 
-$$log(TS(t)) = log(S(t)) + log(T(t)) + log(R(t))$$   
-$$= S^l(t) + T^l(t) + R^l(t)$$   
+\begin{align} 
+log(TS(t)) &= log(S(t)) + log(T(t)) + log(R(t))$$   
+&= S^l(t) + T^l(t) + R^l(t)  
+\end{align}
 
 - Use when seasonal effect changes in time     
 - Example, economic time series    
@@ -632,9 +636,9 @@ $$\nabla y_t = y_t - y_{t-\delta}$$
 
 - Differences can be non-seasonal or seasonal   
    * Non-seasonal first order difference; $\delta = 1$
-   * Seasonal first order difference; $\delta = p$, $p =$ period of seasonality 
+   * Seasonal first order difference; $\delta + p$, $p =$ period of seasonality 
 
-- Difference operator with $\delta = n$ computes a series $n$ shorter than original     
+- Difference operator with $\delta$ computes a series $\delta$ shorter than original     
 
 
 ## Time Series Difference Operators   
