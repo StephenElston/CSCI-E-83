@@ -672,21 +672,97 @@ the hyperpriors.</li>
 </div>
 <div id="radon-dataset" class="slide section level2">
 <h1>Radon Dataset</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="im">import</span> arviz <span class="im">as</span> az</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="im">import</span> pymc3 <span class="im">as</span> pm</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="im">import</span> theano</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="im">import</span> xarray <span class="im">as</span> xr</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> spst</span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="im">import</span> warnings </span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>warnings.filterwarnings(<span class="st">&#39;ignore&#39;</span>)</span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="op">%</span>config InlineBackend.figure_format <span class="op">=</span> <span class="st">&#39;retina&#39;</span></span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>az.style.use(<span class="st">&quot;arviz-darkgrid&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="bu">print</span>(radon_data.head())</span></code></pre></div>
+</div>
+<div id="pooled-model" class="slide section level2">
+<h1>Pooled Model</h1>
+<p>First try a <strong>pooled model</strong></p>
+<ul>
+<li><p>Pooled model is a linear regression model of the log of Radon
+concentration</p></li>
+<li><p>Single slope and intercept coefficients</p></li>
+<li><p>Coefficient values computed from the data pooled over all of the
+counties</p></li>
+<li><p>This model is flat, with respect to county</p></li>
+<li><p>We assume the observations within each county are <strong><a href="https://en.wikipedia.org/wiki/Exchangeable_random_variables">exchangeable</a></strong>
+with each other</p></li>
+<li><p>Exchangeable values are assumed to be iid, and therefore have the
+same variance</p></li>
+</ul>
+</div>
+<div id="pooled-model-1" class="slide section level2">
+<h1>Pooled Model</h1>
+<p>First try a <strong>pooled model</strong></p>
+<ul>
+<li>Typically for a regression model the pooled model uses a Normal
+likelihood model:</li>
+</ul>
+<p><span class="math display">\[\begin{align}
+log(radon) &amp;\sim \mathtt{N}(\mu, \epsilon)\\
+where\
+\mu &amp;= \beta x  
+\end{align}\]</span>a x<br />
+\end{align}</p>
+<ul>
+<li><p>The value of <span class="math inline">\(\mu\)</span> is computed
+<strong>deterministically</strong> using the model coefficient vector,
+<span class="math inline">\(\beta\)</span></p></li>
+<li><p><span class="math inline">\(\beta\)</span> vector of independent
+variable values, <span class="math inline">\(x\)</span>.</p></li>
+</ul>
+</div>
+<div id="pooled-model-2" class="slide section level2">
+<h1>Pooled Model</h1>
+<p>First try a <strong>pooled model</strong></p>
+<ul>
+<li><p>Structure of the model is flat with just parameters <span class="math inline">\([\beta, \epsilon]\)</span></p></li>
+<li><p>Prior distribution of the parameters:</p></li>
+</ul>
+<p><span class="math display">\[\begin{align}   
+\beta &amp;\sim \mathtt{N}(0, \sigma)\\
+\epsilon &amp;\sim |\mathtt{Cauchy}(\eta)\\
+\end{align}\]</span></p>
+<p>Where <span class="math inline">\(|\mathtt{Cauchy}\)</span> is the
+half Cauchy distribution with one parameter, <span class="math inline">\(\eta\)</span></p>
+<ul>
+<li>Distribution is often used for variance priors since it has heavy
+tails and no values <span class="math inline">\(&lt; 0\)</span></li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>plt.style.use(<span class="st">&#39;arviz-darkgrid&#39;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">200</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="cf">for</span> b <span class="kw">in</span> [<span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">5.0</span>]:</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>    pdf <span class="op">=</span> spst.cauchy.pdf(x, scale<span class="op">=</span>b)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>    plt.plot(x, pdf, label<span class="op">=</span><span class="vs">r&#39;$\eta$ = </span><span class="sc">{}</span><span class="vs">&#39;</span>.<span class="bu">format</span>(b))</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>plt.xlabel(<span class="st">&#39;x&#39;</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>plt.ylabel(<span class="st">&#39;f(x)&#39;</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<h3 id="defining-and-sampling-the-pooled-model">Defining and Sampling
+the Pooled Model</h3>
+<p>Sampling model defined by this code:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> pooled_model:</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>    <span class="co"># Independent variable is just rumber of floors   </span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    floor <span class="op">=</span> pm.Data(<span class="st">&quot;floor&quot;</span>, radon_data.floor.values)   </span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    <span class="co"># Priors for unknown model parameters</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    betas <span class="op">=</span> pm.Normal(<span class="st">&quot;betas&quot;</span>, mu<span class="op">=</span><span class="dv">0</span>, sigma<span class="op">=</span><span class="dv">100</span>, shape<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    sigma <span class="op">=</span> pm.HalfCauchy(<span class="st">&quot;sigma&quot;</span>, <span class="dv">5</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    <span class="co"># Deterministic expected value of outcome</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    radon_est <span class="op">=</span> betas[<span class="dv">0</span>] <span class="op">+</span> betas[<span class="dv">1</span>] <span class="op">*</span> floor</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>    <span class="co"># Likelihood (sampling distribution) of observations</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>    y <span class="op">=</span> pm.Normal(<span class="st">&quot;y&quot;</span>, mu<span class="op">=</span>radon_est, sigma<span class="op">=</span>sigma, observed<span class="op">=</span>radon_data.log_radon) </span></code></pre></div>
+</div>
+<div id="sampling-traces-of-the-pooled-model" class="slide section level2">
+<h1>Sampling Traces of the Pooled Model</h1>
+<p>The sampling traces look reasonable for the two coefficients</p>
+</div>
+<div id="summary-of-sampling-of-the-pooled-model" class="slide section level2">
+<h1>Summary of Sampling of the Pooled Model</h1>
+<p>Betas look reasonable and the sampling statistics are good</p>
+</div>
+<div id="inference-on-the-model-parameters" class="slide section level2">
+<h1>Inference on the model parameters</h1>
 </div>
 
   <!-- dynamically load mathjax for compatibility with self-contained -->

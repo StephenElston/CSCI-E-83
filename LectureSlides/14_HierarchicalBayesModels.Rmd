@@ -13,6 +13,8 @@ use_python("C:/Users/steph/anaconda3")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
+#py_install("arviz")
+#py_install("pymc")
 ```
 
 
@@ -143,21 +145,149 @@ For this example we construct and compare three models:
 
 ## Radon Dataset    
 
-```{Python, echo=False}
+```{python, echo=FALSE}
 import arviz as az
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import pandas as pd
-import pymc3 as pm
+#import pymc3 as pm
+import pymc as pm
 import theano
 import xarray as xr
 import scipy.stats as spst
 import warnings 
 
 warnings.filterwarnings('ignore')
-%config InlineBackend.figure_format = 'retina'
-%matplotlib inline
+#%config InlineBackend.figure_format = 'retina'
+#%matplotlib inline
 az.style.use("arviz-darkgrid")
+
+## Load the data   
+radon_data = pd.read_csv(pm.get_data("radon.csv"))
+county_names = radon_data.county.unique()
 ```
+
+```{python}
+print(radon_data.head())
+```
+
+
+## Pooled Model
+
+First try a **pooled model**    
+
+- Pooled model is a linear regression model of the log of Radon concentration   
+
+- Single slope and intercept coefficients    
+
+- Coefficient values computed from the data pooled over all of the counties    
+
+- This model is flat, with respect to county   
+
+- We assume the observations within each county are **[exchangeable](https://en.wikipedia.org/wiki/Exchangeable_random_variables)** with each other   
+
+- Exchangeable values are assumed to be iid, and therefore have the same variance   
+
+## Pooled Model
+
+First try a **pooled model**    
+
+- Typically for a regression model the pooled model uses a Normal likelihood model:    
+
+\begin{align}
+log(radon) &\sim \mathtt{N}(\mu, \epsilon)\\ 
+where\
+\mu &= \beta x  
+\end{align}
+
+- The value of $\mu$ is computed **deterministically** using the model coefficient vector, $\beta$    
+
+- $\beta$ vector of independent variable values, $x$. 
+
+
+## Pooled Model
+
+First try a **pooled model**   
+
+- Structure of the model is flat with just parameters $[\beta, \epsilon]$   
+
+- Prior distribution of the parameters:     
+
+\begin{align}   
+\beta &\sim \mathtt{N}(0, \sigma)\\ 
+\epsilon &\sim |\mathtt{Cauchy}(\eta)\\
+\end{align}   
+
+Where $|\mathtt{Cauchy}$ is the half Cauchy distribution with one parameter, $\eta$  
+    
+- Distribution is often used for variance priors since it has heavy tails and no values $< 0$      
+
+
+```{python, echo=FALSE}
+county_idxs, counties = pd.factorize(radon_data.county)
+coords = {
+    "county": counties,
+    "obs_id": np.arange(len(county_idxs)),
+}
+```
+
+
+
+```{python, echo-FALSE}
+plt.style.use('arviz-darkgrid')
+x = np.linspace(0, 5, 200)
+for b in [0.5, 1.0, 2.0, 5.0]:
+    pdf = spst.cauchy.pdf(x, scale=b)
+    plt.plot(x, pdf, label=r'$\eta$ = {}'.format(b))
+plt.xlabel('x', fontsize=12)
+plt.ylabel('f(x)', fontsize=12)
+plt.legend(loc=1)
+plt.show()
+```
+
+
+## Defining and Sampling the Pooled Model
+
+Sampling model defined by this code:    
+
+```{python, ecal=FALSE}
+with pm.Model() as pooled_model:
+    # Independent variable is just rumber of floors   
+    floor = pm.Data("floor", radon_data.floor.values)   
+    # Priors for unknown model parameters
+    betas = pm.Normal("betas", mu=0, sigma=100, shape=2)
+    sigma = pm.HalfCauchy("sigma", 5)
+
+    # Deterministic expected value of outcome
+    radon_est = betas[0] + betas[1] * floor
+
+    # Likelihood (sampling distribution) of observations
+    y = pm.Normal("y", mu=radon_est, sigma=sigma, observed=radon_data.log_radon) 
+```
+
+
+## Sampling Traces of the Pooled Model
+
+The sampling traces look reasonable for the two coefficients  
+
+
+
+
+
+## Summary of Sampling of the Pooled Model     
+
+Betas look reasonable and the sampling statistics are good   
+
+
+
+
+## Inference on the model parameters    
+
+
+
+
+
+
+
 
