@@ -9,7 +9,7 @@ output: slidy_presentation
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
 use_python("C:/Users/steph/anaconda3")
-py_install("pmdarima")
+#py_install("pmdarima")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
@@ -186,12 +186,12 @@ Time series are expressed as a time ordered sequence of values $(x_1, x_2, x_3, 
 
 **White noise series** are fundamental     
 
-- Values are **independent identically distributed (iid)** Normally distributed    
+- Values are **independent identically distributed (iid)**, Normmal 
 - Can express values, $(w_1, w_2, w_3, \ldots, w_n)$, of a white noise series as:   
 
 $$X(t) = (w_1, w_2, w_3, \ldots, w_n)\\
 where\\
-w_t \sim N(0, \sigma^2)$$
+w_t \sim \mathbb{N}(0, \sigma^2)$$
 
 - No serial correlation between values   
   * There is no predictive information in a white noise series   
@@ -269,7 +269,7 @@ A white noise series is **stationary**
 - For example, a stationary time series has **constant mean and variance** over any sample interval    
 - Many time series models require stationarity        
   * Often transform time series to make them stationary    
-  * More on this shortly   
+  * More on this later     
 
 
 ## Stationary Time Series    
@@ -342,6 +342,23 @@ acf_pacf_plot(white)
 ```
 
 
+## Hypothesis Test of Autocorrelation    
+
+The [Ljung-Box Q statistic](https://www.statsmodels.org/dev/generated/statsmodels.stats.diagnostic.acorr_ljungbox.html#statsmodels.stats.diagnostic.acorr_ljungbox) used to test for autocorrelation   
+
+- Q is close to $\chi^2$ distributed     
+
+- Q computed from autocorrelation of at multiple lag values, $\rho_i$    
+
+$$Q = n(n+2) \sum_{k=1}^h \frac{\hat{\rho}^2_2}{n-k}$$
+
+- Null hypothesis is that there is no serial correlation between iid values $\rightarrow$ large p-value    
+
+- Alternative hypothesis is serial correlation gives high values of Q statistic $\rightarrow$ small p-value
+
+
+
+
 ## Random Walk Time Series  
 
 Random walks are a commonly encountered properties of time series    
@@ -350,7 +367,7 @@ Random walks are a commonly encountered properties of time series
 $$w_t = y_t - y_{t-1}$$   
 
 - The next value in the random walk is then:   
-$$y_t = y_{t-1} + y_t$$  
+$$y_t = y_{t-1} + w_t$$  
 
 Or, with a little bit of algebra:    
 
@@ -361,9 +378,9 @@ $$y_t = w_t + \sum_{i=0}^{t-1} w_i$$
 
 Random walk is the sum of innovations:     
 
-$$y_t = w_t + \sum_{i=0}^{t-1} w_i$$
+$$y_t = w_t + \sum_{i=0}^{t-1} w_i$$   
 
-- $w_i = $ the $i^{th}$ **innovation**   
+- $w_i =$ the $i^{th}$ **innovation**    
 - $y_t=$ observation at time $t$      
 - A random walk is an **integrative process**; sum or integral of innovations     
 
@@ -376,7 +393,7 @@ $$y_t = w_t + \sum_{i=0}^{t-1} w_i$$
 
 What does a random walk time series look like?    
 
-- Integrating innovations leads to a 'drift-like' behavior   
+- Integrating innovations leads to 'drift' behavior   
 - No actual trend; but can be considerable **drift**   
 - Random walk will eventually change apparent slope    
 
@@ -395,7 +412,7 @@ plot_ts(walk, 'random walk')
 
 ## Random Walk Time Series    
 
-- Autocorrelation of white noise series dies slowly     
+- Autocorrelation of random walk series dies slowly     
 - Partial autocorrelation $=1$ at lag one   
 
 ```{python, echo=FALSE}
@@ -405,7 +422,7 @@ acf_pacf_plot(walk)
 
 ## Random Walk Time Series  
 
-Random walk series is not Normally distributed
+Random walk series is not Normally distributed, even if innovations are  
 
 ```{python, echo=FALSE}
 dist_ts(walk, 'random walk')    
@@ -420,9 +437,9 @@ Random walk time series are **non-stationary**
 $$\gamma_k = Cov(y_t, y_{t+k})$$ 
 
 - For a random walk, the increase in covariance is **unbounded in time**:   
-$$\gamma_k = Cov(y_t, y_{t+k}) = t \sigma^2 \rightarrow \infty\ as\ t \rightarrow \infty$$
+$$\gamma_k = Cov(y_t, y_{t+k}) = k \sigma^2 \rightarrow \infty\ as\ k \rightarrow \infty$$
 
-- Unbounded and time dependent variance make a random walk non-stationary   
+- Unbounded and time dependent variance make a **random walk non-stationary**     
 
 
 ## Time Series With Trend   
@@ -478,7 +495,7 @@ dist_ts(trends, lab = '\n trend + white noise')
 ACF and PACF are only properly defined for stationary series    
 
 - For non-stationary series, the ACF dies off slowly   
-   * Integrative innovations lead to long-term dependency    
+   * Integrating innovations leads to **long-term dependency**    
 
 - The PACF dies off quickly with lag   
 
@@ -580,7 +597,7 @@ $$TS(t) = S(t) * T(t) * R(t)$$
 - The multiplicative form is can be hard to work with, so log transform to additive model    
 
 \begin{align} 
-log(TS(t)) &= log(S(t)) + log(T(t)) + log(R(t))$$   
+log(TS(t)) &= log(S(t)) + log(T(t)) + log(R(t))\\  
 &= S^l(t) + T^l(t) + R^l(t)  
 \end{align}
 
@@ -594,7 +611,7 @@ Example of addative STL decomposition of time series with linear trend and seaso
 
 - The original series plot is on top   
 - Notice the estimated trend is not a straight line; a result of noise    
-- Residuals are relatively small and **homoscedastic**     
+- Residuals are relatively small and **homoscedastic**, e.g. stationary       
 
 
 ```{python, echo=FALSE}
@@ -617,6 +634,7 @@ Is there an alternative for dealing with trend?
 
 How do we deal with random walks?     
 
+- Both random walks and trends are **integrative processes**  
 - **Difference operators** are useful for both cases    
 - Difference operators return the innovations   
 
@@ -636,9 +654,9 @@ $$\nabla y_t = y_t - y_{t-\delta}$$
 
 - Differences can be non-seasonal or seasonal   
    * Non-seasonal first order difference; $\delta = 1$
-   * Seasonal first order difference; $\delta + p$, $p =$ period of seasonality 
+   * Seasonal first order difference; $\delta + p$; $p =$ period of seasonality 
 
-- Difference operator with $\delta$ computes a series $\delta$ shorter than original     
+- Difference operator of span size $\delta$ computes a series $\delta$ shorter than original     
 
 
 ## Time Series Difference Operators   
@@ -715,7 +733,7 @@ $$\Delta y_t = (1- \phi) y_{t-1} + w_t$$
 
 - Gives rise to a random walk, which is stochastic and **not stationary**:   
 
-$$y_t = \sum_{i=1}^t w_i$$ 
+$$y_t = \sum_{i=0}^t w_i$$ 
 
 
 
@@ -723,7 +741,7 @@ $$y_t = \sum_{i=1}^t w_i$$
 
 A random walk is stochastic and **not stationary**:   
 
-$$y_t = \sum_{i=1}^t w_i$$ 
+$$y_t = \sum_{i=0}^t w_i$$ 
 
 - Provides a basis for hypothesis tests of stationarity     
 
@@ -776,6 +794,15 @@ There is often a small difference between a time series with a unit root, which 
 - In other cases, the opposite might be true    
 - It is best to perform a visual inspection of the properties of the time series as well  
 
+
+
+## Stationarity     
+
+Example of hypothesis tests on example time series    
+
+```{r stationarity_tests, out.width = '80%', fig.cap='Example of tests for stationarity', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/ADF_KPSS_tests.PNG"))
+``` 
 
 
 
