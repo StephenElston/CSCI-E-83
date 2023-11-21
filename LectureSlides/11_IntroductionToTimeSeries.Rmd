@@ -350,7 +350,7 @@ The [Ljung-Box Q statistic](https://www.statsmodels.org/dev/generated/statsmodel
 
 - Q computed from autocorrelation of at multiple lag values, $\rho_i$    
 
-$$Q = n(n+2) \sum_{k=1}^h \frac{\hat{\rho}^2_2}{n-k}$$
+$$Q = n(n+2) \sum_{k=1}^h \frac{\hat{\rho}^2_k}{n-k}$$
 
 - Null hypothesis is that there is no serial correlation between iid values $\rightarrow$ large p-value    
 
