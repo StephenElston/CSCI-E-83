@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Steve Elston" />
-  <meta name="date" content="2023-11-13" />
+  <meta name="date" content="2023-11-20" />
   <title>Forecasting with Time Series Data</title>
   <style type="text/css">
 code{white-space: pre-wrap;}
@@ -526,7 +526,7 @@ list-style-type: none;
   <p class="author">
 Steve Elston
   </p>
-  <p class="date">11/13/2023</p>
+  <p class="date">11/20/2023</p>
 </div>
 <div id="why-are-time-series-useful" class="slide section level2">
 <h1>Why Are Time Series Useful?</h1>
@@ -578,21 +578,34 @@ unemployment, Price/return series, Risk analysis</li>
 </ul></li>
 </ul>
 </div>
-<div id="why-are-time-series-data-different-1" class="slide section level2">
-<h1>Why Are Time Series Data Different</h1>
-<p>Examples of series correlation:</p>
+<div id="properties-of-time-series" class="slide section level2">
+<h1>Properties of Time Series</h1>
+<p>Fundamental elements of time series</p>
 <ul>
-<li>Temperature forecasts, where the future values are correlated with
-the current values<br />
+<li>Fundamental components which cannot be predicted
+<ul>
+<li>White noise<br />
 </li>
-<li>The opening price of a stock is correlated with the price at the
-previous close<br />
+<li>Random walks<br />
 </li>
-<li>The daily sales volume of a product is correlated with the previous
-sales volume<br />
+</ul></li>
+<li>Autocorrelation and partial autocorrelation</li>
+<li>Trend<br />
 </li>
-<li>A medical patient’s blood pressure reading is correlated with the
-previous observations</li>
+<li>Seasonal components<br />
+</li>
+<li>Differencing to transform to stationarity
+<ul>
+<li>Seasonal differencing<br />
+</li>
+<li>Non-seasonal differencing<br />
+</li>
+</ul></li>
+<li>Stationarity properties
+<ul>
+<li>augmented Dicky-Fuller test</li>
+<li>KPSS test</li>
+</ul></li>
 </ul>
 </div>
 <div id="time-series-forecasting-models" class="slide section level2">
@@ -600,8 +613,6 @@ previous observations</li>
 <p><strong>Forecasting</strong> is the goal of much of time series
 analysis</p>
 <ul>
-<li>Exponential models; extrapolation from simple smoothers<br />
-</li>
 <li>ARIMA and SARIMAX models; time series linear models<br />
 </li>
 <li>For comprehensive introduction see <a href="https://otexts.com/fpp2/">Forecasting: Principles and Practice,
@@ -613,99 +624,8 @@ is a source of many interesting ideas and example in time series
 analysis</li>
 </ul>
 </div>
-<div id="software-for-time-series-analysis" class="slide section level2">
-<h1>Software for Time Series Analysis</h1>
-<p>Most statistical packages have considerable time series modeling
-capability</p>
-<ul>
-<li><p>R time series analysis packages are wide and deep</p>
-<ul>
-<li>Much leading edge research appears first in R packages<br />
-</li>
-<li><a href="https://cran.r-project.org/web/views/TimeSeries.html">CRAN
-Time Series Task View</a>, maintained by Rob Hyndman, contains curated
-index to R time series packages</li>
-</ul></li>
-<li><p>Primary Python time series analysis package in <a href="https://www.statsmodels.org/stable/tsa.html">Statsmodels.tsa</a></p></li>
-<li><p>Bayesian time series models supported in <a href="https://www.pymc.io/welcome.html">PyMC</a>.</p></li>
-<li><p>Many newer Python time series packages packages, including:</p>
-<ul>
-<li><a href="https://unit8co.github.io/darts/">Darts package</a>
-includes cutting edge methods like hierarcical models<br />
-</li>
-<li><a href="https://facebookresearch.github.io/Kats/">Facebook Kats</a>
-package - strong in forecasting including the <a href="https://facebook.github.io/prophet/">PROFIT model</a><br />
-</li>
-<li><a href="https://linkedin.github.io/greykite/docs/0.1.0/html/index.html">GrayKite</a>
-Linkedin’s forecasting package</li>
-</ul></li>
-</ul>
-</div>
-<div id="time-series-models" class="slide section level2">
-<h1>Time Series Models</h1>
-<p>Many types of time series models; we only consider a few</p>
-<ul>
-<li><strong>Time series decomposition</strong> into components
-<ul>
-<li><strong>STL</strong> or <a href="https://www.statsmodels.org/dev/examples/notebooks/generated/stl_decomposition.html"><strong>seasonal-trend
-decomposition with LOESS</strong></a><br />
-</li>
-<li><strong>MSTL</strong> or <a href="https://www.statsmodels.org/dev/examples/notebooks/generated/mstl_decomposition.html"><strong>multiple
-seasonal-trend decomposition with LOESS</strong></a><br />
-</li>
-</ul></li>
-<li><strong>Exponential models</strong>
-<ul>
-<li>Beyond the scope of our course<br />
-</li>
-<li>See <a href="https://otexts.com/fpp3/expsmooth.html">Chapter 8</a>
-of Forecasting: Principles and Practice, Hyndman and Athanasopoulos,
-third edition, O Texts, 2021, for a in-depth discussion<br />
-</li>
-</ul></li>
-<li><strong>ARIMA</strong>: autoregressive integrative moving average
-<ul>
-<li><strong>AR</strong> or <strong>autoregressive component</strong>
-accounts for serial correlation of values<br />
-</li>
-<li><strong>I</strong> or <strong>integrative component</strong>
-component accounts for random walk and trend components<br />
-</li>
-<li><strong>MA</strong> or <strong>moving average component</strong>
-accounts for serial correlation of errors</li>
-</ul></li>
-</ul>
-</div>
-<div id="time-series-models-1" class="slide section level2">
-<h1>Time Series Models</h1>
-<p>Many types of time series models</p>
-<ul>
-<li><strong>SARIMA</strong>: seasonal autoregressive integrative moving
-average, adds seasonal components
-<ul>
-<li><strong>seasonal AR</strong> accounts for serial correlation of
-seasonal values<br />
-</li>
-<li><strong>seasonal I</strong> component accounts for random walk and
-trend of seasonal components<br />
-</li>
-<li><strong>seasonal MA</strong> accounts for seasonal serial
-correlation of errors</li>
-</ul></li>
-<li><strong>SARIMAX: seasonal autoregressive integrative moving average
-with </strong>exogenous variables**
-<ul>
-<li>Add effect of external factors<br />
-</li>
-<li>Example; effect of specific holiday<br />
-</li>
-<li>Example; effect arising from factors not incorporated in endogenous
-variable</li>
-</ul></li>
-</ul>
-</div>
-<div id="the-arima-and-sarimax-model" class="slide section level2">
-<h1>The ARIMA and SARIMAX Model</h1>
+<div id="tine-series-models" class="slide section level2">
+<h1>Tine Series Models</h1>
 <p>The <strong>ARIMA model</strong> is composed three components:</p>
 <ul>
 <li><strong>Autoregressive component (AR)</strong> accounts for partial
@@ -730,6 +650,34 @@ trend<br />
 </ul></li>
 </ul>
 </div>
+<div id="time-series-models" class="slide section level2">
+<h1>Time Series Models</h1>
+<p>Many types of time series models</p>
+<ul>
+<li><strong>SARIMA</strong>: seasonal autoregressive integrative moving
+average, adds seasonal components
+<ul>
+<li><strong>seasonal AR</strong> accounts for serial correlation of
+seasonal values<br />
+</li>
+<li><strong>seasonal I</strong> component accounts for random walk and
+trend of seasonal components<br />
+</li>
+<li><strong>seasonal MA</strong> accounts for seasonal serial
+correlation of errors</li>
+</ul></li>
+<li><strong>SARIMAX:</strong> seasonal autoregressive integrative moving
+average with <strong>exogenous variables</strong>
+<ul>
+<li>Add effect of external factors<br />
+</li>
+<li>Example; effect of specific holiday<br />
+</li>
+<li>Example; effect arising from factors not incorporated in endogenous
+variable</li>
+</ul></li>
+</ul>
+</div>
 <div id="the-autoregressive-model" class="slide section level2">
 <h1>The Autoregressive Model</h1>
 <p><strong>Autoregressive model</strong> relates past observed values to
@@ -738,7 +686,7 @@ the current value</p>
 <li>An autoregressive model of order <span class="math inline">\(p\)</span>, <span class="math inline">\(AR(p)\)</span>, uses the last p observations:</li>
 </ul>
 <p><span class="math display">\[\begin{align}
-x_t &amp;= \phi_1 y_{t-1} + \phi_2 y_{t-2} ,\ldots, \phi_p y_{t-p} +
+x_t &amp;= \phi_1 y_{t-1} + \phi_2 y_{t-2} + \ldots + \phi_p y_{t-p} +
 w_t\\
 &amp;where\\
 \phi_k &amp;= model\ coefficient\ at\ lag\ k\\
@@ -842,7 +790,8 @@ therefore \\
 </div>
 <div id="the-autoregressive-model-5" class="slide section level2">
 <h1>The Autoregressive Model</h1>
-<p>Example model summary for AR(2) model:</p>
+<p>Example model summary for <span class="math inline">\(AR(0.75,
+0.25)\)</span> model:</p>
 <ul>
 <li>Both AR coefficients are statistically significant<br />
 </li>
@@ -852,8 +801,8 @@ therefore \\
 ## ==============================================================================
 ## Dep. Variable:                      y   No. Observations:                  120
 ## Model:                 ARIMA(2, 0, 0)   Log Likelihood                -152.398
-## Date:                Mon, 06 Nov 2023   AIC                            312.795
-## Time:                        18:50:50   BIC                            323.945
+## Date:                Mon, 20 Nov 2023   AIC                            312.795
+## Time:                        19:11:29   BIC                            323.945
 ## Sample:                    01-31-2005   HQIC                           317.323
 ##                          - 12-31-2014                                         
 ## Covariance Type:                  opg                                         
@@ -963,7 +912,7 @@ least squares</strong></p></li>
 </div>
 <div id="the-moving-average-model-4" class="slide section level2">
 <h1>The Moving Average Model</h1>
-<p>Example model summary for MA(1) model:</p>
+<p>Example model summary for <span class="math inline">\(MA(-0.75)\)</span> model:</p>
 <ul>
 <li>The MA coefficient is statistically significant<br />
 </li>
@@ -974,8 +923,8 @@ least squares</strong></p></li>
 ## ==============================================================================
 ## Dep. Variable:                      y   No. Observations:                  120
 ## Model:                 ARIMA(0, 0, 1)   Log Likelihood                -162.751
-## Date:                Mon, 06 Nov 2023   AIC                            331.502
-## Time:                        18:50:51   BIC                            339.864
+## Date:                Mon, 20 Nov 2023   AIC                            331.502
+## Time:                        19:11:30   BIC                            339.864
 ## Sample:                    01-31-2005   HQIC                           334.898
 ##                          - 12-31-2014                                         
 ## Covariance Type:                  opg                                         
@@ -1121,10 +1070,9 @@ and others</li>
 </li>
 <li>Seasonal terms:
 <ul>
-<li>ARIMA model, order (P,D,Q,S)<br />
+<li>ARIMA seasonal model, order (P,D,Q,S)<br />
 </li>
-<li>Must specify period, S<br />
-</li>
+<li>Must specify period, S, seasonal difference order, D</li>
 </ul></li>
 <li>Order of SARIMAX model is specified as (p,d,q)(P,D,Q,S)<br />
 </li>
@@ -1198,7 +1146,7 @@ variables</li>
 <li><p>Use the time series history, <span class="math inline">\([y_t,
 y_{t-1}, y_{t-2}, \ldots]\)</span></p></li>
 <li><p>Example, compute a forecast for a stationary time series with an
-<span class="math inline">\(ARIMA(p,d,q)\)</span> model<br />
+ARIMA<span class="math inline">\((p,d,q)\)</span> model<br />
 </p></li>
 <li><p>Recursively apply a one step ahead forecast</p></li>
 <li><p>For the forecasted value <span class="math inline">\(\hat{y}_{t+H}\)</span> we have no estimated
@@ -1219,8 +1167,8 @@ y_{t-2}) - \phi_2 ( y_{t-2} - y_{t-3}) =  \epsilon_t + \theta_1
 <ul>
 <li>Model the one step ahead forecast as:</li>
 </ul>
-<p><span class="math display">\[\hat{y}_{t+1}= y_{t} - \phi_1( y_{t} -
-y_{t-1}) - \phi_1( y_{t-1} - y_{t-2}) + \theta_1 \epsilon_{t} +
+<p><span class="math display">\[\hat{y}_{t+1}= y_{t} - \phi_1( y_{t} +
+y_{t-1}) + \phi_1( y_{t-1} - y_{t-2}) + \theta_1 \epsilon_{t} +
 \epsilon_{t+1}\]</span></p>
 <ul>
 <li>Two step ahead forecast is computed using a recursive
@@ -1238,8 +1186,8 @@ observation at time <span class="math inline">\(t\)</span></p></li>
 the last known residual as <span class="math inline">\(e_{t+2} =
 e_t\)</span>:</p></li>
 </ul>
-<p><span class="math display">\[\hat{y}_{t+2}= \hat{y}_{t+1} - \phi_1(
-\hat{y}_{t+1} - y_{t}) - \phi_1( y_{t} - y_{t-1}) + \theta_1
+<p><span class="math display">\[\hat{y}_{t+2}= \hat{y}_{t+1} + \phi_1(
+\hat{y}_{t+1} - y_{t}) + \phi_1( y_{t} - y_{t-1}) + \theta_1
 e_{t}\]</span></p>
 <ul>
 <li>Take recursion one more step, set error terms, <span class="math inline">\(\epsilon_i = 0\)</span>:</li>
@@ -1357,8 +1305,8 @@ computed<br />
 <p><span class="math display">\[\begin{align}
 AIC &amp;= 2\ k - 2\ ln(\hat{L})\\
 &amp;where\\
-\hat{L} &amp;= the\ likelihood\ given\ the\ fitted\ model\ parmaters\
-\hat\theta = p(x| \hat\theta)\\
+\hat{L} &amp;= p(x| \hat\theta) = the\ likelihood\ given\ the\ fitted\
+model\ parmaters\ \hat\theta \\
 x &amp;= observed\ data\\
 k &amp;= number\ of\ model\ parameters
 \end{align}\]</span></p>
@@ -1375,8 +1323,8 @@ k &amp;= number\ of\ model\ parameters
 <p><span class="math display">\[\begin{align}
 BIC &amp;= ln(n)\ k- 2\ ln(\hat{L})\\
 &amp;where\\
-\hat{L} &amp;= the\ likelihood\ given\ the\ fitted\ model\ parmaters\
-\hat\theta = p(x| \hat\theta)\\
+\hat{L} &amp;= p(x| \hat\theta) = the\ likelihood\ given\ the\ fitted\
+model\ parmaters\ \hat\theta\\
 x &amp;= observed\ data\\
 k &amp;= number\ of\ model\ parameters\\
 n &amp;= number\ of\ observations   
@@ -1441,25 +1389,25 @@ production)</p>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>                             suppress_warnings<span class="op">=</span><span class="va">True</span>,  <span class="co"># don&#39;t want convergence warnings</span></span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>                             stepwise<span class="op">=</span><span class="va">True</span>)  <span class="co"># set to stepwise</span></span></code></pre></div>
 <pre><code>## Performing stepwise search to minimize bic
-##  ARIMA(1,1,1)(0,1,1)[12]             : BIC=-1794.344, Time=0.85 sec
+##  ARIMA(1,1,1)(0,1,1)[12]             : BIC=-1794.344, Time=0.86 sec
 ##  ARIMA(0,1,0)(0,1,0)[12]             : BIC=-1572.064, Time=0.16 sec
-##  ARIMA(1,1,0)(1,1,0)[12]             : BIC=-1696.328, Time=0.66 sec
-##  ARIMA(0,1,1)(0,1,1)[12]             : BIC=-1800.249, Time=0.50 sec
-##  ARIMA(0,1,1)(0,1,0)[12]             : BIC=-1699.081, Time=0.11 sec
-##  ARIMA(0,1,1)(1,1,1)[12]             : BIC=-1800.515, Time=0.86 sec
-##  ARIMA(0,1,1)(1,1,0)[12]             : BIC=-1742.451, Time=0.27 sec
-##  ARIMA(0,1,1)(2,1,1)[12]             : BIC=-1797.600, Time=2.03 sec
-##  ARIMA(0,1,1)(1,1,2)[12]             : BIC=-1796.438, Time=2.39 sec
-##  ARIMA(0,1,1)(0,1,2)[12]             : BIC=-1802.021, Time=1.92 sec
-##  ARIMA(0,1,0)(0,1,2)[12]             : BIC=inf, Time=0.72 sec
-##  ARIMA(1,1,1)(0,1,2)[12]             : BIC=-1796.168, Time=2.79 sec
-##  ARIMA(0,1,2)(0,1,2)[12]             : BIC=-1795.957, Time=2.89 sec
-##  ARIMA(1,1,0)(0,1,2)[12]             : BIC=-1770.768, Time=2.46 sec
-##  ARIMA(1,1,2)(0,1,2)[12]             : BIC=-1790.196, Time=3.24 sec
-##  ARIMA(0,1,1)(0,1,2)[12] intercept   : BIC=inf, Time=1.07 sec
+##  ARIMA(1,1,0)(1,1,0)[12]             : BIC=-1696.328, Time=0.67 sec
+##  ARIMA(0,1,1)(0,1,1)[12]             : BIC=-1800.249, Time=0.53 sec
+##  ARIMA(0,1,1)(0,1,0)[12]             : BIC=-1699.081, Time=0.10 sec
+##  ARIMA(0,1,1)(1,1,1)[12]             : BIC=-1800.515, Time=0.88 sec
+##  ARIMA(0,1,1)(1,1,0)[12]             : BIC=-1742.451, Time=0.29 sec
+##  ARIMA(0,1,1)(2,1,1)[12]             : BIC=-1797.600, Time=2.08 sec
+##  ARIMA(0,1,1)(1,1,2)[12]             : BIC=-1796.438, Time=2.55 sec
+##  ARIMA(0,1,1)(0,1,2)[12]             : BIC=-1802.021, Time=2.03 sec
+##  ARIMA(0,1,0)(0,1,2)[12]             : BIC=inf, Time=0.84 sec
+##  ARIMA(1,1,1)(0,1,2)[12]             : BIC=-1796.168, Time=3.11 sec
+##  ARIMA(0,1,2)(0,1,2)[12]             : BIC=-1795.957, Time=3.10 sec
+##  ARIMA(1,1,0)(0,1,2)[12]             : BIC=-1770.768, Time=2.65 sec
+##  ARIMA(1,1,2)(0,1,2)[12]             : BIC=-1790.196, Time=3.58 sec
+##  ARIMA(0,1,1)(0,1,2)[12] intercept   : BIC=inf, Time=1.42 sec
 ## 
 ## Best model:  ARIMA(0,1,1)(0,1,2)[12]          
-## Total fit time: 22.927 seconds</code></pre>
+## Total fit time: 24.847 seconds</code></pre>
 </div>
 <div id="sarimax-example-2" class="slide section level2">
 <h1>SARIMAX Example</h1>
@@ -1482,10 +1430,10 @@ seasonality</li>
   <th>Model:</th>           <td>SARIMAX(0, 1, 1)x(0, 1, [1, 2], 12)</td> <th>  Log Likelihood     </th>  <td>912.843</td> 
 </tr>
 <tr>
-  <th>Date:</th>                     <td>Mon, 06 Nov 2023</td>           <th>  AIC                </th> <td>-1817.686</td>
+  <th>Date:</th>                     <td>Mon, 20 Nov 2023</td>           <th>  AIC                </th> <td>-1817.686</td>
 </tr>
 <tr>
-  <th>Time:</th>                         <td>18:51:16</td>               <th>  BIC                </th> <td>-1802.021</td>
+  <th>Time:</th>                         <td>19:11:58</td>               <th>  BIC                </th> <td>-1802.021</td>
 </tr>
 <tr>
   <th>Sample:</th>                      <td>01-31-1958</td>              <th>  HQIC               </th> <td>-1811.464</td>

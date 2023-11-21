@@ -1,7 +1,7 @@
 ---
 title: "Forecasting with Time Series Data"
 author: "Steve Elston"
-date: "11/13/2023"
+date: "11/20/2023"
 output: slidy_presentation
 ---
 
@@ -9,7 +9,7 @@ output: slidy_presentation
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
 use_python("C:/Users/steph/anaconda3")
-py_install("pmdarima")
+#py_install("pmdarima")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
@@ -52,81 +52,38 @@ Models must account for time series behavior
    * Violate iid assumptions of many statistical and ML Models    
 `
 
+## Properties of Time Series
 
-## Why Are Time Series Data Different
+Fundamental elements of time series  
 
+- Fundamental components which cannot be predicted   
+  * White noise    
+  * Random walks    
+- Autocorrelation and partial autocorrelation
+- Trend    
+- Seasonal components    
+- Differencing to transform to stationarity     
+    - Seasonal differencing    
+    - Non-seasonal differencing  
+- Stationarity properties
+    - augmented Dicky-Fuller test
+    - KPSS test    
 
-Examples of series correlation:      
-
-- Temperature forecasts, where the future values are correlated with the current values     
--  The opening price of a stock is correlated with the price at the previous close    
-- The daily sales volume of a product is correlated with the previous sales volume     
-- A medical patient's blood pressure reading is correlated with the previous observations    
 
 
 ## Time Series Forecasting Models    
 
 **Forecasting** is the goal of much of time series analysis    
 
-- Exponential models; extrapolation from simple smoothers    
+ 
 - ARIMA and SARIMAX models; time series linear models    
 - For comprehensive introduction see [Forecasting: Principles and Practice, Hyndman and Athanaosopoulos, 3rd edition, 2018](https://otexts.com/fpp2/), available as book or free online    
 - [Rob Hyndman's blog](https://robjhyndman.com/hyndsight/) is a source of many interesting ideas and example in time series analysis    
 
 
 
-## Software for Time Series Analysis   
 
-Most statistical packages have considerable time series modeling capability    
-
-- R time series analysis packages are wide and deep   
-  * Much leading edge research appears first in R packages    
-  * [CRAN Time Series Task View](https://cran.r-project.org/web/views/TimeSeries.html), maintained by Rob Hyndman, contains curated index to R time series packages 
-
-- Primary Python time series analysis package in [Statsmodels.tsa](https://www.statsmodels.org/stable/tsa.html)    
-
-- Bayesian time series models supported in [PyMC](https://www.pymc.io/welcome.html).
-
-- Many newer Python time series packages packages, including:       
-  * [Darts package](https://unit8co.github.io/darts/) includes cutting edge methods like hierarcical models         
-  * [Facebook Kats](https://facebookresearch.github.io/Kats/) package - strong in forecasting including the [PROFIT model](https://facebook.github.io/prophet/)      
-  * [GrayKite](https://linkedin.github.io/greykite/docs/0.1.0/html/index.html) Linkedin's forecasting package    
-
-
-
-## Time Series Models
-
-Many types of time series models; we only consider a few       
-
-- **Time series decomposition** into components   
-   * **STL** or [**seasonal-trend decomposition with LOESS**](https://www.statsmodels.org/dev/examples/notebooks/generated/stl_decomposition.html)      
-   * **MSTL** or [**multiple seasonal-trend decomposition with LOESS**](https://www.statsmodels.org/dev/examples/notebooks/generated/mstl_decomposition.html)   
-- **Exponential models**    
-   * Beyond the scope of our course   
-   * See [Chapter 8](https://otexts.com/fpp3/expsmooth.html) of Forecasting: Principles and Practice, Hyndman and Athanasopoulos, third edition, O Texts, 2021, for a in-depth discussion         
-- **ARIMA**: autoregressive integrative moving average     
-  * **AR** or **autoregressive component** accounts for serial correlation of values      
-  * **I** or **integrative component** component accounts for random walk and trend components     
-  * **MA** or **moving average component** accounts for serial correlation of errors  
-
-## Time Series Models
-
-Many types of time series models   
-
-
-- **SARIMA**: seasonal autoregressive integrative moving average, adds seasonal components     
-  * **seasonal AR** accounts for serial correlation of seasonal values      
-  * **seasonal I** component accounts for random walk and trend of seasonal components     
-  * **seasonal MA** accounts for seasonal serial correlation of errors    
-
-- **SARIMAX: seasonal autoregressive integrative moving average with **exogenous variables**       
-   * Add effect of external factors    
-   * Example; effect of specific holiday    
-   * Example; effect arising from factors not incorporated in endogenous variable   
-
-
-
-## The ARIMA and SARIMAX Model   
+## Tine Series Models   
 
 The **ARIMA model** is composed three components:    
 
@@ -140,6 +97,25 @@ The **ARIMA model** is composed three components:
   * **Exogenous variables (X)**   
 
 
+
+
+## Time Series Models
+
+Many types of time series models   
+
+
+- **SARIMA**: seasonal autoregressive integrative moving average, adds seasonal components     
+  * **seasonal AR** accounts for serial correlation of seasonal values      
+  * **seasonal I** component accounts for random walk and trend of seasonal components     
+  * **seasonal MA** accounts for seasonal serial correlation of errors    
+
+- **SARIMAX:** seasonal autoregressive integrative moving average with **exogenous variables**       
+   * Add effect of external factors    
+   * Example; effect of specific holiday    
+   * Example; effect arising from factors not incorporated in endogenous variable   
+
+
+
 ## The Autoregressive Model   
 
 **Autoregressive model** relates past observed values to the current value    
@@ -147,7 +123,7 @@ The **ARIMA model** is composed three components:
 - An autoregressive model of order $p$, $AR(p)$, uses the last p observations:   
 
 \begin{align}
-x_t &= \phi_1 y_{t-1} + \phi_2 y_{t-2} ,\ldots, \phi_p y_{t-p} + w_t\\
+x_t &= \phi_1 y_{t-1} + \phi_2 y_{t-2} + \ldots + \phi_p y_{t-p} + w_t\\
 &where\\
 \phi_k &= model\ coefficient\ at\ lag\ k\\
 w_t &= white\ noise\ error\ at\ time\ t;\ \sim \mathtt{N}(0,\sigma^2)\\
@@ -296,7 +272,7 @@ acf_pacf_plot(ts_series_ar2)
 
 ## The Autoregressive Model   
 
-Example model summary for AR(2) model:   
+Example model summary for $AR(0.75, 0.25)$ model:   
 
 - Both AR coefficients are statistically significant    
 - Variance term is statistically significant   
@@ -392,7 +368,7 @@ acf_pacf_plot(ts_series_ma1)
 
 ## The Moving Average Model    
 
-Example model summary for MA(1) model:    
+Example model summary for $MA(-0.75)$ model:    
 
 - The MA coefficient is statistically significant     
 - Notice that true value is within the confidence interval 
@@ -486,8 +462,8 @@ The SARIMAX model adds seasonal and exogenous terms
 
 - ARIMA terms are same, (p,d,q)       
 - Seasonal terms:    
-   * ARIMA model, order (P,D,Q,S)    
-   * Must specify period, S  
+   * ARIMA seasonal model, order (P,D,Q,S)    
+   * Must specify period, S, seasonal difference order, D
 - Order of SARIMAX model is specified as (p,d,q)(P,D,Q,S)   
 - See [Statsmodels State Space User Guide](https://www.statsmodels.org/dev/examples/notebooks/generated/statespace_sarimax_stata.html) for more details and examples    
 
@@ -544,7 +520,7 @@ Goal of forecasting is to compute a point estimates, $\hat{y}_{t+H}$, $H$ time s
 
 - Use the time series history, $[y_t, y_{t-1}, y_{t-2}, \ldots]$    
 
-- Example, compute a forecast for a stationary time series with an $ARIMA(p,d,q)$ model    
+- Example, compute a forecast for a stationary time series with an ARIMA$(p,d,q)$ model    
 - Recursively apply a one step ahead forecast     
 
 - For the forecasted value $\hat{y}_{t+H}$ we have no estimated error:   
@@ -562,7 +538,7 @@ $$y_t -  y_{t-1} - \phi_1( y_{t-1} - y_{t-2}) - \phi_2 ( y_{t-2} - y_{t-3}) =  \
 
 - Model the one step ahead forecast as:     
 
-$$\hat{y}_{t+1}= y_{t} - \phi_1( y_{t} - y_{t-1}) - \phi_1( y_{t-1} - y_{t-2}) + \theta_1 \epsilon_{t} + \epsilon_{t+1}$$
+$$\hat{y}_{t+1}= y_{t} - \phi_1( y_{t} + y_{t-1}) + \phi_1( y_{t-1} - y_{t-2}) + \theta_1 \epsilon_{t} + \epsilon_{t+1}$$
 
 - Two step ahead forecast is computed using a recursive relationship    
 
@@ -576,7 +552,7 @@ Two step ahead forecast is computed using a recursive relationship
 
 - Replace $\epsilon_{t+1}$ with the last known residual as $e_{t+2} = e_t$:    
 
-$$\hat{y}_{t+2}= \hat{y}_{t+1} - \phi_1( \hat{y}_{t+1} - y_{t}) - \phi_1( y_{t} - y_{t-1}) + \theta_1 e_{t}$$
+$$\hat{y}_{t+2}= \hat{y}_{t+1} + \phi_1( \hat{y}_{t+1} - y_{t}) + \phi_1( y_{t} - y_{t-1}) + \theta_1 e_{t}$$
 
 - Take recursion one more step, set error terms, $\epsilon_i = 0$:    
 
@@ -646,7 +622,7 @@ Akaki Information criteria, AIC
 \begin{align}
 AIC &= 2\ k - 2\ ln(\hat{L})\\
 &where\\
-\hat{L} &= the\ likelihood\ given\ the\ fitted\ model\ parmaters\ \hat\theta = p(x| \hat\theta)\\
+\hat{L} &= p(x| \hat\theta) = the\ likelihood\ given\ the\ fitted\ model\ parmaters\ \hat\theta \\
 x &= observed\ data\\
 k &= number\ of\ model\ parameters
 \end{align}
@@ -662,7 +638,7 @@ Bayes Information criteria, BIC
 \begin{align}
 BIC &= ln(n)\ k- 2\ ln(\hat{L})\\
 &where\\
-\hat{L} &= the\ likelihood\ given\ the\ fitted\ model\ parmaters\ \hat\theta = p(x| \hat\theta)\\
+\hat{L} &= p(x| \hat\theta) = the\ likelihood\ given\ the\ fitted\ model\ parmaters\ \hat\theta\\
 x &= observed\ data\\
 k &= number\ of\ model\ parameters\\
 n &= number\ of\ observations   
