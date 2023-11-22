@@ -1,7 +1,7 @@
 ---
 title: "Bayes MCMC Models"
 author: "Steve Elston"
-date: "10/17/2022"
+date: "10/27/2022"
 output:
   slidy_presentation: default
   pdf_document: default
@@ -11,7 +11,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(reticulate)
-use_python("/usr/bin/python3")
+use_python("C:/Users/steph/anaconda3")
 matplotlib <- import("matplotlib")
 matplotlib$use("Agg", force = TRUE)
 #knitr::knit_engines$set(python = reticulate::eng_python)
