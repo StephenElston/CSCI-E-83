@@ -123,7 +123,7 @@ Many types of time series models
 - An autoregressive model of order $p$, $AR(p)$, uses the last p observations:   
 
 \begin{align}
-x_t &= \phi_1 y_{t-1} + \phi_2 y_{t-2} + \ldots + \phi_p y_{t-p} + w_t\\
+y_t &= \phi_1 y_{t-1} + \phi_2 y_{t-2} + \ldots + \phi_p y_{t-p} + w_t\\
 &where\\
 \phi_k &= model\ coefficient\ at\ lag\ k\\
 w_t &= white\ noise\ error\ at\ time\ t;\ \sim \mathtt{N}(0,\sigma^2)\\
@@ -159,9 +159,9 @@ How can we understand the AR model?
 $$
 A = 
 \begin{bmatrix}
-y_t,\ y_{1-1},\ y_{t-2}\\
-y_{t-1},\ y_{1-2},\ y_{t-3}\\
-y_{t-2},\ y_{1-3},\ y_{t-4}\\
+y_t,\ y_{t-1},\ y_{t-2}\\
+y_{t-1},\ y_{t-2},\ y_{t-3}\\
+y_{t-2},\ y_{t-3},\ y_{t-4}\\
 \vdots,\ \ \ \ \ \vdots,\ \ \ \ \ \vdots\\
 y_{2},\ \ \ \ y_{1},\ \ \ \ y_{0}\\
 y_{1},\ \ \ \ y_{0}\ \ \ \, 0\\
@@ -302,7 +302,7 @@ y_t &= observation\ at\ time\ t\\
 
 - An MA process has the following properties:   
    * For autocorrelation, $\rho_0 = 1$ always    
-   * Number of $\rho_k \ne 0$, $= q$, $k \gt 0$   
+   * Number of $\rho_k \ne 0$, $= q$    
    * Shocks die off quickly in MA processes    
 - MA model assumes stationary time series    
 
@@ -316,7 +316,7 @@ $$y_t = \mu + \epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \
 We can also write the MA model in terms of estimated value, $\hat{y}_t$: 
 
 \begin{align}
-\hat{y}_t &= c + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q}\\
+\hat{y}_t &= \mu + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q}\\
 & Therefore,\\
 \epsilon_t &= y_t - \hat{y}_t \sim \mathtt{N}(0,\sigma^2);\ error\ at\ time\ t \\
 \end{align}
@@ -331,9 +331,9 @@ How can we understand the MA model?
 $$
 A = 
 \begin{bmatrix}
-y_t,\ \epsilon_{1-1},\ \epsilon_{t-2}\\
-y_{t-1},\ \epsilon_{1-2},\ \epsilon_{t-3}\\
-y_{t-2},\ \epsilon_{1-3},\ \epsilon_{t-4}\\
+y_t,\ \epsilon_{t-1},\ \epsilon_{t-2}\\
+y_{t-1},\ \epsilon_{t-2},\ \epsilon_{t-3}\\
+y_{t-2},\ \epsilon_{t-3},\ \epsilon_{t-4}\\
 \vdots,\ \ \ \ \ \vdots,\ \ \ \ \ \vdots\\
 y_{2},\ \ \ \ \epsilon_{1},\ \ \ \ \epsilon_{0}\\
 y_{1},\ \ \ \ \epsilon_{0}\ \ \ \, 0\\
@@ -392,7 +392,7 @@ $$y_t =  \phi_1 y_{t-1} + \phi_2 y_{t-2} ,\ldots, + \phi_p y_{t-p} +
 $$y_t - \phi_1 y_{t-1} - \phi_2 y_{t-2} ,\ldots, - \phi_p y_{t-p} = 
 \epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q}$$
 
-- Can write as polynomial equation in terms of coefficient vectors $\Phi = [1, \phi_1, \phi_2, \ldots, \phi_p y]$, $\Theta = [1, \theta_1, \theta_2, \cdots, \theta_q]$:     
+- Can write as polynomial equation in terms of coefficient vectors $\Phi = [1, \phi_1, \phi_2, \ldots, \phi_p ]$, $\Theta = [1, \theta_1, \theta_2, \cdots, \theta_q]$:     
 $$(1-\Phi)Y = \Theta \epsilon$$
 
 - ARMA model assumes stationary time series    
@@ -538,7 +538,7 @@ $$y_t -  y_{t-1} - \phi_1( y_{t-1} - y_{t-2}) - \phi_2 ( y_{t-2} - y_{t-3}) =  \
 
 - Model the one step ahead forecast as:     
 
-$$\hat{y}_{t+1}= y_{t} - \phi_1( y_{t} + y_{t-1}) + \phi_1( y_{t-1} - y_{t-2}) + \theta_1 \epsilon_{t} + \epsilon_{t+1}$$
+$$\hat{y}_{t+1}= y_{t} - \phi_1( y_{t} + y_{t-1}) + \phi_1( y_{t-1} - y_{t-2}) + \theta_1 \epsilon_{t}$$
 
 - Two step ahead forecast is computed using a recursive relationship    
 
@@ -556,7 +556,7 @@ $$\hat{y}_{t+2}= \hat{y}_{t+1} + \phi_1( \hat{y}_{t+1} - y_{t}) + \phi_1( y_{t} 
 
 - Take recursion one more step, set error terms, $\epsilon_i = 0$:    
 
-$$\hat{y}_{t+3}= \hat{y}_{t+2} - \phi_1( \hat{y}_{t+2} - y_{t+1}) - \phi_1( y_{t+1} - y_{t})$$
+$$\hat{y}_{t+3}= \hat{y}_{t+2} - \phi_1( \hat{y}_{t+2} - \hat{y}_{t+1}) - \phi_1( \hat{y}_{t+1} - y_{t})$$
 
 - Continue this recursion for as many time steps as desired   
 
@@ -760,6 +760,35 @@ _=ss.probplot(residuals, plot = ax);
 plt.show()
 ```
 
+
+## PROFIT Model   
+
+The PROFIT model from Meta Research is a **deterministic model** well suited for some business forecasting    
+
+- Uses a sophisticated piece-wise linear trend model    
+   - Trend computed between breakpoints     
+   - Breakpoints found with Bayesian model     
+   - Complex trend model **confounded by random walks**   
+   
+- Multi-seasonal component modeled modeled by Fourier decomposition    
+   - Multiple harmonics per seasonal period    
+   - Flexible modeling of complex seasonal patterns    
+   
+- Supports exogenous variables    
+
+- PROFIT model assumes residual is non-informative     
+
+## PROFIT Model   
+
+The PROFIT model from Meta Research is a **deterministic model** well suited for some business forecasting       
+
+- PROFIT model **assumes residual is non-informative**      
+   - ACF and PACF must have no significant nonzero lags     
+
+- If significant ACF and PACF use SARIMAX    
+   - Uses information in stationary residual   
+   - Gives **superior results for time series with stochastic components**   
+   
 
 
 ## Summary
