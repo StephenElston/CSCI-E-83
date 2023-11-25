@@ -179,16 +179,16 @@ $$Y = A \Phi$$
 
 We can rewrite the AR(1) model in terms of exceptions:    
 
-$$
-\mathbb{E}(y_t) = \phi \mathbb{E}(y_{t-1}) + \mathbb{E}(\epsilon_t) \\
-or \\
-\mu = c + \phi \mu + 0 \\
-therefore \\
-\mu = \frac{c}{1 - \phi^2 }
-$$
+\begin{align}
+\mathbb{E}(y_t) &= \phi \mathbb{E}(y_{t-1}) + \mathbb{E}(\epsilon_t) \\
+&or \\
+\mu &= c + \phi \mu + 0 \\
+&therefore \\
+\mu &= \frac{c}{1 - \phi}
+\end{align}
 
-- The AR model is unstable for the roots of the polynomial $1 - \phi^2$   
-- To be a stable AR process, $\phi^2 \lt 1$    
+- The AR model is unstable for the roots of the polynomial $1 - \phi$   
+- Is a stable AR process if $\phi \lt 1$    
 - Violation of this condition leads to an unstable model!    
 - AR(1) model with unit root is a random walk with the $\phi_1=0$:    
 
