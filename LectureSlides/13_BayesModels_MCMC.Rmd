@@ -47,9 +47,9 @@ Two functions must be defined to compute the posterior distribution
   - Example; for Normal likelihood is the mean, $\mu$ and variance. $\sigma^2$      
 
 - The **prior distribution** encodes the information we have in advance about the model parameters    
-   - For simple cases is the **conjugate distribution**      
+   - Simple cases use a **conjugate distribution** of the likelihood     
    - The posterior distribution is in the conjugate family    
-   - Example, for binomial likelihood, the conjugate is the $Beta(\alpha,\beta)$     
+   - Example, for binomial likelihood, the conjugate is the Beta$(\alpha,\beta)$     
    - Example, for Normal likelihood, the normal distribution is the conjugate for the mean, $\mu$     
 
 
@@ -60,11 +60,11 @@ How can we extend Bayes models to more complex problems?
 
 - For simple problems we can use a conjugate prior and posterior             
 
-- Unlikely posterior distribution will be a simple conjugate       
+- What about problems with complex likelihood?   
 
-- Need to perform sampling to compute approximation of complex posterior    
+- Need to perform sampling to compute approximation of posterior    
 
-- We need highly efficient sampling methods for complex problems   
+- Highly efficient sampling methods required for complex problems   
 
 ## Grid Sampling Cannot Scale!       
 
@@ -88,14 +88,15 @@ Real-world Bayes models have large numbers of parameters, into the millions
 How can we scale Bayesian models to 1000s of parameters?   
 
 - **Variational methods**     
-   * Based on Variational calculus    
-   * A very effective and efficient method for some problems     
-   * But, proves difficult us use as a general solution    
-   * Details beyond our scope here    
+   * Based on variational calculus    
+   * A very effective and highly scaleable method         
+   * But, mathematically difficult to apply as a general solution       
+   * Details beyond our scope      
 
 - **Markov Chain Monte Carlo (MCMC)**      
    * A simple and reliable method for Bayesian inference   
-   * Our focus here    
+   * Trade-off variance of estimates and computer power for ease of implementation
+   * Our focus in this course    
 
 ## Introduction to Markov Chain Monte Carlo
 
@@ -103,11 +104,10 @@ Large-scale Bayesian models need highly efficient sampling methods
 
 - **Markov chain Monte Carlo (MCMC) sampling** is efficient and scalable    
 
-- Rather than sampling on a grid MCMC methods sample distributions efficiently   
+- Rather than sampling on a grid, MCMC methods sample distributions efficiently   
    * Sample higher density regions of posterior with higher probability    
 
 - Requires effort to understand how the algorithm works   
-   * Must carefully evaluate how well algorithm converged     
    * What to do when things go wrong     
 
 
@@ -115,12 +115,18 @@ Large-scale Bayesian models need highly efficient sampling methods
 
 MCMC sampling uses a **Markov processes sampling chain**     
 
-- A Markov process is a **stochastic process** that transitions from a current state, $x_t$, to some next state, $x_{t+1}$, with probability $\Pi$      
-   - **No dependency on past states**       
+- $X_t$ is the **state vector** of **state probabilities** for $N$ possible states  
    
-- Summarize properties of a Markov process:    
+   $$X_t = [x_1, x_2, x_3, \ldots, x_N]$$
+
+- A Markov process is a **stochastic process** that transitions from a current state probabilities, $X_t$, to some next state probabilities, $X_{t+1}$, with probability $\Pi$      
+   - **No dependency on past states**     
+   
+ 
+   
+- Key properties of a Markov process:    
    - Probability of state transition is parameterized by a matrix of probabilities, $\Pi$, of dim N X N for N possible states    
-   - $\Pi$  only depends on the current state, $x_t$    
+   - $\Pi$  only depends on the current state, $X_t$    
    - Transition can be to current state.   
 
 
@@ -130,32 +136,33 @@ Since Markov transition process depends only on the current state a Markov proce
 
 - We can express the sequence of a Markov transition processes as:
 
-$$p(X_{t + 1}| X_t = x_t, x_{t-1}, x_{t-2}, \ldots, x_0) = p(X_{t + 1}| x_t)$$
+$$p(X_{t + 1}| X_t, X_{t-1}, X_{t-2}, \ldots, X_0) = p(X_{t + 1}| X_t)$$
 
 
-- The Markov process is memoryless   
-   - Transition probability only depends on the current state, $x_t$     
-   - No dependency on any previous states, $\{x_{t-1}, x_{t-2}, \ldots, x_0 \}$. 
+- The Markov process is **memoryless**   
+   - Transition probability only depends on the current state, $X_t$     
+   - No dependency on any previous states, $X_{t-1}, X_{t-2}, \ldots, X_0$. 
 
 
 ## What is a Markov process?
 
 For system with $N$ possible states we can write the **transition probability matrix**, $\Pi$:
 
-$$\Pi = 
+\begin{align}
+\Pi &= 
 \begin{bmatrix}
 \pi_{1,1} & \pi_{1,2} & \cdots & \pi_{1, N}\\
 \pi_{2,1} & \pi_{2,2} & \cdots & \pi_{2,N}\\
 \cdots & \cdots & \cdots & \cdots \\
 \pi_{N,i} & \pi_{N,2} & \cdots & \pi_{N,N}
 \end{bmatrix}\\
-where\\
-\pi_{i,j} = probability\ of\ transition\ from\ state\ j\ to\ state\ i\\
-and\\
-\pi_{i,i} = probability\ of\ staying\ in\ state\ i\\
-further\\
-\pi_{i,j} \ne \pi_{j,i}\ in\ general
-$$
+&where\\
+\pi_{i,j} &= probability\ of\ transition\ state\ x_j\ to\ state\ x_i\\
+&and\\
+\pi_{i,i} &= probability\ of\ staying\ in\ state\ x_i\\
+&further\\
+\pi_{i,j} &\ne \pi_{j,i}\ in\ general
+\end{align}
 
 
 
@@ -192,10 +199,10 @@ $$
 
 Let's apply a probability matrix to a set of possible states      
 
-- The **state vector** represents being in the first state at time step $t$; $\vec{x_t} = [1,0,0]$   
+- The **state vector** represents being in the first state at time step $t$; $\vec{X}_t = [1,0,0]$   
 - After a state transition, we compute the probability of being in each of the three possible states at the next time step, $t+1$:  
 
-$$\vec{x}_{t+1}  = \Pi\ \vec{x}_t = 
+$$\vec{X}_{t+1}  = \Pi\ \vec{X}_t = 
 \begin{bmatrix}
 0.5 & 0.0 & 0.6\\
 0.2 & 0.3 & 0.4\\
@@ -222,7 +229,7 @@ The foregoing is a single step of a Markov process
 
 - A sequence of such transitions is known as a **Markov chain**      
 
-- There are two major behaviors observed with Markov Chains       
+- There are two classes of Markov Chains       
 
 - **Episodic Markov chains** have a **terminal state**      
    - The terminal state can only transition to itself     
@@ -252,13 +259,13 @@ Markov chain comprises a number of state transitions
 
 Start with initial state, $\vec{x}_0$ for a continuous Markov chain:   
 
-$$\Pi\ \Pi\ \Pi\ \ldots \Pi\ \vec{x}_t = \Pi^n\ \vec{x}_t  \xrightarrow[\text{$n \rightarrow \infty$}]{} \vec{p(x)}$$    
+$$\Pi\ \Pi\ \Pi\ \ldots \Pi\ \vec{X}_t = \Pi^n\ \vec{X}_t  \xrightarrow[\text{$n \rightarrow \infty$}]{} p(\vec{X})$$    
 
 - We can find the probabilities of the states without knowing the values of the transition matrix, $\Pi$!    
 
 - As long as we can repeatedly sample the stochastic Markov process, we can estimate the state probabilities     
 
-- This is the key to Markov Chain Monte Carlo sampling 
+- This is the key to Markov Chain Monte Carlo sampling! 
 
 
 ## MCMC and the Metropolis-Hastings Algorithm
@@ -266,18 +273,28 @@ $$\Pi\ \Pi\ \Pi\ \ldots \Pi\ \vec{x}_t = \Pi^n\ \vec{x}_t  \xrightarrow[\text{$n
 The first MCMC sampling algorithm developed is the **Metropolis-Hastings (M-H) algorithm**; often referred to as Metropolis algorithm or the M-H algorithm. 
 
 - The M-H algorithm uses the following steps to estimate the posterior density:    
-   - Pick a starting point in the parameter space       
-   - Sample the posterior distribution according to the model, the product of the likelihood $P(data|parameters)$ and prior, $P(parameters)$       
-   - Choose a nearby point in parameter space randomly and evaluate the posterior at this point   
-   - Use the following **decision rule to accept or reject** the new sample:
-     - If the likelihood, $p(data | parameters)$, of the new point is greater than the current point, accept new point  
-     - If the likelihood of the new point is less than your current point, only accept with probability according to the ratio: 
+1. Pick a starting point in the parameter space       
+2. Choose a nearby point in parameter space randomly from a **sampling distribution**   
+3. Evaluate the posterior at this point   
+   - Product of the likelihood $P(data|parameters)$ and prior, $P(parameters)$     
+4. Use the following **decision rule to accept or reject** the new sample:
 
-$$Acceptance\ probability\ = \frac{p(data | new\ parameters)}{p(data | previous\ parameters)}$$.   
+5. If the sample is accepted, compute the posterior density at the new sample point    
 
-   - If the sample is accepted, compute the posterior density at the new sample point    
+6. Repeat steps, 2, 3, 4 and 5, many times, until convergence      
 
-   - Repeat sampling steps many times, until convergence      
+
+
+## MCMC and the Metropolis-Hastings Algorithm
+
+M-H algorithm uses the following **decision rule to accept or reject** the new sample:
+
+- If the likelihood, $p(data | parameters)$, of the new point is greater than the current point, accept new point  
+
+- If the likelihood of the new point is less than the current point, accept with probability according to the ratio: 
+
+$$Acceptance\ probability\ = \frac{p(data | new\ parameters)}{p(data | previous\ parameters)}$$
+
 
 
 ## MCMC and the Metropolis-Hastings Algorithm
@@ -304,7 +321,7 @@ Poor convergence arises from low **sample efficiency**
 
 - Dispersion parameter determines the size of the jumps the algorithm makes    
 
-- Example, for Normal distribution pick the variance $\sigma^2$     
+- Example, for Normal sampling distribution pick the variance $\sigma^2$     
    - $\sigma^2$ is too small, the chain only slowly searches     
    - $\sigma^2$ is too big, chain has are large jumps which  slows convergence    
 
@@ -351,7 +368,7 @@ knitr::include_graphics(rep("../images/MCMC_SamplesBivariateNormal.png"))
 Plot the first 500 samples     
 
 
-```{r MCMC_500SamplesBivariateNormal, out.width = '40%', fig.cap='First 500 MCMC samples from bivariate Normal distribution', fig.align='center', echo=FALSE}
+```{r MCMC_500SamplesBivariateNormal, out.width = '40%', fig.cap='MCMC samples from bivariate Normal distribution', fig.align='center', echo=FALSE}
 knitr::include_graphics(rep("../images/MCMC_500SamplesBivariateNormal.png"))
 ```
 
@@ -537,9 +554,9 @@ $$\mathtt{H}(q,p) = \mathtt{K}(p,q) + \mathtt{V}(q)$$
 \frac{d\ p}{d\ t} &= \frac{\partial \mathtt{H}}{\partial q} = \frac{\partial \mathtt{K}}{\partial q} + \frac{\partial \mathtt{V}}{\partial q}
 \end{align}
 
-- Notice that HMCMC only works for distributions with finite derivatives    
+- Notice that **HMCMC only works for distributions with finite derivatives!**    
    * Works for nearly all continuous distributions   
-   * Cannot be applied to discrete distributions     
+   * **Cannot be applied to discrete distributions**     
 
 - The above is rather intimidating, and we skip the details!  
 
@@ -548,15 +565,15 @@ $$\mathtt{H}(q,p) = \mathtt{K}(p,q) + \mathtt{V}(q)$$
 Hamiltonian MCMC is an extension of the M-H algorithm with steps:    
 
 1. Sample $p \sim \mathtt{N}(0,\sigma)$      
-2. Simulate $q_t$ and $p_t$ for a $L$ time steps to time $T$, using the coupled differential equations   
-3. Get $q_T$ as the new proposed state     
-4. Apply the M-H acceptance criteria to $q_T$
+2. Simulate $q_t$ and $p_t$ for L time steps, using the coupled differential equations   
+3. Get $q_L$ as the new proposed state     
+4. Apply the M-H acceptance criteria to $q_L$
 
-- Must find good value of $L$ to **tune** the algorithm    
-  * $L$ too small, search is only local    
-  * $L$ too large, search makes large jumps   
+- Must find good temperature value of $T$ to **tune** the algorithm    
+  * $T$ too small, search is only local    
+  * $T$ too large, search makes large jumps   
    
-- Hard to find good hyperparameter value in practice      
+- Hard to find good hyperparameter values, L and $T$, in practice      
 
 
 
@@ -569,11 +586,11 @@ NUTS represents the state of the art in MCMC samplers: [Hoffman and Gelman](stat
 - NUTS improves on HMC     
   * Run time forward and backward when solving coupled differential equations   
   * Find equilibrium at the **no U-turn point**   
-  * Equilibrium point determines $L$ automatically  
+  * Equilibrium point determines $T$ automatically  
   * Eliminates tuning    
 
 
-- Why even discuss other samplers when we have the NUTS     
+- Why even discuss other samplers when we have NUTS?       
    - NUTS works well in many common continuous distribution cases, it is not guaranteed to converge    
    - In some cases a Gibbs sampler works better  
    - Use M-H for discrete distributioins     
@@ -592,14 +609,14 @@ Hamiltonian MCMC is a complex algorithm - some resources for additional details
 
 ## Key Steps for MCMC Bayes Modeling     
 
-Focus of modern Bayes modeling is no evalaution   
+Steps of modern Bayes modeling and evaluation   
 
 1. Define the problem    
 2. Collect the dataset   
 3. Define a model, including priors   
 4. MCMC sample the model   
-5. Verify MCMC sampling convergence and sufficiency   
-6. Prior predictive checks - are the priors reasonable for the problem?     
+5. Prior predictive checks - are the priors reasonable for the problem?     
+6. Verify MCMC sampling convergence and sufficiency   
 7. Posterior predictive checks - Do the posterior predictions agree with the observed response?  
 
 Packages like [ArviZ](https://arviz-devs.github.io/arviz/index.html) are dedicated to evaluation of Bayes MCMC models.     
