@@ -522,7 +522,7 @@ $$\mathtt{H}(q,p) = \mathtt{K}(p,q) + \mathtt{V}(q)$$
    * $\mathtt{K}(p,q) =$ kinetic energy    
    * $\mathtt{V}(q) =$ potential energy   
 
-- The Hamiltonian of the system **must remain constant** over the sample space
+- The Hamiltonian, $\mathtt{H}(q,p)$, of the system **must remain constant** over the sample space
 
 ## Hamiltonian MCMC   
 
@@ -532,10 +532,11 @@ The Hamiltonian sampler uses a simple idea from classical mechanics
 
 - The **Boltzmann distribution** of the Hamiltonian
 
-$$p(q,p) = e^{-\frac{\mathtt{H}(q,p)}{kT}}$$
+$$p(q,p) = \frac{1}{Z} e^{-\frac{\mathtt{H}(q,p)}{kT}}$$
 
 - Where:    
-   * $k =$ normalization or **partition coefficient**   
+   * $Z =$ normalization or **partition coefficient**   
+   * $k =$ scale parameter    
    * $T =$ temperature    
   
 ## Hamiltonian MCMC   
@@ -565,15 +566,15 @@ $$\mathtt{H}(q,p) = \mathtt{K}(p,q) + \mathtt{V}(q)$$
 Hamiltonian MCMC is an extension of the M-H algorithm with steps:    
 
 1. Sample $p \sim \mathtt{N}(0,\sigma)$      
-2. Simulate $q_t$ and $p_t$ for L time steps, using the coupled differential equations   
+2. Simulate $q_t$ and $p_t$ for L time intervals with $\epsilon$ time steps, using the coupled differential equations   
 3. Get $q_L$ as the new proposed state     
 4. Apply the M-H acceptance criteria to $q_L$
 
-- Must find good temperature value of $T$ to **tune** the algorithm    
-  * $T$ too small, search is only local    
-  * $T$ too large, search makes large jumps   
+- Must find good hyperparameter values of $L$ and $\epsilon$ to **tune** the algorithm    
+  * Change too small, search is only local    
+  * Change too large, search makes large jumps   
    
-- Hard to find good hyperparameter values, L and $T$, in practice      
+- Hard to find good hyperparameter values, $L$ and $\epsilon$, in practice      
 
 
 
@@ -586,14 +587,14 @@ NUTS represents the state of the art in MCMC samplers: [Hoffman and Gelman](stat
 - NUTS improves on HMC     
   * Run time forward and backward when solving coupled differential equations   
   * Find equilibrium at the **no U-turn point**   
-  * Equilibrium point determines $T$ automatically  
+  * Equilibrium point determines $L$ and $\epsilon$ automatically  
   * Eliminates tuning    
 
 
 - Why even discuss other samplers when we have NUTS?       
    - NUTS works well in many common continuous distribution cases, it is not guaranteed to converge    
    - In some cases a Gibbs sampler works better  
-   - Use M-H for discrete distributioins     
+   - Use M-H for discrete distributions     
 
 ## Hamiltonian MCMC   
 
@@ -614,8 +615,8 @@ Steps of modern Bayes modeling and evaluation
 1. Define the problem    
 2. Collect the dataset   
 3. Define a model, including priors   
-4. MCMC sample the model   
-5. Prior predictive checks - are the priors reasonable for the problem?     
+4. Prior predictive checks - are the priors reasonable for the problem?  
+5. MCMC sample the model      
 6. Verify MCMC sampling convergence and sufficiency   
 7. Posterior predictive checks - Do the posterior predictions agree with the observed response?  
 
@@ -1005,7 +1006,7 @@ Analysis of change point in British coal mine disasters
 - **Poisson likelihood** model with switch switch point $s$, rate before, $e$ and after $l$:     
 
 $$
-D_t \sim Pois(r_t),\ r_t 
+D_t \sim Pois(r_t),\ r_t = 
 \begin{cases}
      e,\ t < s\\
      l,\ t \ge s
@@ -1032,8 +1033,7 @@ with pymc3.Model() as disaster_model:
     switchpoint = pymc3.DiscreteUniform("switchpoint", lower=disaster_data.Year.min(), upper=disaster_data.Year.max())
     # More informative prior based on domain knowledge    
 #    switchpoint = pymc3.Triangular("switchpoint", lower=disaster_data.Year.min(), upper=disaster_data.Year.max(), c=1900)
-
-    switchpoint = pymc3.DiscreteUniform("switchpoint", lower=disaster_data.Year.min(), upper=disaster_data.Year.max())
+#    switchpoint = pymc3.Laplace("switchpoint", mu=1900, b=4.0)
 
     # Priors for pre- and post-switch rates 
     early_rate = pymc3.Exponential("early_rate", 2.0)
