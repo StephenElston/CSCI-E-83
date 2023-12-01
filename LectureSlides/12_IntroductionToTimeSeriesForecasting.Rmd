@@ -538,7 +538,7 @@ $$y_t -  y_{t-1} - \phi_1( y_{t-1} - y_{t-2}) - \phi_2 ( y_{t-2} - y_{t-3}) =  \
 
 - Model the one step ahead forecast as:     
 
-$$\hat{y}_{t+1}= y_{t} - \phi_1( y_{t} + y_{t-1}) + \phi_1( y_{t-1} - y_{t-2}) + \theta_1 \epsilon_{t}$$
+$$\hat{y}_{t+1}= y_{t} + \phi_1( y_{t} + y_{t-1}) + \phi_1( y_{t-1} - y_{t-2}) + \theta_1 \epsilon_{t}$$
 
 - Two step ahead forecast is computed using a recursive relationship    
 
@@ -556,7 +556,7 @@ $$\hat{y}_{t+2}= \hat{y}_{t+1} + \phi_1( \hat{y}_{t+1} - y_{t}) + \phi_1( y_{t} 
 
 - Take recursion one more step, set error terms, $\epsilon_i = 0$:    
 
-$$\hat{y}_{t+3}= \hat{y}_{t+2} - \phi_1( \hat{y}_{t+2} - \hat{y}_{t+1}) - \phi_1( \hat{y}_{t+1} - y_{t})$$
+$$\hat{y}_{t+3}= \hat{y}_{t+2} + \phi_1( \hat{y}_{t+2} - \hat{y}_{t+1}) + \phi_1( \hat{y}_{t+1} - y_{t})$$
 
 - Continue this recursion for as many time steps as desired   
 

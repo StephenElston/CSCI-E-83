@@ -802,8 +802,8 @@ y_0,\ \ \ \ 0,\ \ \ \ 0
 ## ==============================================================================
 ## Dep. Variable:                      y   No. Observations:                  120
 ## Model:                 ARIMA(2, 0, 0)   Log Likelihood                -152.398
-## Date:                Fri, 24 Nov 2023   AIC                            312.795
-## Time:                        18:24:00   BIC                            323.945
+## Date:                Thu, 30 Nov 2023   AIC                            312.795
+## Time:                        18:27:55   BIC                            323.945
 ## Sample:                    01-31-2005   HQIC                           317.323
 ##                          - 12-31-2014                                         
 ## Covariance Type:                  opg                                         
@@ -923,8 +923,8 @@ least squares</strong></p></li>
 ## ==============================================================================
 ## Dep. Variable:                      y   No. Observations:                  120
 ## Model:                 ARIMA(0, 0, 1)   Log Likelihood                -162.751
-## Date:                Fri, 24 Nov 2023   AIC                            331.502
-## Time:                        18:24:01   BIC                            339.864
+## Date:                Thu, 30 Nov 2023   AIC                            331.502
+## Time:                        18:27:56   BIC                            339.864
 ## Sample:                    01-31-2005   HQIC                           334.898
 ##                          - 12-31-2014                                         
 ## Covariance Type:                  opg                                         
@@ -1167,7 +1167,7 @@ y_{t-2}) - \phi_2 ( y_{t-2} - y_{t-3}) =  \epsilon_t + \theta_1
 <ul>
 <li>Model the one step ahead forecast as:</li>
 </ul>
-<p><span class="math display">\[\hat{y}_{t+1}= y_{t} - \phi_1( y_{t} +
+<p><span class="math display">\[\hat{y}_{t+1}= y_{t} + \phi_1( y_{t} +
 y_{t-1}) + \phi_1( y_{t-1} - y_{t-2}) + \theta_1
 \epsilon_{t}\]</span></p>
 <ul>
@@ -1192,8 +1192,8 @@ e_{t}\]</span></p>
 <ul>
 <li>Take recursion one more step, set error terms, <span class="math inline">\(\epsilon_i = 0\)</span>:</li>
 </ul>
-<p><span class="math display">\[\hat{y}_{t+3}= \hat{y}_{t+2} - \phi_1(
-\hat{y}_{t+2} - \hat{y}_{t+1}) - \phi_1( \hat{y}_{t+1} -
+<p><span class="math display">\[\hat{y}_{t+3}= \hat{y}_{t+2} + \phi_1(
+\hat{y}_{t+2} - \hat{y}_{t+1}) + \phi_1( \hat{y}_{t+1} -
 y_{t})\]</span></p>
 <ul>
 <li><p>Continue this recursion for as many time steps as
@@ -1390,25 +1390,25 @@ production)</p>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>                             suppress_warnings<span class="op">=</span><span class="va">True</span>,  <span class="co"># don&#39;t want convergence warnings</span></span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>                             stepwise<span class="op">=</span><span class="va">True</span>)  <span class="co"># set to stepwise</span></span></code></pre></div>
 <pre><code>## Performing stepwise search to minimize bic
-##  ARIMA(1,1,1)(0,1,1)[12]             : BIC=-1794.344, Time=0.86 sec
-##  ARIMA(0,1,0)(0,1,0)[12]             : BIC=-1572.064, Time=0.15 sec
-##  ARIMA(1,1,0)(1,1,0)[12]             : BIC=-1696.328, Time=0.68 sec
-##  ARIMA(0,1,1)(0,1,1)[12]             : BIC=-1800.249, Time=0.50 sec
+##  ARIMA(1,1,1)(0,1,1)[12]             : BIC=-1794.344, Time=0.87 sec
+##  ARIMA(0,1,0)(0,1,0)[12]             : BIC=-1572.064, Time=0.16 sec
+##  ARIMA(1,1,0)(1,1,0)[12]             : BIC=-1696.328, Time=0.66 sec
+##  ARIMA(0,1,1)(0,1,1)[12]             : BIC=-1800.249, Time=0.49 sec
 ##  ARIMA(0,1,1)(0,1,0)[12]             : BIC=-1699.081, Time=0.12 sec
-##  ARIMA(0,1,1)(1,1,1)[12]             : BIC=-1800.515, Time=0.86 sec
-##  ARIMA(0,1,1)(1,1,0)[12]             : BIC=-1742.451, Time=0.28 sec
+##  ARIMA(0,1,1)(1,1,1)[12]             : BIC=-1800.515, Time=0.87 sec
+##  ARIMA(0,1,1)(1,1,0)[12]             : BIC=-1742.451, Time=0.27 sec
 ##  ARIMA(0,1,1)(2,1,1)[12]             : BIC=-1797.600, Time=2.02 sec
-##  ARIMA(0,1,1)(1,1,2)[12]             : BIC=-1796.438, Time=2.36 sec
-##  ARIMA(0,1,1)(0,1,2)[12]             : BIC=-1802.021, Time=1.90 sec
-##  ARIMA(0,1,0)(0,1,2)[12]             : BIC=inf, Time=0.71 sec
+##  ARIMA(0,1,1)(1,1,2)[12]             : BIC=-1796.438, Time=2.42 sec
+##  ARIMA(0,1,1)(0,1,2)[12]             : BIC=-1802.021, Time=1.91 sec
+##  ARIMA(0,1,0)(0,1,2)[12]             : BIC=inf, Time=0.72 sec
 ##  ARIMA(1,1,1)(0,1,2)[12]             : BIC=-1796.168, Time=2.73 sec
-##  ARIMA(0,1,2)(0,1,2)[12]             : BIC=-1795.957, Time=2.79 sec
-##  ARIMA(1,1,0)(0,1,2)[12]             : BIC=-1770.768, Time=2.47 sec
+##  ARIMA(0,1,2)(0,1,2)[12]             : BIC=-1795.957, Time=2.84 sec
+##  ARIMA(1,1,0)(0,1,2)[12]             : BIC=-1770.768, Time=2.42 sec
 ##  ARIMA(1,1,2)(0,1,2)[12]             : BIC=-1790.196, Time=3.18 sec
-##  ARIMA(0,1,1)(0,1,2)[12] intercept   : BIC=inf, Time=0.99 sec
+##  ARIMA(0,1,1)(0,1,2)[12] intercept   : BIC=inf, Time=1.02 sec
 ## 
 ## Best model:  ARIMA(0,1,1)(0,1,2)[12]          
-## Total fit time: 22.604 seconds</code></pre>
+## Total fit time: 22.701 seconds</code></pre>
 </div>
 <div id="sarimax-example-2" class="slide section level2">
 <h1>SARIMAX Example</h1>
@@ -1431,10 +1431,10 @@ seasonality</li>
   <th>Model:</th>           <td>SARIMAX(0, 1, 1)x(0, 1, [1, 2], 12)</td> <th>  Log Likelihood     </th>  <td>912.843</td> 
 </tr>
 <tr>
-  <th>Date:</th>                     <td>Fri, 24 Nov 2023</td>           <th>  AIC                </th> <td>-1817.686</td>
+  <th>Date:</th>                     <td>Thu, 30 Nov 2023</td>           <th>  AIC                </th> <td>-1817.686</td>
 </tr>
 <tr>
-  <th>Time:</th>                         <td>18:24:26</td>               <th>  BIC                </th> <td>-1802.021</td>
+  <th>Time:</th>                         <td>18:28:21</td>               <th>  BIC                </th> <td>-1802.021</td>
 </tr>
 <tr>
   <th>Sample:</th>                      <td>01-31-1958</td>              <th>  HQIC               </th> <td>-1811.464</td>
