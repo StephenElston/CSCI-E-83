@@ -3,6 +3,7 @@ title: "Visualization of Large Complex Data"
 author: "Steve Elston"
 date: "09/11/2023"
 output:
+  powerpoint_presentation: default
   slidy_presentation: default
   pdf_document: default
   beamer_presentation: default
