@@ -3,6 +3,7 @@ title: "When One Thing Depends on Another; Conditional Probability"
 author: "Steve Elston"
 date: "09/18/2023"
 output:
+  powerpoint_presentation: default
   slidy_presentation: default
   pdf_document: default
   beamer_presentation: default
