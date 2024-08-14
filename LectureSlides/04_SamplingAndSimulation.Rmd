@@ -3,6 +3,7 @@ title: "Sampling and Simulation"
 author: "Steve Elston"
 date: "09/22/2022"
 output:
+  powerpoint_presentation: default
   slidy_presentation: default
   pdf_document: default
   beamer_presentation: default
