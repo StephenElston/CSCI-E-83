@@ -3,6 +3,7 @@ title: "Introduction to Linear Models"
 author: "Steve Elston"
 date: "10/23/2023"
 output:
+  powerpoint_presentation: default
   slidy_presentation: default
   pdf_document: default
   beamer_presentation: default

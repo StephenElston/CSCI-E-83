@@ -3,6 +3,7 @@ title: "Regularization and Sparse Models"
 author: "Steve Elston"
 date: "11/07/2023"
 output:
+  powerpoint_presentation: default
   slidy_presentation: default
   pdf_document: default
   beamer_presentation: default

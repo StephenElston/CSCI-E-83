@@ -2,7 +2,9 @@
 title: "Properties of Time Series"
 author: "Steve Elston"
 date: "11/13/2023"
-output: slidy_presentation
+output: 
+  powerpoint_presentation: default
+  slidy_presentation: default
 ---
 
 ```{r setup, include=FALSE}

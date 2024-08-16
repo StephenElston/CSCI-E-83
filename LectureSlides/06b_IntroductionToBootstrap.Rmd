@@ -3,6 +3,7 @@ title: "Introduction to Nonparametric Bootstrap Methods"
 author: "Steve Elston"
 date: "10/09/2023"
 output:
+  powerpoint_presentation: default
   slidy_presentation: default
   pdf_document: default
   beamer_presentation: default

@@ -3,6 +3,7 @@ title: "Introduction to Bayesian Models"
 author: "Steve Elston"
 date: "10/13/2022"
 output:
+  powerpoint_presentation: default
   slidy_presentation: default
   pdf_document: default
   beamer_presentation: default
