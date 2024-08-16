@@ -632,7 +632,7 @@ y_0,\ \ \ \ 0,\ \ \ \ 0
 ## Dep. Variable:                      y   No. Observations:                  120
 ## Model:                 ARIMA(2, 0, 0)   Log Likelihood                -152.398
 ## Date:                Thu, 15 Aug 2024   AIC                            312.795
-## Time:                        19:43:56   BIC                            323.945
+## Time:                        19:53:26   BIC                            323.945
 ## Sample:                    01-31-2005   HQIC                           317.323
 ##                          - 12-31-2014                                         
 ## Covariance Type:                  opg                                         
@@ -753,7 +753,7 @@ least squares</strong></p></li>
 ## Dep. Variable:                      y   No. Observations:                  120
 ## Model:                 ARIMA(0, 0, 1)   Log Likelihood                -162.751
 ## Date:                Thu, 15 Aug 2024   AIC                            331.502
-## Time:                        19:43:57   BIC                            339.864
+## Time:                        19:53:27   BIC                            339.864
 ## Sample:                    01-31-2005   HQIC                           334.898
 ##                          - 12-31-2014                                         
 ## Covariance Type:                  opg                                         
@@ -1219,27 +1219,27 @@ best_model = pm.auto_arima(Log_electric, start_p=1, start_q=1,
                              suppress_warnings=True,  # don&#39;t want convergence warnings
                              stepwise=True)  # set to stepwise</code></pre>
 <pre><code>## Performing stepwise search to minimize bic
-##  ARIMA(1,1,1)(0,1,1)[12]             : BIC=-1794.344, Time=0.78 sec
+##  ARIMA(1,1,1)(0,1,1)[12]             : BIC=-1794.344, Time=0.74 sec
 ##  ARIMA(0,1,0)(0,1,0)[12]             : BIC=-1572.064, Time=0.05 sec
-##  ARIMA(1,1,0)(1,1,0)[12]             : BIC=-1696.320, Time=0.36 sec
+##  ARIMA(1,1,0)(1,1,0)[12]             : BIC=-1696.320, Time=0.38 sec
 ##  ARIMA(0,1,1)(0,1,1)[12]             : BIC=-1800.249, Time=0.88 sec
 ##  ARIMA(0,1,1)(0,1,0)[12]             : BIC=-1699.081, Time=0.07 sec
-##  ARIMA(0,1,1)(1,1,1)[12]             : BIC=-1800.515, Time=1.07 sec
+##  ARIMA(0,1,1)(1,1,1)[12]             : BIC=-1800.515, Time=1.06 sec
 ##  ARIMA(0,1,1)(1,1,0)[12]             : BIC=-1742.451, Time=0.23 sec
-##  ARIMA(0,1,1)(2,1,1)[12]             : BIC=-1797.601, Time=3.05 sec
-##  ARIMA(0,1,1)(1,1,2)[12]             : BIC=-1797.846, Time=3.43 sec
-##  ARIMA(0,1,1)(0,1,2)[12]             : BIC=inf, Time=2.05 sec
-##  ARIMA(0,1,1)(2,1,0)[12]             : BIC=-1770.861, Time=0.62 sec
-##  ARIMA(0,1,1)(2,1,2)[12]             : BIC=-1791.556, Time=3.00 sec
-##  ARIMA(0,1,0)(1,1,1)[12]             : BIC=inf, Time=0.51 sec
-##  ARIMA(1,1,1)(1,1,1)[12]             : BIC=-1794.616, Time=1.18 sec
-##  ARIMA(0,1,2)(1,1,1)[12]             : BIC=-1794.617, Time=0.81 sec
-##  ARIMA(1,1,0)(1,1,1)[12]             : BIC=-1767.828, Time=0.87 sec
-##  ARIMA(1,1,2)(1,1,1)[12]             : BIC=-1788.695, Time=1.32 sec
-##  ARIMA(0,1,1)(1,1,1)[12] intercept   : BIC=-1792.517, Time=1.23 sec
+##  ARIMA(0,1,1)(2,1,1)[12]             : BIC=-1797.601, Time=2.99 sec
+##  ARIMA(0,1,1)(1,1,2)[12]             : BIC=-1797.846, Time=3.31 sec
+##  ARIMA(0,1,1)(0,1,2)[12]             : BIC=inf, Time=2.08 sec
+##  ARIMA(0,1,1)(2,1,0)[12]             : BIC=-1770.861, Time=0.63 sec
+##  ARIMA(0,1,1)(2,1,2)[12]             : BIC=-1791.556, Time=3.25 sec
+##  ARIMA(0,1,0)(1,1,1)[12]             : BIC=inf, Time=0.50 sec
+##  ARIMA(1,1,1)(1,1,1)[12]             : BIC=-1794.616, Time=1.06 sec
+##  ARIMA(0,1,2)(1,1,1)[12]             : BIC=-1794.617, Time=0.85 sec
+##  ARIMA(1,1,0)(1,1,1)[12]             : BIC=-1767.828, Time=0.95 sec
+##  ARIMA(1,1,2)(1,1,1)[12]             : BIC=-1788.695, Time=1.33 sec
+##  ARIMA(0,1,1)(1,1,1)[12] intercept   : BIC=-1792.517, Time=1.37 sec
 ## 
 ## Best model:  ARIMA(0,1,1)(1,1,1)[12]          
-## Total fit time: 21.530 seconds</code></pre>
+## Total fit time: 21.746 seconds</code></pre>
 </div>
 <div id="sarimax-example-2" class="section level2">
 <h2>SARIMAX Example</h2>
@@ -1265,7 +1265,7 @@ seasonality</li>
   <th>Date:</th>                   <td>Thu, 15 Aug 2024</td>        <th>  AIC                </th> <td>-1816.180</td>
 </tr>
 <tr>
-  <th>Time:</th>                       <td>19:44:21</td>            <th>  BIC                </th> <td>-1800.515</td>
+  <th>Time:</th>                       <td>19:53:51</td>            <th>  BIC                </th> <td>-1800.515</td>
 </tr>
 <tr>
   <th>Sample:</th>                    <td>01-31-1958</td>           <th>  HQIC               </th> <td>-1809.958</td>

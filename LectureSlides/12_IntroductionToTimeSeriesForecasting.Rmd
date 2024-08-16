@@ -5,6 +5,8 @@ date: "11/20/2023"
 output:output: 
   powerpoint_presentation: default
   slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
 ---
 
 ```{r setup, include=FALSE}
