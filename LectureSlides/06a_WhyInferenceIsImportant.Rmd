@@ -4,6 +4,7 @@ title: "Introduction to Inference and Confidence Intervals"
 author: "Steve Elston"
 date: "10/09/2023"
 output:
+  powerpoint_presentation: default
   slidy_presentation: default
   pdf_document: default
   beamer_presentation: default
