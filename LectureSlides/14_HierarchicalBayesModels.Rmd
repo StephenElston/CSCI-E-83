@@ -2,7 +2,11 @@
 title: "Hierarchical Bayesian Models"
 author: "Steve Elston"
 date: "2023-12-05"
-output: slidy_presentation
+output:
+  powerpoint_presentation: default
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
 ---
 
 
@@ -151,7 +155,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import pandas as pd
-#import pymc3 as pm
 import pymc as pm
 import theano
 import xarray as xr

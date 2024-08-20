@@ -2,7 +2,7 @@
 title: "Forecasting with Time Series Data"
 author: "Steve Elston"
 date: "11/20/2023"
-output:output: 
+output:
   powerpoint_presentation: default
   slidy_presentation: default
   pdf_document: default

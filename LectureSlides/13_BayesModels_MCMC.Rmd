@@ -2,9 +2,11 @@
 title: "Bayes MCMC Models"
 author: "Steve Elston"
 date: "10/27/2022"
-output:output: 
+output:
   powerpoint_presentation: default
   slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
 ---
 
 ```{r setup, include=FALSE}
