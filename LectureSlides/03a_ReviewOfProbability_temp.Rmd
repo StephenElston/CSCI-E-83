@@ -1,0 +1,179 @@
+---
+title: "Review of Probability"
+author: "Steve Elston"
+date: "09/18/2023"
+output:
+  powerpoint_presentation: default
+  slidy_presentation: default
+  pdf_document: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+use_python("C:/Users/steph/anaconda3")
+matplotlib <- import("matplotlib")
+matplotlib$use("Agg", force = TRUE)
+#knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+
+
+
+
+
+---------------------------------------------
+
+## The Gamma and $\chi^2$ distributions
+
+Gamma family can be parameterized in several ways; we will use:    
+- A shape parameter, $\nu$, the degrees of freedom  
+- A scale parameter, $\sigma$    
+
+$$
+Gam(\nu,\sigma)=\frac{x^{\nu-1}\ e^{-x/\sigma}}{\sigma^\nu\ \Gamma(\nu)}\\
+where\\
+x \ge 0,\ \nu > 0,\ \sigma > 0\\
+and\\
+\Gamma(\nu) = Gamma\ function
+$$
+ 
+- Alternatively, use an inverse scale parameter, $\beta = 1/\sigma$.   
+
+---------------------------------------------
+
+## The Gamma and $\chi^2$ distributions
+
+Two useful special cases of the Gamma distribution are:    
+
+- $Gam(1,1/\lambda)$ is the **exponential distribution** with decay constant $\lambda$, and PDF:  
+$$exp(\lambda) = \lambda e^{-\lambda x}$$   
+
+- $Gam(\nu/2,2) = \chi^2_\nu$ is the **Chi-squared distribution** with $\nu$ degrees of freedom The $\chi^2_\nu$ distribution has many uses in statistics.   
+   - Used for estimates of the variance of the Normal distribution   
+   - PDF of the $\chi^2_\nu$ distribution:    
+$$\chi^2_\nu=\frac{x^{\nu/2-1}\ e^{-x}}{\sigma^{\nu/2}\ \Gamma(\nu/2)}\\ for\ \nu\ degrees\ of\ freedom$$
+
+
+-----------------------------------------------------     
+
+## The $\chi^2$ Distribution      
+
+The $\chi^2$ distribution is used to construct parametric hypothesis tests of differences in counts between groups and also:       
+
+- Constructing tests for the significance of fits of observed values to probability distributions.   
+
+- The likelihood ratio test for the significance of differences between nested models.    
+
+- Computing confidence intervals for empirical (as opposed to theoretical) variance estimates of observed values. 
+
+-----------------------------------------------------     
+
+## The $\chi^2$ Distribution  
+
+The $\chi^2$ distribution is a parametric distribution with a single parameter, the degrees of freedom, k = number of possible outcomes - 1. 
+
+- For $n$ iid  Normal random variables, $Z_1, Z_2, ..., Z_n$, define a statistic, $Q$, as the sum of squares:    
+
+$$Q = \sum_{i=1}^n Z_i^2$$
+
+- $Q$ is said to be **$\chi^2_k$ distributed with $k=n-1$ degrees of freedom**   
+
+$$Q = \chi^2_k = \chi^2(k)$$
+
+-----------------------------------------------------     
+
+## The $\chi^2$ Distribution  
+
+The shape of the $\chi^2$ distribution changes character with the DoF: For $k = 1\ or\ 2$ the $\chi^2$ distribution has an exponential decay with the maximum value at $x=0$      
+
+```{r Chi2_DOF_12, out.width = '90%', fig.cap='Heat map of ', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Chi2_DOF_12.PNG"))
+```
+
+
+-----------------------------------------------------     
+
+## The $\chi^2$ Distribution  
+
+The shape of the $\chi^2$ distribution changes character with the DoF: For a middle range of DoF values the density starts at 0 and rises to a maximum or mode and then decay back toward 0         
+
+```{r Chi2_DOF_Med, out.width = '90%', fig.cap='Heat map of ', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Chi2_DOF_Med.PNG"))
+``` 
+
+
+-----------------------------------------------------     
+
+## The $\chi^2$ Distribution  
+
+The shape of the $\chi^2$ distribution changes character with the DoF: For large values of DoF the $\chi^2$ distribution converges toward a normal distribution with location parameter DoF       
+
+```{r Chi2_DOF_Lrg, out.width = '90%', fig.cap='Heat map of ', fig.align='center', echo=FALSE}
+knitr::include_graphics(rep("../images/Chi2_DOF_Lrg.PNG"))
+```
+
+
+
+------------------------------------------------
+
+## Odds 
+
+**Odds** are the ratio of the number of ways an event occurs to the number of ways it does not occur  
+
+- Can say that **odds** are the count of events in favor of an event vs. the count against the event
+
+- **Example:** Flip a fair coin, odds of getting heads are $1:1$ (1 in 1)   
+
+- **Example:** Roll a single fair die your odds of rolling a 6 are $1:5$ (1 in 5), or 0.2 
+
+------------------------------------------------
+
+## Odds 
+
+What is the relationship between odds and probability of an event?   
+
+- For some event with count $A$ in a set of all outcomes with count $S$, and count of negative outcomes $B = S - A$:
+
+$$P(A) = \frac{A}{S} = \frac{A}{A + (S - A)} = \frac{A}{A + B} = \frac{count\ in\ favor}{count\ in\ favor\ + count\ not\ in\ favor}\ \\
+which\ implies\\
+odds = A:(S-A)$$
+
+- **Example:** For the fair coin flip, the odds are $1:1$. So we can compute the probability of heads as:
+
+$$P(H) = \frac{1}{1 + 1} = \frac{1}{2}$$
+
+- **Example** In statistics the [**odds ratio**](https://en.wikipedia.org/wiki/Odds_ratio), $\frac{p}{1-p}$, used to predict the response variable in logistic regression
+
+
+----------------------------------------------------
+
+## Summary      
+
+
+
+- Axioms of probability; for discrete distribution           
+
+$$0 < P(A) \le 1 $$
+$$P(S) = \sum_{a_i \in A}P(a_i) = 1 $$
+$$P(A\ \cup B) = P(A) + P(B)\\ if\ A \perp B$$
+
+- Expectation    
+
+$$\mathrm{E}[\mathbf{X}] = \sum_{i=1}^n x_i\ p(x_i)$$
+
+## Summary     
+
+- The Categorical distribution  
+  - For outcome $i$ we **one hot encode** the results as:    
+$$\mathbf{e_i} = (0, 0, \ldots, 1, \ldots, 0)$$
+  - For a single trial the probabilities of the $k$ possible outcomes are expressed:    
+$$\Pi = (\pi_1, \pi_2, \ldots, \pi_k)$$
+  - probability mass function as:   
+
+$$f(x_i| \Pi) = \pi_i$$
+   
+- Multivariate Normal distribution, parameterized by **n-dimensional vector of locations**, $\vec{\mathbf{\mu}}$ and $n$ x $n$ dimensional **covariance matrix**
+$$f(\vec{\mathbf{x}}) = \frac{1}{{\sqrt{(2 \pi)^k |\mathbf{\Sigma}|}}}exp \big(\frac{1}{2} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})^T \mathbf{\Sigma} (\vec{\mathbf{x}} - \vec{\mathbf{\mu}})\big)$$      
+   
