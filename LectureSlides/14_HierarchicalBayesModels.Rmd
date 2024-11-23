@@ -164,7 +164,7 @@ import warnings
 warnings.filterwarnings('ignore')
 #%config InlineBackend.figure_format = 'retina'
 #%matplotlib inline
-az.style.use("arviz-darkgrid")
+#az.style.use("arviz-darkgrid")
 
 ## Load the data   
 radon_data = pd.read_csv(pm.get_data("radon.csv"))
